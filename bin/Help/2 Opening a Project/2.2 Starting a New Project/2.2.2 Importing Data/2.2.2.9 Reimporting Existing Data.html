@@ -1,0 +1,66 @@
+<html>
+
+<head>
+<title>Reimporting Existing Data</title>
+<style type="text/css">
+	body {
+		font-family: sans-serif;
+	}
+	li {
+	padding-bottom: 1em
+	}
+ </style>
+</head>
+<body>
+<h1>Reimporting Existing Data</h1>
+<p>
+Under some circumstances you may wish to reimport a data store which you already
+have loaded in your current SeqMonk project.  You might want to do this to apply
+one of the import modification options (removing duplicates, extending reads)
+to a data set which you didn't initially modify, or you might want to convert
+a data group into a dataset.
+</p>
+
+<p>
+To reimport a data store simply select it from the data view and then select
+File &gt; Import Data &gt; Active Data Store.  You will see the standard
+options for single end data import and then your data will be duplicated with
+those options applied.  The new data set will have the same name as the original
+data store, but with &quot;_reimport&quot; appended to it.
+</p>
+
+<h2>Options</h2>
+
+<p>
+Generally the options you have when re-importing are the same as you'd see when
+importing data from a traditional data source (BAM file etc).  There are a couple
+of additional options though.
+</p>
+
+<h3>HiC data</h3>
+<p>
+If the data store you are re-importing is a HiC data store then you will have the
+option to either keep this as a HiC dataset, or convert it to a standard dataset
+(losing the HiC linkage information).  If you keep the data as HiC you can opt
+to ignore reads with paired distances shorter than a cutoff you supply, and you
+can choose to completely remove any trans hits from the reimported data.
+</p>
+
+<h3>All data</h3>
+
+<p>
+You can choose to reverse all of your reads.  This will change forward reads to 
+reverse and vice versa.  Reads with no strand information will not be changed.
+Please note that reversal of reads happens before the read is extended, so the
+extension will effectively happen at the 3' end of the original read if both
+of these options are selected.
+</p>
+
+<p>
+You can filter the imported reads against an annotation track.  You can choose
+to keep only reads which overlap a feature type, or exclude those which overlap
+a feature type.
+</p>
+
+</body>
+</html>

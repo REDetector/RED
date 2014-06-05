@@ -1,0 +1,388 @@
+package com.xl.parsers.annotationparsers;
+
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+import java.util.Vector;
+import java.util.zip.GZIPInputStream;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipException;
+import java.util.zip.ZipFile;
+import java.util.zip.ZipInputStream;
+
+import com.xl.datatypes.annotation.AnnotationSet;
+import com.xl.datatypes.annotation.Cytoband;
+import com.xl.datatypes.fasta.FastaDirectorySequence;
+import com.xl.datatypes.fasta.FastaIndexedSequence;
+import com.xl.datatypes.genome.Genome;
+import com.xl.datatypes.genome.GenomeDescripter;
+import com.xl.datatypes.sequence.IGVSequence;
+import com.xl.datatypes.sequence.Sequence;
+import com.xl.datatypes.sequence.SequenceWrapper;
+import com.xl.exception.REDException;
+import com.xl.interfaces.ProgressListener;
+import com.xl.utils.FileFilterImpl;
+import com.xl.utils.GeneType;
+import com.xl.utils.ParsingUtils;
+
+public class IGVGenomeParser implements Runnable {
+	/** The listeners. */
+	private Vector<ProgressListener> listeners = new Vector<ProgressListener>();
+
+	/** The genome. */
+	private Genome genome = null;
+
+	/** The base location. */
+	private File baseLocation = null;
+	private ZipFile zipFile = null;
+	private FileInputStream fileInputStream = null;
+	private ZipInputStream zipInputStream = null;
+	private Map<String, ZipEntry> zipEntries = null;
+
+	/** The prefs. */
+	// private REDPreferences prefs = REDPreferences.getInstance();
+
+	/**
+	 * Parses the genome.
+	 * 
+	 * @param baseLocation
+	 *            the base location
+	 */
+	public void parseGenome(File baseLocation) {
+		if (baseLocation.isDirectory()) {
+			File[] files = baseLocation.listFiles(new FileFilterImpl("genome"));
+			this.baseLocation = files[0];
+		} else {
+			this.baseLocation = baseLocation;
+		}
+		Thread t = new Thread(this);
+		t.start();
+	}
+
+	@Override
+	public void run() {
+		// TODO Auto-generated method stub
+		try {
+			System.out.println(baseLocation.getAbsolutePath());
+			GenomeDescripter genomeDescripter = parseGenomeArchiveFile(baseLocation);
+			final String id = genomeDescripter.getId();
+			final String displayName = genomeDescripter.getName();
+
+			boolean isFasta = genomeDescripter.isFasta();
+			String[] fastaFileNames = genomeDescripter.getFastaFileNames();
+
+			LinkedHashMap<String, List<Cytoband>> cytobandMap = null;
+			if (genomeDescripter.hasCytobands()) {
+				cytobandMap = loadCytoBandFile();
+			}
+
+			String sequenceLocation = genomeDescripter.getSequenceLocation();
+			Sequence sequence = null;
+			boolean chromosOrdered = false;
+			if (sequenceLocation == null) {
+				sequence = null;
+			} else if (!isFasta) {
+				System.out.println(this.getClass().getName() + ":!isFasta");
+				IGVSequence igvSequence = new IGVSequence(sequenceLocation);
+				if (cytobandMap != null) {
+					chromosOrdered = genomeDescripter.isChromosomesAreOrdered();
+					igvSequence
+							.generateChromosomes(cytobandMap, chromosOrdered);
+				}
+				sequence = new SequenceWrapper(igvSequence);
+			} else if (fastaFileNames != null) {
+				System.out.println(this.getClass().getName()
+						+ ":fastaFileNames != null");
+				FastaDirectorySequence fastaDirectorySequence = new FastaDirectorySequence(
+						sequenceLocation, fastaFileNames);
+				sequence = new SequenceWrapper(fastaDirectorySequence);
+			} else {
+				System.out.println(this.getClass().getName() + ":else");
+				FastaIndexedSequence fastaSequence = new FastaIndexedSequence(
+						sequenceLocation);
+				sequence = new SequenceWrapper(fastaSequence);
+				chromosOrdered = false;
+			}
+			genome = new Genome(id, displayName, sequence, chromosOrdered);
+
+			if (cytobandMap != null) {
+				genome.setCytobands(cytobandMap);
+			}
+
+			Collection<Collection<String>> aliases = loadChrAliases(genomeDescripter);
+			if (aliases != null) {
+				genome.addChrAliases(aliases);
+			}
+
+			InputStream geneStream = null;
+			String geneFileName = genomeDescripter.getGeneFileName();
+			if (geneFileName != null) {
+				try {
+					if (geneFileName.endsWith(".gz")) {
+						geneStream = new GZIPInputStream(
+								zipFile.getInputStream(zipEntries
+										.get(geneFileName)));
+					} else {
+						geneStream = zipFile.getInputStream(zipEntries
+								.get(geneFileName));
+					}
+					BufferedReader reader = new BufferedReader(
+							new InputStreamReader(geneStream));
+					UCSCRefGeneParser parser = new UCSCRefGeneParser(genome);
+					GeneType geneType = ParsingUtils
+							.parseGeneType(geneFileName);
+					AnnotationSet[] sets = parser.parseAnnotation(geneType,
+							reader, genome);
+
+					// Here we have to add the new sets to the annotation
+					// collection before we say that we're finished otherwise
+					// this object can get destroyed before the program gets
+					// chance to execute the operation which adds the sets to
+					// the annotation collection.
+					genome.getAnnotationCollection().addAnnotationSets(sets);
+
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+					progressExceptionReceived(e);
+				} finally {
+					if (geneStream != null)
+						geneStream.close();
+				}
+			}
+
+			progressComplete("load_genome", genome);
+
+		} catch (ZipException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (REDException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} finally {
+			try {
+				if (zipInputStream != null) {
+					zipInputStream.close();
+				}
+				if (fileInputStream != null) {
+					fileInputStream.close();
+				}
+				if (zipFile != null) {
+					zipFile.close();
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
+	public GenomeDescripter parseGenomeArchiveFile(File dotGenomeFile)
+			throws ZipException, IOException {
+		try {
+			zipFile = new ZipFile(dotGenomeFile);
+			fileInputStream = new FileInputStream(dotGenomeFile);
+			zipInputStream = new ZipInputStream(fileInputStream);
+			zipEntries = new HashMap<String, ZipEntry>();
+			ZipEntry zipEntry = null;
+			while ((zipEntry = zipInputStream.getNextEntry()) != null) {
+				String zipEntryName = zipEntry.getName();
+				zipEntries.put(zipEntryName, zipEntry);
+				if (zipEntryName.equalsIgnoreCase("property.txt")) {
+					InputStream inputStream = zipFile.getInputStream(zipEntry);
+					Properties properties = new Properties();
+					properties.load(inputStream);
+					String cytobandFileName = properties
+							.getProperty("cytobandFile");
+					String geneFileName = properties.getProperty("geneFile");
+					String chrAliasFileName = properties
+							.getProperty("chrAliasFile");
+					String sequenceLocation = properties
+							.getProperty("sequenceLocation");
+					boolean chrNamesAltered = Boolean.parseBoolean(properties
+							.getProperty("filenamesAltered"));
+					boolean fasta = Boolean.parseBoolean(properties
+							.getProperty("fasta"));
+					boolean fastaDirectory = Boolean.parseBoolean(properties
+							.getProperty("fastaDirectory"));
+					boolean chromosomesAreOrdered = Boolean
+							.parseBoolean(properties.getProperty("ordered"));
+					boolean hasCustomSequenceLocation = Boolean
+							.parseBoolean(properties
+									.getProperty("customSequenceLocation"));
+					String fastaFileNameString = properties
+							.getProperty("fastaFiles");
+					String url = properties.getProperty("url");
+					String name = properties.getProperty("name");
+					String id = properties.getProperty("id");
+					String geneTrackName = properties
+							.getProperty("geneTrackName");
+					GenomeDescripter.getInstance().setAttributes(name,
+							chrNamesAltered, id, cytobandFileName,
+							geneFileName, chrAliasFileName, geneTrackName, url,
+							sequenceLocation, hasCustomSequenceLocation,
+							chromosomesAreOrdered, fasta, fastaDirectory,
+							fastaFileNameString);
+				}
+			}
+			return GenomeDescripter.getInstance();
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+
+	public LinkedHashMap<String, List<Cytoband>> loadCytoBandFile() {
+		InputStream is = null;
+		BufferedReader reader = null;
+		try {
+			is = zipFile.getInputStream(zipEntries.get(GenomeDescripter
+					.getInstance().getCytoBandFileName()));
+
+			if (GenomeDescripter.getInstance().getCytoBandFileName()
+					.toLowerCase().endsWith(".gz")) {
+				is = new GZIPInputStream(is);
+			}
+			reader = new BufferedReader(new InputStreamReader(is));
+			return CytoBandFileParser.loadData(reader);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return null;
+		} finally {
+			try {
+				if (reader != null) {
+					reader.close();
+				}
+				if (is != null) {
+					is.close();
+				}
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+	}
+
+	private static Collection<Collection<String>> loadChrAliases(
+			BufferedReader br) throws IOException {
+		String nextLine = "";
+		Collection<Collection<String>> synonymList = new ArrayList<Collection<String>>();
+		while ((nextLine = br.readLine()) != null) {
+			String[] tokens = nextLine.split("\t");
+			if (tokens.length > 1) {
+				Collection<String> synonyms = new ArrayList<String>();
+				for (String t : tokens) {
+					String syn = t.trim();
+					if (t.length() > 0)
+						synonyms.add(syn.trim());
+				}
+				synonymList.add(synonyms);
+			}
+		}
+		return synonymList;
+	}
+
+	/**
+	 * Load the chromosome alias file, if any, specified in the genome
+	 * descriptor.
+	 * 
+	 * @param genomeDescriptor
+	 * @return The chromosome alias table, or null if none is defined.
+	 * @throws REDException
+	 */
+	private Collection<Collection<String>> loadChrAliases(
+			GenomeDescripter genomeDescripter) throws REDException {
+		InputStream aliasStream = null;
+		try {
+			String fileName = genomeDescripter.getChrAliasFileName();
+			if (fileName == null || !zipEntries.containsKey(fileName)) {
+				return null;
+			}
+			aliasStream = zipFile.getInputStream(zipEntries.get(fileName));
+			if (aliasStream != null) {
+				BufferedReader reader = new BufferedReader(
+						new InputStreamReader(aliasStream));
+				return loadChrAliases(reader);
+			} else {
+				return null;
+			}
+		} catch (IOException e) {
+			// We don't want to bomb if the alias load fails. Just log it and
+			// proceed.
+			throw new REDException("Error loading chromosome alias table");
+		} finally {
+			try {
+				if (aliasStream != null) {
+					aliasStream.close();
+				}
+			} catch (IOException ex) {
+				throw new REDException("Error closing zip stream!");
+			}
+		}
+	}
+
+	/**
+	 * Adds the progress listener.
+	 * 
+	 * @param pl
+	 *            the pl
+	 */
+	public void addProgressListener(ProgressListener pl) {
+		if (pl != null && !listeners.contains(pl))
+			listeners.add(pl);
+	}
+
+	/**
+	 * Removes the progress listener.
+	 * 
+	 * @param pl
+	 *            the pl
+	 */
+	public void removeProgressListener(ProgressListener pl) {
+		if (pl != null && listeners.contains(pl))
+			listeners.remove(pl);
+	}
+
+	/**
+	 * Progress exception received.
+	 * 
+	 * @param e
+	 *            the e
+	 */
+	private void progressExceptionReceived(Exception e) {
+		Enumeration<ProgressListener> en = listeners.elements();
+		while (en.hasMoreElements()) {
+			en.nextElement().progressExceptionReceived(e);
+		}
+	}
+
+	/**
+	 * Progress complete.
+	 * 
+	 * @param command
+	 *            the command
+	 * @param result
+	 *            the result
+	 */
+	private void progressComplete(String command, Object result) {
+		Enumeration<ProgressListener> en = listeners.elements();
+		while (en.hasMoreElements()) {
+			en.nextElement().progressComplete(command, result);
+		}
+
+	}
+}
