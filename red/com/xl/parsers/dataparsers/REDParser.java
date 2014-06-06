@@ -390,7 +390,7 @@ public class REDParser implements Runnable, ProgressListener {
      */
     private void parseFeatures(String[] sections) throws REDException,
             IOException {
-        // System.out.println(this.getClass().getName()+":parseFeatures()");
+        System.out.println(this.getClass().getName() + ":parseFeatures()");
         if (sections.length != 2) {
             throw new REDException("Features line didn't contain 2 sections");
         }
@@ -596,7 +596,7 @@ public class REDParser implements Runnable, ProgressListener {
                         }
 
 						/*
-						 * We used to have a split("\t") here, but this turned
+                         * We used to have a split("\t") here, but this turned
 						 * out to be the bottleneck which hugely restricted the
 						 * speed at which the data could be read. Switching for
 						 * a set of index calls and substring makes this *way*
@@ -896,7 +896,7 @@ public class REDParser implements Runnable, ProgressListener {
             sections = line.split("\\t", -1);
 
             if (i == 0) {
-				/*
+                /*
 				 * Older versions of this format put down data for just
 				 * datasets. Newer versions include data for datagroups as well.
 				 * We need to figure out which one we're looking at
@@ -1217,14 +1217,14 @@ public class REDParser implements Runnable, ProgressListener {
     }
 
     private SequenceRead parsePairedDataSetLine(String chr, String[] reads) throws REDException {
-        if (reads.length != 4) {
+        if (reads.length != 3) {
             throw new REDException("This line is incomplete.");
         }
         SequenceRead sequence = null;
         byte[] readBases = reads[2].getBytes();
-        byte[] qualities = reads[3].getBytes();
+//        byte[] qualities = reads[3].getBytes();
         sequence = new SequenceRead(chr, Integer.parseInt(reads[0]),
-                Strand.parseStrand(reads[1]), readBases, qualities);
+                Strand.parseStrand(reads[1]), readBases, null);
         return sequence;
     }
 
