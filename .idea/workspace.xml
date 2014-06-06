@@ -1,10 +1,544 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="84c5056e-4735-415e-9374-ef14f745da71" name="Default" comment="" />
+    <list default="true" id="84c5056e-4735-415e-9374-ef14f745da71" name="Default" comment="Change">
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\Help\1 Introduction\1.1 What is SeqMonk.html" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\Help\1 Introduction\1.2 Terminology.html" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\Help\2 Opening a Project\2.1 Opening an Existing Project.html" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\Help\2 Opening a Project\2.2 Starting a New Project\2.2 Starting a New Project.html" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\Help\2 Opening a Project\2.2 Starting a New Project\2.2.1 Selecting a Genome.html" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\Help\2 Opening a Project\2.2 Starting a New Project\2.2.2 Importing Data\2.2.2 Importing Data.html" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\Help\2 Opening a Project\2.2 Starting a New Project\2.2.2 Importing Data\2.2.2.1 BED Files.html" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\Help\2 Opening a Project\2.2 Starting a New Project\2.2.2 Importing Data\2.2.2.10 Importing Probes as Data.html" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\Help\2 Opening a Project\2.2 Starting a New Project\2.2.2 Importing Data\2.2.2.3 Bowtie Files.html" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\Help\2 Opening a Project\2.2 Starting a New Project\2.2.2 Importing Data\2.2.2.4 Eland Files.html" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\Help\2 Opening a Project\2.2 Starting a New Project\2.2.2 Importing Data\2.2.2.5 GFF Files.html" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\Help\2 Opening a Project\2.2 Starting a New Project\2.2.2 Importing Data\2.2.2.6 Maq Files.html" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\Help\2 Opening a Project\2.2 Starting a New Project\2.2.2 Importing Data\2.2.2.7 SAM or BAM Files.html" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\Help\2 Opening a Project\2.2 Starting a New Project\2.2.2 Importing Data\2.2.2.8 Generic Text Files.html" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\Help\2 Opening a Project\2.2 Starting a New Project\2.2.2 Importing Data\2.2.2.9 Reimporting Existing Data.html" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\Help\2 Opening a Project\2.2 Starting a New Project\2.2.2 Importing Data\bowtie_options.png" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\Help\2 Opening a Project\2.2 Starting a New Project\2.2.2 Importing Data\edit_data_sets.png" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\Help\2 Opening a Project\2.2 Starting a New Project\2.2.2 Importing Data\eland_options.png" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\Help\2 Opening a Project\2.2 Starting a New Project\2.2.2 Importing Data\import_warnings.png" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\Help\2 Opening a Project\2.2 Starting a New Project\2.2.2 Importing Data\maq_options.png" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\Help\2 Opening a Project\2.2 Starting a New Project\2.2.2 Importing Data\sam_options.png" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\Help\2 Opening a Project\2.2 Starting a New Project\2.2.2 Importing Data\text_file_import.png" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\Help\2 Opening a Project\2.2 Starting a New Project\2.2.3 Grouping Samples.html" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\Help\2 Opening a Project\2.2 Starting a New Project\2.2.4 Importing Extra Annotation\2.2.4 Importing Extra Annotation.html" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\Help\2 Opening a Project\2.2 Starting a New Project\2.2.4 Importing Extra Annotation\2.2.4.1 Importing Annotation from GFF or GTF Files.html" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\Help\2 Opening a Project\2.2 Starting a New Project\2.2.4 Importing Extra Annotation\2.2.4.2 Importing Annotation from a Probe List.html" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\Help\2 Opening a Project\2.2 Starting a New Project\2.2.4 Importing Extra Annotation\2.2.4.3 Importing Annotation from Generic Text Files.html" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\Help\2 Opening a Project\2.2 Starting a New Project\2.2.4 Importing Extra Annotation\annotation_sets_folder.png" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\Help\2 Opening a Project\2.2 Starting a New Project\2.2.4 Importing Extra Annotation\generic_text_import_annotation.png" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\Help\2 Opening a Project\2.2 Starting a New Project\data_groups.png" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\Help\2 Opening a Project\2.2 Starting a New Project\genome_selector.png" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\Help\2 Opening a Project\2.2 Starting a New Project\remote_genome_selector.png" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\Help\3 Visualisation\3.1 The Main Display\3.1 The Main Display.html" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\Help\3 Visualisation\3.1 The Main Display\3.1.1 The Data View.html" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\Help\3 Visualisation\3.1 The Main Display\3.1.2 The Genome View.html" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\Help\3 Visualisation\3.1 The Main Display\3.1.3 The Chromosome View.html" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\Help\3 Visualisation\3.1 The Main Display\3.1.4 The Toolbar.html" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\Help\3 Visualisation\3.1 The Main Display\3.1.5 The Status Bar.html" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\Help\3 Visualisation\3.1 The Main Display\chromosome_view.png" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\Help\3 Visualisation\3.1 The Main Display\data_view.png" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\Help\3 Visualisation\3.1 The Main Display\data_view_datastore_popup.png" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\Help\3 Visualisation\3.1 The Main Display\data_zoom_level.png" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\Help\3 Visualisation\3.1 The Main Display\feature_annotation.png" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\Help\3 Visualisation\3.1 The Main Display\genome_view.png" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\Help\3 Visualisation\3.1 The Main Display\main_display.png" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\Help\3 Visualisation\3.1 The Main Display\probe_list_view.png" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\Help\3 Visualisation\3.1 The Main Display\set_annotation_tracks.png" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\Help\3 Visualisation\3.1 The Main Display\set_data_tracks.png" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\Help\3 Visualisation\3.1 The Main Display\status_bar.png" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\Help\3 Visualisation\3.1 The Main Display\toolbar_change_density.png" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\Help\3 Visualisation\3.1 The Main Display\toolbar_change_packing.png" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\Help\3 Visualisation\3.1 The Main Display\toolbar_change_tracks.png" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\Help\3 Visualisation\3.1 The Main Display\toolbar_data_zoom.png" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\Help\3 Visualisation\3.1 The Main Display\toolbar_display_type.png" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\Help\3 Visualisation\3.1 The Main Display\toolbar_origin_options.png" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\Help\3 Visualisation\3.1 The Main Display\toolbar_search.png" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\Help\3 Visualisation\3.1 The Main Display\whole_toolbar.png" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\Help\3 Visualisation\3.2 Figures and Graphs\3.2 Figures and Graphs.html" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\Help\3 Visualisation\3.2 Figures and Graphs\3.2.1 The BoxWhisker Plot.html" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\Help\3 Visualisation\3.2 Figures and Graphs\3.2.10 The Correlation Matrix.html" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\Help\3 Visualisation\3.2 Figures and Graphs\3.2.11 The Cumulative Distribution Plot.html" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\Help\3 Visualisation\3.2 Figures and Graphs\3.2.12 The HiC Heatmap Plot.html" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\Help\3 Visualisation\3.2 Figures and Graphs\3.2.13 The MA Plot.html" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\Help\3 Visualisation\3.2 Figures and Graphs\3.2.14 The HiC Length Histogram.html" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\Help\3 Visualisation\3.2 Figures and Graphs\3.2.15 The Hierarchical Profile Plot.html" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\Help\3 Visualisation\3.2 Figures and Graphs\3.2.16 The HiC Cis-Trans Scatterplot.html" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\Help\3 Visualisation\3.2 Figures and Graphs\3.2.17 The Domainogram.html" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\Help\3 Visualisation\3.2 Figures and Graphs\3.2.18 The Quantitation Trend Plot.html" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\Help\3 Visualisation\3.2 Figures and Graphs\3.2.2 The DataStore Tree.html" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\Help\3 Visualisation\3.2 Figures and Graphs\3.2.3 The Probe Value Histogram.html" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\Help\3 Visualisation\3.2 Figures and Graphs\3.2.4 The Probe Length Histogram.html" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\Help\3 Visualisation\3.2 Figures and Graphs\3.2.5 The Reading Length Histogram.html" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\Help\3 Visualisation\3.2 Figures and Graphs\3.2.6 The Probe Trend Plot.html" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\Help\3 Visualisation\3.2 Figures and Graphs\3.2.7 The Aligned Probes Plot.html" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\Help\3 Visualisation\3.2 Figures and Graphs\3.2.8 The Scatter Plot.html" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\Help\3 Visualisation\3.2 Figures and Graphs\3.2.9 The Line Graph.html" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\Help\3 Visualisation\3.2 Figures and Graphs\aligned_probes_plot.png" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\Help\3 Visualisation\3.2 Figures and Graphs\aligned_probes_preferences.png" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\Help\3 Visualisation\3.2 Figures and Graphs\boxwhisker_plot.png" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\Help\3 Visualisation\3.2 Figures and Graphs\correlation_matrix.png" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\Help\3 Visualisation\3.2 Figures and Graphs\datastore_tree.png" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\Help\3 Visualisation\3.2 Figures and Graphs\distribution_plot.png" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\Help\3 Visualisation\3.2 Figures and Graphs\domainogram.png" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\Help\3 Visualisation\3.2 Figures and Graphs\hic_cis-trans_scatterplot.png" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\Help\3 Visualisation\3.2 Figures and Graphs\hic_heatmap.png" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\Help\3 Visualisation\3.2 Figures and Graphs\hic_heatmap_options.png" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\Help\3 Visualisation\3.2 Figures and Graphs\hic_length_histogram.png" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\Help\3 Visualisation\3.2 Figures and Graphs\hierarchical_clusters.png" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\Help\3 Visualisation\3.2 Figures and Graphs\line_graph.png" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\Help\3 Visualisation\3.2 Figures and Graphs\ma_plot.png" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\Help\3 Visualisation\3.2 Figures and Graphs\probe_trend_plot.png" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\Help\3 Visualisation\3.2 Figures and Graphs\probe_trend_preferences.png" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\Help\3 Visualisation\3.2 Figures and Graphs\probe_value_histogram.png" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\Help\3 Visualisation\3.2 Figures and Graphs\scatter_plot.png" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\Help\3 Visualisation\3.2 Figures and Graphs\scatter_plot_sublists.png" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\Help\3 Visualisation\3.3 Movement Controls.html" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\Help\3 Visualisation\3.4 Searching.html" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\Help\3 Visualisation\after_zooming.png" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\Help\3 Visualisation\find_features.png" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\Help\3 Visualisation\goto_position.png" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\Help\3 Visualisation\whilst_zooming.png" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\Help\4 Quantitation\4 Quantitation.html" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\Help\4 Quantitation\4.1 Probe Generators\4.1.1 Running Window Probe Generator.html" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\Help\4 Quantitation\4.1 Probe Generators\4.1.10 Merge Consecutive Probe Generator.html" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\Help\4 Quantitation\4.1 Probe Generators\4.1.11 MACS Peak Caller Probe Generator.html" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\Help\4 Quantitation\4.1 Probe Generators\4.1.12 Random Probe Generator.html" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\Help\4 Quantitation\4.1 Probe Generators\4.1.2 Contig Probe Generator.html" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\Help\4 Quantitation\4.1 Probe Generators\4.1.3 Feature Probe Generator.html" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\Help\4 Quantitation\4.1 Probe Generators\4.1.4 Load Probes From File.html" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\Help\4 Quantitation\4.1 Probe Generators\4.1.5 Create Probes from Existing List Generator.html" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\Help\4 Quantitation\4.1 Probe Generators\4.1.6 Interstitial Probe Generator.html" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\Help\4 Quantitation\4.1 Probe Generators\4.1.7 Deduplication Probe Generator.html" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\Help\4 Quantitation\4.1 Probe Generators\4.1.8 Read Position Probe Generator.html" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\Help\4 Quantitation\4.1 Probe Generators\4.1.9 Current Region Probe Generator.html" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\Help\4 Quantitation\4.1 Probe Generators\contig_generator.png" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\Help\4 Quantitation\4.1 Probe Generators\contig_probe_generator.png" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\Help\4 Quantitation\4.1 Probe Generators\deduplication_probe_generator.png" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\Help\4 Quantitation\4.1 Probe Generators\feature_generator.png" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\Help\4 Quantitation\4.1 Probe Generators\interstitial_probe_generator.png" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\Help\4 Quantitation\4.1 Probe Generators\merge_consecutive_probe_generator.png" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\Help\4 Quantitation\4.1 Probe Generators\read_position_probe_generator.png" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\Help\4 Quantitation\4.1 Probe Generators\running_window_generator.png" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\Help\4 Quantitation\4.2 Quantitation Methods\4.2.1 Read Count Quantitation.html" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\Help\4 Quantitation\4.2 Quantitation Methods\4.2.10 Per Probe Normalisation Quantitation.html" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\Help\4 Quantitation\4.2 Quantitation Methods\4.2.11 Exact Overlap Quantitation.html" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\Help\4 Quantitation\4.2 Quantitation Methods\4.2.12 Z-Score Quantitation.html" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\Help\4 Quantitation\4.2 Quantitation Methods\4.2.13 Match Distribution Quantitation.html" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\Help\4 Quantitation\4.2 Quantitation Methods\4.2.14 Fixed Value Quantitation.html" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\Help\4 Quantitation\4.2 Quantitation Methods\4.2.15 HiC Read Count Quantitation.html" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\Help\4 Quantitation\4.2 Quantitation Methods\4.2.16 HiC Trans Cis Quantitation.html" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\Help\4 Quantitation\4.2 Quantitation Methods\4.2.17 HiC Prev Next Quantitation.html" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\Help\4 Quantitation\4.2 Quantitation Methods\4.2.18 HiC PCA Domain Quantitation.html" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\Help\4 Quantitation\4.2 Quantitation Methods\4.2.19 4C Enrichment Quantitation.html" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\Help\4 Quantitation\4.2 Quantitation Methods\4.2.2 Base Pair Quantitation.html" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\Help\4 Quantitation\4.2 Quantitation Methods\4.2.20 Distance to Feature Quantitation.html" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\Help\4 Quantitation\4.2 Quantitation Methods\4.2.21 Smoothing Quantitation.html" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\Help\4 Quantitation\4.2 Quantitation Methods\4.2.22 Probe Length Quantitation.html" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\Help\4 Quantitation\4.2 Quantitation Methods\4.2.23 Smoothing Subtraction Quantitation.html" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\Help\4 Quantitation\4.2 Quantitation Methods\4.2.24 Log Transform Quantitation.html" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\Help\4 Quantitation\4.2 Quantitation Methods\4.2.25 Subset Normalisation Quantitation.html" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\Help\4 Quantitation\4.2 Quantitation Methods\4.2.3 Enrichment Quantitation.html" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\Help\4 Quantitation\4.2 Quantitation Methods\4.2.4 Difference Quantitation.html" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\Help\4 Quantitation\4.2 Quantitation Methods\4.2.5 Coverage Depth Quantitation.html" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\Help\4 Quantitation\4.2 Quantitation Methods\4.2.6 Percentage Coverage Quantitation.html" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\Help\4 Quantitation\4.2 Quantitation Methods\4.2.7 Relative Quantitation.html" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\Help\4 Quantitation\4.2 Quantitation Methods\4.2.8 Manual Correction Quantitation.html" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\Help\4 Quantitation\4.2 Quantitation Methods\4.2.9 Percentile Normalisation Quantitation.html" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\Help\4 Quantitation\4.2 Quantitation Methods\4.2.9 Rank Quantitation.html" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\Help\4 Quantitation\4.2 Quantitation Methods\Coverage Depth Quantitationpic.png" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\Help\4 Quantitation\4.2 Quantitation Methods\base_pair_quantitation.png" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\Help\4 Quantitation\4.2 Quantitation Methods\coverage_depth_quantitation.png" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\Help\4 Quantitation\4.2 Quantitation Methods\difference_quantitationpic.png" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\Help\4 Quantitation\4.2 Quantitation Methods\distance_to_feature_quantitation.png" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\Help\4 Quantitation\4.2 Quantitation Methods\exact_overlap_count_quantitiation.png" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\Help\4 Quantitation\4.2 Quantitation Methods\hic_pca_domain_quantitation.png" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\Help\4 Quantitation\4.2 Quantitation Methods\hic_prev_next_quantitation.png" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\Help\4 Quantitation\4.2 Quantitation Methods\hic_read_count_quantitation.png" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\Help\4 Quantitation\4.2 Quantitation Methods\hic_trans_cis_quantitation.png" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\Help\4 Quantitation\4.2 Quantitation Methods\manual_correction_quantitation.png" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\Help\4 Quantitation\4.2 Quantitation Methods\percent_coverage_quantitation.png" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\Help\4 Quantitation\4.2 Quantitation Methods\percentile_normalisation_quantitation.png" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\Help\4 Quantitation\4.2 Quantitation Methods\read_count_quanititation.png" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\Help\4 Quantitation\4.2 Quantitation Methods\z_score_quantitation.png" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\Help\4 Quantitation\4.3 Pipelines\4.3.1 RNA-Seq quantitation pipeline.html" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\Help\4 Quantitation\4.3 Pipelines\4.3.2 Wiggle pipeline.html" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\Help\4 Quantitation\4.3 Pipelines\4.3.3 Bisulphite feature methylation pipeline.html" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\Help\4 Quantitation\4.3 Pipelines\4.3.4 Splicing Efficiency pipeline.html" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\Help\4 Quantitation\4.3 Pipelines\4.3.5 Antisense Transcription pipeline.html" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\Help\4 Quantitation\4.3 Pipelines\rpkm_options.png" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\Help\4 Quantitation\4.3 Pipelines\splicing_efficiency_options.png" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\Help\4 Quantitation\4.3 Pipelines\splicing_efficiency_quantitiation.PNG" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\Help\4 Quantitation\define_probes.png" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\Help\4 Quantitation\quantitation_options.png" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\Help\5 Filtering\5 Filtering.html" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\Help\5 Filtering\5.1 Value Filters\5.1.1 Individual Probe Value Filter.html" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\Help\5 Filtering\5.1 Value Filters\5.1.2 Windowed Value Filter.html" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\Help\5 Filtering\5.1 Value Filters\5.1.3 Individual Probe Value Difference Filter.html" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\Help\5 Filtering\5.1 Value Filters\5.1.4 Windowed Value Difference Filter.html" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\Help\5 Filtering\5.1 Value Filters\5.1.5 Value Distribution Filter.html" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\Help\5 Filtering\5.1 Value Filters\individual_probe_value_difference_options.png" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\Help\5 Filtering\5.1 Value Filters\individual_probe_value_options.png" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\Help\5 Filtering\5.1 Value Filters\value_distribution_filter_options.png" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\Help\5 Filtering\5.1 Value Filters\windowed_probe_value_difference_options.png" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\Help\5 Filtering\5.1 Value Filters\windowed_value_options.png" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\Help\5 Filtering\5.2 Statistical Filters\5.2.1 BoxWhisker Filter.html" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\Help\5 Filtering\5.2 Statistical Filters\5.2.2 Windowed Replicate Filter.html" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\Help\5 Filtering\5.2 Statistical Filters\5.2.3 Replicate Set Filter.html" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\Help\5 Filtering\5.2 Statistical Filters\5.2.4 Intensity Difference Filter.html" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\Help\5 Filtering\5.2 Statistical Filters\5.2.4 Intensity Replicate Filter.html" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\Help\5 Filtering\5.2 Statistical Filters\5.2.6 Monte Carlo Filter.html" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\Help\5 Filtering\5.2 Statistical Filters\5.2.7 Chi Square Filter.html" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\Help\5 Filtering\5.2 Statistical Filters\boxwhisker_filter_options.png" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\Help\5 Filtering\5.2 Statistical Filters\replicate_filter_options.png" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\Help\5 Filtering\5.2 Statistical Filters\replicate_set_filter_options.png" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\Help\5 Filtering\5.4 Correlation Filters\5.4.1 Correlation Cluster Filter.html" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\Help\5 Filtering\5.4 Correlation Filters\5.4.2 Probe List Correlation Filter.html" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\Help\5 Filtering\5.4 Correlation Filters\5.4.3 Manual Probe Correlation Filter.html" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\Help\5 Filtering\5.4 Correlation Filters\manual_correlation.png" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\Help\5 Filtering\5.4 Other Filters\5.3.1 Feature Filter.html" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\Help\5 Filtering\5.4 Other Filters\5.3.2 Position Filter.html" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\Help\5 Filtering\5.4 Other Filters\5.3.3 Probe Length Filter.html" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\Help\5 Filtering\5.4 Other Filters\5.3.4 Inter-Probe Distance Filter.html" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\Help\5 Filtering\5.4 Other Filters\5.3.5 Random Probes Filter.html" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\Help\5 Filtering\5.4 Other Filters\5.3.6 Combine Existing Lists.html" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\Help\5 Filtering\5.4 Other Filters\5.3.7 Deduplication Filter.html" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\Help\5 Filtering\5.4 Other Filters\5.3.8 Feature Name Filter.html" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\Help\5 Filtering\5.4 Other Filters\5.3.9 Probe Name Filter.html" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\Help\5 Filtering\5.4 Other Filters\combine_list_options.png" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\Help\5 Filtering\5.4 Other Filters\deduplication_filter_options.png" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\Help\5 Filtering\5.4 Other Filters\feature_filter_options.png" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\Help\5 Filtering\5.4 Other Filters\feature_name_filter_options.png" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\Help\5 Filtering\5.4 Other Filters\position_filter_options.png" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\Help\5 Filtering\5.5 Manging Probe Lists.html" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\Help\6 Reports\6.1 The Annotated Probe Report.html" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\Help\6 Reports\6.2 The Probe Group Report.html" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\Help\6 Reports\6.3 The Feature Report.html" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\Help\6 Reports\6.4 The DataStore Summary Report.html" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\Help\6 Reports\6.5 The Probe List Description Report.html" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\Help\6 Reports\annotated_probe_report.png" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\Help\6 Reports\annotated_probe_report_options.png" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\Help\6 Reports\feature_report.png" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\Help\6 Reports\feature_report_options.png" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\Help\6 Reports\probe_group_report.png" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\Help\6 Reports\probe_group_report_options.png" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\Help\7 Saving Data\7.1 Saving a Project.html" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\Help\7 Saving Data\7.2 Saving Images.html" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\Help\7 Saving Data\7.3 Saving Text.html" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\Help\7 Saving Data\7.4 Saving Quantitation Annotation Tracks.html" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\Help\7 Saving Data\save_before_exit.png" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\Help\7 Saving Data\select_image_type.png" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\Help\8 Configuration\8.1 SeqMonk Preferences.html" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\Help\8 Configuration\8.2 Memory Settings.html" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\Help\8 Configuration\preferences_dialog.png" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\Help\9 Troubleshooting\9.1 Common Problems.html" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\Help\9 Troubleshooting\9.2 Reporting Bugs.html" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\com\sql\BasicFilter.class" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\com\sql\Conn.class" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\com\sql\Dbcon.class" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\com\sql\DnaRna.class" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\com\sql\RedInput.class" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\com\sql\Repeatedmask.class" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\com\sql\SamInput.class" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\com\sun\java\TableSorter$1.class" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\com\sun\java\TableSorter$2.class" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\com\sun\java\TableSorter$Arrow.class" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\com\sun\java\TableSorter$Directive.class" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\com\sun\java\TableSorter$MouseHandler.class" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\com\sun\java\TableSorter$Row.class" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\com\sun\java\TableSorter$SortableHeaderRenderer.class" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\com\sun\java\TableSorter$TableModelHandler.class" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\com\sun\java\TableSorter.class" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\com\xl\datatypes\DataCollection.class" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\com\xl\datatypes\DataGroup.class" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\com\xl\datatypes\DataSet$ChromosomeDataStore.class" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\com\xl\datatypes\DataSet.class" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\com\xl\datatypes\DataStore.class" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\com\xl\datatypes\PairedDataSet$ChromosomeDataStore.class" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\com\xl\datatypes\PairedDataSet.class" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\com\xl\datatypes\ReplicateSet.class" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\com\xl\datatypes\annotation\AnnotationCollection.class" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\com\xl\datatypes\annotation\AnnotationSet$FeatureSet.class" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\com\xl\datatypes\annotation\AnnotationSet$FeatureTypeCollection.class" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\com\xl\datatypes\annotation\AnnotationSet.class" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\com\xl\datatypes\annotation\CoreAnnotationSet.class" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\com\xl\datatypes\annotation\Cytoband.class" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\com\xl\datatypes\fasta\FastaDirectorySequence.class" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\com\xl\datatypes\fasta\FastaIndex$FastaSequenceIndexEntry.class" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\com\xl\datatypes\fasta\FastaIndex.class" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\com\xl\datatypes\fasta\FastaIndexedSequence.class" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\com\xl\datatypes\genome\Chromosome.class" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\com\xl\datatypes\genome\Genome.class" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\com\xl\datatypes\genome\GenomeDescripter.class" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\com\xl\datatypes\genome\speciesMapping.txt" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\com\xl\datatypes\probes\Probe.class" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\com\xl\datatypes\probes\ProbeList.class" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\com\xl\datatypes\probes\ProbeSet.class" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\com\xl\datatypes\probes\ProbeSetChangeListener.class" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\com\xl\datatypes\sequence\HiCHitCollection.class" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\com\xl\datatypes\sequence\IGVSequence.class" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\com\xl\datatypes\sequence\Location.class" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\com\xl\datatypes\sequence\Sequence.class" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\com\xl\datatypes\sequence\SequenceRead.class" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\com\xl\datatypes\sequence\SequenceWrapper$SequenceTile.class" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\com\xl\datatypes\sequence\SequenceWrapper.class" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\com\xl\datatypes\sequence\SplitLocation.class" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\com\xl\datawriters\REDDataWriter.class" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\com\xl\dialog\AboutDialog$1.class" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\com\xl\dialog\AboutDialog.class" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\com\xl\dialog\AnnotationSetPropertiesDialog$1.class" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\com\xl\dialog\AnnotationSetPropertiesDialog$AnnotationSetTableModel.class" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\com\xl\dialog\AnnotationSetPropertiesDialog.class" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\com\xl\dialog\CrashReporter$ReportSender.class" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\com\xl\dialog\CrashReporter.class" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\com\xl\dialog\DataParserOptionsDialog.class" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\com\xl\dialog\DataStorePropertiesDialog.class" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\com\xl\dialog\DataTrackSelector.class" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\com\xl\dialog\DataZoomSelector.class" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\com\xl\dialog\FindFeatureDialog.class" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\com\xl\dialog\GenomeDownloadSelector$ButtonListener.class" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\com\xl\dialog\GenomeDownloadSelector$TreeListener.class" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\com\xl\dialog\GenomeDownloadSelector.class" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\com\xl\dialog\GenomeSelector$AssemblyNode.class" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\com\xl\dialog\GenomeSelector$ButtonListener.class" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\com\xl\dialog\GenomeSelector$TreeListener.class" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\com\xl\dialog\GenomeSelector.class" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\com\xl\dialog\ProbeListCommentEditDialog.class" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\com\xl\dialog\ProgressDialog$ProgressBar.class" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\com\xl\dialog\ProgressDialog.class" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\com\xl\dialog\TypeColourRenderer.class" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\com\xl\dialog\UserPasswordDialog$1.class" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\com\xl\dialog\UserPasswordDialog$2.class" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\com\xl\dialog\UserPasswordDialog.class" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\com\xl\dialog\gotodialog\GotoDialog.class" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\com\xl\dialog\gotodialog\GotoWindowDialog.class" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\com\xl\dialog\gotodialog\RecentLocation.class" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\com\xl\display\HistogramPlot\HistogramPanel$1.class" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\com\xl\display\HistogramPlot\HistogramPanel$HistogramCategory.class" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\com\xl\display\HistogramPlot\HistogramPanel$MainHistogramPanel.class" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\com\xl\display\HistogramPlot\HistogramPanel$StatusPanel.class" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\com\xl\display\HistogramPlot\HistogramPanel.class" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\com\xl\display\HistogramPlot\ProbeLengthHistogramPlot.class" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\com\xl\display\HistogramPlot\ProbeValueHistogramPlot.class" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\com\xl\display\HistogramPlot\ReadLengthHistogramPlot.class" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\com\xl\display\chromosomeviewer\ChromosomeDataTrack$DrawnRead.class" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\com\xl\display\chromosomeviewer\ChromosomeDataTrack.class" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\com\xl\display\chromosomeviewer\ChromosomeFeatureTrack$BasicFeatureListener.class" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\com\xl\display\chromosomeviewer\ChromosomeFeatureTrack$DrawnBasicFeature.class" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\com\xl\display\chromosomeviewer\ChromosomeFeatureTrack.class" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\com\xl\display\chromosomeviewer\ChromosomePositionScrollBar.class" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\com\xl\display\chromosomeviewer\ChromosomeScaleTrack.class" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\com\xl\display\chromosomeviewer\ChromosomeViewer.class" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\com\xl\display\dataviewer\DataCollectionTreeModel$folderNode.class" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\com\xl\display\dataviewer\DataCollectionTreeModel.class" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\com\xl\display\dataviewer\DataTreeRenderer.class" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\com\xl\display\dataviewer\DataViewer$AnnotationPopupMenu.class" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\com\xl\display\dataviewer\DataViewer$DataPopupMenu.class" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\com\xl\display\dataviewer\DataViewer$GroupPopupMenu.class" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\com\xl\display\dataviewer\DataViewer$ProbePopupMenu.class" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\com\xl\display\dataviewer\DataViewer$ReplicatePopupMenu.class" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\com\xl\display\dataviewer\DataViewer$UnfocusableTree.class" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\com\xl\display\dataviewer\DataViewer.class" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\com\xl\display\dataviewer\ProbeSetTreeModel$folderNode.class" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\com\xl\display\dataviewer\ProbeSetTreeModel.class" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\com\xl\display\featureviewer\Feature.class" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\com\xl\display\featureviewer\FeatureAttributeTable.class" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\com\xl\display\featureviewer\FeatureListViewer$FeatureTableModel.class" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\com\xl\display\featureviewer\FeatureListViewer.class" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\com\xl\display\featureviewer\FeatureViewer.class" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\com\xl\display\genomeviewer\ChromosomeDisplay$PanelListener.class" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\com\xl\display\genomeviewer\ChromosomeDisplay.class" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\com\xl\display\genomeviewer\ChromosomeScale.class" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\com\xl\display\genomeviewer\GenomeViewer$1.class" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\com\xl\display\genomeviewer\GenomeViewer.class" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\com\xl\exception\DataLoadException.class" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\com\xl\exception\ErrorCatcher.class" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\com\xl\exception\GenomeImportException.class" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\com\xl\exception\ParserException.class" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\com\xl\exception\REDException.class" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\com\xl\gradients\ColourGradient.class" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\com\xl\gradients\ColourIndexSet.class" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\com\xl\gradients\GradientFactory.class" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\com\xl\gradients\GreyscaleColourGradient.class" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\com\xl\gradients\HotColdColourGradient.class" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\com\xl\gradients\InvertedGradient.class" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\com\xl\gradients\MagentaGreenColourGradient.class" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\com\xl\gradients\RGB.class" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\com\xl\gradients\RedGreenColourGradient.class" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\com\xl\gradients\RedWhiteColourGradient.class" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\com\xl\gradients\WhiteCyanBlueRedColourGradient.class" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\com\xl\help\HelpDialog.class" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\com\xl\help\HelpIndexRoot$FileSorter.class" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\com\xl\help\HelpIndexRoot.class" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\com\xl\help\HelpPage.class" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\com\xl\help\HelpPageDisplay$HelpEditor.class" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\com\xl\help\HelpPageDisplay.class" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\com\xl\help\HelpSearchPanel.class" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\com\xl\interfaces\AnnotationCollectionListener.class" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\com\xl\interfaces\CacheListener.class" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\com\xl\interfaces\Cancellable.class" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\com\xl\interfaces\DataChangeListener.class" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\com\xl\interfaces\DisplayPreferencesListener.class" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\com\xl\interfaces\HiCDataStore.class" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\com\xl\interfaces\ProgressListener.class" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\com\xl\main\REDApplication.class" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\com\xl\main\REDApplication.jfd" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\com\xl\menu\MainREDToolbar.class" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\com\xl\menu\REDMenu$FileOpener.class" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\com\xl\menu\REDMenu.class" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\com\xl\menu\REDToolbar.class" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\com\xl\panel\REDInfoPanel.class" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\com\xl\panel\REDPreviewPanel.class" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\com\xl\panel\REDTitlePanel$SmoothJLabel.class" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\com\xl\panel\REDTitlePanel.class" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\com\xl\panel\StatusPanel.class" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\com\xl\panel\ToolbarPanel$ModifiedFlowLayout.class" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\com\xl\panel\ToolbarPanel.class" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\com\xl\panel\WelcomePanel.class" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\com\xl\parsers\annotationparsers\AnnotationParser.class" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\com\xl\parsers\annotationparsers\AnnotationParserRunner.class" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\com\xl\parsers\annotationparsers\CytoBandFileParser.class" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\com\xl\parsers\annotationparsers\IGVGenomeParser.class" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\com\xl\parsers\annotationparsers\UCSCRefGeneParser.class" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\com\xl\parsers\dataparsers\BAMFileParser$1.class" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\com\xl\parsers\dataparsers\BAMFileParser.class" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\com\xl\parsers\dataparsers\DataParser$1.class" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\com\xl\parsers\dataparsers\DataParser.class" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\com\xl\parsers\dataparsers\DataParserOptionsPanel$1.class" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\com\xl\parsers\dataparsers\DataParserOptionsPanel.class" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\com\xl\parsers\dataparsers\FastaFileParser.class" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\com\xl\parsers\dataparsers\REDParser.class" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\com\xl\preferences\DisplayPreferences.class" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\com\xl\preferences\REDPreferences.class" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\com\xl\thread\ThreadSafeIntCounter.class" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\com\xl\thread\ThreadSafeLongCounter.class" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\com\xl\thread\ThreadSafeMinMax.class" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\com\xl\utils\AxisScale.class" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\com\xl\utils\ChromosomeComparator.class" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\com\xl\utils\ChromosomeNameComparator.class" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\com\xl\utils\ChromosomeUtils.class" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\com\xl\utils\ChromosomeWithOffset.class" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\com\xl\utils\ColourScheme.class" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\com\xl\utils\FileFilterExt.class" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\com\xl\utils\FileFilterImpl.class" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\com\xl\utils\FileUtils.class" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\com\xl\utils\FtpClientUtils.class" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\com\xl\utils\GeneType.class" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\com\xl\utils\HiCLocationComparator.class" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\com\xl\utils\IconUtils.class" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\com\xl\utils\ImageSaver.class" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\com\xl\utils\InfoPanelUtils.class" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\com\xl\utils\LocationComparator.class" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\com\xl\utils\LocationSorter.class" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\com\xl\utils\LocationVector.class" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\com\xl\utils\MemoryMonitor.class" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\com\xl\utils\MenuUtils.class" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\com\xl\utils\NumberKeyListener.class" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\com\xl\utils\ParsingUtils.class" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\com\xl\utils\PositionFormat.class" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\com\xl\utils\SVGGenerator$SVGGraphics.class" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\com\xl\utils\SVGGenerator.class" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\com\xl\utils\SVGProducer.class" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\com\xl\utils\SequenceReadUtils.class" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\com\xl\utils\SequenceVector.class" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\com\xl\utils\Strand.class" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\com\xl\utils\UserPasswordInputImpl.class" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\com\xl\utils\filefilters\GFFFileFilter.class" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\com\xl\utils\filefilters\HTMLFileFilter.class" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\com\xl\utils\filefilters\PNGFileFilter.class" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\com\xl\utils\filefilters\SVGFileFilter.class" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\com\xl\utils\filefilters\TxtFileFilter.class" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\net\xl\crashreport\HTMLDisplayDialog.class" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\net\xl\genomes\DownloadableGenomeSet.class" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\net\xl\genomes\DownloadableGenomeTreeModel.class" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\net\xl\genomes\GenomeDownloader.class" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\net\xl\genomes\GenomeLists.class" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\net\xl\genomes\UpdateChecker.class" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\resources\annotation_set_icon.png" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\resources\annotation_set_icon.svg" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\resources\datagroup_icon.png" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\resources\datagroup_icon.svg" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\resources\dataset_icon.png" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\resources\dataset_icon.svg" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\resources\error.png" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\resources\error.svg" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\resources\hic_dataset_icon.png" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\resources\hic_dataset_icon.svg" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\resources\information.png" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\resources\information.svg" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\resources\logo_1.png" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\resources\logo_2.png" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\resources\monk.svg" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\resources\monk_icon.svg" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\resources\monk_logo.png" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\resources\probelist_icon.png" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\resources\probelist_icon.svg" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\resources\replicate_set_icon.png" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\resources\replicate_set_icon.svg" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\resources\sad_monk.svg" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\resources\sad_monk100.png" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\resources\tick.png" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\resources\tick.svg" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\resources\toolbar\above_and_below.png" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\resources\toolbar\above_only.png" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\resources\toolbar\change_annotation.png" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\resources\toolbar\change_data.png" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\resources\toolbar\change_data_zoom.png" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\resources\toolbar\combine_pack_reads.png" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\resources\toolbar\combine_pack_reads.svg" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\resources\toolbar\dynamic_data_colours.png" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\resources\toolbar\find_feature.png" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\resources\toolbar\hiC_genome_heatmap.png" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\resources\toolbar\hiC_probe_heatmap.png" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\resources\toolbar\high_density_reads.png" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\resources\toolbar\jump_to_position.png" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\resources\toolbar\low_density_reads.png" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\resources\toolbar\make_4c_dataset.png" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\resources\toolbar\medium_density_reads.png" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\resources\toolbar\probes_and_reads.png" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\resources\toolbar\probes_only.png" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\resources\toolbar\reads_only.png" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\resources\toolbar\split_pack_reads.png" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\resources\toolbar\split_pack_reads.svg" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\resources\toolbar\static_data_colours.png" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\resources\warning.png" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\bin\resources\warning.svg" afterPath="" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/com/xl/parsers/annotationparsers/AnnotationParser.java" afterPath="$PROJECT_DIR$/red/com/xl/parsers/annotationparsers/AnnotationParser.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/com/xl/datatypes/annotation/AnnotationSet.java" afterPath="$PROJECT_DIR$/red/com/xl/datatypes/annotation/AnnotationSet.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/com/xl/display/chromosomeviewer/ChromosomeDataTrack.java" afterPath="$PROJECT_DIR$/red/com/xl/display/chromosomeviewer/ChromosomeDataTrack.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/com/xl/datatypes/annotation/CoreAnnotationSet.java" afterPath="$PROJECT_DIR$/red/com/xl/datatypes/annotation/CoreAnnotationSet.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/com/xl/datatypes/DataSet.java" afterPath="$PROJECT_DIR$/red/com/xl/datatypes/DataSet.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/com/xl/datatypes/genome/Genome.java" afterPath="$PROJECT_DIR$/red/com/xl/datatypes/genome/Genome.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/net/xl/genomes/GenomeDownloader.java" afterPath="$PROJECT_DIR$/red/net/xl/genomes/GenomeDownloader.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/com/xl/parsers/annotationparsers/IGVGenomeParser.java" afterPath="$PROJECT_DIR$/red/com/xl/parsers/annotationparsers/IGVGenomeParser.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/com/xl/utils/ParsingUtils.java" afterPath="$PROJECT_DIR$/red/com/xl/utils/ParsingUtils.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/com/xl/main/REDApplication.java" afterPath="$PROJECT_DIR$/red/com/xl/main/REDApplication.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/com/xl/panel/REDInfoPanel.java" afterPath="$PROJECT_DIR$/red/com/xl/panel/REDInfoPanel.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/com/xl/parsers/dataparsers/REDParser.java" afterPath="$PROJECT_DIR$/red/com/xl/parsers/dataparsers/REDParser.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/com/xl/parsers/annotationparsers/UCSCRefGeneParser.java" afterPath="$PROJECT_DIR$/red/com/xl/parsers/annotationparsers/UCSCRefGeneParser.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/misc.xml" afterPath="$PROJECT_DIR$/.idea/misc.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change type="MOVED" beforePath="E:\Workspace\REDetector\red\com\xl\utils\FileFilterExt.java" afterPath="$PROJECT_DIR$/red/com/xl/utils/filefilters/FileFilterExt.java" />
+      <change type="MOVED" beforePath="E:\Workspace\REDetector\red\com\xl\utils\FileFilterImpl.java" afterPath="$PROJECT_DIR$/red/com/xl/utils/filefilters/FileFilterImpl.java" />
+    </list>
     <ignored path="REDetector.iws" />
     <ignored path=".idea/workspace.xml" />
-    <file path="/Dummy.txt" changelist="84c5056e-4735-415e-9374-ef14f745da71" time="1401975475991" ignored="false" />
+    <file path="/Dummy.txt" changelist="84c5056e-4735-415e-9374-ef14f745da71" time="1402017221819" ignored="false" />
+    <file path="/fragment.java" changelist="84c5056e-4735-415e-9374-ef14f745da71" time="1402016873895" ignored="false" />
+    <file path="/DataSet.java" changelist="84c5056e-4735-415e-9374-ef14f745da71" time="1402018829403" ignored="false" />
+    <file path="/ChromosomeDataTrack.java" changelist="84c5056e-4735-415e-9374-ef14f745da71" time="1402037229381" ignored="false" />
+    <file path="/REDParser.java" changelist="84c5056e-4735-415e-9374-ef14f745da71" time="1402025274847" ignored="false" />
+    <file path="/a.dummy" changelist="84c5056e-4735-415e-9374-ef14f745da71" time="1402024962215" ignored="false" />
+    <file path="/IGVGenomeParser.java" changelist="84c5056e-4735-415e-9374-ef14f745da71" time="1402025390156" ignored="false" />
+    <file path="/ParsingUtils.java" changelist="84c5056e-4735-415e-9374-ef14f745da71" time="1402022388639" ignored="false" />
+    <file path="/CoreAnnotationSet.java" changelist="84c5056e-4735-415e-9374-ef14f745da71" time="1402025007504" ignored="false" />
+    <file path="/AnnotationSet.java" changelist="84c5056e-4735-415e-9374-ef14f745da71" time="1402023723130" ignored="false" />
+    <file path="/Genome.java" changelist="84c5056e-4735-415e-9374-ef14f745da71" time="1402024559626" ignored="false" />
+    <file path="/REDInfoPanel.java" changelist="84c5056e-4735-415e-9374-ef14f745da71" time="1402037974838" ignored="false" />
     <option name="TRACKING_ENABLED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -12,6 +546,11 @@
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="ChangesViewManager" flattened_view="true" show_ignored="false" />
+  <component name="Commander">
+    <leftPanel />
+    <rightPanel />
+    <splitter proportion="0.5" />
+  </component>
   <component name="CreatePatchCommitExecutor">
     <option name="PATCH_PATH" value="" />
   </component>
@@ -63,6 +602,106 @@
   <component name="FavoritesManager">
     <favorites_list name="REDetector" />
   </component>
+  <component name="FileEditorManager">
+    <leaf>
+      <file leaf-file-name="REDApplication.java" pinned="false" current="true" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/red/com/xl/main/REDApplication.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="147" column="34" selection-start="4810" selection-end="4810" vertical-scroll-proportion="0.09765625">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="WelcomePanel.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/red/com/xl/panel/WelcomePanel.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="38" column="24" selection-start="1357" selection-end="1369" vertical-scroll-proportion="0.0">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="ChromosomeDataTrack.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/red/com/xl/display/chromosomeviewer/ChromosomeDataTrack.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="572" column="28" selection-start="19096" selection-end="19096" vertical-scroll-proportion="0.0">
+              <folding>
+                <element signature="imports" expanded="true" />
+                <element signature="e#2344#2355#0" expanded="true" />
+                <element signature="e#18174#18183#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="GenomeDownloader.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/red/net/xl/genomes/GenomeDownloader.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="107" column="0" selection-start="3319" selection-end="3319" vertical-scroll-proportion="0.0">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="REDParser.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/red/com/xl/parsers/dataparsers/REDParser.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="374" column="22" selection-start="11002" selection-end="11002" vertical-scroll-proportion="0.0">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="IGVGenomeParser.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/red/com/xl/parsers/annotationparsers/IGVGenomeParser.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="88" column="94" selection-start="3053" selection-end="3053" vertical-scroll-proportion="0.0">
+              <folding>
+                <element signature="imports" expanded="true" />
+                <element signature="e#1001#1019#0" expanded="true" />
+                <element signature="e#1801#1821#0" expanded="true" />
+                <element signature="e#2026#2034#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Genome.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/red/com/xl/datatypes/genome/Genome.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="112" column="83" selection-start="3451" selection-end="3451" vertical-scroll-proportion="0.0">
+              <folding>
+                <element signature="imports" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="UCSCRefGeneParser.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/red/com/xl/parsers/annotationparsers/UCSCRefGeneParser.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="41" column="59" selection-start="1243" selection-end="1243" vertical-scroll-proportion="0.0">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="DataSet.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/red/com/xl/datatypes/DataSet.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="602" column="37" selection-start="19828" selection-end="19828" vertical-scroll-proportion="0.0">
+              <folding>
+                <element signature="imports" expanded="true" />
+                <element signature="e#3578#3607#0" expanded="true" />
+                <element signature="e#20505#20519#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+    </leaf>
+  </component>
   <component name="FindManager">
     <FindUsagesManager>
       <setting name="OPEN_NEW_TAB" value="false" />
@@ -76,11 +715,27 @@
       <MyDateState />
     </option>
   </component>
+  <component name="IdeDocumentHistory">
+    <option name="changedFiles">
+      <list>
+        <option value="$PROJECT_DIR$/red/com/xl/datatypes/DataSet.java" />
+        <option value="$PROJECT_DIR$/red/net/xl/genomes/GenomeDownloader.java" />
+        <option value="$PROJECT_DIR$/red/com/xl/utils/ParsingUtils.java" />
+        <option value="$PROJECT_DIR$/red/com/xl/datatypes/annotation/AnnotationSet.java" />
+        <option value="$PROJECT_DIR$/red/com/xl/datatypes/genome/Genome.java" />
+        <option value="$PROJECT_DIR$/red/com/xl/datatypes/annotation/CoreAnnotationSet.java" />
+        <option value="$PROJECT_DIR$/red/com/xl/parsers/dataparsers/REDParser.java" />
+        <option value="$PROJECT_DIR$/red/com/xl/parsers/annotationparsers/IGVGenomeParser.java" />
+        <option value="$PROJECT_DIR$/red/com/xl/display/chromosomeviewer/ChromosomeDataTrack.java" />
+        <option value="$PROJECT_DIR$/red/com/xl/panel/REDInfoPanel.java" />
+      </list>
+    </option>
+  </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="10" />
-    <option name="y" value="5" />
-    <option name="width" value="1420" />
-    <option name="height" value="860" />
+    <option name="x" value="-8" />
+    <option name="y" value="-8" />
+    <option name="width" value="1456" />
+    <option name="height" value="886" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="true">
     <OptionsSetting value="true" id="Add" />
@@ -108,8 +763,6 @@
       <sortByType />
     </navigator>
     <panes>
-      <pane id="PackagesPane" />
-      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <PATH>
@@ -181,20 +834,129 @@
               <option name="myItemId" value="com" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="xl" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="panel" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="REDetector" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="REDetector" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="red" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="com" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="xl" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="main" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="REDetector" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="REDetector" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="red" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="com" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="xl" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="display" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="REDetector" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="REDetector" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="red" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="com" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
           </PATH>
         </subPane>
       </pane>
+      <pane id="PackagesPane" />
+      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
     <property name="GoToFile.includeJavaFiles" value="false" />
-    <property name="GoToClass.toSaveIncludeLibraries" value="false" />
+    <property name="options.splitter.main.proportions" value="0.3" />
+    <property name="options.lastSelected" value="preferences.keymap" />
     <property name="MemberChooser.sorted" value="false" />
+    <property name="recentsLimit" value="5" />
+    <property name="MemberChooser.copyJavadoc" value="false" />
+    <property name="GoToClass.toSaveIncludeLibraries" value="false" />
+    <property name="FullScreen" value="false" />
     <property name="MemberChooser.showClasses" value="true" />
     <property name="GoToClass.includeLibraries" value="false" />
-    <property name="MemberChooser.copyJavadoc" value="false" />
+    <property name="dynamic.classpath" value="false" />
+    <property name="options.searchVisible" value="true" />
+    <property name="options.splitter.details.proportions" value="0.2" />
   </component>
-  <component name="RunManager">
+  <component name="RunManager" selected="Application.REDApplication">
+    <configuration default="false" name="REDApplication" type="Application" factoryName="Application" temporary="true">
+      <option name="MAIN_CLASS_NAME" value="com.xl.main.REDApplication" />
+      <option name="VM_PARAMETERS" />
+      <option name="PROGRAM_PARAMETERS" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
+      <option name="ALTERNATIVE_JRE_PATH" />
+      <option name="ENABLE_SWING_INSPECTOR" value="false" />
+      <option name="ENV_VARIABLES" />
+      <option name="PASS_PARENT_ENVS" value="true" />
+      <module name="REDetector" />
+      <envs />
+      <RunnerSettings RunnerId="Debug">
+        <option name="DEBUG_PORT" value="" />
+        <option name="TRANSPORT" value="0" />
+        <option name="LOCAL" value="true" />
+      </RunnerSettings>
+      <RunnerSettings RunnerId="Run" />
+      <ConfigurationWrapper RunnerId="Debug" />
+      <ConfigurationWrapper RunnerId="Run" />
+      <method />
+    </configuration>
     <configuration default="true" type="#org.jetbrains.idea.devkit.run.PluginConfigurationType" factoryName="Plugin">
       <module name="" />
       <option name="VM_PARAMETERS" value="-Xmx512m -Xms256m -XX:MaxPermSize=250m" />
@@ -207,19 +969,6 @@
       <option name="SHMEM_ADDRESS" value="javadebug" />
       <option name="HOST" value="localhost" />
       <option name="PORT" value="5005" />
-      <method />
-    </configuration>
-    <configuration default="true" type="Applet" factoryName="Applet">
-      <module name="" />
-      <option name="MAIN_CLASS_NAME" />
-      <option name="HTML_FILE_NAME" />
-      <option name="HTML_USED" value="false" />
-      <option name="WIDTH" value="400" />
-      <option name="HEIGHT" value="300" />
-      <option name="POLICY_FILE" value="$APPLICATION_HOME_DIR$/bin/appletviewer.policy" />
-      <option name="VM_PARAMETERS" />
-      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
-      <option name="ALTERNATIVE_JRE_PATH" />
       <method />
     </configuration>
     <configuration default="true" type="TestNG" factoryName="TestNG">
@@ -247,6 +996,19 @@
       <envs />
       <properties />
       <listeners />
+      <method />
+    </configuration>
+    <configuration default="true" type="Applet" factoryName="Applet">
+      <module name="" />
+      <option name="MAIN_CLASS_NAME" />
+      <option name="HTML_FILE_NAME" />
+      <option name="HTML_USED" value="false" />
+      <option name="WIDTH" value="400" />
+      <option name="HEIGHT" value="300" />
+      <option name="POLICY_FILE" value="$APPLICATION_HOME_DIR$/bin/appletviewer.policy" />
+      <option name="VM_PARAMETERS" />
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
+      <option name="ALTERNATIVE_JRE_PATH" />
       <method />
     </configuration>
     <configuration default="true" type="Application" factoryName="Application">
@@ -283,13 +1045,41 @@
       <patterns />
       <method />
     </configuration>
-    <list size="0" />
+    <configuration default="true" type="AndroidRunConfigurationType" factoryName="Android Application">
+      <module name="" />
+      <option name="ACTIVITY_CLASS" value="" />
+      <option name="MODE" value="default_activity" />
+      <option name="DEPLOY" value="true" />
+      <option name="TARGET_SELECTION_MODE" value="EMULATOR" />
+      <option name="PREFERRED_AVD" value="" />
+      <option name="USE_COMMAND_LINE" value="true" />
+      <option name="COMMAND_LINE" value="" />
+      <option name="WIPE_USER_DATA" value="false" />
+      <option name="DISABLE_BOOT_ANIMATION" value="false" />
+      <option name="NETWORK_SPEED" value="full" />
+      <option name="NETWORK_LATENCY" value="none" />
+      <option name="CLEAR_LOGCAT" value="false" />
+      <method />
+    </configuration>
+    <list size="1">
+      <item index="0" class="java.lang.String" itemvalue="Application.REDApplication" />
+    </list>
+    <recent_temporary>
+      <list size="1">
+        <item index="0" class="java.lang.String" itemvalue="Application.REDApplication" />
+      </list>
+    </recent_temporary>
     <configuration name="&lt;template&gt;" type="WebApp" default="true" selected="false">
       <Host>localhost</Host>
       <Port>5050</Port>
     </configuration>
   </component>
   <component name="ShelveChangesManager" show_recycled="false" />
+  <component name="SliceManager">
+    <option name="analysisUIOptions">
+      <AnalysisUIOptions />
+    </option>
+  </component>
   <component name="SvnConfiguration" maxAnnotateRevisions="500" myUseAcceleration="nothing" myAutoUpdateAfterCommit="false" cleanupOnStartRun="false" SSL_PROTOCOLS="all">
     <option name="USER" value="" />
     <option name="PASSWORD" value="" />
@@ -315,29 +1105,50 @@
     </task>
     <servers />
   </component>
+  <component name="TodoView" selected-index="0">
+    <todo-panel id="selected-file">
+      <are-packages-shown value="false" />
+      <are-modules-shown value="false" />
+      <flatten-packages value="false" />
+      <is-autoscroll-to-source value="true" />
+    </todo-panel>
+    <todo-panel id="all">
+      <are-packages-shown value="true" />
+      <are-modules-shown value="false" />
+      <flatten-packages value="false" />
+      <is-autoscroll-to-source value="true" />
+    </todo-panel>
+    <todo-panel id="default-changelist">
+      <are-packages-shown value="false" />
+      <are-modules-shown value="false" />
+      <flatten-packages value="false" />
+      <is-autoscroll-to-source value="false" />
+    </todo-panel>
+  </component>
   <component name="ToolWindowManager">
-    <frame x="10" y="5" width="1420" height="860" extended-state="1" />
-    <editor active="false" />
+    <frame x="-8" y="-8" width="1456" height="886" extended-state="6" />
+    <editor active="true" />
     <layout>
-      <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
-      <window_info id="JetGradle" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
-      <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
+      <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="JetGradle" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32921812" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.20199147" sideWeight="0.5" order="-1" side_tool="true" content_ui="tabs" />
-      <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="-1" side_tool="true" content_ui="tabs" />
-      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.20199147" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
-      <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
-      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.39917696" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.20199147" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
+      <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="1" side_tool="true" content_ui="tabs" />
+      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.20199147" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33058986" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
+      <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32921812" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
+      <window_info id="Structure" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.18723099" sideWeight="0.7846365" order="6" side_tool="false" content_ui="tabs" />
+      <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.2496318" sideWeight="0.79800856" order="0" side_tool="false" content_ui="combo" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.24318507" sideWeight="0.7846365" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.21536352" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
+      <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
     </layout>
   </component>
   <component name="VcsContentAnnotationSettings">
@@ -382,11 +1193,11 @@
     <option name="WRAP_WHEN_TYPING_REACHES_RIGHT_MARGIN" value="false" />
     <option name="FORCE_NON_EMPTY_COMMENT" value="false" />
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="false" />
-    <option name="LAST_COMMIT_MESSAGE" />
+    <option name="LAST_COMMIT_MESSAGE" value="" />
     <option name="MAKE_NEW_CHANGELIST_ACTIVE" value="false" />
     <option name="OPTIMIZE_IMPORTS_BEFORE_PROJECT_COMMIT" value="false" />
     <option name="CHECK_FILES_UP_TO_DATE_BEFORE_COMMIT" value="false" />
-    <option name="REFORMAT_BEFORE_PROJECT_COMMIT" value="false" />
+    <option name="REFORMAT_BEFORE_PROJECT_COMMIT" value="true" />
     <option name="REFORMAT_BEFORE_FILE_COMMIT" value="false" />
     <option name="FILE_HISTORY_DIALOG_COMMENTS_SPLITTER_PROPORTION" value="0.8" />
     <option name="FILE_HISTORY_DIALOG_SPLITTER_PROPORTION" value="0.5" />
@@ -399,6 +1210,139 @@
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager />
+  </component>
+  <component name="antWorkspaceConfiguration">
+    <option name="IS_AUTOSCROLL_TO_SOURCE" value="false" />
+    <option name="FILTER_TARGETS" value="false" />
+  </component>
+  <component name="editorHistoryManager">
+    <entry file="jar://C:/Program Files/Java/jdk1.7.0_21/src.zip!/java/net/URL.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="523" column="24" selection-start="21296" selection-end="21300" vertical-scroll-proportion="1.0351562">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/red/com/xl/utils/ParsingUtils.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="90" column="31" selection-start="2551" selection-end="2551" vertical-scroll-proportion="0.6952381">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/red/com/xl/parsers/annotationparsers/UCSCRefGeneParser.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="41" column="59" selection-start="1243" selection-end="1243" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/red/com/xl/datatypes/annotation/AnnotationSet.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="395" column="26" selection-start="10884" selection-end="10893" vertical-scroll-proportion="-3.6296296">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/red/com/xl/datatypes/DataSet.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="602" column="37" selection-start="19828" selection-end="19828" vertical-scroll-proportion="0.0">
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="e#3578#3607#0" expanded="true" />
+            <element signature="e#20505#20519#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/red/com/xl/datatypes/annotation/CoreAnnotationSet.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="61" column="0" selection-start="2192" selection-end="2192" vertical-scroll-proportion="0.33333334">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/red/com/xl/parsers/dataparsers/REDParser.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="374" column="22" selection-start="11002" selection-end="11002" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/red/com/xl/parsers/annotationparsers/IGVGenomeParser.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="88" column="94" selection-start="3053" selection-end="3053" vertical-scroll-proportion="0.0">
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="e#1001#1019#0" expanded="true" />
+            <element signature="e#1801#1821#0" expanded="true" />
+            <element signature="e#2026#2034#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/red/com/xl/display/chromosomeviewer/ChromosomeDataTrack.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="572" column="28" selection-start="19096" selection-end="19096" vertical-scroll-proportion="0.0">
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="e#2344#2355#0" expanded="true" />
+            <element signature="e#18174#18183#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/red/net/xl/genomes/GenomeDownloader.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="107" column="0" selection-start="3319" selection-end="3319" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/red/com/xl/datatypes/genome/Genome.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="112" column="83" selection-start="3451" selection-end="3451" vertical-scroll-proportion="0.0">
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/red/com/xl/panel/StatusPanel.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="42" column="11" selection-start="1352" selection-end="1352" vertical-scroll-proportion="1.3333334">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/red/com/xl/preferences/REDPreferences.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="69" column="41" selection-start="2489" selection-end="2511" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/red/com/xl/panel/WelcomePanel.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="38" column="24" selection-start="1357" selection-end="1369" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/red/com/xl/panel/REDInfoPanel.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="71" column="33" selection-start="2401" selection-end="2401" vertical-scroll-proportion="-0.020366598">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/red/com/xl/main/REDApplication.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="147" column="34" selection-start="4810" selection-end="4810" vertical-scroll-proportion="0.09765625">
+          <folding />
+        </state>
+      </provider>
+    </entry>
   </component>
 </project>
 

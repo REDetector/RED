@@ -19,6 +19,7 @@ package com.xl.datatypes.annotation;
  *    along with SeqMonk; if not, write to the Free Software
  *    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -39,92 +40,104 @@ import com.xl.preferences.REDPreferences;
 public class CoreAnnotationSet extends AnnotationSet {
 
 	/*
-	 * This class is used merely to signify that an annotation set comes from
+     * This class is used merely to signify that an annotation set comes from
 	 * the core annotation for that genome and not a user supplied set.
 	 */
 
-	/**
-	 * Instantiates a new core annotation set.
-	 * 
-	 * @param genome
-	 *            the genome
-	 */
-	public CoreAnnotationSet(Genome genome) {
-		super(genome, GenomeDescripter.getInstance().getGeneTrackName());
-	}
+    /**
+     * Instantiates a new core annotation set.
+     *
+     * @param genome the genome
+     */
+    public CoreAnnotationSet(Genome genome) {
+        super(genome, GenomeDescripter.getInstance().getGeneTrackName());
+    }
 
-	public synchronized void finalise() {
+    /**
+     * As a mechanism to speed loading of existing genomes we can do an object
+     * dump of a parsed set of features which we can reload directly rather than
+     * having to re-parse them each time.  This can only work for the core
+     * annotation classes, and shouldn't be attempted elsewhere.
+     *
+     * @param chromosome
+     * @param file
+     */
+    public void addPreCachedFile(String chromosome, File file) {
+        featureSet.addPreCacheFeatureTypeCollection(chromosome, file);
+    }
 
-		// If this dataset has already been finalised (ie loaded entirely from
-		// cache), then we don't need to do anything here
-		File cacheCompleteCheckFile;
-		try {
-			cacheCompleteCheckFile = new File(REDPreferences.getInstance()
-					.getGenomeBase()
-					+ "/"
-					+ genome.getDisplayName()
-					+ "/cache/cache.complete");
-			if (cacheCompleteCheckFile.exists()) {
-				// System.out.println("Skipping finalisation for core annotation set");
-				return;
-			}
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		}
+    public synchronized void finalise() {
 
-		super.finalise();
+        // If this dataset has already been finalised (ie loaded entirely from
+        // cache), then we don't need to do anything here
+        File cacheCompleteCheckFile;
+        try {
+            cacheCompleteCheckFile = new File(REDPreferences.getInstance()
+                    .getGenomeBase()
+                    + "/"
+                    + genome.getDisplayName()
+                    + "/cache/cache.complete");
+            if (cacheCompleteCheckFile.exists()) {
+                // System.out.println("Skipping finalisation for core annotation set");
+                return;
+            }
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
 
-		// In addition to the feature cache files we need to write out
-		// a file with the details of the chromosomes in it so we know
-		// how long they are for next time.
+        super.finalise();
 
-		try {
+        // In addition to the feature cache files we need to write out
+        // a file with the details of the chromosomes in it so we know
+        // how long they are for next time.
 
-			// If for some reason someone has constructed a genome with no
-			// features in it it's possible that the cache folder won't yet have
-			// been constructed, so we might need to create it here
+        try {
 
-			File cacheBase = new File(REDPreferences.getInstance()
-					.getGenomeBase()
-					+ "/"
-					+ genome.getDisplayName() + "/cache");
-			if (!cacheBase.exists()) {
-				if (!cacheBase.mkdir()) {
-					throw new IOException(
-							"Can't create cache file for core annotation set");
-				}
-			}
+            // If for some reason someone has constructed a genome with no
+            // features in it it's possible that the cache folder won't yet have
+            // been constructed, so we might need to create it here
 
-			File chrListFile = new File(REDPreferences.getInstance()
-					.getGenomeBase()
-					+ "/"
-					+ genome.getDisplayName() + "/cache/chr_list");
-			PrintWriter pr = new PrintWriter(chrListFile);
+            File cacheBase = new File(REDPreferences.getInstance()
+                    .getGenomeBase()
+                    + "/"
+                    + genome.getDisplayName() + "/cache");
+            if (!cacheBase.exists()) {
+                if (!cacheBase.mkdir()) {
+                    throw new IOException(
+                            "Can't create cache file for core annotation set");
+                }
+            }
 
-			Chromosome[] chrs = genome.getChromosomes().toArray(new Chromosome[0]);
-			for (int c = 0; c < chrs.length; c++) {
-				pr.println(chrs[c].getName() + "\t" + chrs[c].getLength());
-			}
-			pr.close();
-		} catch (IOException ioe) {
-			new CrashReporter(ioe);
-		}
+            File chrListFile = new File(REDPreferences.getInstance()
+                    .getGenomeBase()
+                    + "/"
+                    + genome.getDisplayName() + "/cache/chr_list");
+            PrintWriter pr = new PrintWriter(chrListFile);
 
-		// Once we have successfully completed finalization we write out
-		// a marker file so the parsers next time can tell that there is
-		// a complete cache set they can use.
+            Chromosome[] chrs = genome.getChromosomes().toArray(new Chromosome[0]);
+            for (int c = 0; c < chrs.length; c++) {
+                pr.println(chrs[c].getName() + "\t" + chrs[c].getLength());
+            }
+            pr.close();
+        } catch (IOException ioe) {
+            new CrashReporter(ioe);
+        }
 
-		try {
-			File cacheCompleteFile = new File(REDPreferences.getInstance()
-					.getGenomeBase()
-					+ "/"
-					+ genome.getDisplayName() + "/cache/cache.complete");
-			PrintWriter pr = new PrintWriter(cacheCompleteFile);
-			pr.println(REDApplication.VERSION);
-			pr.close();
-		} catch (IOException ioe) {
-			new CrashReporter(ioe);
-		}
-	}
+        // Once we have successfully completed finalization we write out
+        // a marker file so the parsers next time can tell that there is
+        // a complete cache set they can use.
+
+        try {
+            File cacheCompleteFile = new File(REDPreferences.getInstance()
+                    .getGenomeBase()
+                    + "/"
+                    + genome.getDisplayName() + "/cache/cache.complete");
+            PrintWriter pr = new PrintWriter(cacheCompleteFile);
+            pr.println(REDApplication.VERSION + "\t" + genome.getGenomeId() + "\t" + genome.getDisplayName());
+            pr.close();
+        } catch (IOException ioe) {
+            new CrashReporter(ioe);
+        }
+    }
 
 }

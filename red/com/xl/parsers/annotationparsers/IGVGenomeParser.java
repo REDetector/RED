@@ -1,27 +1,7 @@
 package com.xl.parsers.annotationparsers;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
-import java.util.Vector;
-import java.util.zip.GZIPInputStream;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipException;
-import java.util.zip.ZipFile;
-import java.util.zip.ZipInputStream;
-
 import com.xl.datatypes.annotation.AnnotationSet;
+import com.xl.datatypes.annotation.CoreAnnotationSet;
 import com.xl.datatypes.annotation.Cytoband;
 import com.xl.datatypes.fasta.FastaDirectorySequence;
 import com.xl.datatypes.fasta.FastaIndexedSequence;
@@ -30,359 +10,446 @@ import com.xl.datatypes.genome.GenomeDescripter;
 import com.xl.datatypes.sequence.IGVSequence;
 import com.xl.datatypes.sequence.Sequence;
 import com.xl.datatypes.sequence.SequenceWrapper;
+import com.xl.dialog.CrashReporter;
 import com.xl.exception.REDException;
 import com.xl.interfaces.ProgressListener;
-import com.xl.utils.FileFilterImpl;
+import com.xl.main.REDApplication;
 import com.xl.utils.GeneType;
 import com.xl.utils.ParsingUtils;
+import com.xl.utils.filefilters.FileFilterImpl;
+
+import java.io.*;
+import java.util.*;
+import java.util.zip.*;
 
 public class IGVGenomeParser implements Runnable {
-	/** The listeners. */
-	private Vector<ProgressListener> listeners = new Vector<ProgressListener>();
+    /**
+     * The listeners.
+     */
+    private Vector<ProgressListener> listeners = new Vector<ProgressListener>();
+    /**
+     * The genome.
+     */
+    private Genome genome = null;
+    /**
+     * The base location.
+     */
+    private File baseLocation = null;
+    private ZipFile zipFile = null;
+    private FileInputStream fileInputStream = null;
+    private ZipInputStream zipInputStream = null;
+    private Map<String, ZipEntry> zipEntries = null;
+    private boolean cacheFailed = true;
+    private String genomeId = null;
+    private String genomeDisplayName = null;
 
-	/** The genome. */
-	private Genome genome = null;
+    /**
+     * The prefs.
+     */
+    // private REDPreferences prefs = REDPreferences.getInstance();
+    private static Collection<Collection<String>> loadChrAliases(
+            BufferedReader br) throws IOException {
+        String nextLine = "";
+        Collection<Collection<String>> synonymList = new ArrayList<Collection<String>>();
+        while ((nextLine = br.readLine()) != null) {
+            String[] tokens = nextLine.split("\t");
+            if (tokens.length > 1) {
+                Collection<String> synonyms = new ArrayList<String>();
+                for (String t : tokens) {
+                    String syn = t.trim();
+                    if (t.length() > 0)
+                        synonyms.add(syn.trim());
+                }
+                synonymList.add(synonyms);
+            }
+        }
+        return synonymList;
+    }
 
-	/** The base location. */
-	private File baseLocation = null;
-	private ZipFile zipFile = null;
-	private FileInputStream fileInputStream = null;
-	private ZipInputStream zipInputStream = null;
-	private Map<String, ZipEntry> zipEntries = null;
+    /**
+     * Parses the genome.
+     *
+     * @param baseLocation the base location
+     */
+    public void parseGenome(File baseLocation) {
+        if (baseLocation.isDirectory()) {
+            File[] files = baseLocation.listFiles(new FileFilterImpl("genome"));
+            this.baseLocation = files[0];
+        } else {
+            this.baseLocation = baseLocation;
+        }
+        Thread t = new Thread(this);
+        t.start();
+    }
 
-	/** The prefs. */
-	// private REDPreferences prefs = REDPreferences.getInstance();
+    @Override
+    public void run() {
+        // TODO Auto-generated method stub
+        File cacheCompleteFile = new File(baseLocation.getAbsolutePath() + "/cache/cache.complete");
+        System.out.println(this.getClass().getName() + ":" + cacheCompleteFile.getAbsolutePath());
+        if (cacheCompleteFile.exists()) {
+            cacheFailed = false;
+            try {
+                BufferedReader br = ParsingUtils.openBufferedRead(cacheCompleteFile);
+                String line = br.readLine();
+                br.close();
+                if (line == null || line.length() == 0) {
+                    // If there's no version in there then re-parse
+                    cacheFailed = true;
+                }
+                // We re-parse if the cache was made by a different version
+                String sections[] = line.split("\\t");
+                if (!REDApplication.VERSION.equals(sections[0])) {
+                    System.err.println("Version mismatch between cache ('" + line + "') and current version ('" + REDApplication.VERSION + "') - reparsing");
+                    cacheFailed = true;
+                } else {
+                    genomeId = sections[1];
+                    genomeDisplayName = sections[2];
+                }
 
-	/**
-	 * Parses the genome.
-	 * 
-	 * @param baseLocation
-	 *            the base location
-	 */
-	public void parseGenome(File baseLocation) {
-		if (baseLocation.isDirectory()) {
-			File[] files = baseLocation.listFiles(new FileFilterImpl("genome"));
-			this.baseLocation = files[0];
-		} else {
-			this.baseLocation = baseLocation;
-		}
-		Thread t = new Thread(this);
-		t.start();
-	}
+            } catch (Exception ioe) {
+                cacheFailed = true;
+            }
+        }
+        if (cacheFailed) {
+            parseNewGenome();
+        } else {
+            reloadCacheGenome();
+        }
 
-	@Override
-	public void run() {
-		// TODO Auto-generated method stub
-		try {
-			System.out.println(baseLocation.getAbsolutePath());
-			GenomeDescripter genomeDescripter = parseGenomeArchiveFile(baseLocation);
-			final String id = genomeDescripter.getId();
-			final String displayName = genomeDescripter.getName();
 
-			boolean isFasta = genomeDescripter.isFasta();
-			String[] fastaFileNames = genomeDescripter.getFastaFileNames();
+    }
 
-			LinkedHashMap<String, List<Cytoband>> cytobandMap = null;
-			if (genomeDescripter.hasCytobands()) {
-				cytobandMap = loadCytoBandFile();
-			}
+    private void reloadCacheGenome() {
+        Enumeration<ProgressListener> el = listeners.elements();
+        if (genome == null) {
+            genome = new Genome(genomeId, genomeDisplayName, null, false);
+        }
+        while (el.hasMoreElements()) {
+            el.nextElement().progressUpdated("Reloading cache files", 0, 1);
+        }
+        CoreAnnotationSet coreAnnotation = new CoreAnnotationSet(genome);
 
-			String sequenceLocation = genomeDescripter.getSequenceLocation();
-			Sequence sequence = null;
-			boolean chromosOrdered = false;
-			if (sequenceLocation == null) {
-				sequence = null;
-			} else if (!isFasta) {
-				System.out.println(this.getClass().getName() + ":!isFasta");
-				IGVSequence igvSequence = new IGVSequence(sequenceLocation);
-				if (cytobandMap != null) {
-					chromosOrdered = genomeDescripter.isChromosomesAreOrdered();
-					igvSequence
-							.generateChromosomes(cytobandMap, chromosOrdered);
-				}
-				sequence = new SequenceWrapper(igvSequence);
-			} else if (fastaFileNames != null) {
-				System.out.println(this.getClass().getName()
-						+ ":fastaFileNames != null");
-				FastaDirectorySequence fastaDirectorySequence = new FastaDirectorySequence(
-						sequenceLocation, fastaFileNames);
-				sequence = new SequenceWrapper(fastaDirectorySequence);
-			} else {
-				System.out.println(this.getClass().getName() + ":else");
-				FastaIndexedSequence fastaSequence = new FastaIndexedSequence(
-						sequenceLocation);
-				sequence = new SequenceWrapper(fastaSequence);
-				chromosOrdered = false;
-			}
-			genome = new Genome(id, displayName, sequence, chromosOrdered);
+        File cacheDir = new File(baseLocation.getAbsoluteFile() + "/cache/");
+        // First we need to get the list of chromosomes and set those
+        // up before we go on to add the actual feature sets.
+        File chrListFile = new File(baseLocation.getAbsoluteFile() + "/cache/chr_list");
+        try {
+//            BufferedReader br = ParsingUtils.openBufferedRead(chrListFile);
 
-			if (cytobandMap != null) {
-				genome.setCytobands(cytobandMap);
-			}
+//            String line;
+//            while ((line = br.readLine()) != null) {
+//                String [] chrLen = line.split("\\t");
+//                Chromosome c = genome.addChromosome(chrLen[0]);
+//                c.setLength(Integer.parseInt(chrLen[1]));
+//
+//            }
+        } catch (Exception e) {
+            new CrashReporter(e);
+        }
 
-			Collection<Collection<String>> aliases = loadChrAliases(genomeDescripter);
-			if (aliases != null) {
-				genome.addChrAliases(aliases);
-			}
+        File[] cacheFiles = cacheDir.listFiles(new FileFilterImpl("cache"));
+        for (int i = 0; i < cacheFiles.length; i++) {
+            // Update the listeners
 
-			InputStream geneStream = null;
-			String geneFileName = genomeDescripter.getGeneFileName();
-			if (geneFileName != null) {
-				try {
-					if (geneFileName.endsWith(".gz")) {
-						geneStream = new GZIPInputStream(
-								zipFile.getInputStream(zipEntries
-										.get(geneFileName)));
-					} else {
-						geneStream = zipFile.getInputStream(zipEntries
-								.get(geneFileName));
-					}
-					BufferedReader reader = new BufferedReader(
-							new InputStreamReader(geneStream));
-					UCSCRefGeneParser parser = new UCSCRefGeneParser(genome);
-					GeneType geneType = ParsingUtils
-							.parseGeneType(geneFileName);
-					AnnotationSet[] sets = parser.parseAnnotation(geneType,
-							reader, genome);
+            String name = cacheFiles[i].getName();
+            name = name.replaceAll("\\.cache$", "");
+            String[] chrType = name.split("%", 2);
+            if (chrType.length != 2) {
+                throw new IllegalStateException("Cache name '" + name + "' didn't split into chr and type");
+            }
+            coreAnnotation.addPreCachedFile(chrType[0], cacheFiles[i]);
+        }
+        genome.getAnnotationCollection().addAnnotationSets(new AnnotationSet[]{coreAnnotation});
+    }
 
-					// Here we have to add the new sets to the annotation
-					// collection before we say that we're finished otherwise
-					// this object can get destroyed before the program gets
-					// chance to execute the operation which adds the sets to
-					// the annotation collection.
-					genome.getAnnotationCollection().addAnnotationSets(sets);
+    private void parseNewGenome() {
+        try {
+            System.out.println(baseLocation.getAbsolutePath());
+            GenomeDescripter genomeDescripter = parseGenomeArchiveFile(baseLocation);
+            final String id = genomeDescripter.getId();
+            final String displayName = genomeDescripter.getName();
 
-				} catch (Exception e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-					progressExceptionReceived(e);
-				} finally {
-					if (geneStream != null)
-						geneStream.close();
-				}
-			}
+            boolean isFasta = genomeDescripter.isFasta();
+            String[] fastaFileNames = genomeDescripter.getFastaFileNames();
 
-			progressComplete("load_genome", genome);
+            LinkedHashMap<String, List<Cytoband>> cytobandMap = null;
+            if (genomeDescripter.hasCytobands()) {
+                cytobandMap = loadCytoBandFile();
+            }
 
-		} catch (ZipException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (REDException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} finally {
-			try {
-				if (zipInputStream != null) {
-					zipInputStream.close();
-				}
-				if (fileInputStream != null) {
-					fileInputStream.close();
-				}
-				if (zipFile != null) {
-					zipFile.close();
-				}
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}
-	}
+            String sequenceLocation = genomeDescripter.getSequenceLocation();
+            Sequence sequence = null;
+            boolean chromosOrdered = false;
+            if (sequenceLocation == null) {
+                sequence = null;
+            } else if (!isFasta) {
+                System.out.println(this.getClass().getName() + ":!isFasta");
+                IGVSequence igvSequence = new IGVSequence(sequenceLocation);
+                if (cytobandMap != null) {
+                    chromosOrdered = genomeDescripter.isChromosomesAreOrdered();
+                    igvSequence
+                            .generateChromosomes(cytobandMap, chromosOrdered);
+                }
+                sequence = new SequenceWrapper(igvSequence);
+            } else if (fastaFileNames != null) {
+                System.out.println(this.getClass().getName()
+                        + ":fastaFileNames != null");
+                FastaDirectorySequence fastaDirectorySequence = new FastaDirectorySequence(
+                        sequenceLocation, fastaFileNames);
+                sequence = new SequenceWrapper(fastaDirectorySequence);
+            } else {
+                System.out.println(this.getClass().getName() + ":else");
+                FastaIndexedSequence fastaSequence = new FastaIndexedSequence(
+                        sequenceLocation);
+                sequence = new SequenceWrapper(fastaSequence);
+                chromosOrdered = false;
+            }
+            genome = new Genome(id, displayName, sequence, chromosOrdered);
 
-	public GenomeDescripter parseGenomeArchiveFile(File dotGenomeFile)
-			throws ZipException, IOException {
-		try {
-			zipFile = new ZipFile(dotGenomeFile);
-			fileInputStream = new FileInputStream(dotGenomeFile);
-			zipInputStream = new ZipInputStream(fileInputStream);
-			zipEntries = new HashMap<String, ZipEntry>();
-			ZipEntry zipEntry = null;
-			while ((zipEntry = zipInputStream.getNextEntry()) != null) {
-				String zipEntryName = zipEntry.getName();
-				zipEntries.put(zipEntryName, zipEntry);
-				if (zipEntryName.equalsIgnoreCase("property.txt")) {
-					InputStream inputStream = zipFile.getInputStream(zipEntry);
-					Properties properties = new Properties();
-					properties.load(inputStream);
-					String cytobandFileName = properties
-							.getProperty("cytobandFile");
-					String geneFileName = properties.getProperty("geneFile");
-					String chrAliasFileName = properties
-							.getProperty("chrAliasFile");
-					String sequenceLocation = properties
-							.getProperty("sequenceLocation");
-					boolean chrNamesAltered = Boolean.parseBoolean(properties
-							.getProperty("filenamesAltered"));
-					boolean fasta = Boolean.parseBoolean(properties
-							.getProperty("fasta"));
-					boolean fastaDirectory = Boolean.parseBoolean(properties
-							.getProperty("fastaDirectory"));
-					boolean chromosomesAreOrdered = Boolean
-							.parseBoolean(properties.getProperty("ordered"));
-					boolean hasCustomSequenceLocation = Boolean
-							.parseBoolean(properties
-									.getProperty("customSequenceLocation"));
-					String fastaFileNameString = properties
-							.getProperty("fastaFiles");
-					String url = properties.getProperty("url");
-					String name = properties.getProperty("name");
-					String id = properties.getProperty("id");
-					String geneTrackName = properties
-							.getProperty("geneTrackName");
-					GenomeDescripter.getInstance().setAttributes(name,
-							chrNamesAltered, id, cytobandFileName,
-							geneFileName, chrAliasFileName, geneTrackName, url,
-							sequenceLocation, hasCustomSequenceLocation,
-							chromosomesAreOrdered, fasta, fastaDirectory,
-							fastaFileNameString);
-				}
-			}
-			return GenomeDescripter.getInstance();
-		} catch (Exception e) {
-			e.printStackTrace();
-			return null;
-		}
-	}
+            if (cytobandMap != null) {
+                genome.setCytobands(cytobandMap);
+            }
 
-	public LinkedHashMap<String, List<Cytoband>> loadCytoBandFile() {
-		InputStream is = null;
-		BufferedReader reader = null;
-		try {
-			is = zipFile.getInputStream(zipEntries.get(GenomeDescripter
-					.getInstance().getCytoBandFileName()));
+            Collection<Collection<String>> aliases = loadChrAliases(genomeDescripter);
+            if (aliases != null) {
+                genome.addChrAliases(aliases);
+            }
 
-			if (GenomeDescripter.getInstance().getCytoBandFileName()
-					.toLowerCase().endsWith(".gz")) {
-				is = new GZIPInputStream(is);
-			}
-			reader = new BufferedReader(new InputStreamReader(is));
-			return CytoBandFileParser.loadData(reader);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			return null;
-		} finally {
-			try {
-				if (reader != null) {
-					reader.close();
-				}
-				if (is != null) {
-					is.close();
-				}
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
-	}
+            InputStream geneStream = null;
+            String geneFileName = genomeDescripter.getGeneFileName();
+            if (geneFileName != null) {
+                try {
+                    if (geneFileName.endsWith(".gz")) {
+                        geneStream = new GZIPInputStream(
+                                zipFile.getInputStream(zipEntries
+                                        .get(geneFileName)));
+                    } else {
+                        geneStream = zipFile.getInputStream(zipEntries
+                                .get(geneFileName));
+                    }
+                    BufferedReader reader = new BufferedReader(
+                            new InputStreamReader(geneStream));
+                    UCSCRefGeneParser parser = new UCSCRefGeneParser(genome);
+                    GeneType geneType = ParsingUtils
+                            .parseGeneType(geneFileName);
+                    AnnotationSet[] sets = parser.parseAnnotation(geneType,
+                            reader, genome);
 
-	private static Collection<Collection<String>> loadChrAliases(
-			BufferedReader br) throws IOException {
-		String nextLine = "";
-		Collection<Collection<String>> synonymList = new ArrayList<Collection<String>>();
-		while ((nextLine = br.readLine()) != null) {
-			String[] tokens = nextLine.split("\t");
-			if (tokens.length > 1) {
-				Collection<String> synonyms = new ArrayList<String>();
-				for (String t : tokens) {
-					String syn = t.trim();
-					if (t.length() > 0)
-						synonyms.add(syn.trim());
-				}
-				synonymList.add(synonyms);
-			}
-		}
-		return synonymList;
-	}
+                    // Here we have to add the new sets to the annotation
+                    // collection before we say that we're finished otherwise
+                    // this object can get destroyed before the program gets
+                    // chance to execute the operation which adds the sets to
+                    // the annotation collection.
+                    genome.getAnnotationCollection().addAnnotationSets(sets);
 
-	/**
-	 * Load the chromosome alias file, if any, specified in the genome
-	 * descriptor.
-	 * 
-	 * @param genomeDescriptor
-	 * @return The chromosome alias table, or null if none is defined.
-	 * @throws REDException
-	 */
-	private Collection<Collection<String>> loadChrAliases(
-			GenomeDescripter genomeDescripter) throws REDException {
-		InputStream aliasStream = null;
-		try {
-			String fileName = genomeDescripter.getChrAliasFileName();
-			if (fileName == null || !zipEntries.containsKey(fileName)) {
-				return null;
-			}
-			aliasStream = zipFile.getInputStream(zipEntries.get(fileName));
-			if (aliasStream != null) {
-				BufferedReader reader = new BufferedReader(
-						new InputStreamReader(aliasStream));
-				return loadChrAliases(reader);
-			} else {
-				return null;
-			}
-		} catch (IOException e) {
-			// We don't want to bomb if the alias load fails. Just log it and
-			// proceed.
-			throw new REDException("Error loading chromosome alias table");
-		} finally {
-			try {
-				if (aliasStream != null) {
-					aliasStream.close();
-				}
-			} catch (IOException ex) {
-				throw new REDException("Error closing zip stream!");
-			}
-		}
-	}
+                } catch (Exception e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                    progressExceptionReceived(e);
+                } finally {
+                    if (geneStream != null)
+                        geneStream.close();
+                }
+            }
 
-	/**
-	 * Adds the progress listener.
-	 * 
-	 * @param pl
-	 *            the pl
-	 */
-	public void addProgressListener(ProgressListener pl) {
-		if (pl != null && !listeners.contains(pl))
-			listeners.add(pl);
-	}
+            progressComplete("load_genome", genome);
 
-	/**
-	 * Removes the progress listener.
-	 * 
-	 * @param pl
-	 *            the pl
-	 */
-	public void removeProgressListener(ProgressListener pl) {
-		if (pl != null && listeners.contains(pl))
-			listeners.remove(pl);
-	}
+        } catch (ZipException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (REDException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } finally {
+            try {
+                if (zipInputStream != null) {
+                    zipInputStream.close();
+                }
+                if (fileInputStream != null) {
+                    fileInputStream.close();
+                }
+                if (zipFile != null) {
+                    zipFile.close();
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
 
-	/**
-	 * Progress exception received.
-	 * 
-	 * @param e
-	 *            the e
-	 */
-	private void progressExceptionReceived(Exception e) {
-		Enumeration<ProgressListener> en = listeners.elements();
-		while (en.hasMoreElements()) {
-			en.nextElement().progressExceptionReceived(e);
-		}
-	}
+    public GenomeDescripter parseGenomeArchiveFile(File dotGenomeFile)
+            throws ZipException, IOException {
+        try {
+            zipFile = new ZipFile(dotGenomeFile);
+            fileInputStream = new FileInputStream(dotGenomeFile);
+            zipInputStream = new ZipInputStream(fileInputStream);
+            zipEntries = new HashMap<String, ZipEntry>();
+            ZipEntry zipEntry = null;
+            while ((zipEntry = zipInputStream.getNextEntry()) != null) {
+                String zipEntryName = zipEntry.getName();
+                zipEntries.put(zipEntryName, zipEntry);
+                if (zipEntryName.equalsIgnoreCase("property.txt")) {
+                    InputStream inputStream = zipFile.getInputStream(zipEntry);
+                    Properties properties = new Properties();
+                    properties.load(inputStream);
+                    String cytobandFileName = properties
+                            .getProperty("cytobandFile");
+                    String geneFileName = properties.getProperty("geneFile");
+                    String chrAliasFileName = properties
+                            .getProperty("chrAliasFile");
+                    String sequenceLocation = properties
+                            .getProperty("sequenceLocation");
+                    boolean chrNamesAltered = Boolean.parseBoolean(properties
+                            .getProperty("filenamesAltered"));
+                    boolean fasta = Boolean.parseBoolean(properties
+                            .getProperty("fasta"));
+                    boolean fastaDirectory = Boolean.parseBoolean(properties
+                            .getProperty("fastaDirectory"));
+                    boolean chromosomesAreOrdered = Boolean
+                            .parseBoolean(properties.getProperty("ordered"));
+                    boolean hasCustomSequenceLocation = Boolean
+                            .parseBoolean(properties
+                                    .getProperty("customSequenceLocation"));
+                    String fastaFileNameString = properties
+                            .getProperty("fastaFiles");
+                    String url = properties.getProperty("url");
+                    String name = properties.getProperty("name");
+                    String id = properties.getProperty("id");
+                    String geneTrackName = properties
+                            .getProperty("geneTrackName");
+                    GenomeDescripter.getInstance().setAttributes(name,
+                            chrNamesAltered, id, cytobandFileName,
+                            geneFileName, chrAliasFileName, geneTrackName, url,
+                            sequenceLocation, hasCustomSequenceLocation,
+                            chromosomesAreOrdered, fasta, fastaDirectory,
+                            fastaFileNameString);
+                }
+            }
+            return GenomeDescripter.getInstance();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
 
-	/**
-	 * Progress complete.
-	 * 
-	 * @param command
-	 *            the command
-	 * @param result
-	 *            the result
-	 */
-	private void progressComplete(String command, Object result) {
-		Enumeration<ProgressListener> en = listeners.elements();
-		while (en.hasMoreElements()) {
-			en.nextElement().progressComplete(command, result);
-		}
+    public LinkedHashMap<String, List<Cytoband>> loadCytoBandFile() {
+        InputStream is = null;
+        BufferedReader reader = null;
+        try {
+            is = zipFile.getInputStream(zipEntries.get(GenomeDescripter
+                    .getInstance().getCytoBandFileName()));
 
-	}
+            if (GenomeDescripter.getInstance().getCytoBandFileName()
+                    .toLowerCase().endsWith(".gz")) {
+                is = new GZIPInputStream(is);
+            }
+            reader = new BufferedReader(new InputStreamReader(is));
+            return CytoBandFileParser.loadData(reader);
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+            return null;
+        } finally {
+            try {
+                if (reader != null) {
+                    reader.close();
+                }
+                if (is != null) {
+                    is.close();
+                }
+            } catch (IOException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+        }
+    }
+
+    /**
+     * Load the chromosome alias file, if any, specified in the genome
+     * descriptor.
+     *
+     * @param genomeDescripter
+     * @return The chromosome alias table, or null if none is defined.
+     * @throws REDException
+     */
+    private Collection<Collection<String>> loadChrAliases(
+            GenomeDescripter genomeDescripter) throws REDException {
+        InputStream aliasStream = null;
+        try {
+            String fileName = genomeDescripter.getChrAliasFileName();
+            if (fileName == null || !zipEntries.containsKey(fileName)) {
+                return null;
+            }
+            aliasStream = zipFile.getInputStream(zipEntries.get(fileName));
+            if (aliasStream != null) {
+                BufferedReader reader = new BufferedReader(
+                        new InputStreamReader(aliasStream));
+                return loadChrAliases(reader);
+            } else {
+                return null;
+            }
+        } catch (IOException e) {
+            // We don't want to bomb if the alias load fails. Just log it and
+            // proceed.
+            throw new REDException("Error loading chromosome alias table");
+        } finally {
+            try {
+                if (aliasStream != null) {
+                    aliasStream.close();
+                }
+            } catch (IOException ex) {
+                throw new REDException("Error closing zip stream!");
+            }
+        }
+    }
+
+    /**
+     * Adds the progress listener.
+     *
+     * @param pl the pl
+     */
+    public void addProgressListener(ProgressListener pl) {
+        if (pl != null && !listeners.contains(pl))
+            listeners.add(pl);
+    }
+
+    /**
+     * Removes the progress listener.
+     *
+     * @param pl the pl
+     */
+    public void removeProgressListener(ProgressListener pl) {
+        if (pl != null && listeners.contains(pl))
+            listeners.remove(pl);
+    }
+
+    /**
+     * Progress exception received.
+     *
+     * @param e the e
+     */
+    private void progressExceptionReceived(Exception e) {
+        Enumeration<ProgressListener> en = listeners.elements();
+        while (en.hasMoreElements()) {
+            en.nextElement().progressExceptionReceived(e);
+        }
+    }
+
+    /**
+     * Progress complete.
+     *
+     * @param command the command
+     * @param result  the result
+     */
+    private void progressComplete(String command, Object result) {
+        Enumeration<ProgressListener> en = listeners.elements();
+        while (en.hasMoreElements()) {
+            en.nextElement().progressComplete(command, result);
+        }
+
+    }
 }
