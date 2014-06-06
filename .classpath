@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<classpath>
-	<classpathentry kind="src" path="red"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/jre7"/>
-	<classpathentry exported="true" kind="lib" path="mysql-connector-java-5.1.26-bin.jar"/>
-	<classpathentry exported="true" kind="lib" path="E:/workspace/REDetector/igv.jar"/>
-	<classpathentry exported="true" kind="lib" path="E:/workspace/REDetector/sam-1.113.jar"/>
-	<classpathentry kind="output" path="bin"/>
-</classpath>

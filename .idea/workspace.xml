@@ -2,12 +2,16 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="84c5056e-4735-415e-9374-ef14f745da71" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/com/xl/datatypes/sequence/SequenceRead.java" afterPath="$PROJECT_DIR$/red/com/xl/datatypes/sequence/SequenceRead.java" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\.classpath" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\.project" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\Genomes\genomes_folder.txt" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\hs_err_pid13136.log" afterPath="" />
+      <change type="DELETED" beforePath="E:\Workspace\REDetector\hs_err_pid7604.log" afterPath="" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="REDetector.iws" />
     <ignored path=".idea/workspace.xml" />
-    <file path="/Dummy.txt" changelist="84c5056e-4735-415e-9374-ef14f745da71" time="1402067085614" ignored="false" />
+    <file path="/Dummy.txt" changelist="84c5056e-4735-415e-9374-ef14f745da71" time="1402067112612" ignored="false" />
     <file path="/fragment.java" changelist="84c5056e-4735-415e-9374-ef14f745da71" time="1402016873895" ignored="false" />
     <file path="/DataSet.java" changelist="84c5056e-4735-415e-9374-ef14f745da71" time="1402018829403" ignored="false" />
     <file path="/ChromosomeDataTrack.java" changelist="84c5056e-4735-415e-9374-ef14f745da71" time="1402044511687" ignored="false" />
@@ -84,15 +88,33 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="ChromosomeDataTrack.java" pinned="false" current="true" current-in-tab="true">
+      <file leaf-file-name="ChromosomeDataTrack.java" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/red/com/xl/display/chromosomeviewer/ChromosomeDataTrack.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="320" column="81" selection-start="11520" selection-end="11520" vertical-scroll-proportion="0.34285715">
+            <state line="324" column="51" selection-start="11610" selection-end="11610" vertical-scroll-proportion="0.0">
               <folding>
                 <element signature="imports" expanded="true" />
                 <element signature="e#2344#2355#0" expanded="true" />
                 <element signature="e#18961#18970#0" expanded="true" />
               </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="README" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/README">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="REDetector.iml" pinned="false" current="true" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/REDetector.iml">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="11" column="37" selection-start="491" selection-end="491" vertical-scroll-proportion="0.40892193">
+              <folding />
             </state>
           </provider>
         </entry>
@@ -146,24 +168,6 @@
         <entry file="file://$PROJECT_DIR$/red/com/xl/datatypes/genome/Genome.java">
           <provider selected="true" editor-type-id="text-editor">
             <state line="119" column="41" selection-start="3889" selection-end="3889" vertical-scroll-proportion="0.0">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="UCSCRefGeneParser.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/red/com/xl/parsers/annotationparsers/UCSCRefGeneParser.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="41" column="35" selection-start="1294" selection-end="1294" vertical-scroll-proportion="0.0">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="DataSet.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/red/com/xl/datatypes/DataSet.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="602" column="37" selection-start="19828" selection-end="19828" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
@@ -241,6 +245,20 @@
             <PATH_ELEMENT>
               <option name="myItemId" value="REDetector" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="External Libraries" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ExternalLibrariesNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="REDetector" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="REDetector" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
         </subPane>
@@ -449,7 +467,11 @@
       <created>1402067091054</created>
       <updated>1402067091054</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="Fix bugs.">
+      <created>1402067117281</created>
+      <updated>1402067117281</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="TodoView" selected-index="0">
@@ -540,7 +562,7 @@
     <option name="WRAP_WHEN_TYPING_REACHES_RIGHT_MARGIN" value="false" />
     <option name="FORCE_NON_EMPTY_COMMENT" value="false" />
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="false" />
-    <option name="LAST_COMMIT_MESSAGE" value="Delete currentSelectStart and currentSelectEnd because it is never used." />
+    <option name="LAST_COMMIT_MESSAGE" value="Fix bugs." />
     <option name="MAKE_NEW_CHANGELIST_ACTIVE" value="false" />
     <option name="OPTIMIZE_IMPORTS_BEFORE_PROJECT_COMMIT" value="false" />
     <option name="CHECK_FILES_UP_TO_DATE_BEFORE_COMMIT" value="false" />
@@ -558,6 +580,7 @@
     <MESSAGE value="When transform qualities from byte[] to String, there are some coding problems, so we do not save the qualities bytes temporarily." />
     <MESSAGE value="Fix the readHeight from 5 to 10 and try the display effect." />
     <MESSAGE value="Delete currentSelectStart and currentSelectEnd because it is never used." />
+    <MESSAGE value="Fix bugs." />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager />
@@ -567,37 +590,6 @@
     <option name="FILTER_TARGETS" value="false" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/red/com/xl/datatypes/annotation/AnnotationSet.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="395" column="26" selection-start="10884" selection-end="10893" vertical-scroll-proportion="-3.6296296" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/red/com/xl/datatypes/DataSet.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="602" column="37" selection-start="19828" selection-end="19828" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/red/com/xl/datatypes/annotation/CoreAnnotationSet.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="61" column="0" selection-start="2192" selection-end="2192" vertical-scroll-proportion="0.33333334" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/red/com/xl/parsers/annotationparsers/IGVGenomeParser.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="88" column="98" selection-start="3057" selection-end="3057" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/red/net/xl/genomes/GenomeDownloader.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="102" column="0" selection-start="3484" selection-end="3484" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/red/com/xl/datatypes/genome/Genome.java">
       <provider selected="true" editor-type-id="text-editor">
         <state line="119" column="41" selection-start="3889" selection-end="3889" vertical-scroll-proportion="0.0">
@@ -667,12 +659,40 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/red/com/xl/display/chromosomeviewer/ChromosomeDataTrack.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="320" column="81" selection-start="11520" selection-end="11520" vertical-scroll-proportion="0.34285715">
+        <state line="324" column="51" selection-start="11610" selection-end="11610" vertical-scroll-proportion="0.0">
           <folding>
             <element signature="imports" expanded="true" />
             <element signature="e#2344#2355#0" expanded="true" />
             <element signature="e#18961#18970#0" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/README">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/red/com/xl/parsers/annotationparsers/UCSCRefGeneParser.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="41" column="35" selection-start="1294" selection-end="1294" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/red/com/xl/datatypes/DataSet.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="602" column="37" selection-start="19828" selection-end="19828" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/REDetector.iml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="11" column="37" selection-start="491" selection-end="491" vertical-scroll-proportion="0.40892193">
+          <folding />
         </state>
       </provider>
     </entry>
