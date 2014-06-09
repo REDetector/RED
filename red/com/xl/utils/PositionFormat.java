@@ -21,56 +21,54 @@ package com.xl.utils;
 
 public class PositionFormat {
 
-	/**
-	 * Provides a nicely formatted version of a double string.  Similar to
-	 * what you can do with Decimal Format, but I'm really picky!
-	 *
-	 * @param length the length
-	 * @return A formatted string
-	 */
-	public static String formatLength (long originalLength) {
-		
-		double length = originalLength;
-		
-		String unit = " bp";
-		
-		if (length >= 1000000) {
-			length /= 1000000;
-			unit = " Mbp";
-		}
-		else if (length >= 1000) {
-			length /=1000;
-			unit = " kbp";
-		}
+    /**
+     * Provides a nicely formatted version of a double string.  Similar to
+     * what you can do with Decimal Format, but I'm really picky!
+     *
+     * @param originalLength the length
+     * @return A formatted string
+     */
+    public static String formatLength(long originalLength) {
 
-		String rawLength = ""+length;
-		char [] chars = rawLength.toCharArray();
-		
-		int lastIndex = 0;
-		
-		// Go through until we find a dot (if there is one)
-		for (int i=0;i<chars.length;i++) {
-			lastIndex = i;
-			if (chars[i] == '.') break;
-		}
-		
-		// We keep the next char as well if they are non
-		// zero numbers
-		
-		if (lastIndex+1 < chars.length && chars[lastIndex+1] != '0') {
-			lastIndex+=1;
-		}
-		else if (lastIndex > 0 && chars[lastIndex] == '.') {
-			lastIndex -= 1; // Lose the dot if its the last character
-		}
+        double length = originalLength;
 
-		char [] finalChars = new char[lastIndex+1];
-		for (int i=0;i<=lastIndex;i++) {
-			finalChars[i] = chars[i];
-		}
-		
-		return new String(finalChars)+unit;
-	}
+        String unit = " bp";
 
-	
+        if (length >= 1000000) {
+            length /= 1000000;
+            unit = " Mbp";
+        } else if (length >= 1000) {
+            length /= 1000;
+            unit = " kbp";
+        }
+
+        String rawLength = "" + length;
+        char[] chars = rawLength.toCharArray();
+
+        int lastIndex = 0;
+
+        // Go through until we find a dot (if there is one)
+        for (int i = 0; i < chars.length; i++) {
+            lastIndex = i;
+            if (chars[i] == '.') break;
+        }
+
+        // We keep the next char as well if they are non
+        // zero numbers
+
+        if (lastIndex + 1 < chars.length && chars[lastIndex + 1] != '0') {
+            lastIndex += 1;
+        } else if (lastIndex > 0 && chars[lastIndex] == '.') {
+            lastIndex -= 1; // Lose the dot if its the last character
+        }
+
+        char[] finalChars = new char[lastIndex + 1];
+        for (int i = 0; i <= lastIndex; i++) {
+            finalChars[i] = chars[i];
+        }
+
+        return new String(finalChars) + unit;
+    }
+
+
 }

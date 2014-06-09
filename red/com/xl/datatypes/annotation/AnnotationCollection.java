@@ -28,6 +28,7 @@ import com.xl.datatypes.genome.Chromosome;
 import com.xl.datatypes.genome.Genome;
 import com.xl.display.featureviewer.Feature;
 import com.xl.interfaces.AnnotationCollectionListener;
+import com.xl.utils.MessageUtils;
 
 /**
  * The Class AnnotationCollection is the main object through which annotation
@@ -35,179 +36,172 @@ import com.xl.interfaces.AnnotationCollectionListener;
  */
 public class AnnotationCollection {
 
-	/** The genome. */
-	private Genome genome;
+    /**
+     * The genome.
+     */
+    private Genome genome;
 
-	/** The annotation sets. */
-	private Vector<AnnotationSet> annotationSets = new Vector<AnnotationSet>();
+    /**
+     * The annotation sets.
+     */
+    private Vector<AnnotationSet> annotationSets = new Vector<AnnotationSet>();
 
-	/** The listeners. */
-	private Vector<AnnotationCollectionListener> listeners = new Vector<AnnotationCollectionListener>();
+    /**
+     * The listeners.
+     */
+    private Vector<AnnotationCollectionListener> listeners = new Vector<AnnotationCollectionListener>();
 
-	/**
-	 * Instantiates a new annotation collection.
-	 * 
-	 * @param genome
-	 *            the genome
-	 */
-	public AnnotationCollection(Genome genome) {
-		this.genome = genome;
-	}
+    /**
+     * Instantiates a new annotation collection.
+     *
+     * @param genome the genome
+     */
+    public AnnotationCollection(Genome genome) {
+        this.genome = genome;
+    }
 
-	/**
-	 * Anotation sets.
-	 * 
-	 * @return the annotation set[]
-	 */
-	public AnnotationSet[] anotationSets() {
-		return annotationSets.toArray(new AnnotationSet[0]);
-	}
+    /**
+     * Anotation sets.
+     *
+     * @return the annotation set[]
+     */
+    public AnnotationSet[] anotationSets() {
+        return annotationSets.toArray(new AnnotationSet[0]);
+    }
 
-	/**
-	 * Adds the annotation collection listener.
-	 * 
-	 * @param l
-	 *            the l
-	 */
-	public void addAnnotationCollectionListener(AnnotationCollectionListener l) {
-		if (l != null && !listeners.contains(l)) {
-			listeners.add(l);
-		}
-	}
+    /**
+     * Adds the annotation collection listener.
+     *
+     * @param l the l
+     */
+    public void addAnnotationCollectionListener(AnnotationCollectionListener l) {
+        if (l != null && !listeners.contains(l)) {
+            listeners.add(l);
+        }
+    }
 
-	/**
-	 * Removes the annotation collection listener.
-	 * 
-	 * @param l
-	 *            the l
-	 */
-	public void removeAnnotationCollectionListener(
-			AnnotationCollectionListener l) {
-		if (l != null && listeners.contains(l)) {
-			listeners.remove(l);
-		}
-	}
+    /**
+     * Removes the annotation collection listener.
+     *
+     * @param l the l
+     */
+    public void removeAnnotationCollectionListener(
+            AnnotationCollectionListener l) {
+        if (l != null && listeners.contains(l)) {
+            listeners.remove(l);
+        }
+    }
 
-	/**
-	 * Adds multiple annotation sets in an efficient manner.
-	 * 
-	 * @param annotationSets
-	 *            the annotation sets to add
-	 */
-	public void addAnnotationSets(AnnotationSet[] newSets) {
-		System.out.println(this.getClass().getName()
-				+ ":addAnnotationSets(AnnotationSet[] newSets)\t"
-				+ newSets.length);
-		for (int s = 0; s < newSets.length; s++) {
+    /**
+     * Adds multiple annotation sets in an efficient manner.
+     *
+     * @param newSets the annotation sets to add
+     */
+    public void addAnnotationSets(AnnotationSet[] newSets) {
+        MessageUtils.showInfo(AnnotationCollection.class, "addAnnotationSets(AnnotationSet[] newSets)\t" + newSets.length);
+        for (int s = 0; s < newSets.length; s++) {
 
-			if (newSets[s].genome() != genome) {
-				throw new IllegalArgumentException(
-						"Annotation set genome doesn't match annotation collection");
-			}
-			annotationSets.add(newSets[s]);
-			newSets[s].setCollection(this);
-		}
+            if (newSets[s].genome() != genome) {
+                throw new IllegalArgumentException(
+                        "Annotation set genome doesn't match annotation collection");
+            }
+            annotationSets.add(newSets[s]);
+            newSets[s].setCollection(this);
+        }
 
-		Enumeration<AnnotationCollectionListener> l = listeners.elements();
-		while (l.hasMoreElements()) {
-			l.nextElement().annotationSetsAdded(newSets);
-		}
-	}
+        Enumeration<AnnotationCollectionListener> l = listeners.elements();
+        while (l.hasMoreElements()) {
+            l.nextElement().annotationSetsAdded(newSets);
+        }
+    }
 
-	/**
-	 * Removes the annotation set.
-	 * 
-	 * @param annotationSet
-	 *            the annotation set
-	 */
-	protected void removeAnnotationSet(AnnotationSet annotationSet) {
+    /**
+     * Removes the annotation set.
+     *
+     * @param annotationSet the annotation set
+     */
+    protected void removeAnnotationSet(AnnotationSet annotationSet) {
 
-		// Notify before removing to not mess up the data tree
-		Enumeration<AnnotationCollectionListener> l = listeners.elements();
-		while (l.hasMoreElements()) {
-			l.nextElement().annotationSetRemoved(annotationSet);
-		}
+        // Notify before removing to not mess up the data tree
+        Enumeration<AnnotationCollectionListener> l = listeners.elements();
+        while (l.hasMoreElements()) {
+            l.nextElement().annotationSetRemoved(annotationSet);
+        }
 
-		annotationSets.remove(annotationSet);
-	}
+        annotationSets.remove(annotationSet);
+    }
 
-	/**
-	 * Annotation set renamed.
-	 * 
-	 * @param set
-	 *            the set
-	 */
-	protected void annotationSetRenamed(AnnotationSet set) {
-		Enumeration<AnnotationCollectionListener> l = listeners.elements();
-		while (l.hasMoreElements()) {
-			l.nextElement().annotationSetRenamed(set);
-		}
-	}
+    /**
+     * Annotation set renamed.
+     *
+     * @param set the set
+     */
+    protected void annotationSetRenamed(AnnotationSet set) {
+        Enumeration<AnnotationCollectionListener> l = listeners.elements();
+        while (l.hasMoreElements()) {
+            l.nextElement().annotationSetRenamed(set);
+        }
+    }
 
-	/**
-	 * Annotation features renamed.
-	 * 
-	 * @param set
-	 *            the set
-	 */
-	protected void annotationFeaturesRenamed(AnnotationSet set, String name) {
-		Enumeration<AnnotationCollectionListener> l = listeners.elements();
-		while (l.hasMoreElements()) {
-			l.nextElement().annotationFeaturesRenamed(set, name);
-		}
-	}
+    /**
+     * Annotation features renamed.
+     *
+     * @param set the set
+     */
+    protected void annotationFeaturesRenamed(AnnotationSet set, String name) {
+        Enumeration<AnnotationCollectionListener> l = listeners.elements();
+        while (l.hasMoreElements()) {
+            l.nextElement().annotationFeaturesRenamed(set, name);
+        }
+    }
 
-	/**
-	 * Gets the features for type.
-	 * 
-	 * @param c
-	 *            the c
-	 * @param type
-	 *            the type
-	 * @return the features for type
-	 */
-	public Feature[] getFeaturesForChr(Chromosome c) {
-		Vector<Feature> features = new Vector<Feature>();
-		Enumeration<AnnotationSet> sets = annotationSets.elements();
-		while (sets.hasMoreElements()) {
-//			System.out.println(this.getClass().getName()+":"+c.getName());
-			Feature[] f = sets.nextElement().getFeaturesForChr(c.getName());
-			for (int i = 0; i < f.length; i++) {
-				features.add(f[i]);
-			}
-		}
+    /**
+     * Gets the features for type.
+     *
+     * @param c the c
+     * @return the features for type
+     */
+    public Feature[] getFeaturesForChr(Chromosome c) {
+        Vector<Feature> features = new Vector<Feature>();
+        Enumeration<AnnotationSet> sets = annotationSets.elements();
+        while (sets.hasMoreElements()) {
+            Feature[] f = sets.nextElement().getFeaturesForChr(c.getName());
+            for (int i = 0; i < f.length; i++) {
+                features.add(f[i]);
+            }
+        }
 
-		Feature[] allFeatures = features.toArray(new Feature[0]);
-		Arrays.sort(allFeatures);
-		return allFeatures;
-	}
-	
-	public Feature[] getFeaturesForName(String name) {
-		Vector<Feature> features = new Vector<Feature>();
-		Enumeration<AnnotationSet> sets = annotationSets.elements();
-		while (sets.hasMoreElements()) {
-			Feature f = sets.nextElement().getFeaturesForName(name);
-			if (f != null) {
-				features.add(f);
-			}
-		}
-		Feature[] allFeatures = features.toArray(new Feature[0]);
-		Arrays.sort(allFeatures);
-		return allFeatures;
-	}
-	
-	public Feature[] getFeatureForLocation(int location){
-		Vector<Feature> features = new Vector<Feature>();
-		Enumeration<AnnotationSet> sets = annotationSets.elements();
-		while (sets.hasMoreElements()) {
-			Feature f = sets.nextElement().getFeatrueForLocation(location);
-			if (f != null) {
-				features.add(f);
-			}
-		}
-		Feature[] allFeatures = features.toArray(new Feature[0]);
-		Arrays.sort(allFeatures);
-		return allFeatures;
-	}
-	
+        Feature[] allFeatures = features.toArray(new Feature[0]);
+        Arrays.sort(allFeatures);
+        return allFeatures;
+    }
+
+    public Feature[] getFeaturesForName(String name) {
+        Vector<Feature> features = new Vector<Feature>();
+        Enumeration<AnnotationSet> sets = annotationSets.elements();
+        while (sets.hasMoreElements()) {
+            Feature f = sets.nextElement().getFeaturesForName(name);
+            if (f != null) {
+                features.add(f);
+            }
+        }
+        Feature[] allFeatures = features.toArray(new Feature[0]);
+        Arrays.sort(allFeatures);
+        return allFeatures;
+    }
+
+    public Feature[] getFeatureForLocation(int location) {
+        Vector<Feature> features = new Vector<Feature>();
+        Enumeration<AnnotationSet> sets = annotationSets.elements();
+        while (sets.hasMoreElements()) {
+            Feature f = sets.nextElement().getFeatrueForLocation(location);
+            if (f != null) {
+                features.add(f);
+            }
+        }
+        Feature[] allFeatures = features.toArray(new Feature[0]);
+        Arrays.sort(allFeatures);
+        return allFeatures;
+    }
+
 }
