@@ -40,6 +40,25 @@ public class ColourScheme {
 	/** An active feature or read */
 	public static final Color ACTIVE_FEATURE = Color.YELLOW;
 
+    /**
+     * The standard color of base 'A' defined by ucsc.
+     */
+    public static final Color BASE_A = Color.GREEN;
+    /**
+     * The standard color of base 'G' defined by ucsc.
+     */
+    public static final Color BASE_G = Color.BLACK;
+    /**
+     * The standard color of base 'T' defined by ucsc.
+     */
+    public static final Color BASE_T = Color.RED;
+    /**
+     * The standard color of base 'C' defined by ucsc.
+     */
+    public static final Color BASE_C = Color.BLUE;
+
+    public static final Color BASE_UNKNOWN = Color.DARK_GRAY;
+
 	/** A feature at the same position as the active feature */
 	public static final Color ACTIVE_FEATURE_MATCH = new Color(0,180,0);
 	
@@ -64,15 +83,6 @@ public class ColourScheme {
 	/** The fill colour for histogram bars */
 	public static final Color HIGHLIGHTED_HISTOGRAM_BAR = Color.RED;
 
-	/** The fill colour for boxwhisker plots */
-	public static final Color BOXWHISKER_FILL = Color.YELLOW;
-
-	/** The colour for boxwhisker outliers above the mean */
-	public static final Color BOXWHISKER_OURLIERS_ABOVE = Color.RED;
-
-	/** The fill colour for boxwhisker plots */
-	public static final Color BOXWHISKER_OUTLIERS_BELOW = Color.BLUE;
-
 	/** The Chromosome colour in the genome view */
 	public static final Color GENOME_CHROMOSOME = new Color(100,100,255);
 	
@@ -91,12 +101,6 @@ public class ColourScheme {
 	/** The list colour for replicate sets */
 	public static final Color REPLICATE_SET_LIST = new Color(140,0,140);
 
-	/** The list colour for quantitations not requiring existing quantitation **/
-	public static final Color NON_EXISTING_QUANTITATION = REVERSE_FEATURE;
-	
-	/** The list colour for quantitations requiring existing quantitation **/
-	public static final Color EXISTING_QUANTIATION = FORWARD_FEATURE;
-	
 	/** The list colour for quantitations requiring HiC data **/
 	public static final Color HIC_QUANTITATION = ACTIVE_FEATURE_MATCH;
 
