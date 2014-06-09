@@ -71,7 +71,7 @@ public class SequenceRead implements Location {
         return readBases;
     }
 
-    public byte getReadBases(int index) {
+    public byte getReadBaseAt(int index) {
         return readBases[index];
     }
 

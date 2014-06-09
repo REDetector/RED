@@ -620,7 +620,7 @@ public class DataSet extends DataStore implements Runnable {
             }
 
 
-            if (DataSet.this.removeDuplicates) {
+            if (removeDuplicates) {
                 List<SequenceRead> seqTmp = new ArrayList<SequenceRead>();
                 SequenceRead lastRead = sequenceReads.get(0);
                 seqTmp.add(sequenceReads.get(0));

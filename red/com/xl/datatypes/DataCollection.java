@@ -28,6 +28,7 @@ import com.xl.datatypes.probes.ProbeSet;
 import com.xl.exception.REDException;
 import com.xl.interfaces.DataChangeListener;
 import com.xl.main.REDApplication;
+import com.xl.utils.MessageUtils;
 
 /**
  * The Class DataCollection is the main data storage object through
@@ -177,8 +178,8 @@ public class DataCollection {
 	public void addDataSet (DataSet data) {
 		dataSets.add(data);
 		data.setCollection(this);
-		System.out.println(this.getClass().getName()+":addDataSet (DataSet data)\t"+dataSets.size());
-		
+        MessageUtils.showInfo(DataCollection.class, "addDataSet (DataSet data)" + dataSets.size());
+
 		// We need to let this dataset know about the
 		// current probset.
 		data.probeSetReplaced(probeSet());
