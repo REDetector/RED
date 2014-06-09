@@ -24,6 +24,7 @@ import com.xl.datatypes.DataStore;
 import com.xl.datatypes.sequence.SequenceRead;
 import com.xl.interfaces.HiCDataStore;
 import com.xl.preferences.DisplayPreferences;
+import com.xl.utils.AsciiUtils;
 import com.xl.utils.ColourScheme;
 import com.xl.utils.SequenceReadUtils;
 import com.xl.utils.Strand;
@@ -34,6 +35,9 @@ import java.awt.event.InputEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
+import java.nio.ByteBuffer;
+import java.nio.CharBuffer;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
@@ -86,7 +90,6 @@ public class ChromosomeDataTrack extends JPanel implements MouseListener,
      */
     private int activeReadIndex;
 
-    /** Stores the packed slot index for each read in this display */
     /**
      * Stores the Y axis base position for each lane of sequence reads
      */
@@ -319,25 +322,25 @@ public class ChromosomeDataTrack extends JPanel implements MouseListener,
     /**
      * Draw read.
      *
-     * @param r     the r
+     * @param read  the r
      * @param index the index
      * @param g     the g
      */
-    private void drawStringRead(SequenceRead r, int index, Graphics g, int viewerCurrentStart, int viewerCurrentEnd) {
+    private void drawStringRead(SequenceRead read, int index, Graphics g, int viewerCurrentStart, int viewerCurrentEnd) {
 
-        int wholeXStart = bpToPixel(r.getStart(), viewerCurrentStart, viewerCurrentEnd);
-        int wholeXEnd = bpToPixel(r.getEnd(), viewerCurrentStart, viewerCurrentEnd);
+        int wholeXStart = bpToPixel(read.getStart(), viewerCurrentStart, viewerCurrentEnd);
+        int wholeXEnd = bpToPixel(read.getEnd(), viewerCurrentStart, viewerCurrentEnd);
 
 //        System.out.println("Drawing read from " + r.getStart() + "-" + r.getEnd() + " r.length() :"+r.length()+" " + wholeXStart + "-" + wholeXEnd+ " viewer end:"+(wholeXEnd-wholeXStart) + " viewerCurrentStart:"+viewerCurrentStart+ " viewerCurrentEnd:"+viewerCurrentEnd);
 
-        if (r == activeRead && index == activeReadIndex) {
+        if (read == activeRead && index == activeReadIndex) {
             g.setColor(ColourScheme.ACTIVE_FEATURE);
-        } else if (r == activeRead) {
+        } else if (read == activeRead) {
             g.setColor(ColourScheme.ACTIVE_FEATURE_MATCH);
         } else {
-            if (r.getStrand() == Strand.POSITIVE) {
+            if (read.getStrand() == Strand.POSITIVE) {
                 g.setColor(ColourScheme.FORWARD_FEATURE);
-            } else if (r.getStrand() == Strand.NEGATIVE) {
+            } else if (read.getStrand() == Strand.NEGATIVE) {
                 g.setColor(ColourScheme.REVERSE_FEATURE);
             } else {
                 g.setColor(ColourScheme.UNKNOWN_FEATURE);
@@ -359,17 +362,30 @@ public class ChromosomeDataTrack extends JPanel implements MouseListener,
         // System.out.println("Sequence Start: "+r.getLocation().getStart()+"\tSequence End:"+r.getLocation().getEnd());
         // System.out.println("Drawing read from "+wholeXStart+","+yBoxStart+","+wholeXEnd+","+yBoxEnd);
         drawnReads.add(new DrawnRead(wholeXStart, wholeXEnd, yBoxStart,
-                yBoxEnd, index, r));
-
-        // System.out.println("Drawing probe from x="+wholeXStart+" y="+yBoxStart+" width="+(wholeXEnd-wholeXStart)+" height="+(yBoxEnd-yBoxStart));
-        // g.fillRect((int)wholeXStart, yBoxStart, (int)(wholeXEnd -
-        // wholeXStart), yBoxEnd
-        // - yBoxStart);
-        g.drawRect(wholeXStart, yBoxStart, wholeXEnd - wholeXStart, readHeight);
-        g.setFont(new Font("TimesRoman", Font.PLAIN, readHeight));
-        g.drawString(new String(r.getReadBases()), wholeXStart, yBoxStart + readHeight);
+                yBoxEnd, index, read));
+        g.drawRoundRect(wholeXStart, yBoxStart, wholeXEnd - wholeXStart, readHeight, 3, 3);
+        byte[] readBases = read.getReadBases();
+        char[] cChar = AsciiUtils.getChars(readBases);
+        double basePixel = (double) (wholeXEnd - wholeXStart) / (readBases.length + 1);
+        g.setFont(new Font("Times New Roman", Font.PLAIN, readHeight));
+        for (int i = 0; i < cChar.length; i++) {
+            char c = cChar[i];
+            if (c == 'a' || c == 'A') {
+                g.setColor(ColourScheme.BASE_A);
+            } else if (c == 'g' || c == 'G') {
+                g.setColor(ColourScheme.BASE_G);
+            } else if (c == 't' || c == 'T') {
+                g.setColor(ColourScheme.BASE_T);
+            } else if (c == 'c' || c == 'C') {
+                g.setColor(ColourScheme.BASE_C);
+            } else {
+                g.setColor(ColourScheme.BASE_UNKNOWN);
+            }
+            g.drawString(String.valueOf(c), (int) (wholeXStart + basePixel * i + basePixel / 2), yBoxEnd);
+        }
 
     }
+
 
     /**
      * Pixel to bp.
