@@ -211,10 +211,10 @@ public class IGVGenomeParser implements Runnable {
                 genome.setCytobands(cytobandMap);
             }
 
-            Collection<Collection<String>> aliases = loadChrAliases(genomeDescripter);
-            if (aliases != null) {
-                genome.addChrAliases(aliases);
-            }
+//            Collection<Collection<String>> aliases = loadChrAliases(genomeDescripter);
+//            if (aliases != null) {
+//                genome.addChrAliases(aliases);
+//            }
 
             InputStream geneStream = null;
             String geneFileName = genomeDescripter.getGeneFileName();
@@ -259,9 +259,6 @@ public class IGVGenomeParser implements Runnable {
             // TODO Auto-generated catch block
             e.printStackTrace();
         } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (REDException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
         } finally {

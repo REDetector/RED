@@ -20,18 +20,6 @@ package com.xl.display.chromosomeviewer;
  *    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-import java.awt.BorderLayout;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Rectangle;
-import java.awt.event.MouseWheelEvent;
-import java.awt.event.MouseWheelListener;
-import java.util.Enumeration;
-import java.util.Vector;
-
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-
 import com.xl.datatypes.DataGroup;
 import com.xl.datatypes.DataSet;
 import com.xl.datatypes.DataStore;
@@ -46,6 +34,13 @@ import com.xl.interfaces.DisplayPreferencesListener;
 import com.xl.main.REDApplication;
 import com.xl.preferences.DisplayPreferences;
 import com.xl.utils.PositionFormat;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.MouseWheelEvent;
+import java.awt.event.MouseWheelListener;
+import java.util.Enumeration;
+import java.util.Vector;
 
 /**
  * The ChromosomeViewer represents all of the tracks contained in the chromosome
@@ -253,13 +248,13 @@ public class ChromosomeViewer extends JPanel implements DataChangeListener,
         gridBagConstraints.gridy = 0;
         gridBagConstraints.fill = GridBagConstraints.BOTH;
         gridBagConstraints.weightx = 1;
-        gridBagConstraints.weighty = 0.1;
+        gridBagConstraints.weighty = 0.05;
 
         featurePanel.add(featureTrack, gridBagConstraints);
         gridBagConstraints.gridy++;
 
         // We weight the data tracks six times as heavily as the feature tracks
-        gridBagConstraints.weighty = 0.2;
+        gridBagConstraints.weighty = 0.3;
         Enumeration<ChromosomeDataTrack> e2 = dataTracks.elements();
         while (e2.hasMoreElements()) {
             featurePanel.add(e2.nextElement(), gridBagConstraints);

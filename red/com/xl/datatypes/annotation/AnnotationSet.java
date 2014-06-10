@@ -20,25 +20,14 @@ package com.xl.datatypes.annotation;
  *    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.util.Enumeration;
-import java.util.Hashtable;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.Vector;
-
 import com.xl.datatypes.genome.Genome;
 import com.xl.dialog.CrashReporter;
 import com.xl.display.featureviewer.Feature;
 import com.xl.main.REDApplication;
 import com.xl.preferences.REDPreferences;
+
+import java.io.*;
+import java.util.*;
 
 /**
  * AnnotationSet represents a set of genome annotations deriving from a single
@@ -53,7 +42,7 @@ public class AnnotationSet {
 
     private boolean finalised = false;
     /*
-	 * We store features by chromosome. Within each chromosome we store by
+     * We store features by chromosome. Within each chromosome we store by
 	 * feature type for quick access and then within that we store a vector of
 	 * features.
 	 */
@@ -100,7 +89,7 @@ public class AnnotationSet {
      * features in the set.
      *
      * @return An enumeration of all chromosome names which have data in this
-     *         set.
+     * set.
      */
     public Enumeration<String> getChromosomeNames() {
         return featureSet.getChromosomeNames();
@@ -249,7 +238,7 @@ public class AnnotationSet {
         private Hashtable<String, FeatureTypeCollection> chrFeatures = new Hashtable<String, FeatureTypeCollection>();
 
         public FeatureSet() {
-            String[] chromosomeNames = genome.getAllChromosomeNamesString();
+            String[] chromosomeNames = genome.getAllChromosomeNames();
             if (chromosomeNames != null) {
                 for (String chrosmomeName : chromosomeNames) {
                     FeatureTypeCollection t = new FeatureTypeCollection(chrosmomeName);

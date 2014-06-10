@@ -20,17 +20,17 @@ package com.xl.datatypes.annotation;
  *    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.PrintWriter;
-
 import com.xl.datatypes.genome.Chromosome;
 import com.xl.datatypes.genome.Genome;
 import com.xl.datatypes.genome.GenomeDescripter;
 import com.xl.dialog.CrashReporter;
 import com.xl.main.REDApplication;
 import com.xl.preferences.REDPreferences;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.PrintWriter;
 
 /**
  * The Class CoreAnnotationSet is an extension of AnnotationSet reserved for use
@@ -114,7 +114,7 @@ public class CoreAnnotationSet extends AnnotationSet {
                     + genome.getDisplayName() + "/cache/chr_list");
             PrintWriter pr = new PrintWriter(chrListFile);
 
-            Chromosome[] chrs = genome.getChromosomes().toArray(new Chromosome[0]);
+            Chromosome[] chrs = genome.getAllChromosomes();
             for (int c = 0; c < chrs.length; c++) {
                 pr.println(chrs[c].getName() + "\t" + chrs[c].getLength());
             }
