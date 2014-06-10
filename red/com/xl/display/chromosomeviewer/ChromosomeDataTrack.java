@@ -35,9 +35,6 @@ import java.awt.event.InputEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
-import java.nio.ByteBuffer;
-import java.nio.CharBuffer;
-import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
@@ -90,6 +87,7 @@ public class ChromosomeDataTrack extends JPanel implements MouseListener,
      */
     private int activeReadIndex;
 
+    /** Stores the packed slot index for each read in this display */
     /**
      * Stores the Y axis base position for each lane of sequence reads
      */
@@ -101,6 +99,9 @@ public class ChromosomeDataTrack extends JPanel implements MouseListener,
     private int maxCoverage = -1;
     private List<Integer> seqIndex = null;
 
+    private List<Integer> overlapReads = null;
+
+    private int overlapIndex = 0;
     /** The amount of space between reads */
     // private int readWitdhSpace = 2;
 
@@ -144,6 +145,7 @@ public class ChromosomeDataTrack extends JPanel implements MouseListener,
 //        }
 
         // Reads should come ready sorted
+        overlapReads = new ArrayList<Integer>();
         seqIndex = processSequence();
         // Force the slots to be reassigned
         displayHeight = 0;
@@ -304,13 +306,18 @@ public class ChromosomeDataTrack extends JPanel implements MouseListener,
         for (int i = seqIndex.size() - 1; i >= 0; i--) {
             if ((index - seqIndex.get(i) >= 0)
                     && (index - seqIndex.get(i) < maxCoverage)) {
-                yBoxStart = slotYValues[index - seqIndex.get(i)];
+                if (!overlapReads.contains(index)) {
+                    yBoxStart = slotYValues[index - seqIndex.get(i)];
+                } else {
+                    yBoxStart = (seqIndex.get(i) - seqIndex.get(i - 1) + overlapIndex++) * readHeight;
+                }
 //				System.out.println("Sequence Index: " + index + "\tSeqIndex:"
 //						+ seqIndex.get(i) + "\tyBoxStart:" + yBoxStart
 //						+ "\tmaxCoverage:" + maxCoverage);
                 break;
             }
         }
+
 
         // System.out.println("Sequence Start: "+r.getLocation().getStart()+"\tSequence End:"+r.getLocation().getEnd());
         // System.out.println("Drawing read from "+wholeXStart+","+yBoxStart+","+wholeXEnd+","+yBoxEnd);
@@ -350,7 +357,11 @@ public class ChromosomeDataTrack extends JPanel implements MouseListener,
         for (int i = seqIndex.size() - 1; i >= 0; i--) {
             if ((index - seqIndex.get(i) >= 0)
                     && (index - seqIndex.get(i) < maxCoverage)) {
-                yBoxStart = slotYValues[index - seqIndex.get(i)];
+                if (!overlapReads.contains(index)) {
+                    yBoxStart = slotYValues[index - seqIndex.get(i)];
+                } else {
+                    yBoxStart = (seqIndex.get(i) - seqIndex.get(i - 1) + overlapIndex++) * readHeight;
+                }
 //				System.out.println("Sequence Index: " + index + "\tSeqIndex:"
 //						+ seqIndex.get(i) + "\tyBoxStart:" + yBoxStart
 //						+ "\tmaxCoverage:" + maxCoverage);
@@ -550,19 +561,35 @@ public class ChromosomeDataTrack extends JPanel implements MouseListener,
 //			}
 //			fw.close();
 //		} catch (IOException e) {
-//			// TODO Auto-generated catch block
 //			e.printStackTrace();
 //		}
 
         List<Integer> seqIndexCoverage = new ArrayList<Integer>();
+
         int j = 0;
-        for (int index = 0; index < reads.length; index++) {
+        //Add the first index of column.
+        seqIndexCoverage.add(j);
+        int index = 0;
+        int lastSecondIndex = index;
+        boolean lastSecondIndexCache = false;
+        for (index = 0; index < reads.length; index++) {
+            if (!lastSecondIndexCache) {
+                lastSecondIndex = index;
+                lastSecondIndexCache = true;
+            }
+            if (j >= 1) {
+                if (SequenceReadUtils.overlaps(reads[index], reads[index - j + lastSecondIndex])) {
+                    overlapReads.add(index);
+                }
+            }
             if (!SequenceReadUtils.overlaps(reads[index], reads[j])) {
                 seqIndexCoverage.add(index);
+
                 if (maxCoverage < index - j) {
                     maxCoverage = index - j;
                 }
                 j = index;
+                lastSecondIndexCache = false;
             }
         }
 //		File file = new File("D:/test.txt");
