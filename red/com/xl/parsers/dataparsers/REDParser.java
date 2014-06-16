@@ -20,26 +20,10 @@ package com.xl.parsers.dataparsers;
  *    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.Enumeration;
-import java.util.Vector;
-import java.util.zip.GZIPInputStream;
-
-import net.xl.genomes.GenomeDownloader;
-
-import com.xl.datatypes.DataGroup;
-import com.xl.datatypes.DataSet;
-import com.xl.datatypes.DataStore;
-import com.xl.datatypes.PairedDataSet;
-import com.xl.datatypes.ReplicateSet;
+import com.xl.datatypes.*;
 import com.xl.datatypes.annotation.AnnotationSet;
 import com.xl.datatypes.genome.Genome;
+import com.xl.datatypes.genome.GenomeDescriptor;
 import com.xl.datatypes.probes.Probe;
 import com.xl.datatypes.probes.ProbeList;
 import com.xl.datatypes.probes.ProbeSet;
@@ -54,7 +38,14 @@ import com.xl.main.REDApplication;
 import com.xl.parsers.annotationparsers.IGVGenomeParser;
 import com.xl.preferences.DisplayPreferences;
 import com.xl.preferences.REDPreferences;
+import com.xl.utils.GenomeUtils;
 import com.xl.utils.Strand;
+import net.xl.genomes.GenomeDownloader;
+
+import java.io.*;
+import java.util.Enumeration;
+import java.util.Vector;
+import java.util.zip.GZIPInputStream;
 
 /**
  * The SeqMonkParser reads the main SeqMonk file format. It is different to all
@@ -82,6 +73,7 @@ public class REDParser implements Runnable, ProgressListener {
     private boolean pauseWhilstLoadingGenome = false;
     private Probe[] probes;
     private int thisDataVersion = -1;
+    private boolean parseGenomeComplete = false;
 
     /**
      * Instantiates a new red parser.
@@ -203,7 +195,7 @@ public class REDParser implements Runnable, ProgressListener {
                     }
                     parseLists(sections);
                 } else if (sections[0].equals("Genome")) {
-                    parseGenome(sections);
+                    parseGenome();
                 } else if (sections[0].equals("Visible Stores")) {
                     if (!genomeLoaded) {
                         throw new REDException(
@@ -326,24 +318,25 @@ public class REDParser implements Runnable, ProgressListener {
     /**
      * Parses the genome line.
      *
-     * @param sections The tab split sections from the genome line
      * @throws REDException
      */
-    private void parseGenome(String[] sections) throws Exception {
+    private void parseGenome() throws Exception {
         System.out.println(this.getClass().getName() + ":parseGenome()");
-        if (sections.length != 3) {
-            throw new REDException("Genome line didn't contain 3 sections");
-        }
-        if (!sections[0].equals("Genome")) {
-            throw new REDException(
-                    "First line of file was not the genome description");
+        String line;
+        String[] sections = null;
+        while ((line = br.readLine()) != null) {
+            sections = line.split("\\t");
+            setProperties(sections[0], sections[1]);
+            if (parseGenomeComplete) {
+                break;
+            }
         }
 
         File f;
         try {
             f = new File(REDPreferences.getInstance().getGenomeBase()
                     .getAbsoluteFile()
-                    + File.separator + sections[2] + File.separator + sections[1] + ".genome");
+                    + File.separator + GenomeDescriptor.getInstance().getDisplayName() + File.separator + GenomeDescriptor.getInstance().getGenomeId() + ".genome");
             System.out.println(this.getClass().getName() + ":" + f.getAbsolutePath());
         } catch (FileNotFoundException e) {
             throw new REDException(
@@ -356,7 +349,7 @@ public class REDParser implements Runnable, ProgressListener {
             ProgressDialog progressDialog = new ProgressDialog(application,
                     "Downloading genome...");
             d.addProgressListener(progressDialog);
-            d.downloadGenome(sections[1], sections[2], true);
+            d.downloadGenome(GenomeDescriptor.getInstance().getGenomeId(), GenomeDescriptor.getInstance().getDisplayName(), true);
             progressDialog.requestFocus();
             pauseWhilstLoadingGenome = true;
             while (pauseWhilstLoadingGenome) {
@@ -379,6 +372,43 @@ public class REDParser implements Runnable, ProgressListener {
             }
         }
 
+    }
+
+    private void setProperties(String key, String value) {
+        if (value == null) {
+            return;
+        }
+        if (key.equals(GenomeUtils.KEY_CHR_ALIAS_FILE_NAME)) {
+            GenomeDescriptor.getInstance().setChrAliasFileName(value);
+        } else if (key.equals(GenomeUtils.KEY_CHR_NAMES_ALTERED)) {
+            GenomeDescriptor.getInstance().setChrNamesAltered(Boolean.parseBoolean(value));
+        } else if (key.equals(GenomeUtils.KEY_CHROMOSOMES_ARE_ORDERED)) {
+            GenomeDescriptor.getInstance().setChromosomesAreOrdered(Boolean.parseBoolean(value));
+        } else if (key.equals(GenomeUtils.KEY_CYTOBAND_FILE_NAME)) {
+            GenomeDescriptor.getInstance().setCytoBandFileName(value);
+        } else if (key.equals(GenomeUtils.KEY_DISPLAY_NAME)) {
+            GenomeDescriptor.getInstance().setDisplayName(value);
+        } else if (key.equals(GenomeUtils.KEY_FASTA)) {
+            GenomeDescriptor.getInstance().setFasta(Boolean.parseBoolean(value));
+        } else if (key.equals(GenomeUtils.KEY_FASTA_DIRECTORY)) {
+            GenomeDescriptor.getInstance().setFastaDirectory(Boolean.parseBoolean(value));
+        } else if (key.equals(GenomeUtils.KEY_FASTA_FILE_NAME_STRING)) {
+            GenomeDescriptor.getInstance().setFastaFileNames(value.split(","));
+        } else if (key.equals(GenomeUtils.KEY_GENE_FILE_NAME)) {
+            GenomeDescriptor.getInstance().setGeneFileName(value);
+        } else if (key.equals(GenomeUtils.KEY_GENE_TRACK_NAME)) {
+            GenomeDescriptor.getInstance().setGeneTrackName(value);
+        } else if (key.equals(GenomeUtils.KEY_GENOME_ID)) {
+            GenomeDescriptor.getInstance().setGenomeId(value);
+        } else if (key.equals(GenomeUtils.KEY_HAS_CUSTOM_SEQUENCE_LOCATION)) {
+            GenomeDescriptor.getInstance().setHasCustomSequenceLocation(Boolean.parseBoolean(value));
+        } else if (key.equals(GenomeUtils.KEY_SEQUENCE_LOCATION)) {
+            GenomeDescriptor.getInstance().setSequenceLocation(value);
+        } else if (key.equals(GenomeUtils.KEY_URL)) {
+            GenomeDescriptor.getInstance().setUrl(value);
+        } else if (key.equals(GenomeUtils.PARSE_GENOME_COMPLETE)) {
+            parseGenomeComplete = true;
+        }
     }
 
     /**
@@ -897,7 +927,7 @@ public class REDParser implements Runnable, ProgressListener {
 
             if (i == 0) {
                 /*
-				 * Older versions of this format put down data for just
+                 * Older versions of this format put down data for just
 				 * datasets. Newer versions include data for datagroups as well.
 				 * We need to figure out which one we're looking at
 				 */
@@ -942,7 +972,7 @@ public class REDParser implements Runnable, ProgressListener {
             probeSet.addProbe(probes[i], null);
 
 			/*
-			 * Our probe data lines have all of the dataset values first,
+             * Our probe data lines have all of the dataset values first,
 			 * followed by the datagroup values.
 			 */
 
