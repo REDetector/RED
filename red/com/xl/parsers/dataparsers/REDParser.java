@@ -39,6 +39,7 @@ import com.xl.parsers.annotationparsers.IGVGenomeParser;
 import com.xl.preferences.DisplayPreferences;
 import com.xl.preferences.REDPreferences;
 import com.xl.utils.GenomeUtils;
+import com.xl.utils.MessageUtils;
 import com.xl.utils.Strand;
 import net.xl.genomes.GenomeDownloader;
 
@@ -73,7 +74,6 @@ public class REDParser implements Runnable, ProgressListener {
     private boolean pauseWhilstLoadingGenome = false;
     private Probe[] probes;
     private int thisDataVersion = -1;
-    private boolean parseGenomeComplete = false;
 
     /**
      * Instantiates a new red parser.
@@ -323,13 +323,18 @@ public class REDParser implements Runnable, ProgressListener {
     private void parseGenome() throws Exception {
         System.out.println(this.getClass().getName() + ":parseGenome()");
         String line;
-        String[] sections = null;
+        String[] sections;
         while ((line = br.readLine()) != null) {
-            sections = line.split("\\t");
-            setProperties(sections[0], sections[1]);
-            if (parseGenomeComplete) {
+            if (line.equals(GenomeUtils.GENOME_INFORMATION_END)) {
+                MessageUtils.showInfo(GenomeUtils.GENOME_INFORMATION_END);
                 break;
             }
+            sections = line.split("\\t");
+            if (sections.length == 2) {
+                MessageUtils.showInfo(sections[0] + "\t" + sections[1]);
+                setProperties(sections[0], sections[1]);
+            }
+
         }
 
         File f;
@@ -406,8 +411,6 @@ public class REDParser implements Runnable, ProgressListener {
             GenomeDescriptor.getInstance().setSequenceLocation(value);
         } else if (key.equals(GenomeUtils.KEY_URL)) {
             GenomeDescriptor.getInstance().setUrl(value);
-        } else if (key.equals(GenomeUtils.PARSE_GENOME_COMPLETE)) {
-            parseGenomeComplete = true;
         }
     }
 
@@ -456,29 +459,6 @@ public class REDParser implements Runnable, ProgressListener {
                         featureCount);
             }
             sections = br.readLine().split("\\t");
-            // Chromosome c;
-            // try {
-            // c = application.dataCollection().genome()
-            // .getChromosome(sections[1]).chromosome();
-            // } catch (Exception sme) {
-            // Enumeration<ProgressListener> e = listeners.elements();
-            // while (e.hasMoreElements()) {
-            // e.nextElement().progressWarningReceived(
-            // new REDException(
-            // "Annotation feature could not be mapped to chromosome '"
-            // + sections[1] + "'"));
-            // }
-            // continue;
-            // }
-            // Feature f = new Feature(sections[0], c.name());
-            // // TODO: Can we improve this to not use a Split Location each
-            // time?
-            // f.setLocation(new SplitLocation(sections[2]));
-            // for (int a = 3; a + 1 < sections.length; a += 2) {
-            // f.addAttribute(sections[a], sections[a + 1]);
-            // }
-
-            // set.addFeature(f);
             String name = sections[0];
             String chr = sections[1];
             Strand strand = Strand.parseStrand(sections[2]);
