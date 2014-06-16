@@ -25,7 +25,7 @@ import com.xl.datatypes.DataSet;
 import com.xl.datatypes.DataStore;
 import com.xl.datatypes.ReplicateSet;
 import com.xl.datatypes.genome.Chromosome;
-import com.xl.datatypes.genome.GenomeDescripter;
+import com.xl.datatypes.genome.GenomeDescriptor;
 import com.xl.datatypes.probes.ProbeList;
 import com.xl.datatypes.probes.ProbeSet;
 import com.xl.display.featureviewer.Feature;
@@ -226,7 +226,7 @@ public class ChromosomeViewer extends JPanel implements DataChangeListener,
         if (featurePanel == null)
             return;
 
-        String currentFeatureTrackName = GenomeDescripter.getInstance().getGeneTrackName();
+        String currentFeatureTrackName = GenomeDescriptor.getInstance().getGeneTrackName();
         Feature[] features = application.dataCollection().genome()
                 .getAnnotationCollection().getFeaturesForChr(chromosome);
         featureTrack = new ChromosomeFeatureTrack(this,
@@ -254,7 +254,7 @@ public class ChromosomeViewer extends JPanel implements DataChangeListener,
         gridBagConstraints.gridy++;
 
         // We weight the data tracks six times as heavily as the feature tracks
-        gridBagConstraints.weighty = 0.3;
+        gridBagConstraints.weighty = 0.5;
         Enumeration<ChromosomeDataTrack> e2 = dataTracks.elements();
         while (e2.hasMoreElements()) {
             featurePanel.add(e2.nextElement(), gridBagConstraints);
@@ -346,7 +346,7 @@ public class ChromosomeViewer extends JPanel implements DataChangeListener,
      * Moves the view a small amount left
      */
     public void moveLeft() {
-        // System.out.println(this.getClass().getName()+":moveLeft()");
+        // System.out.println(this.getClass().getDisplayName()+":moveLeft()");
         int currentWidth = (currentEnd - currentStart) + 1;
         int interval = currentWidth / 10;
         if (currentStart < interval + 1)
@@ -359,7 +359,7 @@ public class ChromosomeViewer extends JPanel implements DataChangeListener,
      * Moves the view a small amount right.
      */
     public void moveRight() {
-        // System.out.println(this.getClass().getName()+":moveRight()");
+        // System.out.println(this.getClass().getDisplayName()+":moveRight()");
         int currentWidth = (currentEnd - currentStart) + 1;
         int interval = currentWidth / 10;
         if (currentEnd + interval > chromosome.getLength())
@@ -575,7 +575,7 @@ public class ChromosomeViewer extends JPanel implements DataChangeListener,
             setView(displayPrefs.getCurrentStartLocation(),
                     displayPrefs.getCurrentEndLocation());
             int currentLength = (currentEnd - currentStart) + 1;
-
+//            MessageUtils.showInfo(ChromosomeViewer.class,"currentStart:"+displayPrefs.getCurrentStartLocation()+"\tcurrentEnd:"+displayPrefs.getCurrentEndLocation());
             String currentLengthString = PositionFormat
                     .formatLength(currentLength);
 
