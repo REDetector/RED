@@ -175,22 +175,22 @@ public class BAMFileParser extends DataParser {
                     }
                     try {
                         if (pairedEndImport && prefs.isHiC()) {
-                            System.out.println(this.getClass().getName() + ":getPairedEndHiCRead(samRecord);");
+//                            System.out.println(this.getClass().getName() + ":getPairedEndHiCRead(samRecord);");
                             SequenceRead[] reads = getPairedEndHiCRead(samRecord);
                             newData[f].addData(reads[0]);
                             newData[f].addData(reads[1]);
                         } else if (pairedEndImport && !separateSplicedReads) {
-                            System.out.println(this.getClass().getName() + ":getPairedEndRead(samRecord)");
+//                            System.out.println(this.getClass().getName() + ":getPairedEndRead(samRecord)");
                             SequenceRead read = getPairedEndRead(samRecord);
                             newData[f].addData(read);
                         } else if (separateSplicedReads) {
-                            System.out.println(this.getClass().getName() + ":getSplitSingleEndRead(samRecord)");
+//                            System.out.println(this.getClass().getName() + ":getSplitSingleEndRead(samRecord)");
                             SequenceRead[] reads = getSplitSingleEndRead(samRecord);
                             for (int r = 0; r < reads.length; r++) {
                                 newData[f].addData(reads[r]);
                             }
                         } else {
-                            System.out.println(this.getClass().getName() + ":else\tgetSingleEndRead(samRecord)");
+//                            System.out.println(this.getClass().getName() + ":else\tgetSingleEndRead(samRecord)");
                             SequenceRead read = getSingleEndRead(samRecord);
                             if (read != null) {
                                 newData[f].addData(read);

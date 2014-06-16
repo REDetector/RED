@@ -36,6 +36,7 @@ import com.xl.interfaces.ProgressListener;
 import com.xl.main.REDApplication;
 import com.xl.preferences.DisplayPreferences;
 import com.xl.preferences.REDPreferences;
+import com.xl.utils.GenomeUtils;
 
 import java.io.*;
 import java.util.Enumeration;
@@ -288,8 +289,9 @@ public class REDDataWriter implements Runnable, Cancellable {
     private void printGenome(PrintStream p) {
         // The next thing we need to do is to output the details of the genome
         // we're using
-        p.println("Genome");
+        p.println(GenomeUtils.GENOME_INFORMATION_START);
         p.println(GenomeDescriptor.getInstance().toString());
+        p.println(GenomeUtils.GENOME_INFORMATION_END);
     }
 
     /**
