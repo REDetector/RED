@@ -5,16 +5,18 @@ import com.xl.datatypes.annotation.CoreAnnotationSet;
 import com.xl.datatypes.annotation.Cytoband;
 import com.xl.datatypes.fasta.FastaDirectorySequence;
 import com.xl.datatypes.fasta.FastaIndexedSequence;
+import com.xl.datatypes.genome.Chromosome;
 import com.xl.datatypes.genome.Genome;
-import com.xl.datatypes.genome.GenomeDescripter;
+import com.xl.datatypes.genome.GenomeDescriptor;
 import com.xl.datatypes.sequence.IGVSequence;
 import com.xl.datatypes.sequence.Sequence;
 import com.xl.datatypes.sequence.SequenceWrapper;
-import com.xl.dialog.CrashReporter;
 import com.xl.exception.REDException;
 import com.xl.interfaces.ProgressListener;
 import com.xl.main.REDApplication;
+import com.xl.utils.ChromosomeUtils;
 import com.xl.utils.GeneType;
+import com.xl.utils.MessageUtils;
 import com.xl.utils.ParsingUtils;
 import com.xl.utils.filefilters.FileFilterImpl;
 
@@ -35,6 +37,7 @@ public class IGVGenomeParser implements Runnable {
      * The base location.
      */
     private File baseLocation = null;
+    private File genomeFile = null;
     private ZipFile zipFile = null;
     private FileInputStream fileInputStream = null;
     private ZipInputStream zipInputStream = null;
@@ -74,10 +77,14 @@ public class IGVGenomeParser implements Runnable {
     public void parseGenome(File baseLocation) {
         if (baseLocation.isDirectory()) {
             File[] files = baseLocation.listFiles(new FileFilterImpl("genome"));
-            this.baseLocation = files[0];
-        } else {
+            this.genomeFile = files[0];
             this.baseLocation = baseLocation;
+        } else {
+            this.genomeFile = baseLocation;
+            this.baseLocation = genomeFile.getParentFile();
         }
+        MessageUtils.showInfo(IGVGenomeParser.class, "genomeFile:" + genomeFile.getAbsolutePath());
+        MessageUtils.showInfo(IGVGenomeParser.class, "baseLocation:" + this.baseLocation.getAbsolutePath());
         Thread t = new Thread(this);
         t.start();
     }
@@ -112,8 +119,10 @@ public class IGVGenomeParser implements Runnable {
             }
         }
         if (cacheFailed) {
+            MessageUtils.showInfo(IGVGenomeParser.class, "parseNewGenome();");
             parseNewGenome();
         } else {
+            MessageUtils.showInfo(IGVGenomeParser.class, "reloadCacheGenome();");
             reloadCacheGenome();
         }
 
@@ -135,17 +144,19 @@ public class IGVGenomeParser implements Runnable {
         // up before we go on to add the actual feature sets.
         File chrListFile = new File(baseLocation.getAbsoluteFile() + "/cache/chr_list");
         try {
-//            BufferedReader br = ParsingUtils.openBufferedRead(chrListFile);
+            BufferedReader br = ParsingUtils.openBufferedRead(chrListFile);
 
-//            String line;
-//            while ((line = br.readLine()) != null) {
-//                String [] chrLen = line.split("\\t");
-//                Chromosome c = genome.addChromosome(chrLen[0]);
-//                c.setLength(Integer.parseInt(chrLen[1]));
-//
-//            }
+            String line;
+            while ((line = br.readLine()) != null) {
+                String[] chrLen = line.split("\\t");
+                if (ChromosomeUtils.isStandardChromosomeName(chrLen[0])) {
+                    Chromosome c = new Chromosome(chrLen[0], Integer.parseInt(chrLen[1]));
+                    genome.addChromosome(c);
+                }
+            }
         } catch (Exception e) {
-            new CrashReporter(e);
+//            new CrashReporter(e);
+            e.printStackTrace();
         }
 
         File[] cacheFiles = cacheDir.listFiles(new FileFilterImpl("cache"));
@@ -154,31 +165,29 @@ public class IGVGenomeParser implements Runnable {
 
             String name = cacheFiles[i].getName();
             name = name.replaceAll("\\.cache$", "");
-            String[] chrType = name.split("%", 2);
-            if (chrType.length != 2) {
-                throw new IllegalStateException("Cache name '" + name + "' didn't split into chr and type");
+            if (ChromosomeUtils.isStandardChromosomeName(name)) {
+                coreAnnotation.addPreCachedFile(name, cacheFiles[i]);
             }
-            coreAnnotation.addPreCachedFile(chrType[0], cacheFiles[i]);
         }
         genome.getAnnotationCollection().addAnnotationSets(new AnnotationSet[]{coreAnnotation});
+        progressComplete("load_genome", genome);
     }
 
     private void parseNewGenome() {
         try {
-            System.out.println(baseLocation.getAbsolutePath());
-            GenomeDescripter genomeDescripter = parseGenomeArchiveFile(baseLocation);
-            final String id = genomeDescripter.getId();
-            final String displayName = genomeDescripter.getName();
+            GenomeDescriptor genomeDescriptor = parseGenomeArchiveFile(genomeFile);
+            final String id = genomeDescriptor.getGenomeId();
+            final String displayName = genomeDescriptor.getDisplayName();
 
-            boolean isFasta = genomeDescripter.isFasta();
-            String[] fastaFileNames = genomeDescripter.getFastaFileNames();
+            boolean isFasta = genomeDescriptor.isFasta();
+            String[] fastaFileNames = genomeDescriptor.getFastaFileNames();
 
             LinkedHashMap<String, List<Cytoband>> cytobandMap = null;
-            if (genomeDescripter.hasCytobands()) {
+            if (genomeDescriptor.hasCytobands()) {
                 cytobandMap = loadCytoBandFile();
             }
 
-            String sequenceLocation = genomeDescripter.getSequenceLocation();
+            String sequenceLocation = genomeDescriptor.getSequenceLocation();
             Sequence sequence = null;
             boolean chromosOrdered = false;
             if (sequenceLocation == null) {
@@ -187,7 +196,7 @@ public class IGVGenomeParser implements Runnable {
                 System.out.println(this.getClass().getName() + ":!isFasta");
                 IGVSequence igvSequence = new IGVSequence(sequenceLocation);
                 if (cytobandMap != null) {
-                    chromosOrdered = genomeDescripter.isChromosomesAreOrdered();
+                    chromosOrdered = genomeDescriptor.isChromosomesAreOrdered();
                     igvSequence
                             .generateChromosomes(cytobandMap, chromosOrdered);
                 }
@@ -211,13 +220,13 @@ public class IGVGenomeParser implements Runnable {
                 genome.setCytobands(cytobandMap);
             }
 
-//            Collection<Collection<String>> aliases = loadChrAliases(genomeDescripter);
+//            Collection<Collection<String>> aliases = loadChrAliases(genomeDescriptor);
 //            if (aliases != null) {
 //                genome.addChrAliases(aliases);
 //            }
 
             InputStream geneStream = null;
-            String geneFileName = genomeDescripter.getGeneFileName();
+            String geneFileName = genomeDescriptor.getGeneFileName();
             if (geneFileName != null) {
                 try {
                     if (geneFileName.endsWith(".gz")) {
@@ -278,7 +287,7 @@ public class IGVGenomeParser implements Runnable {
         }
     }
 
-    public GenomeDescripter parseGenomeArchiveFile(File dotGenomeFile)
+    public GenomeDescriptor parseGenomeArchiveFile(File dotGenomeFile)
             throws ZipException, IOException {
         try {
             zipFile = new ZipFile(dotGenomeFile);
@@ -318,7 +327,7 @@ public class IGVGenomeParser implements Runnable {
                     String id = properties.getProperty("id");
                     String geneTrackName = properties
                             .getProperty("geneTrackName");
-                    GenomeDescripter.getInstance().setAttributes(name,
+                    GenomeDescriptor.getInstance().setAttributes(name,
                             chrNamesAltered, id, cytobandFileName,
                             geneFileName, chrAliasFileName, geneTrackName, url,
                             sequenceLocation, hasCustomSequenceLocation,
@@ -326,7 +335,7 @@ public class IGVGenomeParser implements Runnable {
                             fastaFileNameString);
                 }
             }
-            return GenomeDescripter.getInstance();
+            return GenomeDescriptor.getInstance();
         } catch (Exception e) {
             e.printStackTrace();
             return null;
@@ -337,10 +346,10 @@ public class IGVGenomeParser implements Runnable {
         InputStream is = null;
         BufferedReader reader = null;
         try {
-            is = zipFile.getInputStream(zipEntries.get(GenomeDescripter
+            is = zipFile.getInputStream(zipEntries.get(GenomeDescriptor
                     .getInstance().getCytoBandFileName()));
 
-            if (GenomeDescripter.getInstance().getCytoBandFileName()
+            if (GenomeDescriptor.getInstance().getCytoBandFileName()
                     .toLowerCase().endsWith(".gz")) {
                 is = new GZIPInputStream(is);
             }
@@ -369,15 +378,15 @@ public class IGVGenomeParser implements Runnable {
      * Load the chromosome alias file, if any, specified in the genome
      * descriptor.
      *
-     * @param genomeDescripter
+     * @param genomeDescriptor
      * @return The chromosome alias table, or null if none is defined.
      * @throws REDException
      */
     private Collection<Collection<String>> loadChrAliases(
-            GenomeDescripter genomeDescripter) throws REDException {
+            GenomeDescriptor genomeDescriptor) throws REDException {
         InputStream aliasStream = null;
         try {
-            String fileName = genomeDescripter.getChrAliasFileName();
+            String fileName = genomeDescriptor.getChrAliasFileName();
             if (fileName == null || !zipEntries.containsKey(fileName)) {
                 return null;
             }

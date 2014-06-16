@@ -68,7 +68,7 @@ public class GenomeViewer extends JPanel implements DataChangeListener,
     public GenomeViewer(Genome genome, REDApplication application) {
         chromosomes = genome.getAllChromosomes();
 //		for(int i=0;i<chromosomes.length;i++){
-//			System.out.println(chromosomes[i].getName());
+//			System.out.println(chromosomes[i].getDisplayName());
 //		}
         chromosomeDisplays = new ChromosomeDisplay[chromosomes.length];
         this.application = application;

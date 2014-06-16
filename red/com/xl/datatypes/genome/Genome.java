@@ -48,7 +48,8 @@ public class Genome {
 
     private List<String> chromosomeNames = null;
 
-    private LinkedHashMap<String, Chromosome> chromosomeMap = null;
+    private LinkedHashMap<String, Chromosome> chromosomeMap = new LinkedHashMap<String, Chromosome>();
+    ;
 
     /**
      * The annotation collection.
@@ -73,7 +74,6 @@ public class Genome {
                 tmpChromosomes = new ArrayList<Chromosome>(chromosomeLength);
             }
             int maxLength = -1;
-            chromosomeMap = new LinkedHashMap<String, Chromosome>(chromosomeLength);
 
             for (int i = 0; i < chromosomeLength; i++) {
                 String chr = chromosomeNames.get(i);
@@ -113,6 +113,9 @@ public class Genome {
     }
 
     public String[] getAllChromosomeNames() {
+        if (chromosomeNames == null) {
+            chromosomeNames = new ArrayList<String>(chromosomeMap.keySet());
+        }
         return chromosomeNames.toArray(new String[0]);
     }
 

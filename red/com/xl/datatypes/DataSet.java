@@ -23,7 +23,6 @@ package com.xl.datatypes;
 import com.xl.datatypes.probes.Probe;
 import com.xl.datatypes.sequence.Location;
 import com.xl.datatypes.sequence.SequenceRead;
-import com.xl.dialog.CrashReporter;
 import com.xl.exception.REDException;
 import com.xl.main.REDApplication;
 import com.xl.preferences.REDPreferences;
@@ -145,7 +144,7 @@ public class DataSet extends DataStore implements Runnable {
     /*
      * (non-Javadoc)
      *
-     * @see uk.ac.babraham.SeqMonk.DataTypes.DataStore#setName(java.lang.String)
+     * @see uk.ac.babraham.SeqMonk.DataTypes.DataStore#setDisplayName(java.lang.String)
      */
     public void setName(String name) {
         super.setName(name);
@@ -482,7 +481,8 @@ public class DataSet extends DataStore implements Runnable {
                     ois.close();
                     return lastCachedReads;
                 } catch (Exception e) {
-                    new CrashReporter(e);
+//                    new CrashReporter(e);
+                    e.printStackTrace();
                 }
             }
 
@@ -538,7 +538,7 @@ public class DataSet extends DataStore implements Runnable {
      * @see uk.ac.babraham.SeqMonk.DataTypes.DataStore#getTotalReadCount()
      */
     public int getTotalReadCount() {
-//		System.out.println(this.getClass().getName() + ":getTotalReadCount()");
+//		System.out.println(this.getClass().getDisplayName() + ":getTotalReadCount()");
         if (!isFinalised)
             finalise();
 
@@ -699,7 +699,8 @@ public class DataSet extends DataStore implements Runnable {
                 oos.writeObject(sequenceReads);
                 oos.close();
             } catch (IOException ioe) {
-                new CrashReporter(ioe);
+//                new CrashReporter(ioe);
+                ioe.printStackTrace();
             }
 
             chromosomesStillToFinalise.decrement();

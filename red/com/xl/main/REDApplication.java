@@ -4,30 +4,7 @@
 
 package com.xl.main;
 
-import java.awt.BorderLayout;
-import java.awt.Toolkit;
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.Vector;
-
-import javax.swing.JFileChooser;
-import javax.swing.JFrame;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JSplitPane;
-import javax.swing.UIManager;
-import javax.swing.filechooser.FileFilter;
-
-import net.xl.genomes.GenomeDownloader;
-
-import com.xl.datatypes.DataCollection;
-import com.xl.datatypes.DataGroup;
-import com.xl.datatypes.DataSet;
-import com.xl.datatypes.DataStore;
-import com.xl.datatypes.ReplicateSet;
+import com.xl.datatypes.*;
 import com.xl.datatypes.annotation.AnnotationSet;
 import com.xl.datatypes.genome.Genome;
 import com.xl.datatypes.probes.ProbeList;
@@ -59,6 +36,16 @@ import com.xl.parsers.dataparsers.REDParser;
 import com.xl.preferences.DisplayPreferences;
 import com.xl.preferences.REDPreferences;
 import com.xl.utils.filefilters.FileFilterExt;
+import net.xl.genomes.GenomeDownloader;
+
+import javax.swing.*;
+import javax.swing.filechooser.FileFilter;
+import java.awt.*;
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.Vector;
 
 /**
  * @author Xing Li
@@ -77,7 +64,7 @@ public class REDApplication extends JFrame implements ProgressListener,
     /**
      * The version of RED
      */
-    public static final String VERSION = "0.0.1";
+    public static final String VERSION = "0.0.2";
 
     /**
      * The root menu of RED
@@ -274,7 +261,7 @@ public class REDApplication extends JFrame implements ProgressListener,
         bottomPanel.add(chromosomeViewer, BorderLayout.CENTER);
         bottomPanel.add(new ChromosomePositionScrollBar(), BorderLayout.SOUTH);
         mainPane.setBottomComponent(bottomPanel);
-        mainPane.setDividerLocation(0.5d);
+        mainPane.setDividerLocation(0.25d);
         DisplayPreferences.getInstance().setChromosome(
                 dataCollection.genome().getAllChromosomes()[0]);
         validate();
@@ -944,20 +931,6 @@ public class REDApplication extends JFrame implements ProgressListener,
                 loadProject(fileToLoad);
                 fileToLoad = null;
             }
-        } else if (command.equals("data_quantitation")) {
-            // At this point a repaint isn't sufficient - we need to do
-            // a tracks updated so the new probeset is recognised.
-            chromosomeViewer.tracksUpdated();
-            chromosomeViewer.autoScale();
-            genomeViewer.repaint();
-            changesWereMade();
-        } else if (command.equals("pipeline_quantitation")) {
-            // At this point a repaint isn't sufficient - we need to do
-            // a tracks updated so the new probeset is recognised.
-            chromosomeViewer.tracksUpdated();
-            chromosomeViewer.autoScale();
-            genomeViewer.repaint();
-            changesWereMade();
         } else if (command.equals("load_annotation")) {
             System.out.println("load_annotation");
         } else {

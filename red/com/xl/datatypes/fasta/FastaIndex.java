@@ -1,6 +1,6 @@
 package com.xl.datatypes.fasta;
 
-import com.xl.datatypes.genome.GenomeDescripter;
+import com.xl.datatypes.genome.GenomeDescriptor;
 import com.xl.preferences.REDPreferences;
 import com.xl.utils.ChromosomeUtils;
 import com.xl.utils.ParsingUtils;
@@ -73,7 +73,7 @@ public class FastaIndex {
                 System.out.println(this.getClass().getName() + ":indexName:" + indexName);
                 String indexPath = REDPreferences.getInstance().getGenomeBase()
                         + File.separator
-                        + GenomeDescripter.getInstance().getName()
+                        + GenomeDescriptor.getInstance().getDisplayName()
                         + File.separator + indexName;
                 File file = new File(indexPath);
                 fw = new FileWriter(file);

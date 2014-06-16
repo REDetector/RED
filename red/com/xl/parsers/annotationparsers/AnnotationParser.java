@@ -1,16 +1,16 @@
 package com.xl.parsers.annotationparsers;
 
-import java.io.File;
-import java.util.Enumeration;
-import java.util.Vector;
-
 import com.xl.datatypes.annotation.AnnotationSet;
 import com.xl.datatypes.genome.Genome;
 import com.xl.interfaces.Cancellable;
 import com.xl.interfaces.ProgressListener;
-import com.xl.utils.filefilters.FileFilterExt;
 import com.xl.utils.GeneType;
 import com.xl.utils.ParsingUtils;
+import com.xl.utils.filefilters.FileFilterExt;
+
+import java.io.File;
+import java.util.Enumeration;
+import java.util.Vector;
 
 /**
  * The Class AnnotationParser provides the core methods which must be
@@ -127,7 +127,7 @@ public abstract class AnnotationParser implements Cancellable, Runnable {
     /**
      * Parses the file.
      *
-     * @param file the file
+     * @param files the files
      */
     public void parseFiles(File[] files) {
         if (requiresFile() && files == null) {

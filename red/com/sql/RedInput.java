@@ -1,36 +1,33 @@
 package com.sql;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStreamReader;
-//import java.sql.*;
+import java.io.*;
 import java.sql.SQLException;
+
+//import java.sql.*;
 
 
 public class RedInput {
-	Dbcon db=new Dbcon();
-	//data redirectory;
+    Dbcon db = new Dbcon();
+    //data redirectory;
 //	File file;
-	//String dir;
-	File file = new File("D:/TDDOWNLOAD/HCC448N.filtered.snvs.vcf");
-	//File file = new File("D:/TDDOWNLOAD/HCC448T.subset.vcf");
-	//File file = new File("D:/TDDOWNLOAD/test.txt");
-	FileInputStream inputStream;
-	private String[] sql=new String[3];
-	String line=null;
-	String[] col=new String[10];
-	String[] temp=new String[10];
-	//insertÊ±Ê¹ÓÃµÄÊý¾Ý
-	StringBuffer s1 = new StringBuffer();
-	//create tableÊ±Ê¹ÓÃµÄ×Ö·û´®
-	StringBuffer s2 = new StringBuffer();
-	//insert Ê±ºòÊ¹ÓÃµÄÁÐÃû
-	StringBuffer s3 = new StringBuffer();
-	int count=1;
-//	public  RedInput(String dir)
+    //String dir;
+    File file = new File("D:/TDDOWNLOAD/HCC448N.filtered.snvs.vcf");
+    //File file = new File("D:/TDDOWNLOAD/HCC448T.subset.vcf");
+    //File file = new File("D:/TDDOWNLOAD/test.txt");
+    FileInputStream inputStream;
+    private String[] sql = new String[3];
+    String line = null;
+    String[] col = new String[10];
+    String[] temp = new String[10];
+    //insertÊ±Ê¹ï¿½Ãµï¿½ï¿½ï¿½ï¿½
+    StringBuffer s1 = new StringBuffer();
+    //create tableÊ±Ê¹ï¿½Ãµï¿½ï¿½Ö·ï¿½
+    StringBuffer s2 = new StringBuffer();
+    //insert Ê±ï¿½ï¿½Ê¹ï¿½Ãµï¿½ï¿½ï¿½ï¿½ï¿½
+    StringBuffer s3 = new StringBuffer();
+    int count = 1;
+
+    //	public  RedInput(String dir)
 //	{
 //		this.file=new File(dir);
 //	}
@@ -39,88 +36,82 @@ public class RedInput {
 //		dir="D:/TDDOWNLOAD/HCC448T.subset.vcf";
 //		return dir;
 //	}
-	public void estable(){
-		try {
-			//³õÊ¼»¯
-			db.dbcon();
-			try {
-				inputStream = new FileInputStream(file);
-			} catch (FileNotFoundException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			BufferedReader rin = new BufferedReader(new InputStreamReader(inputStream));		
-            while((line=rin.readLine())!=null){
-            	s1=new StringBuffer();
-            	if(line.startsWith("##"))
-            		continue;
-            	if(line.startsWith("#"))
-            	{
-            		s2.append(line.split("\\t")[1]+" "+"bigint");
-            		s2.append(","+line.split("\\t")[2]+" "+"varchar(30)");
-            		s2.append(","+line.split("\\t")[3]+" "+"varchar(3)");
-            		s2.append(","+line.split("\\t")[4]+" "+"varchar(5)");
-            		s2.append(","+line.split("\\t")[5]+" "+"float(8,2)");
-            		s2.append(","+line.split("\\t")[6]+" "+"text");
-            		s2.append(","+line.split("\\t")[7]+" "+"text");
-            		s3.append("chrome");
-            		for(int i=1;i<8;i++)
-            			s3.append(","+line.split("\\t")[i]);
-            		continue;
-            	}
-            	for(int i=0;i<line.split("\\t").length;i++)
-            	{
-            		col[i]=line.split("\\t")[i];
-            	}
-            	if(count>0)
-            	{
-            	for(int i=0;i<col[8].split(":").length;i++)
-            	{
-            		s2.append(","+col[8].split(":")[i]+" "+"text");
-            		s3.append(","+col[8].split(":")[i]);
-            	}
-      	      sql[0]="drop table if exists vcf";
-      	      db.result = db.stmt.executeUpdate(sql[0]);    	      
-      	      sql[1]="create table vcf(chrome varchar(15),"+s2+")";
-    	      db.result = db.stmt.executeUpdate(sql[1]);
-    	      db.con.commit();
-    	      sql[2]="create index cor on vcf(chrome,POS)";
-    	      db.result = db.stmt.executeUpdate(sql[2]);
-              if (db.result != -1) {
-                  System.out.println("´´½¨Êý¾Ý±í³É¹¦");
-              }
-            	count--;
-            	}
-            	s1.append("'"+col[0]+"'");
-            	for(int i=1;i<8;i++)
-            		s1.append(","+"'"+col[i]+"'");
-            	for(int i=0;i<col[9].split(":").length;i++)
-            	{
-            		temp[i]=col[9].split(":")[i].replace(",",";");
-            		//System.out.println(temp[i]);
-            		s1.append(","+"'"+temp[i]+"'");
-            	}
-            	//Êý¾Ý¿âÊý¾Ý²åÈë£¬Ã¿ÐÐ²åÈë
-            	sql[2]="insert into vcf("+s3+") values("+s1+")";
-            	db.result = db.stmt.executeUpdate(sql[2]);
+    public void estable() {
+        try {
+            //ï¿½ï¿½Ê¼ï¿½ï¿½
+            db.dbcon();
+            try {
+                inputStream = new FileInputStream(file);
+            } catch (FileNotFoundException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+            BufferedReader rin = new BufferedReader(new InputStreamReader(inputStream));
+            while ((line = rin.readLine()) != null) {
+                s1 = new StringBuffer();
+                if (line.startsWith("##"))
+                    continue;
+                if (line.startsWith("#")) {
+                    s2.append(line.split("\\t")[1] + " " + "bigint");
+                    s2.append("," + line.split("\\t")[2] + " " + "varchar(30)");
+                    s2.append("," + line.split("\\t")[3] + " " + "varchar(3)");
+                    s2.append("," + line.split("\\t")[4] + " " + "varchar(5)");
+                    s2.append("," + line.split("\\t")[5] + " " + "float(8,2)");
+                    s2.append("," + line.split("\\t")[6] + " " + "text");
+                    s2.append("," + line.split("\\t")[7] + " " + "text");
+                    s3.append("chrome");
+                    for (int i = 1; i < 8; i++)
+                        s3.append("," + line.split("\\t")[i]);
+                    continue;
+                }
+                for (int i = 0; i < line.split("\\t").length; i++) {
+                    col[i] = line.split("\\t")[i];
+                }
+                if (count > 0) {
+                    for (int i = 0; i < col[8].split(":").length; i++) {
+                        s2.append("," + col[8].split(":")[i] + " " + "text");
+                        s3.append("," + col[8].split(":")[i]);
+                    }
+                    sql[0] = "drop table if exists vcf";
+                    db.result = db.stmt.executeUpdate(sql[0]);
+                    sql[1] = "create table vcf(chrome varchar(15)," + s2 + ")";
+                    db.result = db.stmt.executeUpdate(sql[1]);
+                    db.con.commit();
+                    sql[2] = "create index cor on vcf(chrome,POS)";
+                    db.result = db.stmt.executeUpdate(sql[2]);
+                    if (db.result != -1) {
+                        System.out.println("ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ý±ï¿½É¹ï¿½");
+                    }
+                    count--;
+                }
+                s1.append("'" + col[0] + "'");
+                for (int i = 1; i < 8; i++)
+                    s1.append("," + "'" + col[i] + "'");
+                for (int i = 0; i < col[9].split(":").length; i++) {
+                    temp[i] = col[9].split(":")[i].replace(",", ";");
+                    //System.out.println(temp[i]);
+                    s1.append("," + "'" + temp[i] + "'");
+                }
+                //ï¿½ï¿½Ý¿ï¿½ï¿½ï¿½Ý²ï¿½ï¿½ë£¬Ã¿ï¿½Ð²ï¿½ï¿½ï¿½
+                sql[2] = "insert into vcf(" + s3 + ") values(" + s1 + ")";
+                db.result = db.stmt.executeUpdate(sql[2]);
 //            	sql[1] = "select * from RED";
 //              db.rs = db.stmt.executeQuery(sql[1]);
-      	        db.con.commit();
+                db.con.commit();
 //      	    while (db.rs.next()) {
-//                   System.out.println(db.rs.getString(9)+ "\t" + db.rs.getString(11));// ÈëÈç¹û·µ»ØµÄÊÇintÀàÐÍ¿ÉÒÔÓÃgetInt()
+//                   System.out.println(db.rs.getString(9)+ "\t" + db.rs.getString(11));// ï¿½ï¿½ï¿½ï¿½ï¿½Øµï¿½ï¿½ï¿½intï¿½ï¿½ï¿½Í¿ï¿½ï¿½ï¿½ï¿½ï¿½getInt()
 //               }
-		}
+            }
             System.out.println("good");
-            } catch ( IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} 
-				catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}		
-	}
-	
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (SQLException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+    }
+
 
 }
 

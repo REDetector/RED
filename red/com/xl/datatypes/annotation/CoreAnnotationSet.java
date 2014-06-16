@@ -22,7 +22,7 @@ package com.xl.datatypes.annotation;
 
 import com.xl.datatypes.genome.Chromosome;
 import com.xl.datatypes.genome.Genome;
-import com.xl.datatypes.genome.GenomeDescripter;
+import com.xl.datatypes.genome.GenomeDescriptor;
 import com.xl.dialog.CrashReporter;
 import com.xl.main.REDApplication;
 import com.xl.preferences.REDPreferences;
@@ -50,7 +50,7 @@ public class CoreAnnotationSet extends AnnotationSet {
      * @param genome the genome
      */
     public CoreAnnotationSet(Genome genome) {
-        super(genome, GenomeDescripter.getInstance().getGeneTrackName());
+        super(genome, GenomeDescriptor.getInstance().getGeneTrackName());
     }
 
     /**
@@ -133,7 +133,8 @@ public class CoreAnnotationSet extends AnnotationSet {
                     + "/"
                     + genome.getDisplayName() + "/cache/cache.complete");
             PrintWriter pr = new PrintWriter(cacheCompleteFile);
-            pr.println(REDApplication.VERSION + "\t" + genome.getGenomeId() + "\t" + genome.getDisplayName());
+            pr.println(REDApplication.VERSION + "\n");
+            pr.println(GenomeDescriptor.getInstance().toString());
             pr.close();
         } catch (IOException ioe) {
             new CrashReporter(ioe);

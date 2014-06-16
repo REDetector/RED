@@ -1,4 +1,4 @@
-# Mappings of genome id prefix -> species
+# Mappings of genomeId prefix -> species
 hg	Human
 mm 	Mouse
 sacCer	Yeast

@@ -10,6 +10,10 @@ public class MessageUtils {
         if (D) System.out.println(t.getClass().getName() + ":" + info);
     }
 
+    public static void showInfo(String info) {
+        if (D) System.out.println(info);
+    }
+
     public static void showError(Class t, String error) {
         if (D) System.err.println(t.getClass().getName() + ":" + error);
     }

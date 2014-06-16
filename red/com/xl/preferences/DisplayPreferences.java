@@ -19,20 +19,15 @@
  */
 package com.xl.preferences;
 
+import com.xl.datatypes.genome.Chromosome;
+import com.xl.dialog.gotodialog.GotoDialog;
+import com.xl.gradients.*;
+import com.xl.interfaces.DisplayPreferencesListener;
+import com.xl.main.REDApplication;
+
 import java.io.PrintStream;
 import java.util.Enumeration;
 import java.util.Vector;
-
-import com.xl.datatypes.genome.Chromosome;
-import com.xl.dialog.gotodialog.GotoDialog;
-import com.xl.gradients.ColourGradient;
-import com.xl.gradients.GreyscaleColourGradient;
-import com.xl.gradients.HotColdColourGradient;
-import com.xl.gradients.MagentaGreenColourGradient;
-import com.xl.gradients.RedGreenColourGradient;
-import com.xl.gradients.RedWhiteColourGradient;
-import com.xl.interfaces.DisplayPreferencesListener;
-import com.xl.main.REDApplication;
 
 /**
  * This class is intended to be a single point at which all of the major display
@@ -288,15 +283,15 @@ public class DisplayPreferences {
 		return currentChromosome;
 	}
 
-	public void setChromosome(Chromosome c) {
-		currentChromosome = c;
-		// Set the location to be a 1Mbp chunk in the middle if we can
-		if (currentChromosome != null) {
-			this.currentStartLocation = currentChromosome.getLength() / 16 * 7;
-			this.currentEndLocation = currentChromosome.getLength() / 16 * 9;
-			optionsChanged();
-		}
-	}
+    public void setChromosome(Chromosome c) {
+        currentChromosome = c;
+        // Set the location to be a 1Mbp chunk in the middle if we can
+        if (currentChromosome != null && (currentStartLocation == 0 || currentEndLocation == 0)) {
+            this.currentStartLocation = currentChromosome.getLength() / 16 * 7;
+            this.currentEndLocation = currentChromosome.getLength() / 16 * 9;
+            optionsChanged();
+        }
+    }
 
 	/* The gradient */
 	public ColourGradient getGradient() {
