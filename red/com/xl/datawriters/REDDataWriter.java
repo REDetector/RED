@@ -23,7 +23,7 @@ import com.xl.datatypes.*;
 import com.xl.datatypes.annotation.AnnotationSet;
 import com.xl.datatypes.annotation.CoreAnnotationSet;
 import com.xl.datatypes.genome.Genome;
-import com.xl.datatypes.genome.GenomeDescripter;
+import com.xl.datatypes.genome.GenomeDescriptor;
 import com.xl.datatypes.probes.Probe;
 import com.xl.datatypes.probes.ProbeList;
 import com.xl.datatypes.probes.ProbeSet;
@@ -141,7 +141,7 @@ public class REDDataWriter implements Runnable, Cancellable {
      */
     public void writeData(REDApplication application, File file) {
         data = application.dataCollection();
-        // System.out.println(this.getClass().getName()+":"+data.genome().species());
+        // System.out.println(this.getClass().getDisplayName()+":"+data.genome().species());
         this.genome = data.genome();
         this.file = file;
         visibleStores = application.drawnDataStores();
@@ -288,12 +288,8 @@ public class REDDataWriter implements Runnable, Cancellable {
     private void printGenome(PrintStream p) {
         // The next thing we need to do is to output the details of the genome
         // we're using
-        p.println("Genome\t" + genome.getGenomeId() + "\t"
-                + genome.getDisplayName());
-
-        // Now we print out the list of default feature tracks to show
-        p.println("Features\t"
-                + GenomeDescripter.getInstance().getGeneTrackName());
+        p.println("Genome");
+        p.println(GenomeDescriptor.getInstance().toString());
     }
 
     /**
@@ -707,7 +703,7 @@ public class REDDataWriter implements Runnable, Cancellable {
         // Now we print out the list of probe lists
 
 		/*
-		 * We rely on this list coming in tree order, that is to say that when
+         * We rely on this list coming in tree order, that is to say that when
 		 * we see a node at depth n we assume that all subsequent nodes at depth
 		 * n+1 are children of the first node, until we see another node at
 		 * depth n.
