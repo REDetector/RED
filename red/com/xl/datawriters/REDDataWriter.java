@@ -36,7 +36,7 @@ import com.xl.interfaces.ProgressListener;
 import com.xl.main.REDApplication;
 import com.xl.preferences.DisplayPreferences;
 import com.xl.preferences.REDPreferences;
-import com.xl.utils.GenomeUtils;
+import com.xl.utils.ParsingUtils;
 
 import java.io.*;
 import java.util.Enumeration;
@@ -278,7 +278,7 @@ public class REDDataWriter implements Runnable, Cancellable {
         // The first line of the file will be the version of the data
         // format we're using. This will help us out should we need
         // to update the format in the future.
-        p.println("RED Data Version\t" + DATA_VERSION);
+        p.println(ParsingUtils.RED_DATA_VERSION + "\t" + DATA_VERSION);
     }
 
     /**
@@ -289,9 +289,9 @@ public class REDDataWriter implements Runnable, Cancellable {
     private void printGenome(PrintStream p) {
         // The next thing we need to do is to output the details of the genome
         // we're using
-        p.println(GenomeUtils.GENOME_INFORMATION_START);
+        p.println(ParsingUtils.GENOME_INFORMATION_START);
         p.println(GenomeDescriptor.getInstance().toString());
-        p.println(GenomeUtils.GENOME_INFORMATION_END);
+        p.println(ParsingUtils.GENOME_INFORMATION_END);
     }
 
     /**
@@ -303,7 +303,7 @@ public class REDDataWriter implements Runnable, Cancellable {
      */
     private boolean printDataSets(DataSet[] dataSets, PrintStream p)
             throws IOException {
-        p.println("Samples\t" + dataSets.length);
+        p.println(ParsingUtils.SAMPLES + "\t" + dataSets.length);
         for (int i = 0; i < dataSets.length; i++) {
             p.println(dataSets[i].name() + "\t" + dataSets[i].fileName() + "\t");
         }
@@ -467,7 +467,7 @@ public class REDDataWriter implements Runnable, Cancellable {
     private void printDataGroups(DataSet[] dataSets, DataGroup[] dataGroups,
                                  PrintStream p) {
 
-        p.println("Data Groups\t" + dataGroups.length);
+        p.println(ParsingUtils.DATA_GROUPS + "\t" + dataGroups.length);
         for (int i = 0; i < dataGroups.length; i++) {
             DataSet[] groupSets = dataGroups[i].dataSets();
 
@@ -503,7 +503,7 @@ public class REDDataWriter implements Runnable, Cancellable {
     private void printReplicateSets(DataSet[] dataSets, DataGroup[] dataGroups,
                                     ReplicateSet[] replicates, PrintStream p) {
 
-        p.println("Replicate Sets\t" + replicates.length);
+        p.println(ParsingUtils.REPLICATE_SETS + "\t" + replicates.length);
         for (int i = 0; i < replicates.length; i++) {
             DataStore[] stores = replicates[i].dataStores();
 
@@ -548,7 +548,7 @@ public class REDDataWriter implements Runnable, Cancellable {
     private boolean printAnnotationSet(AnnotationSet a, PrintStream p)
             throws IOException {
         Feature[] features = a.getAllFeatures();
-        p.println("Annotation\t" + a.name() + "\t" + features.length);
+        p.println(ParsingUtils.ANNOTATION + "\t" + a.name() + "\t" + features.length);
 
         Enumeration<ProgressListener> e = listeners.elements();
         while (e.hasMoreElements()) {
@@ -597,7 +597,7 @@ public class REDDataWriter implements Runnable, Cancellable {
 
         String comments = probeSet.comments().replaceAll("[\\r\\n]", "`");
 
-        p.println("Probes\t" + probes.length + "\t"
+        p.println(ParsingUtils.PROBES + "\t" + probes.length + "\t"
                 + probeSet.justDescription() + "\t" + probeSetQuantitation
                 + "\t" + comments);
 
@@ -669,7 +669,7 @@ public class REDDataWriter implements Runnable, Cancellable {
         // Now we can put out the list of visible stores
         // We have to refer to these by position rather than name
         // since names are not guaranteed to be unique.
-        p.println("Visible Stores\t" + visibleStores.length);
+        p.println(ParsingUtils.VISIBLE_STORES + "\t" + visibleStores.length);
         for (int i = 0; i < visibleStores.length; i++) {
             if (visibleStores[i] instanceof DataSet) {
                 for (int s = 0; s < dataSets.length; s++) {
@@ -731,7 +731,7 @@ public class REDDataWriter implements Runnable, Cancellable {
         // We start at the second list since the first list will always
         // be "All probes" which we'll sort out some other way.
 
-        p.println("Lists\t" + (lists.length - 1));
+        p.println(ParsingUtils.LISTS + "\t" + (lists.length - 1));
 
         for (int i = 1; i < lists.length; i++) {
             String listComments = lists[i].comments().replaceAll("[\\r\\n]",
@@ -742,7 +742,7 @@ public class REDDataWriter implements Runnable, Cancellable {
         }
 
         // Put out the number of probes
-        p.println("Probes\t" + probes.length);
+        p.println(ParsingUtils.PROBES + "\t" + probes.length);
         // Now we print out the data for the probe lists
 
         for (int i = 0; i < probes.length; i++) {

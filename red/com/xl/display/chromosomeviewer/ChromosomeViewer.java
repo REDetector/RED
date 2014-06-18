@@ -227,6 +227,9 @@ public class ChromosomeViewer extends JPanel implements DataChangeListener,
             return;
 
         String currentFeatureTrackName = GenomeDescriptor.getInstance().getGeneTrackName();
+        if (currentFeatureTrackName == null) {
+            currentFeatureTrackName = "Feature Track";
+        }
         Feature[] features = application.dataCollection().genome()
                 .getAnnotationCollection().getFeaturesForChr(chromosome);
         featureTrack = new ChromosomeFeatureTrack(this,

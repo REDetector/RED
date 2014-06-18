@@ -1,54 +1,57 @@
 package com.xl.parsers.dataparsers;
 
-import java.io.BufferedReader;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-
-import javax.swing.JPanel;
-
 import com.xl.datatypes.DataCollection;
 import com.xl.utils.ParsingUtils;
+import net.sf.jfasta.FASTAElement;
+import net.sf.jfasta.FASTAFileReader;
+import net.sf.jfasta.impl.FASTAElementIterator;
+import net.sf.jfasta.impl.FASTAFileReaderImpl;
+
+import javax.swing.*;
+import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
+import java.util.*;
 
 public class FastaFileParser extends DataParser {
 
-	public FastaFileParser(DataCollection collection) {
-		super(collection);
-		// TODO Auto-generated constructor stub
-	}
+    public FastaFileParser(DataCollection collection) {
+        super(collection);
+        // TODO Auto-generated constructor stub
+    }
 
-	@Override
-	public void run() {
-		
+    @Override
+    public void run() {
 
-	}
+    }
 
-	@Override
-	public JPanel getOptionsPanel() {
-		return null;
-	}
+    @Override
+    public JPanel getOptionsPanel() {
+        return null;
+    }
 
-	@Override
-	public boolean hasOptionsPanel() {
-		return false;
-	}
+    @Override
+    public boolean hasOptionsPanel() {
+        return false;
+    }
 
-	@Override
-	public boolean readyToParse() {
-		return true;
-	}
+    @Override
+    public boolean readyToParse() {
+        return true;
+    }
 
-	@Override
-	public String parserName() {
-		return "Fasta File Importer";
-	}
+    @Override
+    public String parserName() {
+        return "Fasta File Importer";
+    }
 
-	@Override
-	public String getDescription() {
-		return "Import the fasta data including original reference sequence";
-	}
-	 /**
+    @Override
+    public String getDescription() {
+        return "Import the fasta data including original reference sequence";
+    }
+
+    /**
      * Read an entire fasta file, which might be local or remote and might be gzipped.
      *
      * @param path
@@ -60,7 +63,7 @@ public class FastaFileParser extends DataParser {
 
         try {
             br = ParsingUtils.openBufferedReader(path);
-            ByteArrayOutputStream buffer = new ByteArrayOutputStream(10000);
+            ByteArrayOutputStream buffer = new ByteArrayOutputStream();
             String currentChr = null;
             String nextLine;
             while ((nextLine = br.readLine()) != null) {
@@ -74,6 +77,7 @@ public class FastaFileParser extends DataParser {
                     }
                     currentChr = nextLine.substring(1).split("\\s+")[0];
                 } else {
+                    System.out.println(nextLine);
                     buffer.write(nextLine.trim().getBytes());
                 }
             }
@@ -87,5 +91,43 @@ public class FastaFileParser extends DataParser {
         }
 
         return sequenceMap;
+    }
+
+    /**
+     * @throws IOException
+     */
+    public static void parseFasta(String path, String name) throws IOException {
+
+        // Read a multi FASTA file element by element.
+
+        File file = new File(path);
+
+        FASTAFileReader reader = new FASTAFileReaderImpl(file);
+
+        FASTAElementIterator it = reader.getIterator();
+        int i = 0;
+        while (it.hasNext()) {
+            FASTAElement el = it.next();
+            if (i++ < 1000) {
+                System.out.println(el.getSequence());
+            } else {
+                break;
+            }
+        }
+    }
+
+    public static void main(String[] args) throws IOException {
+        Map<String, byte[]> map = parseFasta("E:\\Master\\ChongQing\\Data\\hg19.fa.align");
+        Set<String> sets = map.keySet();
+        Collection<byte[]> coll = map.values();
+        int i = 0;
+        Iterator<byte[]> iter = coll.iterator();
+        while (iter.hasNext()) {
+            if (i++ < 1000) {
+                System.out.println(new String(iter.next()));
+            } else {
+                break;
+            }
+        }
     }
 }

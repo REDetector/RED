@@ -278,6 +278,9 @@ public class REDApplication extends JFrame implements ProgressListener,
      */
     private void addNewDataSets(DataSet[] newData) {
         // We need to add the data to the data collection
+        if (newData == null || newData.length == 0) {
+            return;
+        }
         System.out.println(this.getClass().getName() + ":addNewDataSets(DataSet[] newData)\t" + newData.length);
         ArrayList<DataStore> storesToAdd = new ArrayList<DataStore>();
 

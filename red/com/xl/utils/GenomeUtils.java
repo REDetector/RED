@@ -18,7 +18,5 @@ public class GenomeUtils {
     public static final String KEY_FASTA = "Fasta";
     public static final String KEY_FASTA_DIRECTORY = "FastaDirectory";
     public static final String KEY_FASTA_FILE_NAME_STRING = "FastaFileNameString";
-    public static final String GENOME_INFORMATION_START = "Genome Information Start";
-    public static final String GENOME_INFORMATION_END = "Genome Information End";
 
 }

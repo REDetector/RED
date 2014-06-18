@@ -40,6 +40,7 @@ import com.xl.preferences.DisplayPreferences;
 import com.xl.preferences.REDPreferences;
 import com.xl.utils.GenomeUtils;
 import com.xl.utils.MessageUtils;
+import com.xl.utils.ParsingUtils;
 import com.xl.utils.Strand;
 import net.xl.genomes.GenomeDownloader;
 
@@ -138,27 +139,21 @@ public class REDParser implements Runnable, ProgressListener {
                 sections = line.split("\\t");
 
                 // Now we look where to send this...
-                if (sections[0].equals("RED Data Version")) {
+                if (sections[0].equals(ParsingUtils.RED_DATA_VERSION)) {
                     parseDataVersion(sections);
-                } else if (sections[0].equals("Features")) {
-                    if (!genomeLoaded) {
-                        throw new REDException(
-                                "No genome definition found before data");
-                    }
-                    parseFeatures(sections);
-                } else if (sections[0].equals("Samples")) {
+                } else if (sections[0].equals(ParsingUtils.SAMPLES)) {
                     if (!genomeLoaded) {
                         throw new REDException(
                                 "No genome definition found before data");
                     }
                     parseSamples(sections);
-                } else if (sections[0].equals("Annotation")) {
+                } else if (sections[0].equals(ParsingUtils.ANNOTATION)) {
                     if (!genomeLoaded) {
                         throw new REDException(
                                 "No genome definition found before data");
                     }
                     annotationSets.add(parseAnnotation(sections));
-                } else if (sections[0].equals("Data Groups")) {
+                } else if (sections[0].equals(ParsingUtils.DATA_GROUPS)) {
                     if (!genomeLoaded) {
                         throw new REDException(
                                 "No genome definition found before data");
@@ -176,33 +171,33 @@ public class REDParser implements Runnable, ProgressListener {
                             throw ex;
                         }
                     }
-                } else if (sections[0].equals("Replicate Sets")) {
+                } else if (sections[0].equals(ParsingUtils.REPLICATE_SETS)) {
                     if (!genomeLoaded) {
                         throw new REDException(
                                 "No genome definition found before data");
                     }
                     parseReplicates(sections);
-                } else if (sections[0].equals("Probes")) {
+                } else if (sections[0].equals(ParsingUtils.PROBES)) {
                     if (!genomeLoaded) {
                         throw new REDException(
                                 "No genome definition found before data");
                     }
                     parseProbes(sections);
-                } else if (sections[0].equals("Lists")) {
+                } else if (sections[0].equals(ParsingUtils.LISTS)) {
                     if (!genomeLoaded) {
                         throw new REDException(
                                 "No genome definition found before data");
                     }
                     parseLists(sections);
-                } else if (sections[0].equals("Genome")) {
+                } else if (sections[0].equals(ParsingUtils.GENOME_INFORMATION_START)) {
                     parseGenome();
-                } else if (sections[0].equals("Visible Stores")) {
+                } else if (sections[0].equals(ParsingUtils.VISIBLE_STORES)) {
                     if (!genomeLoaded) {
                         throw new REDException(
                                 "No genome definition found before data");
                     }
                     parseVisibleStores(sections);
-                } else if (sections[0].equals("Display Preferences")) {
+                } else if (sections[0].equals(ParsingUtils.DISPLAY_PREFERENCES)) {
                     if (!genomeLoaded) {
                         throw new REDException(
                                 "No genome definition found before data");
@@ -246,7 +241,7 @@ public class REDParser implements Runnable, ProgressListener {
         while (e.hasMoreElements()) {
             // In this case we put out a dummy empty dataset since
             // we've already entered the data into the collection by now
-            e.nextElement().progressComplete("datasets_loaded", new DataSet[0]);
+            e.nextElement().progressComplete("datasets_loaded", null);
         }
         application.resetChangesWereMade();
 
@@ -325,13 +320,11 @@ public class REDParser implements Runnable, ProgressListener {
         String line;
         String[] sections;
         while ((line = br.readLine()) != null) {
-            if (line.equals(GenomeUtils.GENOME_INFORMATION_END)) {
-                MessageUtils.showInfo(GenomeUtils.GENOME_INFORMATION_END);
+            if (line.equals(ParsingUtils.GENOME_INFORMATION_END)) {
                 break;
             }
             sections = line.split("\\t");
             if (sections.length == 2) {
-                MessageUtils.showInfo(sections[0] + "\t" + sections[1]);
                 setProperties(sections[0], sections[1]);
             }
 
@@ -412,25 +405,6 @@ public class REDParser implements Runnable, ProgressListener {
         } else if (key.equals(GenomeUtils.KEY_URL)) {
             GenomeDescriptor.getInstance().setUrl(value);
         }
-    }
-
-    /**
-     * Parses the set of feature tracks to be displayed
-     *
-     * @param sections The initial tab split features line
-     * @throws REDException
-     * @throws IOException  Signals that an I/O exception has occurred.
-     */
-    private void parseFeatures(String[] sections) throws REDException,
-            IOException {
-        System.out.println(this.getClass().getName() + ":parseFeatures()");
-        if (sections.length != 2) {
-            throw new REDException("Features line didn't contain 2 sections");
-        }
-        if (!sections[0].equals("Features")) {
-            throw new REDException("Couldn't find expected features line");
-        }
-        application.setCurrentFeatureTrackName(sections[1]);
     }
 
     /**
@@ -531,7 +505,7 @@ public class REDParser implements Runnable, ProgressListener {
         }
 
         // Immediately after the list of samples comes the lists of reads
-        String line = null;
+        String line;
 
         // Iterate through the number of samples
         for (int i = 0; i < n; i++) {
@@ -727,6 +701,7 @@ public class REDParser implements Runnable, ProgressListener {
      */
     private void parseGroups(String[] sections) throws REDException,
             IOException {
+        MessageUtils.showInfo(REDParser.class, "parseGroups(String[] sections)");
         if (sections.length != 2) {
             throw new REDException("Data Groups line didn't contain 2 sections");
         }

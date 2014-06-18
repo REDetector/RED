@@ -1,17 +1,29 @@
 package com.xl.utils;
 
+import net.sf.samtools.seekablestream.SeekableFTPStream;
+import net.sf.samtools.seekablestream.SeekableFileStream;
+import net.sf.samtools.seekablestream.SeekableHTTPStream;
+import net.sf.samtools.seekablestream.SeekableStream;
+
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 
-import net.sf.samtools.seekablestream.SeekableFTPStream;
-import net.sf.samtools.seekablestream.SeekableFileStream;
-import net.sf.samtools.seekablestream.SeekableHTTPStream;
-import net.sf.samtools.seekablestream.SeekableStream;
-
 public class ParsingUtils {
+    public static final String RED_DATA_VERSION = "RED Data Version";
+    public static final String GENOME_INFORMATION_START = "Genome Information Start";
+    public static final String GENOME_INFORMATION_END = "Genome Information End";
+    public static final String SAMPLES = "Samples";
+    public static final String ANNOTATION = "Annotation";
+    public static final String DATA_GROUPS = "Data Groups";
+    public static final String REPLICATE_SETS = "Replicate Sets";
+    public static final String PROBES = "Probes";
+    public static final String LISTS = "Lists";
+    public static final String VISIBLE_STORES = "Visible Stores";
+    public static final String DISPLAY_PREFERENCES = "Display Preferences";
+
     public static long getContentLength(String path) {
         try {
             long contentLength = -1;
