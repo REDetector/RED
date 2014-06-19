@@ -19,26 +19,20 @@
  */
 package com.xl.dialog;
 
-import java.awt.BorderLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.io.IOException;
-
-import javax.swing.JButton;
-import javax.swing.JDialog;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTree;
-import javax.swing.event.TreeSelectionEvent;
-import javax.swing.event.TreeSelectionListener;
-import javax.swing.tree.TreeSelectionModel;
-
+import com.xl.main.REDApplication;
+import com.xl.preferences.REDPreferences;
 import net.xl.genomes.DownloadableGenomeSet;
 import net.xl.genomes.DownloadableGenomeTreeModel;
 import net.xl.genomes.GenomeLists;
 
-import com.xl.main.REDApplication;
-import com.xl.preferences.REDPreferences;
+import javax.swing.*;
+import javax.swing.event.TreeSelectionEvent;
+import javax.swing.event.TreeSelectionListener;
+import javax.swing.tree.TreeSelectionModel;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.IOException;
 
 /**
  * The Class GenomeDownloadSelector provides a dialog which can be used to
@@ -115,7 +109,6 @@ public class GenomeDownloadSelector extends JDialog {
 	 * the button event occurs, that object's appropriate
 	 * method is invoked.
 	 * 
-	 * @see ButtonEvent
 	 */
 	private class ButtonListener implements ActionListener {
 
@@ -154,7 +147,6 @@ public class GenomeDownloadSelector extends JDialog {
 	 * the tree event occurs, that object's appropriate
 	 * method is invoked.
 	 * 
-	 * @see TreeEvent
 	 */
 	private class TreeListener implements TreeSelectionListener {
 

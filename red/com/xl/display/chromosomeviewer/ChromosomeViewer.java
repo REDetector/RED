@@ -580,7 +580,7 @@ public class ChromosomeViewer extends JPanel implements DataChangeListener,
             int currentLength = (currentEnd - currentStart) + 1;
 //            MessageUtils.showInfo(ChromosomeViewer.class,"currentStart:"+displayPrefs.getCurrentStartLocation()+"\tcurrentEnd:"+displayPrefs.getCurrentEndLocation());
             String currentLengthString = PositionFormat
-                    .formatLength(currentLength);
+                    .formatLength(currentLength, PositionFormat.UNIT_BASEPAIR);
 
             titleLabel.setText(application.dataCollection().genome()
                     .getDisplayName()

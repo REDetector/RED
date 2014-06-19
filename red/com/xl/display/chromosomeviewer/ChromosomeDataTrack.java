@@ -169,9 +169,7 @@ public class ChromosomeDataTrack extends JPanel implements MouseListener,
         if (readPixel == 0) {
             readPixel = 1;
         }
-//        MessageUtils.showInfo(ChromosomeDataTrack.class,"readPixel:"+readPixel);
-        // Otherwise we alternate colours so we can see the difference
-        // between tracks.
+        // Otherwise we alternate colours so we can see the difference between tracks.
         if (viewer.getIndex(this) % 2 == 0) {
             g.setColor(ColourScheme.DATA_BACKGROUND_EVEN);
         } else {
@@ -193,7 +191,6 @@ public class ChromosomeDataTrack extends JPanel implements MouseListener,
         }
 
 
-//		System.out.println(this.getClass().getDisplayName()+":CurrentStart:"+startBp+"\tCurrentEnd:"+endBp+"\tLength:"+(endBp-startBp));
         if (seqIndex == null || seqIndex.size() == 0) {
             return;
         }

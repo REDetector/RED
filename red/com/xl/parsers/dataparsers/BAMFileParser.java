@@ -7,7 +7,6 @@ import com.xl.datatypes.genome.Chromosome;
 import com.xl.datatypes.sequence.SequenceRead;
 import com.xl.exception.REDException;
 import com.xl.utils.ChromosomeUtils;
-import com.xl.utils.MessageUtils;
 import com.xl.utils.Strand;
 import net.sf.samtools.SAMFileReader;
 import net.sf.samtools.SAMRecord;
@@ -263,14 +262,21 @@ public class BAMFileParser extends DataParser {
             }
         }
 
-        Chromosome c;
-
+        Chromosome c = null;
         try {
-            c = dataCollection().genome().getChromosome(
-                    samRecord.getReferenceName());
+            String chrName = samRecord.getReferenceName();
+            if (chrName.length() <= 3) {
+                chrName = "chr" + chrName;
+            }
+            if (ChromosomeUtils.isStandardChromosomeName(chrName)) {
+                c = collection.genome().getChromosome(chrName);
+            } else {
+                return null;
+            }
         } catch (Exception e) {
-            throw new REDException(e.getLocalizedMessage());
+            e.printStackTrace();
         }
+
 
         if (start < 1) {
             throw new REDException("Reading position " + start
@@ -410,7 +416,9 @@ public class BAMFileParser extends DataParser {
         Chromosome c = null;
         try {
             String chrName = samRecord.getReferenceName();
-            MessageUtils.showInfo(BAMFileParser.class, chrName);
+            if (chrName.length() <= 3) {
+                chrName = "chr" + chrName;
+            }
             if (ChromosomeUtils.isStandardChromosomeName(chrName)) {
                 c = collection.genome().getChromosome(chrName);
             } else {
@@ -480,13 +488,21 @@ public class BAMFileParser extends DataParser {
             mateReferenceName = samRecord.getReferenceName();
         }
 
-        Chromosome c;
-
+        Chromosome c = null;
         try {
-            c = dataCollection().genome().getChromosome(mateReferenceName);
+            String chrName = samRecord.getReferenceName();
+            if (chrName.length() <= 3) {
+                chrName = "chr" + chrName;
+            }
+            if (ChromosomeUtils.isStandardChromosomeName(chrName)) {
+                c = collection.genome().getChromosome(chrName);
+            } else {
+                return null;
+            }
         } catch (Exception e) {
-            throw new REDException(e.getLocalizedMessage());
+            e.printStackTrace();
         }
+
 
         // We also don't allow readings which are beyond the end of the
         // chromosome
@@ -564,13 +580,19 @@ public class BAMFileParser extends DataParser {
                     + pairedEndDistance + ")");
         }
 
-        Chromosome c;
-
+        Chromosome c = null;
         try {
-            c = dataCollection().genome().getChromosome(
-                    samRecord.getReferenceName());
+            String chrName = samRecord.getReferenceName();
+            if (chrName.length() <= 3) {
+                chrName = "chr" + chrName;
+            }
+            if (ChromosomeUtils.isStandardChromosomeName(chrName)) {
+                c = collection.genome().getChromosome(chrName);
+            } else {
+                return null;
+            }
         } catch (Exception e) {
-            throw new REDException(e.getLocalizedMessage());
+            e.printStackTrace();
         }
 
         // We also don't allow readings which are beyond the end of the

@@ -19,19 +19,6 @@ package com.xl.display.chromosomeviewer;
  *    along with SeqMonk; if not, write to the Free Software
  *    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.RenderingHints;
-import java.awt.event.InputEvent;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.awt.event.MouseMotionListener;
-import java.util.Enumeration;
-import java.util.Vector;
-
-import javax.swing.JPanel;
 
 import com.xl.datatypes.sequence.Location;
 import com.xl.display.featureviewer.Feature;
@@ -40,6 +27,15 @@ import com.xl.preferences.DisplayPreferences;
 import com.xl.utils.ColourScheme;
 import com.xl.utils.PositionFormat;
 import com.xl.utils.Strand;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.InputEvent;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
+import java.util.Enumeration;
+import java.util.Vector;
 
 /**
  * The ChromosomeFeatureTrack is a display which shows one feature type in the
@@ -380,7 +376,6 @@ public class ChromosomeFeatureTrack extends JPanel {
 	 * the feature event occurs, that object's appropriate
 	 * method is invoked.
 	 * 
-	 * @see FeatureEvent
 	 */
 	private class BasicFeatureListener implements MouseMotionListener,
 			MouseListener {
@@ -421,8 +416,8 @@ public class ChromosomeFeatureTrack extends JPanel {
 										+ "-"
 										+ drawnFeature.feature.getTxLocation()
 												.getEnd() + " ("
-										+ PositionFormat.formatLength(length)
-										+ ")");
+                                        + PositionFormat.formatLength(length, PositionFormat.UNIT_BASEPAIR)
+                                        + ")");
 						activeFeature = drawnFeature.feature;
 						repaint();
 						return;
@@ -438,8 +433,8 @@ public class ChromosomeFeatureTrack extends JPanel {
 										+ "-"
 										+ activeFeature.getTxLocation()
 												.getEnd() + " ("
-										+ PositionFormat.formatLength(length)
-										+ ")");
+                                        + PositionFormat.formatLength(length, PositionFormat.UNIT_BASEPAIR)
+                                        + ")");
 						repaint();
 						return;
 					}

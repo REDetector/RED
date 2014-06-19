@@ -19,22 +19,16 @@
  */
 package net.xl.genomes;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.InputStream;
+import com.xl.exception.REDException;
+import com.xl.interfaces.ProgressListener;
+import com.xl.preferences.REDPreferences;
+import com.xl.utils.PositionFormat;
+
+import java.io.*;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.Enumeration;
 import java.util.Vector;
-
-import com.xl.exception.REDException;
-import com.xl.interfaces.ProgressListener;
-import com.xl.preferences.REDPreferences;
 
 /**
  * The GenomeDownloader actually performs the network interaction required to
@@ -106,7 +100,7 @@ public class GenomeDownloader implements Runnable {
 
             int size = connection.getContentLength();
             if (size == 0) {
-                size = 25000000;
+                size = 2500000;
             }
 
             InputStream is = connection.getInputStream();
@@ -135,7 +129,7 @@ public class GenomeDownloader implements Runnable {
                 throw new REDException(
                         "Could't write into your genomes directory.  Please check your file preferences.");
             }
-            byte[] b = new byte[1024];
+            byte[] b = new byte[8192];
             int totalBytes = 0;
             int i;
             while ((i = d.read(b)) > 0) {
@@ -146,16 +140,13 @@ public class GenomeDownloader implements Runnable {
 
                 while (en.hasMoreElements()) {
                     en.nextElement().progressUpdated(
-                            "Downloaded " + totalBytes / 1048576 + "Mb",
+                            "Downloaded " + PositionFormat.formatLength(totalBytes, PositionFormat.UNIT_BYTE),
                             totalBytes, size);
                 }
             }
 
             d.close();
             o.close();
-
-            // Now we can uncompress the downloaded file to create the genome
-//			REDApplication.getInstance().loadGenome(dotGenomeFile);
 
         } catch (Exception ex) {
             Enumeration<ProgressListener> en = listeners.elements();

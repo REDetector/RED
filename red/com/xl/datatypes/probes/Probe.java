@@ -68,8 +68,6 @@ public class Probe implements Location {
 	 *            the start
 	 * @param name
 	 *            the name
-	 * @throws SeqMonkException
-	 *             the seq monk exception
 	 */
 	public Probe(String chromosome, int start, int end, String name) {
 		this.chromosome = chromosome;
@@ -89,8 +87,6 @@ public class Probe implements Location {
 	 *            the end
 	 * @param strand
 	 *            the strand
-	 * @throws SeqMonkException
-	 *             the seq monk exception
 	 */
 	public Probe(String chromosome, int start, int end, Strand strand) {
 		this(chromosome, start, end, strand, null);
@@ -112,13 +108,6 @@ public class Probe implements Location {
 	 * seqmonk file. Don't try to pack a position yourself - use the
 	 * constructors which take separate start/end/strand values.
 	 * 
-	 * @param chromosome
-	 *            the chromosome
-	 * @param location
-	 *            the packed position for start/end/strand
-	 * @throws SeqMonkException
-	 *             the seq monk exception
-	 * 
 	 */
 	public Probe(SequenceRead sequence) {
 		this(sequence, null);
@@ -130,15 +119,6 @@ public class Probe implements Location {
 	 * This constructor should only be used when reconstructing a serialised
 	 * seqmonk file. Don't try to pack a position yourself - use the
 	 * constructors which take separate start/end/strand values.
-	 * 
-	 * @param chromosome
-	 *            the chromosome
-	 * @param location
-	 *            the packed position for start/end/strand
-	 * @param name
-	 *            the name for the probe
-	 * @throws SeqMonkException
-	 *             the seq monk exception
 	 * 
 	 */
 	public Probe(SequenceRead sequence, String name) {
@@ -313,10 +293,10 @@ public class Probe implements Location {
 	public String toString() {
 		if (name != null) {
 			return name + " " + location() + "("
-					+ PositionFormat.formatLength(length()) + ")";
-		}
-		return location() + "(" + PositionFormat.formatLength(length()) + ")";
-	}
+                    + PositionFormat.formatLength(length(), PositionFormat.UNIT_BASEPAIR) + ")";
+        }
+        return location() + "(" + PositionFormat.formatLength(length(), PositionFormat.UNIT_BASEPAIR) + ")";
+    }
 
 	private String location() {
 		return "Chr" + chromosome + ":" + getStart() + "-" + getEnd();
