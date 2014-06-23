@@ -264,12 +264,9 @@ public class IGVGenomeParser implements Runnable {
 
             progressComplete("load_genome", genome);
 
-        } catch (ZipException e) {
-            // TODO Auto-generated catch block
+        } catch (Exception e) {
             e.printStackTrace();
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            progressCancelled();
         } finally {
             try {
                 if (zipInputStream != null) {
@@ -289,57 +286,52 @@ public class IGVGenomeParser implements Runnable {
 
     public GenomeDescriptor parseGenomeArchiveFile(File dotGenomeFile)
             throws ZipException, IOException {
-        try {
-            zipFile = new ZipFile(dotGenomeFile);
-            fileInputStream = new FileInputStream(dotGenomeFile);
-            zipInputStream = new ZipInputStream(fileInputStream);
-            zipEntries = new HashMap<String, ZipEntry>();
-            ZipEntry zipEntry = null;
-            while ((zipEntry = zipInputStream.getNextEntry()) != null) {
-                String zipEntryName = zipEntry.getName();
-                zipEntries.put(zipEntryName, zipEntry);
-                if (zipEntryName.equalsIgnoreCase("property.txt")) {
-                    InputStream inputStream = zipFile.getInputStream(zipEntry);
-                    Properties properties = new Properties();
-                    properties.load(inputStream);
-                    String cytobandFileName = properties
-                            .getProperty("cytobandFile");
-                    String geneFileName = properties.getProperty("geneFile");
-                    String chrAliasFileName = properties
-                            .getProperty("chrAliasFile");
-                    String sequenceLocation = properties
-                            .getProperty("sequenceLocation");
-                    boolean chrNamesAltered = Boolean.parseBoolean(properties
-                            .getProperty("filenamesAltered"));
-                    boolean fasta = Boolean.parseBoolean(properties
-                            .getProperty("fasta"));
-                    boolean fastaDirectory = Boolean.parseBoolean(properties
-                            .getProperty("fastaDirectory"));
-                    boolean chromosomesAreOrdered = Boolean
-                            .parseBoolean(properties.getProperty("ordered"));
-                    boolean hasCustomSequenceLocation = Boolean
-                            .parseBoolean(properties
-                                    .getProperty("customSequenceLocation"));
-                    String fastaFileNameString = properties
-                            .getProperty("fastaFiles");
-                    String url = properties.getProperty("url");
-                    String name = properties.getProperty("name");
-                    String id = properties.getProperty("id");
-                    String geneTrackName = properties
-                            .getProperty("geneTrackName");
-                    GenomeDescriptor.getInstance().setAttributes(name,
-                            chrNamesAltered, id, cytobandFileName,
-                            geneFileName, chrAliasFileName, geneTrackName, url,
-                            sequenceLocation, hasCustomSequenceLocation,
-                            chromosomesAreOrdered, fasta, fastaDirectory,
-                            fastaFileNameString);
-                }
+        zipFile = new ZipFile(dotGenomeFile);
+        fileInputStream = new FileInputStream(dotGenomeFile);
+        zipInputStream = new ZipInputStream(fileInputStream);
+        zipEntries = new HashMap<String, ZipEntry>();
+        ZipEntry zipEntry = null;
+        while ((zipEntry = zipInputStream.getNextEntry()) != null) {
+            String zipEntryName = zipEntry.getName();
+            zipEntries.put(zipEntryName, zipEntry);
+            if (zipEntryName.equalsIgnoreCase("property.txt")) {
+                InputStream inputStream = zipFile.getInputStream(zipEntry);
+                Properties properties = new Properties();
+                properties.load(inputStream);
+                String cytobandFileName = properties
+                        .getProperty("cytobandFile");
+                String geneFileName = properties.getProperty("geneFile");
+                String chrAliasFileName = properties
+                        .getProperty("chrAliasFile");
+                String sequenceLocation = properties
+                        .getProperty("sequenceLocation");
+                boolean chrNamesAltered = Boolean.parseBoolean(properties
+                        .getProperty("filenamesAltered"));
+                boolean fasta = Boolean.parseBoolean(properties
+                        .getProperty("fasta"));
+                boolean fastaDirectory = Boolean.parseBoolean(properties
+                        .getProperty("fastaDirectory"));
+                boolean chromosomesAreOrdered = Boolean
+                        .parseBoolean(properties.getProperty("ordered"));
+                boolean hasCustomSequenceLocation = Boolean
+                        .parseBoolean(properties
+                                .getProperty("customSequenceLocation"));
+                String fastaFileNameString = properties
+                        .getProperty("fastaFiles");
+                String url = properties.getProperty("url");
+                String name = properties.getProperty("name");
+                String id = properties.getProperty("id");
+                String geneTrackName = properties
+                        .getProperty("geneTrackName");
+                GenomeDescriptor.getInstance().setAttributes(name,
+                        chrNamesAltered, id, cytobandFileName,
+                        geneFileName, chrAliasFileName, geneTrackName, url,
+                        sequenceLocation, hasCustomSequenceLocation,
+                        chromosomesAreOrdered, fasta, fastaDirectory,
+                        fastaFileNameString);
             }
-            return GenomeDescriptor.getInstance();
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
         }
+        return GenomeDescriptor.getInstance();
     }
 
     public LinkedHashMap<String, List<Cytoband>> loadCytoBandFile() {
@@ -442,6 +434,13 @@ public class IGVGenomeParser implements Runnable {
         Enumeration<ProgressListener> en = listeners.elements();
         while (en.hasMoreElements()) {
             en.nextElement().progressExceptionReceived(e);
+        }
+    }
+
+    private void progressCancelled() {
+        Enumeration<ProgressListener> en = listeners.elements();
+        while (en.hasMoreElements()) {
+            en.nextElement().progressCancelled();
         }
     }
 

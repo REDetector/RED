@@ -6,6 +6,7 @@ import com.xl.datatypes.PairedDataSet;
 import com.xl.datatypes.genome.Chromosome;
 import com.xl.datatypes.sequence.SequenceRead;
 import com.xl.exception.REDException;
+import com.xl.panel.DataParserOptionsPanel;
 import com.xl.utils.ChromosomeUtils;
 import com.xl.utils.Strand;
 import net.sf.samtools.SAMFileReader;
