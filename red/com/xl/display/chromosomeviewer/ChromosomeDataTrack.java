@@ -436,7 +436,6 @@ public class ChromosomeDataTrack extends JPanel implements MouseListener,
         if ((me.getModifiers() & InputEvent.BUTTON3_MASK) == InputEvent.BUTTON3_MASK) {
             viewer.zoomOut();
         }
-        MessageUtils.showInfo(ChromosomeUtils.class, "mouseClicked:" + me.getX());
     }
 
     /*

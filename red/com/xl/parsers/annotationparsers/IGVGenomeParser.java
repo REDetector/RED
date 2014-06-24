@@ -97,7 +97,7 @@ public class IGVGenomeParser implements Runnable {
         if (cacheCompleteFile.exists()) {
             cacheFailed = false;
             try {
-                BufferedReader br = ParsingUtils.openBufferedRead(cacheCompleteFile);
+                BufferedReader br = ParsingUtils.openBufferedReader(cacheCompleteFile);
                 String line = br.readLine();
                 br.close();
                 if (line == null || line.length() == 0) {
@@ -144,7 +144,7 @@ public class IGVGenomeParser implements Runnable {
         // up before we go on to add the actual feature sets.
         File chrListFile = new File(baseLocation.getAbsoluteFile() + "/cache/chr_list");
         try {
-            BufferedReader br = ParsingUtils.openBufferedRead(chrListFile);
+            BufferedReader br = ParsingUtils.openBufferedReader(chrListFile);
 
             String line;
             while ((line = br.readLine()) != null) {

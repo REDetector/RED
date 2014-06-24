@@ -222,7 +222,7 @@ public class BAMFileParser extends DataParser {
             return;
         }
 
-        processingFinished(newData);
+        processingComplete(newData);
     }
 
     /**

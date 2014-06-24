@@ -1,6 +1,6 @@
 /**
- * ¹¦ÄÜ£º
- * 	1¡¢ÎÄ¼ş¶ÁÈ¡ÓëÉ¾³ı
+ * ï¿½ï¿½ï¿½Ü£ï¿½
+ * 	1ï¿½ï¿½ï¿½Ä¼ï¿½ï¿½ï¿½È¡ï¿½ï¿½É¾ï¿½ï¿½
  */
 
 package com.xl.utils;
@@ -12,21 +12,21 @@ import java.io.PrintWriter;
 
 
 public class FileUtils {
-	private static boolean flag = false;
 
-	public static void writeData(String path, String content) {
-		File file = new File(path); // ¶¨ÒåÒª²Ù×÷µÄÎÄ¼ş
-		if (!file.getParentFile().exists()) {
-			file.getParentFile().mkdirs(); // ´´½¨¸¸ÎÄ¼ş¼ĞÂ·¾¶
-		}
+
+    public static void writeData(String path, String content) {
+        File file = new File(path);
+        if (!file.getParentFile().exists()) {
+            file.getParentFile().mkdirs();
+        }
 		PrintWriter out = null;
 		try {
 			out = new PrintWriter(file);
 			out.println(content);
 		} catch (Exception e) {
 			e.printStackTrace();
-		} finally { // Ò»¶¨Òª¹Ø±ÕÁ÷
-			if (out != null) {
+        } finally {
+            if (out != null) {
 				out.close();
 			}
 		}
@@ -37,15 +37,13 @@ public class FileUtils {
 	}
 	
 	/**
-	 * ×·¼ÓÎÄ¼ş£ºÊ¹ÓÃFileWriter
-	 * 
-	 * @param path
+     *
+     * @param path
 	 * @param content
 	 */
 	public static void appendData(String path, String content) {
 		FileWriter writer = null;
 		try {
-			// ´ò¿ªÒ»¸öĞ´ÎÄ¼şÆ÷£¬¹¹Ôìº¯ÊıÖĞµÄµÚ¶ş¸ö²ÎÊıtrue±íÊ¾ÒÔ×·¼ÓĞÎÊ½Ğ´ÎÄ¼ş
 			writer = new FileWriter(path, true);
 			writer.write(content);
 		} catch (IOException e) {
@@ -62,16 +60,16 @@ public class FileUtils {
 	}
 
 	/**
-	 * É¾³ıµ¥¸öÎÄ¼ş
-	 * 
+     *
+     *
 	 * @param path
-	 *            ±»É¾³ıÎÄ¼şµÄÎÄ¼şÃû
-	 * @return µ¥¸öÎÄ¼şÉ¾³ı³É¹¦·µ»Øtrue£¬·ñÔò·µ»Øfalse
-	 */
+     *
+     * @return
+     */
 	public static boolean deleteFile(String path) {
-		flag = false;
-		File file = new File(path);
-		// Â·¾¶ÎªÎÄ¼şÇÒ²»Îª¿ÕÔò½øĞĞÉ¾³ı
+        boolean flag = false;
+        File file = new File(path);
+		// Â·ï¿½ï¿½Îªï¿½Ä¼ï¿½ï¿½Ò²ï¿½Îªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½É¾ï¿½ï¿½
 		if (file.isFile() && file.exists()) {
 			file.delete();
 			flag = true;
@@ -80,32 +78,29 @@ public class FileUtils {
 	}
 
 	/**
-	 * É¾³ıÄ¿Â¼£¨ÎÄ¼ş¼Ğ£©ÒÔ¼°Ä¿Â¼ÏÂµÄÎÄ¼ş
-	 * 
+     *
+     *
 	 * @param path
-	 *            ±»É¾³ıÄ¿Â¼µÄÎÄ¼şÂ·¾¶
-	 * @return Ä¿Â¼É¾³ı³É¹¦·µ»Øtrue£¬·ñÔò·µ»Øfalse
-	 */
+     *
+     * @return
+     */
 	public static boolean deleteDirectory(String path) {
-		// Èç¹ûsPath²»ÒÔÎÄ¼ş·Ö¸ô·û½áÎ²£¬×Ô¶¯Ìí¼ÓÎÄ¼ş·Ö¸ô·û
 		if (!path.endsWith(File.separator)) {
 			path = path + File.separator;
 		}
 		File dirFile = new File(path);
-		// Èç¹ûdir¶ÔÓ¦µÄÎÄ¼ş²»´æÔÚ£¬»òÕß²»ÊÇÒ»¸öÄ¿Â¼£¬ÔòÍË³ö
 		if (!dirFile.exists() || !dirFile.isDirectory()) {
 			return false;
 		}
-		flag = true;
-		// É¾³ıÎÄ¼ş¼ĞÏÂµÄËùÓĞÎÄ¼ş(°üÀ¨×ÓÄ¿Â¼)
-		File[] files = dirFile.listFiles();
+        boolean flag = true;
+        File[] files = dirFile.listFiles();
 		for (int i = 0; i < files.length; i++) {
-			// É¾³ı×ÓÎÄ¼ş
+			// É¾ï¿½ï¿½ï¿½ï¿½ï¿½Ä¼ï¿½
 			if (files[i].isFile()) {
 				flag = deleteFile(files[i].getAbsolutePath());
 				if (!flag)
 					break;
-			} // É¾³ı×ÓÄ¿Â¼
+			} // É¾ï¿½ï¿½ï¿½ï¿½Ä¿Â¼
 			else {
 				flag = deleteDirectory(files[i].getAbsolutePath());
 				if (!flag)
@@ -114,7 +109,6 @@ public class FileUtils {
 		}
 		if (!flag)
 			return false;
-		// É¾³ıµ±Ç°Ä¿Â¼
 		if (dirFile.delete()) {
 			return true;
 		} else {

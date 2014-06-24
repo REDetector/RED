@@ -98,7 +98,7 @@ public class ParsingUtils {
         return reader;
     }
 
-    public static BufferedReader openBufferedRead(File file) throws IOException {
+    public static BufferedReader openBufferedReader(File file) throws IOException {
         return new BufferedReader(new FileReader(file));
     }
 

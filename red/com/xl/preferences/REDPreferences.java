@@ -115,7 +115,7 @@ public class REDPreferences {
     /**
      * The project root directory
      */
-    private File projectRootDirectory = new File("");// ����Ϊ��
+    private File projectRootDirectory = new File("");
 
     /**
      * Instantiates a preferences object. Only ever called once from inside this
@@ -145,7 +145,7 @@ public class REDPreferences {
      */
     private void loadPreferences() {
 
-        BufferedReader br = null;
+        BufferedReader br;
         try {
             br = new BufferedReader(new FileReader(preferencesFile));
 
@@ -445,7 +445,7 @@ public class REDPreferences {
     public File getGenomeBase() throws FileNotFoundException {
 
 		/*
-		 * This method returns a file which represents the directory under which
+         * This method returns a file which represents the directory under which
 		 * the genomes are stored. If a custom location has not been specified
 		 * then the default Genomes folder in the install dir is returned. If
 		 * that can't be found then a FileNotFound exception is thrown

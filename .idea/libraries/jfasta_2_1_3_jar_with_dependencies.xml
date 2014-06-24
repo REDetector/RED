@@ -1,9 +1,0 @@
-<component name="libraryTable">
-  <library name="jfasta-2.1.3-jar-with-dependencies">
-    <CLASSES>
-      <root url="jar://$PROJECT_DIR$/jfasta-2.1.3-jar-with-dependencies.jar!/" />
-    </CLASSES>
-    <JAVADOC />
-    <SOURCES />
-  </library>
-</component>
