@@ -1,6 +1,9 @@
 package com.xl.parsers.dataparsers;
 
 import com.xl.datatypes.DataCollection;
+import com.xl.datatypes.genome.Genome;
+import com.xl.preferences.REDPreferences;
+import com.xl.utils.ChromosomeUtils;
 import com.xl.utils.ParsingUtils;
 import net.sf.jfasta.FASTAElement;
 import net.sf.jfasta.FASTAFileReader;
@@ -9,21 +12,27 @@ import net.sf.jfasta.impl.FASTAFileReaderImpl;
 
 import javax.swing.*;
 import java.io.BufferedReader;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
 
 public class FastaFileParser extends DataParser {
+    private Genome genome;
 
     public FastaFileParser(DataCollection collection) {
         super(collection);
-        // TODO Auto-generated constructor stub
+        genome = collection.genome();
     }
 
     @Override
     public void run() {
-
+        try {
+            parseFasta();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -54,80 +63,97 @@ public class FastaFileParser extends DataParser {
     /**
      * Read an entire fasta file, which might be local or remote and might be gzipped.
      *
-     * @param path
+     * @param
      */
-    public static Map<String, byte[]> parseFasta(String path) throws IOException {
+    public void parseFasta() throws IOException {
 
-        Map<String, byte[]> sequenceMap = new HashMap<String, byte[]>();
         BufferedReader br = null;
+        File cacheBase = new File(REDPreferences.getInstance()
+                .getGenomeBase()
+                + "/"
+                + genome.getDisplayName() + "/cache");
+        if (!cacheBase.exists()) {
+            if (!cacheBase.mkdir()) {
+                throw new IOException(
+                        "Can't create cache file for core annotation set");
+            }
+        }
+        File[] fastaFiles = getFiles();
+        br = ParsingUtils.openBufferedReader(fastaFiles[0]);
+        FileOutputStream fos = null;
+        String currentChr = null;
+        String nextLine;
+        int line = 0;
+        int chr = 0;
+        while ((nextLine = br.readLine()) != null) {
+            if (nextLine.startsWith("#") || nextLine.trim().length() == 0) {
 
-        try {
-            br = ParsingUtils.openBufferedReader(path);
-            ByteArrayOutputStream buffer = new ByteArrayOutputStream();
-            String currentChr = null;
-            String nextLine;
-            while ((nextLine = br.readLine()) != null) {
-                if (nextLine.startsWith("#") || nextLine.trim().length() == 0) {
-                    continue;
-                } else if (nextLine.startsWith(">")) {
-                    if (currentChr != null) {
-                        byte[] seq = buffer.toByteArray();
-                        sequenceMap.put(currentChr, seq);
-                        buffer.reset();   // Resets the count field of this byte array output stream to zero
+            } else if (nextLine.startsWith(">")) {
+                if (fos != null) {
+                    fos.flush();
+                    fos.close();
+                    System.gc();
+                }
+                currentChr = skipToNextChr(br, nextLine);
+                if (currentChr != null) {
+                    chr++;
+                    line = 0;
+                    fos = new FileOutputStream(cacheBase.getAbsolutePath() + File.separator + currentChr + ".fasta", true);
+                    System.out.println(FastaFileParser.this.getClass() + ":" + currentChr);
+                }
+            } else {
+                if (fos != null) {
+                    fos.write(nextLine.trim().getBytes());
+                    line++;
+                    if (line % 100000 == 0) {
+                        progressUpdated("Read " + line + " lines from " + currentChr + " ", chr, 24);
                     }
-                    currentChr = nextLine.substring(1).split("\\s+")[0];
-                } else {
-                    System.out.println(nextLine);
-                    buffer.write(nextLine.trim().getBytes());
                 }
             }
-            // Add last chr
-            if (currentChr != null) {
-                byte[] seq = buffer.toByteArray();
-                sequenceMap.put(currentChr, seq);
-            }
-        } finally {
-            if (br != null) br.close();
         }
+        // Add last chr
+        if (fos != null) {
+            fos.close();
+        }
+        br.close();
+        processingComplete(null);
+    }
 
-        return sequenceMap;
+    private static String skipToNextChr(BufferedReader br, String nextLine) throws IOException {
+        nextLine = nextLine.substring(1).split("\\s+")[0];
+        if (ChromosomeUtils.isStandardChromosomeName(nextLine)) {
+            return nextLine;
+        } else {
+            while ((nextLine = br.readLine()) != null) if (nextLine.startsWith(">")) {
+                nextLine = nextLine.substring(1).split("\\s+")[0];
+                if (ChromosomeUtils.isStandardChromosomeName(nextLine)) {
+                    return nextLine;
+                }
+            }
+        }
+        return null;
     }
 
     /**
      * @throws IOException
      */
-    public static void parseFasta(String path, String name) throws IOException {
+    public static Map<String, FASTAElement> parseFasta(String path, String name) throws IOException {
 
         // Read a multi FASTA file element by element.
-
+        Map<String, FASTAElement> sequenceMap = new HashMap<String, FASTAElement>();
         File file = new File(path);
 
         FASTAFileReader reader = new FASTAFileReaderImpl(file);
 
         FASTAElementIterator it = reader.getIterator();
-        int i = 0;
+
         while (it.hasNext()) {
             FASTAElement el = it.next();
-            if (i++ < 1000) {
-                System.out.println(el.getSequence());
-            } else {
-                break;
+            if (ChromosomeUtils.isStandardChromosomeName(el.getHeader())) {
+                sequenceMap.put(el.getHeader(), el);
             }
         }
+        return sequenceMap;
     }
 
-    public static void main(String[] args) throws IOException {
-        Map<String, byte[]> map = parseFasta("E:\\Master\\ChongQing\\Data\\hg19.fa.align");
-        Set<String> sets = map.keySet();
-        Collection<byte[]> coll = map.values();
-        int i = 0;
-        Iterator<byte[]> iter = coll.iterator();
-        while (iter.hasNext()) {
-            if (i++ < 1000) {
-                System.out.println(new String(iter.next()));
-            } else {
-                break;
-            }
-        }
-    }
 }

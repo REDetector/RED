@@ -19,18 +19,17 @@
  */
 package com.xl.parsers.dataparsers;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.Iterator;
-
-import javax.swing.JPanel;
-import javax.swing.filechooser.FileFilter;
-
 import com.xl.datatypes.DataCollection;
 import com.xl.datatypes.DataSet;
 import com.xl.exception.REDException;
 import com.xl.interfaces.Cancellable;
 import com.xl.interfaces.ProgressListener;
+
+import javax.swing.*;
+import javax.swing.filechooser.FileFilter;
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Iterator;
 
 /**
  * Represents a generic data parser for read data.  Actual data parsers for
@@ -203,8 +202,8 @@ public abstract class DataParser implements Runnable, Cancellable {
 	 */
 	protected void progressUpdated(String message, int current, int max) {
 		Iterator<ProgressListener> i = listeners.iterator();
-		while (i.hasNext()) {
-			i.next().progressUpdated(message, current, max);
+        for (; i.hasNext(); ) {
+            i.next().progressUpdated(message, current, max);
 		}
 	}
 	
@@ -216,8 +215,8 @@ public abstract class DataParser implements Runnable, Cancellable {
 	 */
 	protected void progressExceptionReceived (Exception e) {
 		Iterator<ProgressListener> i = listeners.iterator();
-		while (i.hasNext()) {
-			i.next().progressExceptionReceived(e);
+        for (; i.hasNext(); ) {
+            i.next().progressExceptionReceived(e);
 		}
 	}
 	
@@ -229,8 +228,8 @@ public abstract class DataParser implements Runnable, Cancellable {
 	 */
 	protected void progressWarningReceived (Exception e) {
 		Iterator<ProgressListener> i = listeners.iterator();
-		while (i.hasNext()) {
-			i.next().progressWarningReceived(e);
+        for (; i.hasNext(); ) {
+            i.next().progressWarningReceived(e);
 		}
 	}
 	
@@ -240,8 +239,8 @@ public abstract class DataParser implements Runnable, Cancellable {
 	 */
 	protected void progressCancelled () {
 		Iterator<ProgressListener> i = listeners.iterator();
-		while (i.hasNext()) {
-			i.next().progressCancelled();
+        for (; i.hasNext(); ) {
+            i.next().progressCancelled();
 		}
 	}
 	
@@ -251,10 +250,10 @@ public abstract class DataParser implements Runnable, Cancellable {
 	 * 
 	 * @param newData An array of completed dataSets.  
 	 */
-	protected void processingFinished(DataSet [] newData) {
-		Iterator<ProgressListener> i = listeners.iterator();
-		while (i.hasNext()) {
-			i.next().progressComplete("datasets_loaded", newData);
+    protected void processingComplete(DataSet[] newData) {
+        Iterator<ProgressListener> i = listeners.iterator();
+        for (; i.hasNext(); ) {
+            i.next().progressComplete("datasets_loaded", newData);
 		}
 	}
 }
