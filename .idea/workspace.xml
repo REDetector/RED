@@ -159,8 +159,8 @@
       <file leaf-file-name="DataParser.java" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/red/com/xl/parsers/dataparsers/DataParser.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.74910396" vertical-offset="1562" max-vertical-offset="4460">
-              <caret line="137" column="48" selection-start-line="137" selection-start-column="7" selection-end-line="137" selection-end-column="7" />
+            <state vertical-scroll-proportion="0.31899643" vertical-offset="1562" max-vertical-offset="4460">
+              <caret line="121" column="71" selection-start-line="121" selection-start-column="50" selection-end-line="121" selection-end-column="50" />
               <folding />
             </state>
           </provider>
@@ -903,7 +903,11 @@
       <created>1403619294123</created>
       <updated>1403619294123</updated>
     </task>
-    <option name="localTasksCounter" value="30" />
+    <task id="LOCAL-00030" summary="Fix some bugs.">
+      <created>1403619426304</created>
+      <updated>1403619426304</updated>
+    </task>
+    <option name="localTasksCounter" value="31" />
     <servers />
   </component>
   <component name="TodoView" selected-index="0">
@@ -1447,8 +1451,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/red/com/xl/parsers/dataparsers/DataParser.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.74910396" vertical-offset="1562" max-vertical-offset="4460">
-          <caret line="137" column="48" selection-start-line="137" selection-start-column="7" selection-end-line="137" selection-end-column="7" />
+        <state vertical-scroll-proportion="0.31899643" vertical-offset="1562" max-vertical-offset="4460">
+          <caret line="121" column="71" selection-start-line="121" selection-start-column="50" selection-end-line="121" selection-end-column="50" />
           <folding />
         </state>
       </provider>
