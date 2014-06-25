@@ -19,14 +19,6 @@ package com.xl.display.dataviewer;
  *    along with SeqMonk; if not, write to the Free Software
  *    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
-import java.awt.Color;
-import java.awt.Component;
-
-import javax.swing.Icon;
-import javax.swing.ImageIcon;
-import javax.swing.JLabel;
-import javax.swing.JTree;
-import javax.swing.tree.DefaultTreeCellRenderer;
 
 import com.xl.datatypes.DataGroup;
 import com.xl.datatypes.DataSet;
@@ -34,95 +26,109 @@ import com.xl.datatypes.ReplicateSet;
 import com.xl.datatypes.annotation.AnnotationSet;
 import com.xl.datatypes.probes.ProbeList;
 
+import javax.swing.*;
+import javax.swing.tree.DefaultTreeCellRenderer;
+import java.awt.*;
+
 /**
  * The Class DataTreeRenderer sets the look of the DataTree
  */
 public class DataTreeRenderer extends DefaultTreeCellRenderer {
 
-	/** The data set icon. */
-	private static Icon dataSetIcon = new ImageIcon(
-			ClassLoader
-					.getSystemResource("resources/dataset_icon.png"));
+    /**
+     * The data set icon.
+     */
+    private static Icon dataSetIcon = new ImageIcon(
+            ClassLoader
+                    .getSystemResource("resources/dataset_icon.png"));
 
-	/** The data group icon. */
-	private static Icon dataGroupIcon = new ImageIcon(
-			ClassLoader
-					.getSystemResource("resources/datagroup_icon.png"));
+    /**
+     * The data group icon.
+     */
+    private static Icon dataGroupIcon = new ImageIcon(
+            ClassLoader
+                    .getSystemResource("resources/datagroup_icon.png"));
 
-	/** The probe list icon. */
-	private static Icon probeListIcon = new ImageIcon(
-			ClassLoader
-					.getSystemResource("resources/probelist_icon.png"));
+    /**
+     * The probe list icon.
+     */
+    private static Icon probeListIcon = new ImageIcon(
+            ClassLoader
+                    .getSystemResource("resources/probelist_icon.png"));
 
-	/** The annotation set icon. */
-	private static Icon annotationSetIcon = new ImageIcon(
-			ClassLoader
-					.getSystemResource("resources/annotation_set_icon.png"));
+    /**
+     * The annotation set icon.
+     */
+    private static Icon annotationSetIcon = new ImageIcon(
+            ClassLoader
+                    .getSystemResource("resources/annotation_set_icon.png"));
 
-	/** The replicate set icon. */
-	private static Icon replicateSetIcon = new ImageIcon(
-			ClassLoader
-					.getSystemResource("resources/replicate_set_icon.png"));
+    /**
+     * The replicate set icon.
+     */
+    private static Icon replicateSetIcon = new ImageIcon(
+            ClassLoader
+                    .getSystemResource("resources/replicate_set_icon.png"));
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * javax.swing.tree.DefaultTreeCellRenderer#getTreeCellRendererComponent
-	 * (javax.swing.JTree, java.lang.Object, boolean, boolean, boolean, int,
-	 * boolean)
-	 */
-	public Component getTreeCellRendererComponent(JTree tree, Object value,
-			boolean selected, boolean expanded, boolean leaf, int row,
-			boolean hasFocus) {
+    /*
+     * (non-Javadoc)
+     *
+     * @see
+     * javax.swing.tree.DefaultTreeCellRenderer#getTreeCellRendererComponent
+     * (javax.swing.JTree, java.lang.Object, boolean, boolean, boolean, int,
+     * boolean)
+     */
+    public Component getTreeCellRendererComponent(JTree tree, Object value,
+                                                  boolean selected, boolean expanded, boolean leaf, int row,
+                                                  boolean hasFocus) {
 
-		if (value instanceof DataSet) {
-			JLabel label = new JLabel(value.toString(), dataSetIcon,
-					JLabel.LEFT);
+        if (value instanceof DataSet) {
+            JLabel label = new JLabel(value.toString(), dataSetIcon,
+                    JLabel.LEFT);
 
-			if (selected) {
-				label.setOpaque(true);
-				label.setBackground(Color.LIGHT_GRAY);
-			}
-			return label;
-		} else if (value instanceof DataGroup) {
-			JLabel label = new JLabel(value.toString(), dataGroupIcon,
-					JLabel.LEFT);
+            if (selected) {
+                label.setOpaque(true);
+                label.setBackground(Color.LIGHT_GRAY);
+            }
+            return label;
+        } else if (value instanceof DataGroup) {
+            JLabel label = new JLabel(value.toString(), dataGroupIcon,
+                    JLabel.LEFT);
 
-			if (selected) {
-				label.setOpaque(true);
-				label.setBackground(Color.LIGHT_GRAY);
-			}
-			return label;
-		} else if (value instanceof ReplicateSet) {
-			JLabel label = new JLabel(value.toString(), replicateSetIcon,
-					JLabel.LEFT);
+            if (selected) {
+                label.setOpaque(true);
+                label.setBackground(Color.LIGHT_GRAY);
+            }
+            return label;
+        } else if (value instanceof ReplicateSet) {
+            JLabel label = new JLabel(value.toString(), replicateSetIcon,
+                    JLabel.LEFT);
 
-			if (selected) {
-				label.setOpaque(true);
-				label.setBackground(Color.LIGHT_GRAY);
-			}
-			return label;
-		} else if (value instanceof ProbeList) {
-			JLabel label = new JLabel(value.toString(), probeListIcon,
-					JLabel.LEFT);
-			if (selected) {
-				label.setOpaque(true);
-				label.setBackground(Color.LIGHT_GRAY);
-			}
-			return label;
-		} else if (value instanceof AnnotationSet) {
-			JLabel label = new JLabel(value.toString(), annotationSetIcon,
-					JLabel.LEFT);
-			if (selected) {
-				label.setOpaque(true);
-				label.setBackground(Color.LIGHT_GRAY);
-			}
-			return label;
-		} else {
-			return super.getTreeCellRendererComponent(tree, value, selected,
-					expanded, leaf, row, hasFocus);
-		}
-	}
+            if (selected) {
+                label.setOpaque(true);
+                label.setBackground(Color.LIGHT_GRAY);
+            }
+            return label;
+        } else if (value instanceof ProbeList) {
+            JLabel label = new JLabel(value.toString(), probeListIcon,
+                    JLabel.LEFT);
+            if (selected) {
+                label.setOpaque(true);
+                label.setBackground(Color.LIGHT_GRAY);
+            }
+            return label;
+        } else if (value instanceof AnnotationSet) {
+            JLabel label = new JLabel(value.toString(), annotationSetIcon,
+                    JLabel.LEFT);
+            if (selected) {
+                label.setOpaque(true);
+                label.setBackground(Color.LIGHT_GRAY);
+            }
+            return label;
+        } else {
+            return super.getTreeCellRendererComponent(tree, value, selected,
+                    expanded, leaf, row, hasFocus);
+        }
+    }
 
 }

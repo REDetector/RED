@@ -1,41 +1,39 @@
 package com.sql;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 
 public class Dbcon {
-	//Êý¾Ý¿âÇý¶¯
-	 String url = "jdbc:mysql://10.108.85.251:3306/input" ;    
-     String username = "root" ;   
-     String password = "root" ;
-     Connection con=null;
-     Statement stmt = null;
-     int result=0;
-     ResultSet rs=null;
-	public void dbcon() throws SQLException{
-		try{
-		    //¼ÓÔØMySqlµÄÇý¶¯Àà   
-		    Class.forName("com.mysql.jdbc.Driver") ;   				
-			con =DriverManager.getConnection(url,username,password) ;
-			con.setAutoCommit(false);
-			stmt = con.createStatement();			
-		} catch(SQLException se){   
-		      System.out.println("Êý¾Ý¿âÁ¬½ÓÊ§°Ü£¡");   
-		      se.printStackTrace() ;   
-		      }catch(ClassNotFoundException e){   
-			    System.out.println("ÕÒ²»µ½Çý¶¯³ÌÐòÀà £¬¼ÓÔØÇý¶¯Ê§°Ü£¡");   
-			    e.printStackTrace() ;   
-			    } 
-		}
-	public void dbclose(){
-		try {
-			con.close();
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
+    //ï¿½ï¿½Ý¿ï¿½ï¿½ï¿½
+    String url = "jdbc:mysql://10.108.85.251:3306/input";
+    String username = "root";
+    String password = "root";
+    Connection con = null;
+    Statement stmt = null;
+    int result = 0;
+    ResultSet rs = null;
+
+    public void dbcon() throws SQLException {
+        try {
+            //ï¿½ï¿½ï¿½ï¿½MySqlï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+            Class.forName("com.mysql.jdbc.Driver");
+            con = DriverManager.getConnection(url, username, password);
+            con.setAutoCommit(false);
+            stmt = con.createStatement();
+        } catch (SQLException se) {
+            System.out.println("ï¿½ï¿½Ý¿ï¿½ï¿½ï¿½ï¿½ï¿½Ê§ï¿½Ü£ï¿½");
+            se.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            System.out.println("ï¿½Ò²ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê§ï¿½Ü£ï¿½");
+            e.printStackTrace();
+        }
+    }
+
+    public void dbclose() {
+        try {
+            con.close();
+        } catch (SQLException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+    }
 }

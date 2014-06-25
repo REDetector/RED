@@ -4,10 +4,7 @@
 
 package com.xl.menu;
 
-import com.xl.dialog.AboutDialog;
-import com.xl.dialog.DataTrackSelector;
-import com.xl.dialog.DataZoomSelector;
-import com.xl.dialog.FindFeatureDialog;
+import com.xl.dialog.*;
 import com.xl.dialog.gotodialog.GotoDialog;
 import com.xl.dialog.gotodialog.GotoWindowDialog;
 import com.xl.help.HelpDialog;
@@ -402,7 +399,7 @@ public class REDMenu extends JMenuBar implements ActionListener {
         } else if (action.equals(MenuUtils.FIND)) {
             new FindFeatureDialog(redApplication.dataCollection());
         } else if (action.equals(MenuUtils.PREFERENCES)) {
-
+            new EditPreferencesDialog();
         }
         // --------------------ViewMenu--------------------
         else if (action.equals(MenuUtils.ZOOM_IN)) {

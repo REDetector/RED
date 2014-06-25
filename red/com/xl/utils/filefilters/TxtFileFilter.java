@@ -19,35 +19,33 @@
  */
 package com.xl.utils.filefilters;
 
-import java.io.File;
-
 import javax.swing.filechooser.FileFilter;
+import java.io.File;
 
 /**
  * A File filter representing Text Files
  */
 public class TxtFileFilter extends FileFilter {
 
-	/* (non-Javadoc)
-	 * @see javax.swing.filechooser.FileFilter#accept(java.io.File)
-	 */
-	@Override
-	public boolean accept(File f) {
-		if (f.isDirectory() || f.getName().toLowerCase().endsWith(".txt")) {
-			return true;
-		}
-		else {
-			return false;
-		}
-	}
+    /* (non-Javadoc)
+     * @see javax.swing.filechooser.FileFilter#accept(java.io.File)
+     */
+    @Override
+    public boolean accept(File f) {
+        if (f.isDirectory() || f.getName().toLowerCase().endsWith(".txt")) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 
-	/* (non-Javadoc)
-	 * @see javax.swing.filechooser.FileFilter#getDescription()
-	 */
-	@Override
-	public String getDescription() {
-		return "Text Files";
-	}
+    /* (non-Javadoc)
+     * @see javax.swing.filechooser.FileFilter#getDescription()
+     */
+    @Override
+    public String getDescription() {
+        return "Text Files";
+    }
 
 
 }

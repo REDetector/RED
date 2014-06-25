@@ -19,250 +19,248 @@
  */
 package com.xl.dialog.gotodialog;
 
-import java.awt.BorderLayout;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
-
-import javax.swing.JButton;
-import javax.swing.JComboBox;
-import javax.swing.JDialog;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JTextField;
-
 import com.xl.datatypes.genome.Chromosome;
 import com.xl.main.REDApplication;
 import com.xl.preferences.DisplayPreferences;
 import com.xl.utils.NumberKeyListener;
 import com.xl.utils.SequenceReadUtils;
 
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+
 /**
  * The Class GotoDialog provides a quick way to jump to a known position in the
  * genome.
  */
 public class GotoWindowDialog extends JDialog implements ActionListener,
-		KeyListener {
+        KeyListener {
 
-	/** The chromosome. */
-	private JComboBox<Chromosome> chromosome;
+    /**
+     * The chromosome.
+     */
+    private JComboBox<Chromosome> chromosome;
 
-	/** The centre position. */
-	private JTextField centre;
+    /**
+     * The centre position.
+     */
+    private JTextField centre;
 
-	/** The window size. */
-	private JTextField window;
+    /**
+     * The window size.
+     */
+    private JTextField window;
 
-	/** The ok button. */
-	private JButton okButton;
+    /**
+     * The ok button.
+     */
+    private JButton okButton;
 
-	/**
-	 * Instantiates a new goto window dialog.
-	 * 
-	 * @param application
-	 *            the application
-	 */
-	public GotoWindowDialog(REDApplication application) {
-		super(application, "Jump to window...");
-		setSize(300, 200);
-		setLocationRelativeTo(application);
-		setModal(true);
+    /**
+     * Instantiates a new goto window dialog.
+     *
+     * @param application the application
+     */
+    public GotoWindowDialog(REDApplication application) {
+        super(application, "Jump to window...");
+        setSize(300, 200);
+        setLocationRelativeTo(application);
+        setModal(true);
 
-		getContentPane().setLayout(new BorderLayout());
+        getContentPane().setLayout(new BorderLayout());
 
-		JPanel choicePanel = new JPanel();
+        JPanel choicePanel = new JPanel();
 
-		choicePanel.setLayout(new GridBagLayout());
+        choicePanel.setLayout(new GridBagLayout());
 
-		GridBagConstraints gbc = new GridBagConstraints();
-		gbc.gridx = 0;
-		gbc.gridy = 0;
-		gbc.weightx = 0.2;
-		gbc.weighty = 0.5;
-		gbc.insets = new Insets(5, 5, 5, 5);
-		gbc.fill = GridBagConstraints.HORIZONTAL;
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.weightx = 0.2;
+        gbc.weighty = 0.5;
+        gbc.insets = new Insets(5, 5, 5, 5);
+        gbc.fill = GridBagConstraints.HORIZONTAL;
 
-		choicePanel.add(new JLabel("Chromosome", JLabel.RIGHT), gbc);
+        choicePanel.add(new JLabel("Chromosome", JLabel.RIGHT), gbc);
 
-		gbc.gridx++;
-		gbc.weightx = 0.6;
+        gbc.gridx++;
+        gbc.weightx = 0.6;
 
-		Chromosome[] chrs = application.dataCollection().genome()
-				.getAllChromosomes();
+        Chromosome[] chrs = application.dataCollection().genome()
+                .getAllChromosomes();
 
-		chromosome = new JComboBox<Chromosome>(chrs);
+        chromosome = new JComboBox<Chromosome>(chrs);
 
-		choicePanel.add(chromosome, gbc);
+        choicePanel.add(chromosome, gbc);
 
-		Chromosome currentChromosome = DisplayPreferences.getInstance()
-				.getCurrentChromosome();
-		for (int i = 0; i < chrs.length; i++) {
-			if (chrs[i] == currentChromosome) {
-				chromosome.setSelectedIndex(i);
-				break;
-			}
-		}
+        Chromosome currentChromosome = DisplayPreferences.getInstance()
+                .getCurrentChromosome();
+        for (int i = 0; i < chrs.length; i++) {
+            if (chrs[i] == currentChromosome) {
+                chromosome.setSelectedIndex(i);
+                break;
+            }
+        }
 
-		gbc.gridx = 0;
-		gbc.gridy++;
-		gbc.weightx = 0.2;
+        gbc.gridx = 0;
+        gbc.gridy++;
+        gbc.weightx = 0.2;
 
-		choicePanel.add(new JLabel("Centre ", JLabel.RIGHT), gbc);
+        choicePanel.add(new JLabel("Centre ", JLabel.RIGHT), gbc);
 
-		gbc.gridx++;
-		gbc.weightx = 0.6;
+        gbc.gridx++;
+        gbc.weightx = 0.6;
 
-		centre = new JTextField(""
-				+ SequenceReadUtils.midPoint(DisplayPreferences.getInstance()
-						.getCurrentStartLocation(), DisplayPreferences
-						.getInstance().getCurrentEndLocation()), 5);
-		centre.addKeyListener(new NumberKeyListener(false, false));
-		centre.addKeyListener(this);
-		choicePanel.add(centre, gbc);
+        centre = new JTextField(""
+                + SequenceReadUtils.midPoint(DisplayPreferences.getInstance()
+                .getCurrentStartLocation(), DisplayPreferences
+                .getInstance().getCurrentEndLocation()), 5);
+        centre.addKeyListener(new NumberKeyListener(false, false));
+        centre.addKeyListener(this);
+        choicePanel.add(centre, gbc);
 
-		gbc.gridx = 0;
-		gbc.gridy++;
-		gbc.weightx = 0.2;
+        gbc.gridx = 0;
+        gbc.gridy++;
+        gbc.weightx = 0.2;
 
-		choicePanel.add(new JLabel("Window ", JLabel.RIGHT), gbc);
+        choicePanel.add(new JLabel("Window ", JLabel.RIGHT), gbc);
 
-		gbc.gridx++;
-		gbc.weightx = 0.6;
+        gbc.gridx++;
+        gbc.weightx = 0.6;
 
-		window = new JTextField(""
-				+ DisplayPreferences.getInstance().getCurrentLength(), 5);
-		window.addKeyListener(new NumberKeyListener(false, false));
-		window.addKeyListener(this);
-		choicePanel.add(window, gbc);
+        window = new JTextField(""
+                + DisplayPreferences.getInstance().getCurrentLength(), 5);
+        window.addKeyListener(new NumberKeyListener(false, false));
+        window.addKeyListener(this);
+        choicePanel.add(window, gbc);
 
-		getContentPane().add(choicePanel, BorderLayout.CENTER);
+        getContentPane().add(choicePanel, BorderLayout.CENTER);
 
-		JPanel buttonPanel = new JPanel();
-		JButton cancelButton = new JButton("Cancel");
-		cancelButton.setActionCommand("cancel");
-		cancelButton.addActionListener(this);
-		buttonPanel.add(cancelButton);
+        JPanel buttonPanel = new JPanel();
+        JButton cancelButton = new JButton("Cancel");
+        cancelButton.setActionCommand("cancel");
+        cancelButton.addActionListener(this);
+        buttonPanel.add(cancelButton);
 
-		okButton = new JButton("OK");
-		okButton.setActionCommand("ok");
-		okButton.addActionListener(this);
-		okButton.setEnabled(true);
-		getRootPane().setDefaultButton(okButton);
-		buttonPanel.add(okButton);
+        okButton = new JButton("OK");
+        okButton.setActionCommand("ok");
+        okButton.addActionListener(this);
+        okButton.setEnabled(true);
+        getRootPane().setDefaultButton(okButton);
+        buttonPanel.add(okButton);
 
-		getContentPane().add(buttonPanel, BorderLayout.SOUTH);
+        getContentPane().add(buttonPanel, BorderLayout.SOUTH);
 
-		setVisible(true);
-	}
+        setVisible(true);
+    }
 
-	/**
-	 * Do goto.
-	 */
-	private void doGoto() {
+    /**
+     * Do goto.
+     */
+    private void doGoto() {
 
-		Chromosome chr = (Chromosome) chromosome.getSelectedItem();
-		int centreValue = chr.getLength() / 2;
-		int windowValue = 1000;
+        Chromosome chr = (Chromosome) chromosome.getSelectedItem();
+        int centreValue = chr.getLength() / 2;
+        int windowValue = 1000;
 
-		int startValue;
-		int endValue;
+        int startValue;
+        int endValue;
 
-		// Work out the window positions we want
+        // Work out the window positions we want
 
-		if (centre.getText().length() > 0) {
-			centreValue = Integer.parseInt(centre.getText());
-		}
-		if (window.getText().length() > 0) {
-			windowValue = Integer.parseInt(window.getText());
-		}
+        if (centre.getText().length() > 0) {
+            centreValue = Integer.parseInt(centre.getText());
+        }
+        if (window.getText().length() > 0) {
+            windowValue = Integer.parseInt(window.getText());
+        }
 
-		if (windowValue < 1)
-			windowValue = 1;
+        if (windowValue < 1)
+            windowValue = 1;
 
-		startValue = centreValue - (windowValue / 2);
-		endValue = startValue + (windowValue - 1);
+        startValue = centreValue - (windowValue / 2);
+        endValue = startValue + (windowValue - 1);
 
-		DisplayPreferences.getInstance().setLocation(chr, startValue, endValue);
+        DisplayPreferences.getInstance().setLocation(chr, startValue, endValue);
 
-		setVisible(false);
-		dispose();
+        setVisible(false);
+        dispose();
 
-	}
+    }
 
-	/**
-	 * Check ok.
-	 */
-	private void checkOK() {
-		// Check to see if enough information has been added to allow us to
-		// enable the OK button.
+    /**
+     * Check ok.
+     */
+    private void checkOK() {
+        // Check to see if enough information has been added to allow us to
+        // enable the OK button.
 
-		// We need a start value
+        // We need a start value
 
-		// I've provided a default value so this is no longer needed
+        // I've provided a default value so this is no longer needed
 
-		// if (start.getText().length()==0) {
-		// okButton.setEnabled(false);
-		// return;
-		// }
+        // if (start.getText().length()==0) {
+        // okButton.setEnabled(false);
+        // return;
+        // }
 
-		// We need an end value
+        // We need an end value
 
-		// I've provided a default value so this is no longer needed
+        // I've provided a default value so this is no longer needed
 
-		// if (end.getText().length()==0) {
-		// okButton.setEnabled(false);
-		// return;
-		// }
+        // if (end.getText().length()==0) {
+        // okButton.setEnabled(false);
+        // return;
+        // }
 
-		// If we get here then we're good to go
-		okButton.setEnabled(true);
+        // If we get here then we're good to go
+        okButton.setEnabled(true);
 
-	}
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
-	 */
-	public void actionPerformed(ActionEvent ae) {
-		if (ae.getActionCommand().equals("cancel")) {
-			setVisible(false);
-			dispose();
-		} else if (ae.getActionCommand().equals("ok")) {
-			doGoto();
-		}
-	}
+    /*
+     * (non-Javadoc)
+     *
+     * @see
+     * java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+     */
+    public void actionPerformed(ActionEvent ae) {
+        if (ae.getActionCommand().equals("cancel")) {
+            setVisible(false);
+            dispose();
+        } else if (ae.getActionCommand().equals("ok")) {
+            doGoto();
+        }
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.awt.event.KeyListener#keyTyped(java.awt.event.KeyEvent)
-	 */
-	public void keyTyped(KeyEvent arg0) {
-	}
+    /*
+     * (non-Javadoc)
+     *
+     * @see java.awt.event.KeyListener#keyTyped(java.awt.event.KeyEvent)
+     */
+    public void keyTyped(KeyEvent arg0) {
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.awt.event.KeyListener#keyPressed(java.awt.event.KeyEvent)
-	 */
-	public void keyPressed(KeyEvent ke) {
+    /*
+     * (non-Javadoc)
+     *
+     * @see java.awt.event.KeyListener#keyPressed(java.awt.event.KeyEvent)
+     */
+    public void keyPressed(KeyEvent ke) {
 
-	}
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.awt.event.KeyListener#keyReleased(java.awt.event.KeyEvent)
-	 */
-	public void keyReleased(KeyEvent ke) {
+    /*
+     * (non-Javadoc)
+     *
+     * @see java.awt.event.KeyListener#keyReleased(java.awt.event.KeyEvent)
+     */
+    public void keyReleased(KeyEvent ke) {
 
-		checkOK();
-	}
+        checkOK();
+    }
 
 }

@@ -3,7 +3,6 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/REDetector.iml" filepath="$PROJECT_DIR$/REDetector.iml" />
-      <module fileurl="file://$USER_HOME$/Desktop/java-eps-graphics-master/java-eps-graphics-master.iml" filepath="$USER_HOME$/Desktop/java-eps-graphics-master/java-eps-graphics-master.iml" />
     </modules>
   </component>
 </project>

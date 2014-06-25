@@ -19,12 +19,10 @@
  */
 package com.xl.panel;
 
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-
-import javax.swing.JPanel;
-
 import com.xl.main.REDApplication;
+
+import javax.swing.*;
+import java.awt.*;
 
 /**
  * This is an information panel which takes up all of the main display when
@@ -36,38 +34,38 @@ import com.xl.main.REDApplication;
 
 public class WelcomePanel extends JPanel {
 
-	private REDInfoPanel infoPanel;
+    private REDInfoPanel infoPanel;
 
-	public WelcomePanel(REDApplication application) {
-		setLayout(new GridBagLayout());
-		GridBagConstraints gridBagConstraints = new GridBagConstraints();
-		gridBagConstraints.gridx = 0;
-		gridBagConstraints.gridy = 0;
-		gridBagConstraints.weightx = 0.5;
-		gridBagConstraints.weighty = 0.8;
-		gridBagConstraints.fill = GridBagConstraints.NONE;
+    public WelcomePanel(REDApplication application) {
+        setLayout(new GridBagLayout());
+        GridBagConstraints gridBagConstraints = new GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.weightx = 0.5;
+        gridBagConstraints.weighty = 0.8;
+        gridBagConstraints.fill = GridBagConstraints.NONE;
 
-		add(new JPanel(), gridBagConstraints);
-		gridBagConstraints.weighty = 0.2;
-		gridBagConstraints.gridy++;
+        add(new JPanel(), gridBagConstraints);
+        gridBagConstraints.weighty = 0.2;
+        gridBagConstraints.gridy++;
 
-		add(new REDTitlePanel(), gridBagConstraints);
-		gridBagConstraints.gridy++;
-		infoPanel = new REDInfoPanel(application);
-		add(infoPanel, gridBagConstraints);
+        add(new REDTitlePanel(), gridBagConstraints);
+        gridBagConstraints.gridy++;
+        infoPanel = new REDInfoPanel(application);
+        add(infoPanel, gridBagConstraints);
 
-		gridBagConstraints.weighty = 0.8;
-		gridBagConstraints.gridy++;
-		add(new JPanel(), gridBagConstraints);
+        gridBagConstraints.weighty = 0.8;
+        gridBagConstraints.gridy++;
+        add(new JPanel(), gridBagConstraints);
 
-	}
+    }
 
-	public boolean cacheDirectoryValid() {
-		if (infoPanel != null) {
-			return infoPanel.cacheDirectoryValid();
-		} else {
-			return false;
-		}
-	}
+    public boolean cacheDirectoryValid() {
+        if (infoPanel != null) {
+            return infoPanel.cacheDirectoryValid();
+        } else {
+            return false;
+        }
+    }
 
 }

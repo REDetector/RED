@@ -18,18 +18,19 @@
  *    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 package com.xl.gradients;
-import java.awt.Color;
+
+import java.awt.*;
 
 public class GreyscaleColourGradient extends ColourGradient {
 
-	
-	public String name () {
-		return "Greyscale Colour Gradient";
-	}
-		
-	protected Color [] makeColors() {
-		/*
-		 * We pre-generate a list of 100 colours we're going to
+
+    public String name() {
+        return "Greyscale Colour Gradient";
+    }
+
+    protected Color[] makeColors() {
+        /*
+         * We pre-generate a list of 100 colours we're going to
 		 * use for this display.
 		 * 
 		 * Because a linear gradient ends up leaving too much
@@ -37,15 +38,15 @@ public class GreyscaleColourGradient extends ColourGradient {
 		 * to emphasise low and high values so the display
 		 * is clearer.
 		 */
-		
-		Color [] colors = new Color[100];
-		
-		
-		for (int i=0;i<100;i++) {
-			int value = (255*(i+1))/100;
-			colors[i] = new Color(value,value,value);
-		}
-						
-		return colors;
-	}
+
+        Color[] colors = new Color[100];
+
+
+        for (int i = 0; i < 100; i++) {
+            int value = (255 * (i + 1)) / 100;
+            colors[i] = new Color(value, value, value);
+        }
+
+        return colors;
+    }
 }

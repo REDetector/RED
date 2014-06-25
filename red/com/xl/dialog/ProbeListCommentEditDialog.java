@@ -19,80 +19,73 @@
  */
 package com.xl.dialog;
 
-import java.awt.BorderLayout;
-import java.awt.Component;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-
-import javax.swing.JButton;
-import javax.swing.JDialog;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
-
 import com.xl.datatypes.probes.ProbeList;
 import com.xl.main.REDApplication;
 
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
 public class ProbeListCommentEditDialog extends JDialog implements ActionListener {
 
-	
-	private ProbeList list;
-	private JTextArea editor;
-	
-	public ProbeListCommentEditDialog (ProbeList list) {
-		this(list,REDApplication.getInstance());
-	}
-	
-	public ProbeListCommentEditDialog (ProbeList list, Component c) {
-	
-		super(REDApplication.getInstance(),"Edit comments for "+list.name());
-		
-		this.list = list;
-		
-		JPanel panel = new JPanel();
-		
-		panel.setLayout(new BorderLayout());
-		
-		panel.add(new JLabel("You can use this comments section to record the rationale for a particular filter or probe generation.",JLabel.CENTER),BorderLayout.NORTH);
-		
-		editor = new JTextArea();
-		editor.setWrapStyleWord(true);
-		editor.setLineWrap(true);
-		editor.setText(list.comments());
-		
-		panel.add(new JScrollPane(editor,JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,JScrollPane.HORIZONTAL_SCROLLBAR_NEVER),BorderLayout.CENTER);
-		
-		JPanel buttonPanel = new JPanel();
-		
-		JButton closeButton = new JButton("Close");
-		closeButton.addActionListener(this);
-		closeButton.setActionCommand("close");
-		buttonPanel.add(closeButton);
-		
-		JButton saveButton = new JButton("Save Comments");
-		saveButton.setActionCommand("save");
-		saveButton.addActionListener(this);
-		buttonPanel.add(saveButton);
-		
-		panel.add(buttonPanel,BorderLayout.SOUTH);
-		
-		setContentPane(panel);
-		
-		setSize(600,300);
-		setLocationRelativeTo(c);
-		setVisible(true);
-	}
 
-	public void actionPerformed(ActionEvent ae) {
+    private ProbeList list;
+    private JTextArea editor;
 
-		if (ae.getActionCommand().equals("save")) {
-			list.setComments(editor.getText());
-		}
-		
-		setVisible(false);
-		dispose();
-		
-	}
-	
+    public ProbeListCommentEditDialog(ProbeList list) {
+        this(list, REDApplication.getInstance());
+    }
+
+    public ProbeListCommentEditDialog(ProbeList list, Component c) {
+
+        super(REDApplication.getInstance(), "Edit comments for " + list.name());
+
+        this.list = list;
+
+        JPanel panel = new JPanel();
+
+        panel.setLayout(new BorderLayout());
+
+        panel.add(new JLabel("You can use this comments section to record the rationale for a particular filter or probe generation.", JLabel.CENTER), BorderLayout.NORTH);
+
+        editor = new JTextArea();
+        editor.setWrapStyleWord(true);
+        editor.setLineWrap(true);
+        editor.setText(list.comments());
+
+        panel.add(new JScrollPane(editor, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER), BorderLayout.CENTER);
+
+        JPanel buttonPanel = new JPanel();
+
+        JButton closeButton = new JButton("Close");
+        closeButton.addActionListener(this);
+        closeButton.setActionCommand("close");
+        buttonPanel.add(closeButton);
+
+        JButton saveButton = new JButton("Save Comments");
+        saveButton.setActionCommand("save");
+        saveButton.addActionListener(this);
+        buttonPanel.add(saveButton);
+
+        panel.add(buttonPanel, BorderLayout.SOUTH);
+
+        setContentPane(panel);
+
+        setSize(600, 300);
+        setLocationRelativeTo(c);
+        setVisible(true);
+    }
+
+    public void actionPerformed(ActionEvent ae) {
+
+        if (ae.getActionCommand().equals("save")) {
+            list.setComments(editor.getText());
+        }
+
+        setVisible(false);
+        dispose();
+
+    }
+
 }

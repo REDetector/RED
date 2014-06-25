@@ -1,8 +1,8 @@
 package com.xl.exception;
 
-import java.lang.Thread.UncaughtExceptionHandler;
-
 import com.xl.dialog.CrashReporter;
+
+import java.lang.Thread.UncaughtExceptionHandler;
 
 /**
  * The error catcher can be attached to the main JVM and is triggered any time a
@@ -11,9 +11,9 @@ import com.xl.dialog.CrashReporter;
  */
 public class ErrorCatcher implements UncaughtExceptionHandler {
 
-	@Override
-	public void uncaughtException(Thread arg0, Throwable arg1) {
-		new CrashReporter(arg1);
-	}
+    @Override
+    public void uncaughtException(Thread arg0, Throwable arg1) {
+        new CrashReporter(arg1);
+    }
 
 }

@@ -1,9 +1,9 @@
 package com.xl.datatypes.sequence;
 
-import java.util.Arrays;
-
 import com.xl.main.REDApplication;
 import com.xl.utils.Strand;
+
+import java.util.Arrays;
 
 /**
  * The Class SequenceReadWithChromosome is used in places where both the read

@@ -94,7 +94,7 @@ public class GenomeDownloader implements Runnable {
         try {
 
             // System.out.println("Downloading "+prefs.getGenomeDownloadLocation()+species+"/"+assembly+".zip");
-            URL url = new URL(prefs.getGenomeDownLoadLocation());
+            URL url = new URL(prefs.getGenomeDownloadLocation());
             URLConnection connection = url.openConnection();
             connection.setUseCaches(allowCaching);
 

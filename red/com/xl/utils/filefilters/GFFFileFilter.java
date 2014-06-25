@@ -19,35 +19,33 @@
  */
 package com.xl.utils.filefilters;
 
-import java.io.File;
-
 import javax.swing.filechooser.FileFilter;
+import java.io.File;
 
 /**
  * A File filter representing GFF Files
  */
 public class GFFFileFilter extends FileFilter {
 
-	/* (non-Javadoc)
-	 * @see javax.swing.filechooser.FileFilter#accept(java.io.File)
-	 */
-	@Override
-	public boolean accept(File f) {
-		if (f.isDirectory() || f.getName().toLowerCase().endsWith(".gff")) {
-			return true;
-		}
-		else {
-			return false;
-		}
-	}
+    /* (non-Javadoc)
+     * @see javax.swing.filechooser.FileFilter#accept(java.io.File)
+     */
+    @Override
+    public boolean accept(File f) {
+        if (f.isDirectory() || f.getName().toLowerCase().endsWith(".gff")) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 
-	/* (non-Javadoc)
-	 * @see javax.swing.filechooser.FileFilter#getDescription()
-	 */
-	@Override
-	public String getDescription() {
-		return "GFF Files";
-	}
+    /* (non-Javadoc)
+     * @see javax.swing.filechooser.FileFilter#getDescription()
+     */
+    @Override
+    public String getDescription() {
+        return "GFF Files";
+    }
 
 
 }

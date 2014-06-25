@@ -19,18 +19,18 @@
  */
 package com.xl.gradients;
 
-import java.awt.Color;
+import java.awt.*;
 
 public class RedGreenColourGradient extends ColourGradient {
 
-	
-	public String name () {
-		return "Red Green Colour Gradient";
-	}
-		
-	protected Color [] makeColors() {
-		/*
-		 * We pre-generate a list of 100 colours we're going to
+
+    public String name() {
+        return "Red Green Colour Gradient";
+    }
+
+    protected Color[] makeColors() {
+        /*
+         * We pre-generate a list of 100 colours we're going to
 		 * use for this display.
 		 * 
 		 * Because a linear gradient ends up leaving too much
@@ -38,17 +38,17 @@ public class RedGreenColourGradient extends ColourGradient {
 		 * to emphasise low and high values so the display
 		 * is clearer.
 		 */
-		
-		Color [] colors = new Color[100];
-		
-		
-		for (int i=0;i<=49;i++) {
-			colors[i] = new Color(255-((255*(i+1))/50),0,0);
-		}
-		for (int i=50;i<100;i++) {
-			colors[i] = new Color(0,((255*(i-49))/50),0);
-		}
-						
-		return colors;
-	}
+
+        Color[] colors = new Color[100];
+
+
+        for (int i = 0; i <= 49; i++) {
+            colors[i] = new Color(255 - ((255 * (i + 1)) / 50), 0, 0);
+        }
+        for (int i = 50; i < 100; i++) {
+            colors[i] = new Color(0, ((255 * (i - 49)) / 50), 0);
+        }
+
+        return colors;
+    }
 }

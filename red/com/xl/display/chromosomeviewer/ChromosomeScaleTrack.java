@@ -20,14 +20,11 @@ package com.xl.display.chromosomeviewer;
  *    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Graphics;
-
-import javax.swing.JPanel;
-
 import com.xl.preferences.DisplayPreferences;
 import com.xl.utils.AxisScale;
+
+import javax.swing.*;
+import java.awt.*;
 
 /**
  * The ChromosomeScaleTrack shows the current genome position on a sensible
@@ -36,140 +33,144 @@ import com.xl.utils.AxisScale;
  */
 public class ChromosomeScaleTrack extends JPanel {
 
-	/** The chromosome viewer which contains this track **/
-	private ChromosomeViewer viewer;
+    /**
+     * The chromosome viewer which contains this track *
+     */
+    private ChromosomeViewer viewer;
 
-	/** The full virtual width of this track */
-	private int lastStartLocation = -1;
-	private int lastEndLocation = -1;
+    /**
+     * The full virtual width of this track
+     */
+    private int lastStartLocation = -1;
+    private int lastEndLocation = -1;
 
-	/** The height of this track */
-	private int height;
-	/**
-	 * A cached value of the width of the visible portion of this track inside
-	 * the surrounding JScrollPane
-	 */
-	private int width;
+    /**
+     * The height of this track
+     */
+    private int height;
+    /**
+     * A cached value of the width of the visible portion of this track inside
+     * the surrounding JScrollPane
+     */
+    private int width;
 
-	private AxisScale scale = null;
+    private AxisScale scale = null;
 
-	/**
-	 * Instantiates a new scale track.
-	 * 
-	 * @param viewer
-	 *            The chromosome viewer which holds this track
-	 */
-	public ChromosomeScaleTrack(ChromosomeViewer viewer) {
-		this.viewer = viewer;
+    /**
+     * Instantiates a new scale track.
+     *
+     * @param viewer The chromosome viewer which holds this track
+     */
+    public ChromosomeScaleTrack(ChromosomeViewer viewer) {
+        this.viewer = viewer;
 
-	}
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see javax.swing.JComponent#paintComponent(java.awt.Graphics)
-	 */
-	public void paintComponent(Graphics g) {
+    /*
+     * (non-Javadoc)
+     *
+     * @see javax.swing.JComponent#paintComponent(java.awt.Graphics)
+     */
+    public void paintComponent(Graphics g) {
 
-		super.paintComponent(g);
+        super.paintComponent(g);
 
-		DisplayPreferences dp = DisplayPreferences.getInstance();
+        DisplayPreferences dp = DisplayPreferences.getInstance();
 
-		if (dp.getCurrentStartLocation() != lastStartLocation
-				&& dp.getCurrentEndLocation() != lastEndLocation) {
-			// We need to rescale the frequency with which we're drawing points
-			scale = new AxisScale(0, dp.getCurrentLength());
-			lastStartLocation = dp.getCurrentStartLocation();
-			lastEndLocation = dp.getCurrentEndLocation();
-		}
+        if (dp.getCurrentStartLocation() != lastStartLocation
+                && dp.getCurrentEndLocation() != lastEndLocation) {
+            // We need to rescale the frequency with which we're drawing points
+            scale = new AxisScale(0, dp.getCurrentLength());
+            lastStartLocation = dp.getCurrentStartLocation();
+            lastEndLocation = dp.getCurrentEndLocation();
+        }
 
-		height = getHeight();
-		width = getWidth();
+        height = getHeight();
+        width = getWidth();
 
-		g.setColor(Color.WHITE);
-		g.fillRect(0, 0, width, height);
+        g.setColor(Color.WHITE);
+        g.fillRect(0, 0, width, height);
 
-		g.setColor(Color.DARK_GRAY);
+        g.setColor(Color.DARK_GRAY);
 
-		// Draw a line along the top
-		g.drawLine(0, 3, width, 3);
+        // Draw a line along the top
+        g.drawLine(0, 3, width, 3);
 
-		// Now go through all the scale positions figuring out whether they
-		// need to be displayed
+        // Now go through all the scale positions figuring out whether they
+        // need to be displayed
 
-		int startBp = lastStartLocation;
-		int endBp = lastEndLocation;
+        int startBp = lastStartLocation;
+        int endBp = lastEndLocation;
 
-		int currentBase = 0;
+        int currentBase = 0;
 
-		while (currentBase < endBp) {
+        while (currentBase < endBp) {
 
-			if (currentBase < startBp) {
-				currentBase += scale.getInterval();
-				continue;
-			}
+            if (currentBase < startBp) {
+                currentBase += scale.getInterval();
+                continue;
+            }
 
-			String name = commify(currentBase);
+            String name = commify(currentBase);
 
-			int nameWidth = g.getFontMetrics().stringWidth(name);
+            int nameWidth = g.getFontMetrics().stringWidth(name);
 
-			int thisX = bpToPixel(currentBase);
+            int thisX = bpToPixel(currentBase);
 
-			g.drawString(name, thisX - (nameWidth / 2), getHeight() - 2);
+            g.drawString(name, thisX - (nameWidth / 2), getHeight() - 2);
 
-			g.drawLine(thisX, 3, thisX, height
-					- (g.getFontMetrics().getAscent() + 3));
+            g.drawLine(thisX, 3, thisX, height
+                    - (g.getFontMetrics().getAscent() + 3));
 
-			currentBase += scale.getInterval();
-		}
+            currentBase += scale.getInterval();
+        }
 
-	}
+    }
 
-	private static String commify(int number) {
-		char[] numbers = ("" + number).toCharArray();
+    private static String commify(int number) {
+        char[] numbers = ("" + number).toCharArray();
 
-		char[] commaNumbers = new char[numbers.length
-				+ ((numbers.length - 1) / 3)];
+        char[] commaNumbers = new char[numbers.length
+                + ((numbers.length - 1) / 3)];
 
-		int commaPos = commaNumbers.length - 1;
-		for (int numberPos = 0; numberPos < numbers.length; numberPos++) {
-			if (numberPos % 3 == 0 && numberPos > 0) {
-				commaNumbers[commaPos] = ',';
-				commaPos--;
-			}
-			commaNumbers[commaPos] = numbers[numbers.length - (numberPos + 1)];
-			commaPos--;
-		}
+        int commaPos = commaNumbers.length - 1;
+        for (int numberPos = 0; numberPos < numbers.length; numberPos++) {
+            if (numberPos % 3 == 0 && numberPos > 0) {
+                commaNumbers[commaPos] = ',';
+                commaPos--;
+            }
+            commaNumbers[commaPos] = numbers[numbers.length - (numberPos + 1)];
+            commaPos--;
+        }
 
-		return new String(commaNumbers);
-	}
+        return new String(commaNumbers);
+    }
 
-	/**
-	 * Bp to pixel.
-	 * 
-	 * @param bp
-	 *            the bp
-	 * @return the int
-	 */
-	private int bpToPixel(int bp) {
-		return (int) (((double) (bp - viewer.currentStart()) / ((viewer
-				.currentEnd() - viewer.currentStart()))) * width);
-	}
+    /**
+     * Bp to pixel.
+     *
+     * @param bp the bp
+     * @return the int
+     */
+    private int bpToPixel(int bp) {
+        return (int) (((double) (bp - viewer.currentStart()) / ((viewer
+                .currentEnd() - viewer.currentStart()))) * width);
+    }
 
-	// There's no sense in letting the annotation tracks get too tall. We're
-	// better
-	// off using that space for data tracks.
-	/*
-	 * (non-Javadoc)
+    // There's no sense in letting the annotation tracks get too tall. We're
+    // better
+    // off using that space for data tracks.
+    /*
+     * (non-Javadoc)
 	 * 
 	 * @see javax.swing.JComponent#getMinimumSize()
 	 */
-	public Dimension getMinimumSize() {
-		return new Dimension(30, 25);
-	}
+    public Dimension getMinimumSize() {
+        return new Dimension(30, 25);
+    }
 
-	public Dimension getPreferredSize() {
-		return new Dimension(30, 25);
-	}
+    public Dimension getPreferredSize() {
+        return new Dimension(30, 25);
+    }
 
 }

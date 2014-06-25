@@ -1,12 +1,12 @@
 package com.xl.parsers.annotationparsers;
 
+import com.xl.datatypes.annotation.Cytoband;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
-
-import com.xl.datatypes.annotation.Cytoband;
 
 /**
  * Class description
@@ -30,7 +30,7 @@ public class CytoBandFileParser {
 
             String nextLine;
             while ((nextLine = reader.readLine()) != null && (nextLine.trim().length() > 0)) {
-            	String[] data = nextLine.split("\t");
+                String[] data = nextLine.split("\t");
                 String chr = data[0].trim();
                 List<Cytoband> cytobands = dataMap.get(chr);
                 if (cytobands == null) {

@@ -19,40 +19,40 @@ package com.xl.panel;
  *    along with SeqMonk; if not, write to the Free Software
  *    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
-import java.awt.BorderLayout;
-
-import javax.swing.BorderFactory;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.border.BevelBorder;
 
 import com.xl.utils.MemoryMonitor;
+
+import javax.swing.*;
+import javax.swing.border.BevelBorder;
+import java.awt.*;
 
 /**
  * The Class StatusPanel shows the interactive bar at the bottom
  * of the main application screen.
  */
 public class StatusPanel extends JPanel {
-	
-	/** The label. */
-	private JLabel label = new JLabel("RED---RNA Editing Dectector",JLabel.LEFT);
-	
-	/**
-	 * Instantiates a new status panel.
-	 */
-	public StatusPanel () {
-		setLayout(new BorderLayout());
-		add(label,BorderLayout.WEST);
-		add(new MemoryMonitor(),BorderLayout.EAST);
-		setBorder(BorderFactory.createBevelBorder(BevelBorder.LOWERED));
-	}
-	
-	/**
-	 * Sets the text.
-	 * 
-	 * @param text the new text
-	 */
-	public void setText (String text) {
-		label.setText(text);
-	}
+
+    /**
+     * The label.
+     */
+    private JLabel label = new JLabel("RED---RNA Editing Dectector", JLabel.LEFT);
+
+    /**
+     * Instantiates a new status panel.
+     */
+    public StatusPanel() {
+        setLayout(new BorderLayout());
+        add(label, BorderLayout.WEST);
+        add(new MemoryMonitor(), BorderLayout.EAST);
+        setBorder(BorderFactory.createBevelBorder(BevelBorder.LOWERED));
+    }
+
+    /**
+     * Sets the text.
+     *
+     * @param text the new text
+     */
+    public void setText(String text) {
+        label.setText(text);
+    }
 }

@@ -20,21 +20,17 @@ package com.xl.dialog;
  *    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-import java.awt.BorderLayout;
-import java.awt.Container;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-
-import javax.swing.JButton;
-import javax.swing.JDialog;
-import javax.swing.JPanel;
-
 import com.xl.main.REDApplication;
 import com.xl.panel.REDTitlePanel;
 
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
 /**
  * Shows the generic about dialog giving details of the current version
- * and copyright assignments.  This is just a thin shell around the 
+ * and copyright assignments.  This is just a thin shell around the
  * SeqMonkTitlePanel which actually holds the relevant information and
  * which is also used on the welcome screen.
  */
@@ -42,19 +38,18 @@ public class AboutDialog extends JDialog {
 
     /**
      * Instantiates a new about dialog.
-     * 
-     * @param a The SeqMonk application.
+     *
      */
-    public AboutDialog () {
-    	super(REDApplication.getInstance());
-        setTitle("About RED...");  
+    public AboutDialog() {
+        super(REDApplication.getInstance());
+        setTitle("About RED...");
         Container cont = getContentPane();
         cont.setLayout(new BorderLayout());
-        
-        add(new REDTitlePanel(),BorderLayout.CENTER);
+
+        add(new REDTitlePanel(), BorderLayout.CENTER);
 
         JPanel buttonPanel = new JPanel();
-        
+
         JButton closeButton = new JButton("Close");
         getRootPane().setDefaultButton(closeButton);
         closeButton.addActionListener(new ActionListener() {
@@ -64,13 +59,13 @@ public class AboutDialog extends JDialog {
             }
         });
         buttonPanel.add(closeButton);
-        
-        cont.add(buttonPanel,BorderLayout.SOUTH);
-        
-        setSize(750,200);
+
+        cont.add(buttonPanel, BorderLayout.SOUTH);
+
+        setSize(750, 200);
         setLocationRelativeTo(REDApplication.getInstance());
         setResizable(false);
         setVisible(true);
     }
-    
+
 }

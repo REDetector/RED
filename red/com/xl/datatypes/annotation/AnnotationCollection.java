@@ -20,15 +20,15 @@ package com.xl.datatypes.annotation;
  *    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-import java.util.Arrays;
-import java.util.Enumeration;
-import java.util.Vector;
-
 import com.xl.datatypes.genome.Chromosome;
 import com.xl.datatypes.genome.Genome;
 import com.xl.display.featureviewer.Feature;
 import com.xl.interfaces.AnnotationCollectionListener;
 import com.xl.utils.MessageUtils;
+
+import java.util.Arrays;
+import java.util.Enumeration;
+import java.util.Vector;
 
 /**
  * The Class AnnotationCollection is the main object through which annotation

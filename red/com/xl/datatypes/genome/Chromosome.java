@@ -20,94 +20,97 @@ package com.xl.datatypes.genome;
  *    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
+import com.xl.datatypes.annotation.Cytoband;
+
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.List;
-
-import com.xl.datatypes.annotation.Cytoband;
 
 /**
  * The Class Chromosome represents a single chromsome in a genome
  */
 public class Chromosome implements Comparable<Chromosome>, Serializable {
 
-	/** The name. */
-	private String name;
+    /**
+     * The name.
+     */
+    private String name;
 
-	/** The length. */
-	private int length = 0;
+    /**
+     * The length.
+     */
+    private int length = 0;
 
-	private List<Cytoband> cytobands;
+    private List<Cytoband> cytobands;
 
-	/**
-	 * Instantiates a new chromosome.
-	 * 
-	 * @param name
-	 *            the name
-	 */
-	public Chromosome(String name) {
-		this.name = name;
-	}
+    /**
+     * Instantiates a new chromosome.
+     *
+     * @param name the name
+     */
+    public Chromosome(String name) {
+        this.name = name;
+    }
 
-	public Chromosome(String name, int length) {
-		this.name = name;
-		this.length = length;
-		final Cytoband cytoband = new Cytoband(name);
-		cytoband.setStart(0);
-		cytoband.setEnd(length);
-		cytobands = Arrays.asList(cytoband);
-	}
+    public Chromosome(String name, int length) {
+        this.name = name;
+        this.length = length;
+        final Cytoband cytoband = new Cytoband(name);
+        cytoband.setStart(0);
+        cytoband.setEnd(length);
+        cytobands = Arrays.asList(cytoband);
+    }
 
-	/**
-	 * Name.
-	 * 
-	 * @return the name
-	 */
-	public String getName() {
-		return name;
-	}
+    /**
+     * Name.
+     *
+     * @return the name
+     */
+    public String getName() {
+        return name;
+    }
 
-	/**
-	 * Length.
-	 * 
-	 * @return the length in bp
-	 */
-	public int getLength() {
-		return length;
-	}
+    /**
+     * Length.
+     *
+     * @return the length in bp
+     */
+    public int getLength() {
+        return length;
+    }
 
-	/**
-	 * @return List of cytobands for this chromosome, if any. Can be null.
-	 */
-	public List<Cytoband> getCytobands() {
-		return cytobands;
-	}
+    /**
+     * @return List of cytobands for this chromosome, if any. Can be null.
+     */
+    public List<Cytoband> getCytobands() {
+        return cytobands;
+    }
 
-	public void setCytobands(List<Cytoband> cytobands) {
-		this.cytobands = cytobands;
-	}
+    public void setCytobands(List<Cytoband> cytobands) {
+        this.cytobands = cytobands;
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Object#toString()
-	 */
-	public String toString() {
-		return name;
-	}
+    /*
+     * (non-Javadoc)
+     *
+     * @see java.lang.Object#toString()
+     */
+    public String toString() {
+        return name;
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Comparable#compareTo(java.lang.Object)
-	 */
-	public int compareTo(Chromosome o) {
-		try {
-			return (new Integer(Integer.parseInt(name)).compareTo(new Integer(
-					Integer.parseInt(o.getName()))));
-		} catch (Exception e) {
-			return name.compareTo(o.getName());
-		}
-	}
+    /*
+     * (non-Javadoc)
+     *
+     * @see java.lang.Comparable#compareTo(java.lang.Object)
+     */
+    public int compareTo(Chromosome o) {
+        try {
+            return (new Integer(Integer.parseInt(name)).compareTo(new Integer(
+                    Integer.parseInt(o.getName()))));
+        } catch (Exception e) {
+            return name.compareTo(o.getName());
+        }
+    }
 
 }

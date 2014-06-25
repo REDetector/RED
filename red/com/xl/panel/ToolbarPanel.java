@@ -18,14 +18,9 @@ package com.xl.panel;
  *    along with SeqMonk; if not, write to the Free Software
  *    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
-import java.awt.Component;
-import java.awt.Container;
-import java.awt.Dimension;
-import java.awt.FlowLayout;
-import java.awt.Insets;
 
-import javax.swing.JPanel;
-import javax.swing.JToolBar;
+import javax.swing.*;
+import java.awt.*;
 
 public class ToolbarPanel extends JPanel {
 

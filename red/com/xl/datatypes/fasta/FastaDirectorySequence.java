@@ -1,16 +1,10 @@
 package com.xl.datatypes.fasta;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-
 import com.xl.datatypes.sequence.Sequence;
 import com.xl.utils.ChromosomeNameComparator;
+
+import java.io.IOException;
+import java.util.*;
 
 /**
  * Implementation of Sequence backed by an indexed fasta file

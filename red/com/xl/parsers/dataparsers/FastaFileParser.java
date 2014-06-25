@@ -20,6 +20,7 @@ import java.util.Map;
 
 public class FastaFileParser extends DataParser {
     private Genome genome;
+    private File cacheBase;
 
     public FastaFileParser(DataCollection collection) {
         super(collection);
@@ -28,6 +29,8 @@ public class FastaFileParser extends DataParser {
 
     @Override
     public void run() {
+
+
         try {
             parseFasta();
         } catch (IOException e) {

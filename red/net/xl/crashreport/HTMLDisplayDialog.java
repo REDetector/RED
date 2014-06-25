@@ -19,30 +19,29 @@ package net.xl.crashreport;
  *    along with SeqMonk; if not, write to the Free Software
  *    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
-import javax.swing.JDialog;
-import javax.swing.JEditorPane;
-import javax.swing.JScrollPane;
 
 import com.xl.main.REDApplication;
 
+import javax.swing.*;
+
 public class HTMLDisplayDialog extends JDialog {
 
-	public HTMLDisplayDialog(String html) {
+    public HTMLDisplayDialog(String html) {
 
-		super(REDApplication.getInstance(), "Crash Report Help");
+        super(REDApplication.getInstance(), "Crash Report Help");
 
-		System.err.println("Making help dialog");
+        System.err.println("Making help dialog");
 
-		JEditorPane jep = new JEditorPane("text/html", html);
+        JEditorPane jep = new JEditorPane("text/html", html);
 
-		setContentPane(new JScrollPane(jep,
-				JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
-				JScrollPane.HORIZONTAL_SCROLLBAR_NEVER));
+        setContentPane(new JScrollPane(jep,
+                JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
+                JScrollPane.HORIZONTAL_SCROLLBAR_NEVER));
 
-		setSize(700, 500);
-		setLocationRelativeTo(REDApplication.getInstance());
-		setVisible(true);
+        setSize(700, 500);
+        setLocationRelativeTo(REDApplication.getInstance());
+        setVisible(true);
 
-	}
+    }
 
 }

@@ -19,110 +19,111 @@
  */
 package com.xl.help;
 
-import java.io.File;
+import com.xl.main.REDApplication;
 
-import javax.swing.JDialog;
-import javax.swing.JScrollPane;
-import javax.swing.JSplitPane;
-import javax.swing.JTree;
+import javax.swing.*;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
-
-import com.xl.main.REDApplication;
+import java.io.File;
 
 /**
  * The Class HelpDialog shows the contents of the help system and
  * allows searching and navigation within it.
  */
 public class HelpDialog extends JDialog implements TreeSelectionListener {
-	
-	/** The tree. */
-	private JTree tree;
-	
-	/** The current page. */
-	private HelpPageDisplay currentPage = null;
-	
-	/** The main split. */
-	private JSplitPane mainSplit;
-	
-	
-	/**
-	 * Instantiates a new help dialog.
-	 * 
-	 * @param parent the parent
-	 * @param startingLocation the folder containing the html help documentation
-	 */
-	public HelpDialog (File startingLocation) {
-		super(REDApplication.getInstance(),"Help Contents");
-		
-		HelpIndexRoot root = new HelpIndexRoot(startingLocation);
-		
-		mainSplit = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
-		setContentPane(mainSplit);
-		
-		tree = new JTree(new DefaultTreeModel(root));
-		
-		JSplitPane leftSplit = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
-		leftSplit.setTopComponent(new JScrollPane(tree));
-		leftSplit.setBottomComponent(new HelpSearchPanel(root,this));
-		
-		mainSplit.setLeftComponent(leftSplit);
-		currentPage = new HelpPageDisplay(null);
-		mainSplit.setRightComponent(currentPage);
 
-		tree.addTreeSelectionListener(this);
-		
-		
-		setSize(800,600);
-		setLocationRelativeTo(REDApplication.getInstance());
-		setVisible(true);
-		
-		leftSplit.setDividerLocation(0.7);
-		mainSplit.setDividerLocation(0.3);
-		findStartingPage();
-	}
+    /**
+     * The tree.
+     */
+    private JTree tree;
 
-	/**
-	 * Find starting page.
-	 */
-	private void findStartingPage () {
-		DefaultMutableTreeNode currentNode = (DefaultMutableTreeNode)tree.getModel().getRoot();
+    /**
+     * The current page.
+     */
+    private HelpPageDisplay currentPage = null;
 
-		try {
-			DisplayPage((HelpPage)currentNode.getFirstLeaf());
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-	
-	/**
-	 * Display page.
-	 * 
-	 * @param page the page
-	 */
-	public void DisplayPage(HelpPage page) {
-		if (currentPage != null) {
-			int d = mainSplit.getDividerLocation();
-			mainSplit.remove(currentPage);
-			currentPage = new HelpPageDisplay(page);
-			mainSplit.setRightComponent(currentPage);
-			mainSplit.setDividerLocation(d);
-		}
-	}
-	
-	/* (non-Javadoc)
-	 * @see javax.swing.event.TreeSelectionListener#valueChanged(javax.swing.event.TreeSelectionEvent)
-	 */
-	public void valueChanged(TreeSelectionEvent tse) {
-		
-		if (tse.getNewLeadSelectionPath() == null) return;
-		
-		Object o = tse.getNewLeadSelectionPath().getLastPathComponent();
-		if (o instanceof HelpPage && ((HelpPage)o).isLeaf()) {
-			DisplayPage((HelpPage)o);
-		}
-	}
-	
+    /**
+     * The main split.
+     */
+    private JSplitPane mainSplit;
+
+
+    /**
+     * Instantiates a new help dialog.
+     *
+     * @param startingLocation the folder containing the html help documentation
+     */
+    public HelpDialog(File startingLocation) {
+        super(REDApplication.getInstance(), "Help Contents");
+
+        HelpIndexRoot root = new HelpIndexRoot(startingLocation);
+
+        mainSplit = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
+        setContentPane(mainSplit);
+
+        tree = new JTree(new DefaultTreeModel(root));
+
+        JSplitPane leftSplit = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
+        leftSplit.setTopComponent(new JScrollPane(tree));
+        leftSplit.setBottomComponent(new HelpSearchPanel(root, this));
+
+        mainSplit.setLeftComponent(leftSplit);
+        currentPage = new HelpPageDisplay(null);
+        mainSplit.setRightComponent(currentPage);
+
+        tree.addTreeSelectionListener(this);
+
+
+        setSize(800, 600);
+        setLocationRelativeTo(REDApplication.getInstance());
+        setVisible(true);
+
+        leftSplit.setDividerLocation(0.7);
+        mainSplit.setDividerLocation(0.3);
+        findStartingPage();
+    }
+
+    /**
+     * Find starting page.
+     */
+    private void findStartingPage() {
+        DefaultMutableTreeNode currentNode = (DefaultMutableTreeNode) tree.getModel().getRoot();
+
+        try {
+            DisplayPage((HelpPage) currentNode.getFirstLeaf());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Display page.
+     *
+     * @param page the page
+     */
+    public void DisplayPage(HelpPage page) {
+        if (currentPage != null) {
+            int d = mainSplit.getDividerLocation();
+            mainSplit.remove(currentPage);
+            currentPage = new HelpPageDisplay(page);
+            mainSplit.setRightComponent(currentPage);
+            mainSplit.setDividerLocation(d);
+        }
+    }
+
+    /* (non-Javadoc)
+     * @see javax.swing.event.TreeSelectionListener#valueChanged(javax.swing.event.TreeSelectionEvent)
+     */
+    public void valueChanged(TreeSelectionEvent tse) {
+
+        if (tse.getNewLeadSelectionPath() == null) return;
+
+        Object o = tse.getNewLeadSelectionPath().getLastPathComponent();
+        if (o instanceof HelpPage && ((HelpPage) o).isLeaf()) {
+            DisplayPage((HelpPage) o);
+        }
+    }
+
 }

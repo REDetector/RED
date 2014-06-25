@@ -19,18 +19,18 @@
  */
 package com.xl.gradients;
 
-import java.awt.Color;
+import java.awt.*;
 
 public class RedWhiteColourGradient extends ColourGradient {
 
-	
-	public String name () {
-		return "Red White Gradient";
-	}
-		
-	protected Color [] makeColors() {
-		/*
-		 * We pre-generate a list of 100 colours we're going to
+
+    public String name() {
+        return "Red White Gradient";
+    }
+
+    protected Color[] makeColors() {
+        /*
+         * We pre-generate a list of 100 colours we're going to
 		 * use for this display.
 		 * 
 		 * Because a linear gradient ends up leaving too much
@@ -38,15 +38,15 @@ public class RedWhiteColourGradient extends ColourGradient {
 		 * to emphasise low and high values so the display
 		 * is clearer.
 		 */
-		
-		Color [] colors = new Color[100];
-		
-		
-		for (int i=0;i<100;i++) {
-			int value = (255*(i+1))/100;
-			colors[i] = new Color(255,255-value,255-value);
-		}
-						
-		return colors;
-	}
+
+        Color[] colors = new Color[100];
+
+
+        for (int i = 0; i < 100; i++) {
+            int value = (255 * (i + 1)) / 100;
+            colors[i] = new Color(255, 255 - value, 255 - value);
+        }
+
+        return colors;
+    }
 }

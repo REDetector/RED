@@ -1,25 +1,12 @@
 package com.xl.dialog;
 
-import java.awt.BorderLayout;
-import java.awt.Container;
-import java.awt.Dimension;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
-import java.awt.Point;
-import java.awt.Rectangle;
+import com.xl.main.REDApplication;
+
+import javax.swing.*;
+import javax.swing.border.EmptyBorder;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
-import javax.swing.JButton;
-import javax.swing.JDialog;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JPasswordField;
-import javax.swing.JTextField;
-import javax.swing.border.EmptyBorder;
-
-import com.xl.main.REDApplication;
 
 /**
  * @author Jim Robinson
@@ -36,7 +23,7 @@ public class UserPasswordDialog extends JDialog {
         if (user != null) {
             userField.setText(user);
         }
-        if(host != null) {
+        if (host != null) {
             hostLabel.setText(host);
         }
     }

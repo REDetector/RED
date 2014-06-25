@@ -19,10 +19,6 @@ package com.xl.menu;
  *    along with SeqMonk; if not, write to the Free Software
  *    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
-import java.awt.Component;
-
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
 
 import com.xl.datatypes.DataGroup;
 import com.xl.datatypes.DataSet;
@@ -31,328 +27,330 @@ import com.xl.datatypes.ReplicateSet;
 import com.xl.datatypes.probes.ProbeList;
 import com.xl.datatypes.probes.ProbeSet;
 
+import javax.swing.*;
+import java.awt.*;
+
 public class MainREDToolbar extends REDToolbar {
 
-	/**
-	 * The jump to position button.
-	 */
-	private JButton jumpToPositionButton;
+    /**
+     * The jump to position button.
+     */
+    private JButton jumpToPositionButton;
 
-	/**
-	 * The change annotation button.
-	 */
-	private JButton changeAnnotationButton;
+    /**
+     * The change annotation button.
+     */
+    private JButton changeAnnotationButton;
 
-	/**
-	 * The find feature button.
-	 */
-	private JButton findFeatureButton;
+    /**
+     * The find feature button.
+     */
+    private JButton findFeatureButton;
 
-	/**
-	 * Instantiates a new seq monk toolbar.
-	 * 
-	 * @param menu
-	 *            the menu
-	 */
-	public MainREDToolbar(REDMenu menu) {
+    /**
+     * Instantiates a new seq monk toolbar.
+     *
+     * @param menu the menu
+     */
+    public MainREDToolbar(REDMenu menu) {
 
-		super(menu);
+        super(menu);
 
-		JButton posNegButton = new JButton(
-				new ImageIcon(
-						ClassLoader
-								.getSystemResource("resources/toolbar/above_and_below.png")));
-		posNegButton.setActionCommand("scale_negative");
-		posNegButton.setToolTipText("Positive and Negative Scale");
-		posNegButton.addActionListener(menu);
-		add(posNegButton);
+        JButton posNegButton = new JButton(
+                new ImageIcon(
+                        ClassLoader
+                                .getSystemResource("resources/toolbar/above_and_below.png")));
+        posNegButton.setActionCommand("scale_negative");
+        posNegButton.setToolTipText("Positive and Negative Scale");
+        posNegButton.addActionListener(menu);
+        add(posNegButton);
 
-		JButton posButton = new JButton(new ImageIcon(
-				ClassLoader
-						.getSystemResource("resources/toolbar/above_only.png")));
-		posButton.setActionCommand("scale_positive");
-		posButton.setToolTipText("Positive Scale");
-		posButton.addActionListener(menu);
+        JButton posButton = new JButton(new ImageIcon(
+                ClassLoader
+                        .getSystemResource("resources/toolbar/above_only.png")));
+        posButton.setActionCommand("scale_positive");
+        posButton.setToolTipText("Positive Scale");
+        posButton.addActionListener(menu);
 
-		add(posButton);
+        add(posButton);
 
-		addSeparator();
+        addSeparator();
 
-		JButton dynamicColoursButton = new JButton(
-				new ImageIcon(
-						ClassLoader
-								.getSystemResource("resources/toolbar/dynamic_data_colours.png")));
-		dynamicColoursButton.setActionCommand("data_colour_dynamic");
-		dynamicColoursButton.setToolTipText("Dynamic Data Colours");
-		dynamicColoursButton.addActionListener(menu);
+        JButton dynamicColoursButton = new JButton(
+                new ImageIcon(
+                        ClassLoader
+                                .getSystemResource("resources/toolbar/dynamic_data_colours.png")));
+        dynamicColoursButton.setActionCommand("data_colour_dynamic");
+        dynamicColoursButton.setToolTipText("Dynamic Data Colours");
+        dynamicColoursButton.addActionListener(menu);
 
-		add(dynamicColoursButton);
+        add(dynamicColoursButton);
 
-		JButton staticColoursButton = new JButton(
-				new ImageIcon(
-						ClassLoader
-								.getSystemResource("resources/toolbar/static_data_colours.png")));
-		staticColoursButton.setActionCommand("data_colour_fixed");
-		staticColoursButton.setToolTipText("Static Data Colours");
-		staticColoursButton.addActionListener(menu);
+        JButton staticColoursButton = new JButton(
+                new ImageIcon(
+                        ClassLoader
+                                .getSystemResource("resources/toolbar/static_data_colours.png")));
+        staticColoursButton.setActionCommand("data_colour_fixed");
+        staticColoursButton.setToolTipText("Static Data Colours");
+        staticColoursButton.addActionListener(menu);
 
-		add(staticColoursButton);
+        add(staticColoursButton);
 
-		addSeparator();
+        addSeparator();
 
-		JButton readsOnlyButton = new JButton(new ImageIcon(
-				ClassLoader
-						.getSystemResource("resources/toolbar/reads_only.png")));
-		readsOnlyButton.setActionCommand("data_reads");
-		readsOnlyButton.setToolTipText("Show only Reads");
-		readsOnlyButton.addActionListener(menu);
+        JButton readsOnlyButton = new JButton(new ImageIcon(
+                ClassLoader
+                        .getSystemResource("resources/toolbar/reads_only.png")));
+        readsOnlyButton.setActionCommand("data_reads");
+        readsOnlyButton.setToolTipText("Show only Reads");
+        readsOnlyButton.addActionListener(menu);
 
-		add(readsOnlyButton);
+        add(readsOnlyButton);
 
-		JButton probesOnlyButton = new JButton(
-				new ImageIcon(ClassLoader
-						.getSystemResource("resources/toolbar/probes_only.png")));
-		probesOnlyButton.setActionCommand("data_probes");
-		probesOnlyButton.setToolTipText("Show only Probes");
-		probesOnlyButton.addActionListener(menu);
+        JButton probesOnlyButton = new JButton(
+                new ImageIcon(ClassLoader
+                        .getSystemResource("resources/toolbar/probes_only.png")));
+        probesOnlyButton.setActionCommand("data_probes");
+        probesOnlyButton.setToolTipText("Show only Probes");
+        probesOnlyButton.addActionListener(menu);
 
-		add(probesOnlyButton);
+        add(probesOnlyButton);
 
-		JButton probesAndReadsButton = new JButton(
-				new ImageIcon(
-						ClassLoader
-								.getSystemResource("resources/toolbar/probes_and_reads.png")));
-		probesAndReadsButton.setActionCommand("data_reads_probes");
-		probesAndReadsButton.setToolTipText("Show Probes and Reads");
-		probesAndReadsButton.addActionListener(menu);
+        JButton probesAndReadsButton = new JButton(
+                new ImageIcon(
+                        ClassLoader
+                                .getSystemResource("resources/toolbar/probes_and_reads.png")));
+        probesAndReadsButton.setActionCommand("data_reads_probes");
+        probesAndReadsButton.setToolTipText("Show Probes and Reads");
+        probesAndReadsButton.addActionListener(menu);
 
-		add(probesAndReadsButton);
+        add(probesAndReadsButton);
 
-		addSeparator();
+        addSeparator();
 
-		JButton lowDensityReadsButton = new JButton(
-				new ImageIcon(
-						ClassLoader
-								.getSystemResource("resources/toolbar/low_density_reads.png")));
-		lowDensityReadsButton.setActionCommand("read_density_low");
-		lowDensityReadsButton.setToolTipText("Low Density Read Display");
-		lowDensityReadsButton.addActionListener(menu);
+        JButton lowDensityReadsButton = new JButton(
+                new ImageIcon(
+                        ClassLoader
+                                .getSystemResource("resources/toolbar/low_density_reads.png")));
+        lowDensityReadsButton.setActionCommand("read_density_low");
+        lowDensityReadsButton.setToolTipText("Low Density Read Display");
+        lowDensityReadsButton.addActionListener(menu);
 
-		add(lowDensityReadsButton);
+        add(lowDensityReadsButton);
 
-		JButton mediumDensityReadsButton = new JButton(
-				new ImageIcon(
-						ClassLoader
-								.getSystemResource("resources/toolbar/medium_density_reads.png")));
-		mediumDensityReadsButton.setActionCommand("read_density_medium");
-		mediumDensityReadsButton.setToolTipText("Medium Density Read Display");
-		mediumDensityReadsButton.addActionListener(menu);
+        JButton mediumDensityReadsButton = new JButton(
+                new ImageIcon(
+                        ClassLoader
+                                .getSystemResource("resources/toolbar/medium_density_reads.png")));
+        mediumDensityReadsButton.setActionCommand("read_density_medium");
+        mediumDensityReadsButton.setToolTipText("Medium Density Read Display");
+        mediumDensityReadsButton.addActionListener(menu);
 
-		add(mediumDensityReadsButton);
+        add(mediumDensityReadsButton);
 
-		JButton highDensityReadsButton = new JButton(
-				new ImageIcon(
-						ClassLoader
-								.getSystemResource("resources/toolbar/high_density_reads.png")));
-		highDensityReadsButton.setActionCommand("read_density_high");
-		highDensityReadsButton.setToolTipText("High Density Read Display");
-		highDensityReadsButton.addActionListener(menu);
+        JButton highDensityReadsButton = new JButton(
+                new ImageIcon(
+                        ClassLoader
+                                .getSystemResource("resources/toolbar/high_density_reads.png")));
+        highDensityReadsButton.setActionCommand("read_density_high");
+        highDensityReadsButton.setToolTipText("High Density Read Display");
+        highDensityReadsButton.addActionListener(menu);
 
-		add(highDensityReadsButton);
+        add(highDensityReadsButton);
 
-		addSeparator();
+        addSeparator();
 
-		JButton combinePackedReadsButton = new JButton(
-				new ImageIcon(
-						ClassLoader
-								.getSystemResource("resources/toolbar/combine_pack_reads.png")));
-		combinePackedReadsButton.setActionCommand("read_pack_combine");
-		combinePackedReadsButton.setToolTipText("Combine Packed Reads");
-		combinePackedReadsButton.addActionListener(menu);
+        JButton combinePackedReadsButton = new JButton(
+                new ImageIcon(
+                        ClassLoader
+                                .getSystemResource("resources/toolbar/combine_pack_reads.png")));
+        combinePackedReadsButton.setActionCommand("read_pack_combine");
+        combinePackedReadsButton.setToolTipText("Combine Packed Reads");
+        combinePackedReadsButton.addActionListener(menu);
 
-		add(combinePackedReadsButton);
+        add(combinePackedReadsButton);
 
-		JButton splitPackedReadsButton = new JButton(
-				new ImageIcon(
-						ClassLoader
-								.getSystemResource("resources/toolbar/split_pack_reads.png")));
-		splitPackedReadsButton.setActionCommand("read_pack_separate");
-		splitPackedReadsButton.setToolTipText("Split Packed Reads");
-		splitPackedReadsButton.addActionListener(menu);
+        JButton splitPackedReadsButton = new JButton(
+                new ImageIcon(
+                        ClassLoader
+                                .getSystemResource("resources/toolbar/split_pack_reads.png")));
+        splitPackedReadsButton.setActionCommand("read_pack_separate");
+        splitPackedReadsButton.setToolTipText("Split Packed Reads");
+        splitPackedReadsButton.addActionListener(menu);
 
-		add(splitPackedReadsButton);
+        add(splitPackedReadsButton);
 
-		addSeparator();
+        addSeparator();
 
-		changeAnnotationButton = new JButton(
-				new ImageIcon(
-						ClassLoader
-								.getSystemResource("resources/toolbar/change_annotation.png")));
-		changeAnnotationButton.setActionCommand("view_annotation_tracks");
-		changeAnnotationButton.setToolTipText("Change Annotation Tracks");
-		changeAnnotationButton.addActionListener(menu);
+        changeAnnotationButton = new JButton(
+                new ImageIcon(
+                        ClassLoader
+                                .getSystemResource("resources/toolbar/change_annotation.png")));
+        changeAnnotationButton.setActionCommand("view_annotation_tracks");
+        changeAnnotationButton.setToolTipText("Change Annotation Tracks");
+        changeAnnotationButton.addActionListener(menu);
 
-		add(changeAnnotationButton);
+        add(changeAnnotationButton);
 
-		JButton changeDataButton = new JButton(
-				new ImageIcon(ClassLoader
-						.getSystemResource("resources/toolbar/change_data.png")));
-		changeDataButton.setActionCommand("view_data_tracks");
-		changeDataButton.setToolTipText("Change Data Tracks");
-		changeDataButton.addActionListener(menu);
+        JButton changeDataButton = new JButton(
+                new ImageIcon(ClassLoader
+                        .getSystemResource("resources/toolbar/change_data.png")));
+        changeDataButton.setActionCommand("view_data_tracks");
+        changeDataButton.setToolTipText("Change Data Tracks");
+        changeDataButton.addActionListener(menu);
 
-		add(changeDataButton);
+        add(changeDataButton);
 
-		addSeparator();
+        addSeparator();
 
-		JButton changeDataZoomButton = new JButton(
-				new ImageIcon(
-						ClassLoader
-								.getSystemResource("resources/toolbar/change_data_zoom.png")));
-		changeDataZoomButton.setActionCommand("view_set_zoom");
-		changeDataZoomButton.setToolTipText("Change Data Zoom Level");
-		changeDataZoomButton.addActionListener(menu);
+        JButton changeDataZoomButton = new JButton(
+                new ImageIcon(
+                        ClassLoader
+                                .getSystemResource("resources/toolbar/change_data_zoom.png")));
+        changeDataZoomButton.setActionCommand("view_set_zoom");
+        changeDataZoomButton.setToolTipText("Change Data Zoom Level");
+        changeDataZoomButton.addActionListener(menu);
 
-		add(changeDataZoomButton);
+        add(changeDataZoomButton);
 
-		addSeparator();
+        addSeparator();
 
-		findFeatureButton = new JButton(
-				new ImageIcon(
-						ClassLoader
-								.getSystemResource("resources/toolbar/find_feature.png")));
-		findFeatureButton.setActionCommand("find_feature");
-		findFeatureButton.setToolTipText("Find Feature");
-		findFeatureButton.addActionListener(menu);
+        findFeatureButton = new JButton(
+                new ImageIcon(
+                        ClassLoader
+                                .getSystemResource("resources/toolbar/find_feature.png")));
+        findFeatureButton.setActionCommand("find_feature");
+        findFeatureButton.setToolTipText("Find Feature");
+        findFeatureButton.addActionListener(menu);
 
-		add(findFeatureButton);
+        add(findFeatureButton);
 
-		jumpToPositionButton = new JButton(
-				new ImageIcon(
-						ClassLoader
-								.getSystemResource("resources/toolbar/jump_to_position.png")));
-		jumpToPositionButton.setActionCommand("goto_position");
-		jumpToPositionButton.setToolTipText("Go to Position");
-		jumpToPositionButton.addActionListener(menu);
+        jumpToPositionButton = new JButton(
+                new ImageIcon(
+                        ClassLoader
+                                .getSystemResource("resources/toolbar/jump_to_position.png")));
+        jumpToPositionButton.setActionCommand("goto_position");
+        jumpToPositionButton.setToolTipText("Go to Position");
+        jumpToPositionButton.addActionListener(menu);
 
-		add(jumpToPositionButton);
+        add(jumpToPositionButton);
 
-		addSeparator();
+        addSeparator();
 
-		reset();
-	}
+        reset();
+    }
 
-	/**
-	 * Genome loaded.
-	 */
-	public void genomeLoaded() {
-		// Enable the buttons relating only to the genome
-		jumpToPositionButton.setEnabled(true);
-		jumpToPositionButton.setFocusable(false);
-		changeAnnotationButton.setEnabled(true);
-		changeAnnotationButton.setFocusable(false);
-		findFeatureButton.setEnabled(true);
-		findFeatureButton.setFocusable(false);
-	}
+    /**
+     * Genome loaded.
+     */
+    public void genomeLoaded() {
+        // Enable the buttons relating only to the genome
+        jumpToPositionButton.setEnabled(true);
+        jumpToPositionButton.setFocusable(false);
+        changeAnnotationButton.setEnabled(true);
+        changeAnnotationButton.setFocusable(false);
+        findFeatureButton.setEnabled(true);
+        findFeatureButton.setFocusable(false);
+    }
 
-	public boolean showByDefault() {
-		return true;
-	}
+    public boolean showByDefault() {
+        return true;
+    }
 
-	public void reset() {
-		// We can disable everything on the toolbar.
-		Component[] c = getComponents();
-		for (int i = 0; i < c.length; i++) {
-			c[i].setEnabled(false);
-			c[i].setFocusable(false);
-		}
-	}
+    public void reset() {
+        // We can disable everything on the toolbar.
+        Component[] c = getComponents();
+        for (int i = 0; i < c.length; i++) {
+            c[i].setEnabled(false);
+            c[i].setFocusable(false);
+        }
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see javax.swing.JComponent#setEnabled(boolean)
-	 */
-	public void setEnabled(boolean enable) {
+    /*
+     * (non-Javadoc)
+     *
+     * @see javax.swing.JComponent#setEnabled(boolean)
+     */
+    public void setEnabled(boolean enable) {
 
 		/*
-		 * Disabling the toolbar still leaves the buttons active which isn't
+         * Disabling the toolbar still leaves the buttons active which isn't
 		 * what we want so we'll disable everything inside it as well.
 		 * 
 		 * We also don't want the toolbar taking focus as it breaks the
 		 * navigation using arrow keys so we explicitly disable this.
 		 */
 
-		super.setEnabled(enable);
+        super.setEnabled(enable);
 
-		Component[] c = getComponents();
-		for (int i = 0; i < c.length; i++) {
-			c[i].setEnabled(enable);
-			c[i].setFocusable(false);
-		}
+        Component[] c = getComponents();
+        for (int i = 0; i < c.length; i++) {
+            c[i].setEnabled(enable);
+            c[i].setFocusable(false);
+        }
 
-	}
+    }
 
-	public void dataSetAdded(DataSet d) {
+    public void dataSetAdded(DataSet d) {
 
-		// Now we can enable everything on the toolbar.
-		Component[] c = getComponents();
-		for (int i = 0; i < c.length; i++) {
-			c[i].setEnabled(true);
-			c[i].setFocusable(false);
-		}
+        // Now we can enable everything on the toolbar.
+        Component[] c = getComponents();
+        for (int i = 0; i < c.length; i++) {
+            c[i].setEnabled(true);
+            c[i].setFocusable(false);
+        }
 
-	}
+    }
 
-	public void dataSetsRemoved(DataSet[] d) {
+    public void dataSetsRemoved(DataSet[] d) {
 
-		// If there are no datasets loaded we need to reset everything and
-		// just go with the genome loaded defaults
-		if (collection().getAllDataSets().length == 0) {
-			reset();
-			genomeLoaded();
-		}
-	}
+        // If there are no datasets loaded we need to reset everything and
+        // just go with the genome loaded defaults
+        if (collection().getAllDataSets().length == 0) {
+            reset();
+            genomeLoaded();
+        }
+    }
 
-	public void dataGroupAdded(DataGroup g) {
-	}
+    public void dataGroupAdded(DataGroup g) {
+    }
 
-	public void dataGroupsRemoved(DataGroup[] g) {
-	}
+    public void dataGroupsRemoved(DataGroup[] g) {
+    }
 
-	public void dataSetRenamed(DataSet d) {
-	}
+    public void dataSetRenamed(DataSet d) {
+    }
 
-	public void dataGroupRenamed(DataGroup g) {
-	}
+    public void dataGroupRenamed(DataGroup g) {
+    }
 
-	public void dataGroupSamplesChanged(DataGroup g) {
-	}
+    public void dataGroupSamplesChanged(DataGroup g) {
+    }
 
-	public void probeSetReplaced(ProbeSet p) {
-	}
+    public void probeSetReplaced(ProbeSet p) {
+    }
 
-	public void replicateSetAdded(ReplicateSet r) {
-	}
+    public void replicateSetAdded(ReplicateSet r) {
+    }
 
-	public void replicateSetsRemoved(ReplicateSet[] r) {
-	}
+    public void replicateSetsRemoved(ReplicateSet[] r) {
+    }
 
-	public void replicateSetRenamed(ReplicateSet r) {
-	}
+    public void replicateSetRenamed(ReplicateSet r) {
+    }
 
-	public void replicateSetStoresChanged(ReplicateSet r) {
-	}
+    public void replicateSetStoresChanged(ReplicateSet r) {
+    }
 
-	public void activeDataStoreChanged(DataStore s) {
+    public void activeDataStoreChanged(DataStore s) {
 
-	}
+    }
 
-	public void activeProbeListChanged(ProbeList l) {
-	}
+    public void activeProbeListChanged(ProbeList l) {
+    }
 
-	public String name() {
-		return "Main Toolbar";
-	}
+    public String name() {
+        return "Main Toolbar";
+    }
 
 }

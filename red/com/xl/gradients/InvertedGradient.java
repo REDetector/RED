@@ -19,37 +19,36 @@
  */
 package com.xl.gradients;
 
-import java.awt.Color;
+import java.awt.*;
 
 public class InvertedGradient extends ColourGradient {
 
-	private ColourGradient gradient;
-	
-	public InvertedGradient (ColourGradient gradient) {
-		if (gradient == null) {
-			throw new NullPointerException("Gradient can't be null");
-		}
-		this.gradient = gradient;
-	}
+    private ColourGradient gradient;
 
-	protected Color[] makeColors() {
-		
-		Color [] colours = gradient.makeColors();
-		
-		Color [] invertedColors = new Color [colours.length];
-		
-		for (int i=0;i<colours.length;i++) {
-			invertedColors[invertedColors.length-(i+1)] = colours[i];
-		}
-		
-		return invertedColors;
-		
-	}
+    public InvertedGradient(ColourGradient gradient) {
+        if (gradient == null) {
+            throw new NullPointerException("Gradient can't be null");
+        }
+        this.gradient = gradient;
+    }
 
-	public String name() {
-		return "Inverted "+gradient.name();
-	}
-	
-	
-	
+    protected Color[] makeColors() {
+
+        Color[] colours = gradient.makeColors();
+
+        Color[] invertedColors = new Color[colours.length];
+
+        for (int i = 0; i < colours.length; i++) {
+            invertedColors[invertedColors.length - (i + 1)] = colours[i];
+        }
+
+        return invertedColors;
+
+    }
+
+    public String name() {
+        return "Inverted " + gradient.name();
+    }
+
+
 }

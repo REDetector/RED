@@ -19,92 +19,93 @@ package com.xl.display.featureviewer;
  *    along with SeqMonk; if not, write to the Free Software
  *    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
-import javax.swing.table.AbstractTableModel;
 
 import com.xl.datatypes.sequence.Location;
 import com.xl.utils.Strand;
 
+import javax.swing.table.AbstractTableModel;
+
 public class FeatureAttributeTable extends AbstractTableModel {
 
-	private Feature feature = null;
+    private Feature feature = null;
 
-	public FeatureAttributeTable(Feature feature) {
-		this.feature = feature;
-	}
+    public FeatureAttributeTable(Feature feature) {
+        this.feature = feature;
+    }
 
-	public int getColumnCount() {
-		return 2;
-	}
+    public int getColumnCount() {
+        return 2;
+    }
 
-	public int getRowCount() {
-		return 7;
-	}
+    public int getRowCount() {
+        return 7;
+    }
 
-	public Class<?> getColumnClass(int col) {
-		return String.class;
-	}
+    public Class<?> getColumnClass(int col) {
+        return String.class;
+    }
 
-	public String getColumnName(int col) {
-		switch (col) {
-		case 0:
-			return "Attribute";
-		case 1:
-			return "Parameter";
-		default:
-			return null;
-		}
-	}
+    public String getColumnName(int col) {
+        switch (col) {
+            case 0:
+                return "Attribute";
+            case 1:
+                return "Parameter";
+            default:
+                return null;
+        }
+    }
 
-	public Object getValueAt(int row, int col) {
+    public Object getValueAt(int row, int col) {
 
-		switch (col) {
-		case 0:
-			switch (row) {
-			case 0:
-				return "Name";
-			case 1:
-				return "Chromosome";
-			case 2:
-				return "Strand";
-			case 3:
-				return "Transcription";
-			case 4:
-				return "Coding Region";
-			case 5:
-				return "Exon Numbers";
-			case 6:
-				return "Exons";
-			default:
-				return null;
-			}
-		case 1:
-			switch (row) {
-			case 0:
-				return feature.getAliasName();
-			case 1:
-				return feature.getChr();
-			case 2:
-				return Strand.parseStrand(feature.getStrand());
-			case 3:
-				return feature.getTxLocation().toString();
-			case 4:
-				return feature.getCdsLocation().toString();
-			case 5:
-				return feature.getExonLocations().length;
-			case 6:
-				StringBuffer str = new StringBuffer();
-				for (Location exon : feature.getExonLocations()) {
-					str.append(exon.toString() + ",");
-				}
-				str.deleteCharAt(str.length() - 1);
-				return str.toString();
-			default:
-				return null;
-			}
-		default:
-			return null;
-		}
+        switch (col) {
+            case 0:
+                switch (row) {
+                    case 0:
+                        return "Name";
+                    case 1:
+                        return "Chromosome";
+                    case 2:
+                        return "Strand";
+                    case 3:
+                        return "Transcription";
+                    case 4:
+                        return "Coding Region";
+                    case 5:
+                        return "Exon Numbers";
+                    case 6:
+                        return "Exons";
+                    default:
+                        return null;
+                }
+            case 1:
+                switch (row) {
+                    case 0:
+                        return feature.getAliasName();
+                    case 1:
+                        return feature.getChr();
+                    case 2:
+                        return Strand.parseStrand(feature.getStrand());
+                    case 3:
+                        return feature.getTxLocation().toString();
+                    case 4:
+                        return feature.getCdsLocation().toString();
+                    case 5:
+                        return feature.getExonLocations().length;
+                    case 6:
+                        StringBuffer str = new StringBuffer();
+                        for (Location exon : feature.getExonLocations()) {
+                            str.append(exon.toString() + ",");
+                        }
+                        str.deleteCharAt(str.length() - 1);
+                        return str.toString();
+                    default:
+                        return null;
+                }
+            default:
+                return null;
+        }
 
-	}
+    }
 
 }

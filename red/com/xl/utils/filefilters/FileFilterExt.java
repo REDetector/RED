@@ -1,8 +1,7 @@
 package com.xl.utils.filefilters;
 
-import java.io.File;
-
 import javax.swing.filechooser.FileFilter;
+import java.io.File;
 
 public class FileFilterExt extends FileFilter {
 

@@ -19,9 +19,15 @@
  */
 package com.xl.panel;
 
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
+import com.xl.dialog.CrashReporter;
+import com.xl.main.REDApplication;
+import com.xl.preferences.REDPreferences;
+import com.xl.utils.IconUtils;
+import com.xl.utils.InfoPanelUtils;
+import net.xl.genomes.UpdateChecker;
+
+import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -29,20 +35,6 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.DecimalFormat;
-
-import javax.swing.JButton;
-import javax.swing.JFileChooser;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-
-import net.xl.genomes.UpdateChecker;
-
-import com.xl.dialog.CrashReporter;
-import com.xl.main.REDApplication;
-import com.xl.preferences.REDPreferences;
-import com.xl.utils.IconUtils;
-import com.xl.utils.InfoPanelUtils;
 
 /**
  * This panel is displayed when the program first starts. It shows information
