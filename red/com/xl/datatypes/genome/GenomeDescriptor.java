@@ -189,20 +189,20 @@ public class GenomeDescriptor {
     @Override
     public String toString() {
         StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append(GenomeUtils.KEY_DISPLAY_NAME + "\t" + displayName + "\r\n" +
-                GenomeUtils.KEY_CHR_NAMES_ALTERED + "\t" + chrNamesAltered + "\r\n" +
-                GenomeUtils.KEY_GENOME_ID + "\t" + genomeId + "\r\n" +
-                GenomeUtils.KEY_CYTOBAND_FILE_NAME + "\t" + cytoBandFileName + "\r\n" +
-                GenomeUtils.KEY_GENE_FILE_NAME + "\t" + geneFileName + "\r\n" +
-                GenomeUtils.KEY_CHR_ALIAS_FILE_NAME + "\t" + chrAliasFileName + "\r\n" +
-                GenomeUtils.KEY_GENE_TRACK_NAME + "\t" + geneTrackName + "\r\n" +
-                GenomeUtils.KEY_URL + "\t" + url + "\r\n" +
-                GenomeUtils.KEY_SEQUENCE_LOCATION + "\t" + sequenceLocation + "\r\n" +
-                GenomeUtils.KEY_HAS_CUSTOM_SEQUENCE_LOCATION + "\t" + hasCustomSequenceLocation + "\r\n" +
-                GenomeUtils.KEY_CHROMOSOMES_ARE_ORDERED + "\t" + chromosomesAreOrdered + "\r\n" +
-                GenomeUtils.KEY_FASTA + "\t" + fasta + "\r\n" +
-                GenomeUtils.KEY_FASTA_DIRECTORY + "\t" + fastaDirectory + "\r\n" +
-                GenomeUtils.KEY_FASTA_FILE_NAME_STRING + "\t");
+        stringBuilder.append(GenomeUtils.KEY_DISPLAY_NAME + "=" + displayName + "\r\n" +
+                GenomeUtils.KEY_CHR_NAMES_ALTERED + "=" + chrNamesAltered + "\r\n" +
+                GenomeUtils.KEY_GENOME_ID + "=" + genomeId + "\r\n" +
+                GenomeUtils.KEY_CYTOBAND_FILE_NAME + "=" + cytoBandFileName + "\r\n" +
+                GenomeUtils.KEY_GENE_FILE_NAME + "=" + geneFileName + "\r\n" +
+                GenomeUtils.KEY_CHR_ALIAS_FILE_NAME + "=" + chrAliasFileName + "\r\n" +
+                GenomeUtils.KEY_GENE_TRACK_NAME + "=" + geneTrackName + "\r\n" +
+                GenomeUtils.KEY_URL + "=" + url + "\r\n" +
+                GenomeUtils.KEY_SEQUENCE_LOCATION + "=" + sequenceLocation + "\r\n" +
+                GenomeUtils.KEY_HAS_CUSTOM_SEQUENCE_LOCATION + "=" + hasCustomSequenceLocation + "\r\n" +
+                GenomeUtils.KEY_CHROMOSOMES_ARE_ORDERED + "=" + chromosomesAreOrdered + "\r\n" +
+                GenomeUtils.KEY_FASTA + "=" + fasta + "\r\n" +
+                GenomeUtils.KEY_FASTA_DIRECTORY + "=" + fastaDirectory + "\r\n" +
+                GenomeUtils.KEY_FASTA_FILE_NAME_STRING + "=");
         if (fastaFileNames != null) {
             for (String fastaFileName : fastaFileNames) {
                 stringBuilder.append(fastaFileName + ",");
