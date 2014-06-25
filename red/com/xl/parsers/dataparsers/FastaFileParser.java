@@ -2,25 +2,20 @@ package com.xl.parsers.dataparsers;
 
 import com.xl.datatypes.DataCollection;
 import com.xl.datatypes.genome.Genome;
+import com.xl.main.REDApplication;
 import com.xl.preferences.REDPreferences;
 import com.xl.utils.ChromosomeUtils;
+import com.xl.utils.FileUtils;
 import com.xl.utils.ParsingUtils;
-import net.sf.jfasta.FASTAElement;
-import net.sf.jfasta.FASTAFileReader;
-import net.sf.jfasta.impl.FASTAElementIterator;
-import net.sf.jfasta.impl.FASTAFileReaderImpl;
 
 import javax.swing.*;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
+import java.io.*;
 
 public class FastaFileParser extends DataParser {
     private Genome genome;
-    private File cacheBase;
+    private File fastaBase;
+    private final String CACHE_COMPLETE = "fasta.complete";
+
 
     public FastaFileParser(DataCollection collection) {
         super(collection);
@@ -29,10 +24,21 @@ public class FastaFileParser extends DataParser {
 
     @Override
     public void run() {
-
-
         try {
-            parseFasta();
+            fastaBase = new File(REDPreferences.getInstance().getGenomeBase() + "/" + genome.getDisplayName() + "/fasta");
+            if (fastaBase.exists()) {
+                FileReader fr = new FileReader(fastaBase.getCanonicalPath() + File.separator + CACHE_COMPLETE);
+                BufferedReader br = new BufferedReader(fr);
+                String version = br.readLine();
+                if (version.equals(REDApplication.VERSION)) {
+                    processingComplete(null);
+                } else {
+                    FileUtils.deleteDirectory(fastaBase.getCanonicalPath());
+                    reparseFasta();
+                }
+            }
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -68,57 +74,56 @@ public class FastaFileParser extends DataParser {
      *
      * @param
      */
-    public void parseFasta() throws IOException {
-
-        BufferedReader br = null;
-        File cacheBase = new File(REDPreferences.getInstance()
-                .getGenomeBase()
-                + "/"
-                + genome.getDisplayName() + "/cache");
-        if (!cacheBase.exists()) {
-            if (!cacheBase.mkdir()) {
-                throw new IOException(
-                        "Can't create cache file for core annotation set");
+    public void reparseFasta() throws IOException {
+        if (!fastaBase.exists()) {
+            if (!fastaBase.mkdirs()) {
+                throw new IOException("The path '" + fastaBase.getCanonicalPath() + "' can not be accessed. ");
             }
         }
-        File[] fastaFiles = getFiles();
-        br = ParsingUtils.openBufferedReader(fastaFiles[0]);
+        BufferedReader br;
         FileOutputStream fos = null;
         String currentChr = null;
+        File[] fastaFiles = getFiles();
         String nextLine;
-        int line = 0;
-        int chr = 0;
-        while ((nextLine = br.readLine()) != null) {
-            if (nextLine.startsWith("#") || nextLine.trim().length() == 0) {
-
-            } else if (nextLine.startsWith(">")) {
-                if (fos != null) {
-                    fos.flush();
-                    fos.close();
-                    System.gc();
-                }
-                currentChr = skipToNextChr(br, nextLine);
-                if (currentChr != null) {
-                    chr++;
-                    line = 0;
-                    fos = new FileOutputStream(cacheBase.getAbsolutePath() + File.separator + currentChr + ".fasta", true);
-                    System.out.println(FastaFileParser.this.getClass() + ":" + currentChr);
-                }
-            } else {
-                if (fos != null) {
-                    fos.write(nextLine.trim().getBytes());
-                    line++;
-                    if (line % 100000 == 0) {
-                        progressUpdated("Read " + line + " lines from " + currentChr + " ", chr, 24);
+        for (File fastaFile : fastaFiles) {
+            br = ParsingUtils.openBufferedReader(fastaFile);
+            int line = 0;
+            int chr = 0;
+            while ((nextLine = br.readLine()) != null) {
+                if (nextLine.startsWith(">")) {
+                    if (fos != null) {
+                        fos.flush();
+                        fos.close();
+                        System.gc();
+                    }
+                    currentChr = skipToNextChr(br, nextLine);
+                    if (currentChr != null) {
+                        chr++;
+                        line = 0;
+                        fos = new FileOutputStream(fastaBase.getAbsolutePath() + File.separator + currentChr + ".fasta", true);
+                        System.out.println(FastaFileParser.this.getClass() + ":" + currentChr);
+                    }
+                } else {
+                    if (fos != null) {
+                        fos.write(nextLine.trim().getBytes());
+                        line++;
+                        if (line % 100000 == 0) {
+                            progressUpdated("Read " + line + " lines from " + currentChr + ", " + genome.getDisplayName(), chr, 24);
+                        }
                     }
                 }
             }
+            // Add last chr
+            if (fos != null) {
+                fos.flush();
+                fos.close();
+            }
+            br.close();
         }
-        // Add last chr
-        if (fos != null) {
-            fos.close();
-        }
-        br.close();
+        System.gc();
+        FileWriter fw = new FileWriter(fastaBase.getAbsolutePath() + File.separator + CACHE_COMPLETE);
+        fw.write(REDApplication.VERSION);
+        fw.close();
         processingComplete(null);
     }
 
@@ -135,28 +140,6 @@ public class FastaFileParser extends DataParser {
             }
         }
         return null;
-    }
-
-    /**
-     * @throws IOException
-     */
-    public static Map<String, FASTAElement> parseFasta(String path, String name) throws IOException {
-
-        // Read a multi FASTA file element by element.
-        Map<String, FASTAElement> sequenceMap = new HashMap<String, FASTAElement>();
-        File file = new File(path);
-
-        FASTAFileReader reader = new FASTAFileReaderImpl(file);
-
-        FASTAElementIterator it = reader.getIterator();
-
-        while (it.hasNext()) {
-            FASTAElement el = it.next();
-            if (ChromosomeUtils.isStandardChromosomeName(el.getHeader())) {
-                sequenceMap.put(el.getHeader(), el);
-            }
-        }
-        return sequenceMap;
     }
 
 }
