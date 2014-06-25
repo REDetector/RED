@@ -26,6 +26,7 @@ import com.xl.datatypes.genome.GenomeDescriptor;
 import com.xl.dialog.CrashReporter;
 import com.xl.main.REDApplication;
 import com.xl.preferences.REDPreferences;
+import com.xl.utils.GenomeUtils;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -102,7 +103,7 @@ public class CoreAnnotationSet extends AnnotationSet {
                     + "/"
                     + genome.getDisplayName() + "/cache");
             if (!cacheBase.exists()) {
-                if (!cacheBase.mkdir()) {
+                if (!cacheBase.mkdirs()) {
                     throw new IOException(
                             "Can't create cache file for core annotation set");
                 }
@@ -133,7 +134,7 @@ public class CoreAnnotationSet extends AnnotationSet {
                     + "/"
                     + genome.getDisplayName() + "/cache/cache.complete");
             PrintWriter pr = new PrintWriter(cacheCompleteFile);
-            pr.println(REDApplication.VERSION + "\n");
+            pr.println(GenomeUtils.KEY_VERSION_NAME + "=" + REDApplication.VERSION + "\n");
             pr.println(GenomeDescriptor.getInstance().toString());
             pr.close();
         } catch (IOException ioe) {
