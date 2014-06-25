@@ -115,29 +115,28 @@ public class REDPreferences {
     /**
      * The project root directory
      */
-    private File projectRootDirectory = new File("");
+    private String projectRootDirectory = null;
 
     /**
      * Instantiates a preferences object. Only ever called once from inside this
      * class. External access is via the getInstnace() method.
      */
     private REDPreferences() {
-
-        preferencesFile = new File(System.getProperty("user.home")
-                + "/red_prefs.txt");
-
-        if (preferencesFile != null && preferencesFile.exists()) {
-            /** Loading preferences from file... */
-            loadPreferences();
+        try {
+            projectRootDirectory = new File("").getCanonicalPath();
+            preferencesFile = new File(projectRootDirectory
+                    + File.separator + "red_prefs.txt");
+            if (preferencesFile.exists()) {
+                /** Loading preferences from file... */
+                loadPreferences();
 //			System.out.println("loadPreferences();");
-        } else {
-            try {
+            } else {
                 savePreferences();
-            } catch (IOException e) {
-                e.printStackTrace();
             }
+            updateProxyInfo();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-        updateProxyInfo();
     }
 
     /**
@@ -461,9 +460,7 @@ public class REDPreferences {
             // present, but you can't be too careful!
             try {
                 // System.out.println(ClassLoader.getSystemResource("REDPreferences").toString());
-
-                String courseFile = projectRootDirectory.getCanonicalPath();
-                f = new File(courseFile + "/Genomes");
+                f = new File(projectRootDirectory + File.separator + "Genomes");
                 if (!f.exists()) {
                     // throw new FileNotFoundException(
                     // "Couldn't find default Genomes folder");
@@ -490,7 +487,7 @@ public class REDPreferences {
         return genomeDownloadLists;
     }
 
-    public String getGenomeDownLoadLocation() {
+    public String getGenomeDownloadLocation() {
         return genomeDownloadLocation;
     }
 
