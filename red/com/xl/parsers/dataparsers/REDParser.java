@@ -323,7 +323,7 @@ public class REDParser implements Runnable, ProgressListener {
             if (line.equals(ParsingUtils.GENOME_INFORMATION_END)) {
                 break;
             }
-            sections = line.split("\\t");
+            sections = line.split("=");
             if (sections.length == 2) {
                 setProperties(sections[0], sections[1]);
             }
@@ -934,7 +934,7 @@ public class REDParser implements Runnable, ProgressListener {
             for (int j = positionOffset; j < sections.length; j++) {
 
 				/*
-				 * It's possible that some datasets won't have been quantitated
+                 * It's possible that some datasets won't have been quantitated
 				 * whilst others have. Rather than putting a 0 in for them we
 				 * can skip them altogether saving memory and not introducing
 				 * false data.
