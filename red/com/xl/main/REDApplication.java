@@ -64,7 +64,7 @@ public class REDApplication extends JFrame implements ProgressListener,
     /**
      * The version of RED
      */
-    public static final String VERSION = "0.0.2";
+    public static final String VERSION = "0.0.4";
 
     /**
      * The root menu of RED
@@ -381,8 +381,8 @@ public class REDApplication extends JFrame implements ProgressListener,
                             "You have made changes which were not saved.  Do you want to save before exiting?",
                             "Save before exit?", 0,
                             JOptionPane.QUESTION_MESSAGE, null, new String[]{
-                            "Save and Exit", "Exit without Saving",
-                            "Cancel"}, "Save");
+                                    "Save and Exit", "Exit without Saving",
+                                    "Cancel"}, "Save");
 
             switch (answer) {
                 case 0:
@@ -568,7 +568,7 @@ public class REDApplication extends JFrame implements ProgressListener,
             return;
 
 		/*
-		 * Before we wipe all of the data we need to check to see if we need to
+         * Before we wipe all of the data we need to check to see if we need to
 		 * save the existing project.
 		 */
 
@@ -579,8 +579,8 @@ public class REDApplication extends JFrame implements ProgressListener,
                             "You have made changes which were not saved.  Do you want to save before exiting?",
                             "Save before loading new data?", 0,
                             JOptionPane.QUESTION_MESSAGE, null, new String[]{
-                            "Save before Loading",
-                            "Load without Saving", "Cancel"}, "Save");
+                                    "Save before Loading",
+                                    "Load without Saving", "Cancel"}, "Save");
 
             switch (answer) {
                 case 0:
@@ -702,7 +702,7 @@ public class REDApplication extends JFrame implements ProgressListener,
         // Check if we're stepping on anyone's toes...
         if (file.exists()) {
             int answer = JOptionPane.showOptionDialog(this, file.getName()
-                    + " exists.  Do you want to overwrite the existing file?",
+                            + " exists.  Do you want to overwrite the existing file?",
                     "Overwrite file?", 0, JOptionPane.QUESTION_MESSAGE, null,
                     new String[]{"Overwrite and Save", "Cancel"},
                     "Overwrite and Save");

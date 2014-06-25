@@ -66,7 +66,7 @@ public class UCSCRefGeneParser extends AnnotationParser {
         Vector<AnnotationSet> annotationSets = new Vector<AnnotationSet>();
         AnnotationSet currentAnnotation = new CoreAnnotationSet(genome);
         int lineCount = 0;
-        String line = null;
+        String line;
         while ((line = br.readLine()) != null) {
             lineCount++;
             if (cancel) {

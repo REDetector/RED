@@ -14,10 +14,7 @@ import com.xl.datatypes.sequence.SequenceWrapper;
 import com.xl.exception.REDException;
 import com.xl.interfaces.ProgressListener;
 import com.xl.main.REDApplication;
-import com.xl.utils.ChromosomeUtils;
-import com.xl.utils.GeneType;
-import com.xl.utils.MessageUtils;
-import com.xl.utils.ParsingUtils;
+import com.xl.utils.*;
 import com.xl.utils.filefilters.FileFilterImpl;
 
 import java.io.*;
@@ -83,8 +80,6 @@ public class IGVGenomeParser implements Runnable {
             this.genomeFile = baseLocation;
             this.baseLocation = genomeFile.getParentFile();
         }
-        MessageUtils.showInfo(IGVGenomeParser.class, "genomeFile:" + genomeFile.getAbsolutePath());
-        MessageUtils.showInfo(IGVGenomeParser.class, "baseLocation:" + this.baseLocation.getAbsolutePath());
         Thread t = new Thread(this);
         t.start();
     }
@@ -93,35 +88,34 @@ public class IGVGenomeParser implements Runnable {
     public void run() {
         // TODO Auto-generated method stub
         File cacheCompleteFile = new File(baseLocation.getAbsolutePath() + "/cache/cache.complete");
-        System.out.println(this.getClass().getName() + ":" + cacheCompleteFile.getAbsolutePath());
+        Properties properties = null;
         if (cacheCompleteFile.exists()) {
             cacheFailed = false;
             try {
-                BufferedReader br = ParsingUtils.openBufferedReader(cacheCompleteFile);
-                String line = br.readLine();
-                br.close();
-                if (line == null || line.length() == 0) {
-                    // If there's no version in there then re-parse
+                properties = new Properties();
+                properties.load(new FileReader(cacheCompleteFile));
+                String version = properties.getProperty(GenomeUtils.KEY_VERSION_NAME);
+                if (!REDApplication.VERSION.equals(version)) {
+                    System.err.println("Version mismatch between cache ('" + version + "') and current version ('" + REDApplication.VERSION + "') - reparsing");
                     cacheFailed = true;
                 }
                 // We re-parse if the cache was made by a different version
-                String sections[] = line.split("\\t");
-                if (!REDApplication.VERSION.equals(sections[0])) {
-                    System.err.println("Version mismatch between cache ('" + line + "') and current version ('" + REDApplication.VERSION + "') - reparsing");
-                    cacheFailed = true;
-                } else {
-                    genomeId = sections[1];
-                    genomeDisplayName = sections[2];
-                }
-
             } catch (Exception ioe) {
                 cacheFailed = true;
             }
         }
         if (cacheFailed) {
             MessageUtils.showInfo(IGVGenomeParser.class, "parseNewGenome();");
+            try {
+                FileUtils.deleteDirectory(baseLocation.getCanonicalPath() + "/cache");
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
             parseNewGenome();
         } else {
+            if (properties != null) {
+                setGenomeDescriptor(properties);
+            }
             MessageUtils.showInfo(IGVGenomeParser.class, "reloadCacheGenome();");
             reloadCacheGenome();
         }
@@ -178,10 +172,8 @@ public class IGVGenomeParser implements Runnable {
             GenomeDescriptor genomeDescriptor = parseGenomeArchiveFile(genomeFile);
             final String id = genomeDescriptor.getGenomeId();
             final String displayName = genomeDescriptor.getDisplayName();
-
             boolean isFasta = genomeDescriptor.isFasta();
             String[] fastaFileNames = genomeDescriptor.getFastaFileNames();
-
             LinkedHashMap<String, List<Cytoband>> cytobandMap = null;
             if (genomeDescriptor.hasCytobands()) {
                 cytobandMap = loadCytoBandFile();
@@ -219,11 +211,6 @@ public class IGVGenomeParser implements Runnable {
             if (cytobandMap != null) {
                 genome.setCytobands(cytobandMap);
             }
-
-//            Collection<Collection<String>> aliases = loadChrAliases(genomeDescriptor);
-//            if (aliases != null) {
-//                genome.addChrAliases(aliases);
-//            }
 
             InputStream geneStream = null;
             String geneFileName = genomeDescriptor.getGeneFileName();
@@ -284,6 +271,40 @@ public class IGVGenomeParser implements Runnable {
         }
     }
 
+    public void setGenomeDescriptor(Properties properties) {
+        String cytobandFileName = properties
+                .getProperty("cytobandFile");
+        String geneFileName = properties.getProperty("geneFile");
+        String chrAliasFileName = properties
+                .getProperty("chrAliasFile");
+        String sequenceLocation = properties
+                .getProperty("sequenceLocation");
+        boolean chrNamesAltered = Boolean.parseBoolean(properties
+                .getProperty("filenamesAltered"));
+        boolean fasta = Boolean.parseBoolean(properties
+                .getProperty("fasta"));
+        boolean fastaDirectory = Boolean.parseBoolean(properties
+                .getProperty("fastaDirectory"));
+        boolean chromosomesAreOrdered = Boolean
+                .parseBoolean(properties.getProperty("ordered"));
+        boolean hasCustomSequenceLocation = Boolean
+                .parseBoolean(properties
+                        .getProperty("customSequenceLocation"));
+        String fastaFileNameString = properties
+                .getProperty("fastaFiles");
+        String url = properties.getProperty("url");
+        String name = properties.getProperty("name");
+        String id = properties.getProperty("id");
+        String geneTrackName = properties
+                .getProperty("geneTrackName");
+        GenomeDescriptor.getInstance().setAttributes(name,
+                chrNamesAltered, id, cytobandFileName,
+                geneFileName, chrAliasFileName, geneTrackName, url,
+                sequenceLocation, hasCustomSequenceLocation,
+                chromosomesAreOrdered, fasta, fastaDirectory,
+                fastaFileNameString);
+    }
+
     public GenomeDescriptor parseGenomeArchiveFile(File dotGenomeFile)
             throws ZipException, IOException {
         zipFile = new ZipFile(dotGenomeFile);
@@ -298,37 +319,7 @@ public class IGVGenomeParser implements Runnable {
                 InputStream inputStream = zipFile.getInputStream(zipEntry);
                 Properties properties = new Properties();
                 properties.load(inputStream);
-                String cytobandFileName = properties
-                        .getProperty("cytobandFile");
-                String geneFileName = properties.getProperty("geneFile");
-                String chrAliasFileName = properties
-                        .getProperty("chrAliasFile");
-                String sequenceLocation = properties
-                        .getProperty("sequenceLocation");
-                boolean chrNamesAltered = Boolean.parseBoolean(properties
-                        .getProperty("filenamesAltered"));
-                boolean fasta = Boolean.parseBoolean(properties
-                        .getProperty("fasta"));
-                boolean fastaDirectory = Boolean.parseBoolean(properties
-                        .getProperty("fastaDirectory"));
-                boolean chromosomesAreOrdered = Boolean
-                        .parseBoolean(properties.getProperty("ordered"));
-                boolean hasCustomSequenceLocation = Boolean
-                        .parseBoolean(properties
-                                .getProperty("customSequenceLocation"));
-                String fastaFileNameString = properties
-                        .getProperty("fastaFiles");
-                String url = properties.getProperty("url");
-                String name = properties.getProperty("name");
-                String id = properties.getProperty("id");
-                String geneTrackName = properties
-                        .getProperty("geneTrackName");
-                GenomeDescriptor.getInstance().setAttributes(name,
-                        chrNamesAltered, id, cytobandFileName,
-                        geneFileName, chrAliasFileName, geneTrackName, url,
-                        sequenceLocation, hasCustomSequenceLocation,
-                        chromosomesAreOrdered, fasta, fastaDirectory,
-                        fastaFileNameString);
+                setGenomeDescriptor(properties);
             }
         }
         return GenomeDescriptor.getInstance();
