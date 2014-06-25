@@ -78,7 +78,6 @@ public class REDPreferences {
     /**
      * The network address from where we can download new genomes
      */
-//	private String genomeDownloadLocation = "http://www.bioinformatics.babraham.ac.uk/seqmonk/genomes/";
     private String genomeDownloadLists = "http://igv.broadinstitute.org/genomes/";
 
     private String genomeDownloadLocation = null;
