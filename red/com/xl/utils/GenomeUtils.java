@@ -4,6 +4,7 @@ package com.xl.utils;
  * Created by Administrator on 2014/6/12.
  */
 public class GenomeUtils {
+    public static final String KEY_VERSION_NAME = "Version";
     public static final String KEY_DISPLAY_NAME = "DisplayName";
     public static final String KEY_CHR_NAMES_ALTERED = "ChrNamesAltered";
     public static final String KEY_GENOME_ID = "GenomeId";
