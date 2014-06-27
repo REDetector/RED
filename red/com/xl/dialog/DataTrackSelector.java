@@ -22,7 +22,6 @@ package com.xl.dialog;
 import com.xl.datatypes.DataGroup;
 import com.xl.datatypes.DataSet;
 import com.xl.datatypes.DataStore;
-import com.xl.datatypes.ReplicateSet;
 import com.xl.main.REDApplication;
 
 import javax.swing.*;
@@ -54,10 +53,6 @@ public class DataTrackSelector extends JDialog implements ActionListener, ListSe
      */
     private DefaultListModel<Object> availableSetModel = new DefaultListModel<Object>();
 
-    /**
-     * The available replicate model
-     */
-    private DefaultListModel<Object> availableReplicatesModel = new DefaultListModel<Object>();
 
     /**
      * The available group list.
@@ -68,11 +63,6 @@ public class DataTrackSelector extends JDialog implements ActionListener, ListSe
      * The available set list.
      */
     private JList<Object> availableSetList;
-
-    /**
-     * The available replicate list
-     */
-    private JList<Object> availableReplicateList;
 
     /**
      * The used model.
@@ -175,12 +165,6 @@ public class DataTrackSelector extends JDialog implements ActionListener, ListSe
         c2.weighty = 1;
         c2.fill = GridBagConstraints.BOTH;
 
-        availableReplicateList = new JList<Object>(availableReplicatesModel);
-        availableReplicateList.addListSelectionListener(this);
-        availableReplicateList.setCellRenderer(renderer);
-        availablePanel.add(new JScrollPane(availableReplicateList), c2);
-
-
         getContentPane().add(availablePanel, c);
 
         c.gridx++;
@@ -258,18 +242,10 @@ public class DataTrackSelector extends JDialog implements ActionListener, ListSe
             availableGroupModel.addElement(availableGroups[i]);
         }
 
-        ReplicateSet[] availableReplicates = application.dataCollection().getAllReplicateSets();
-        for (int i = 0; i < availableReplicates.length; i++) {
-            availableReplicatesModel.addElement(availableReplicates[i]);
-        }
-
         DataStore[] drawnStores = application.drawnDataStores();
         for (int i = 0; i < drawnStores.length; i++) {
             if (drawnStores[i] instanceof DataSet) {
                 availableSetModel.removeElement(drawnStores[i]);
-            }
-            if (drawnStores[i] instanceof ReplicateSet) {
-                availableReplicatesModel.removeElement(drawnStores[i]);
             } else {
                 availableGroupModel.removeElement(drawnStores[i]);
             }
@@ -283,12 +259,10 @@ public class DataTrackSelector extends JDialog implements ActionListener, ListSe
         availableSetModel.addElement("temp");
         availableGroupModel.addElement("temp");
         usedModel.addElement("temp");
-        availableReplicatesModel.addElement("temp");
         validate();
         availableSetModel.removeElement("temp");
         availableGroupModel.removeElement("temp");
         usedModel.removeElement("temp");
-        availableReplicatesModel.removeElement("temp");
     }
 
     /* (non-Javadoc)
@@ -309,19 +283,12 @@ public class DataTrackSelector extends JDialog implements ActionListener, ListSe
                 usedModel.addElement(adds[i]);
                 availableSetModel.removeElement(adds[i]);
             }
-            adds = availableReplicateList.getSelectedValues();
-            for (int i = 0; i < adds.length; i++) {
-                usedModel.addElement(adds[i]);
-                availableReplicatesModel.removeElement(adds[i]);
-            }
         } else if (c.equals("remove")) {
             Object[] removes = usedList.getSelectedValues();
             for (int i = 0; i < removes.length; i++) {
                 usedModel.removeElement(removes[i]);
                 if (removes[i] instanceof DataSet) {
                     availableSetModel.addElement(removes[i]);
-                } else if (removes[i] instanceof ReplicateSet) {
-                    availableReplicatesModel.addElement(removes[i]);
                 } else if (removes[i] instanceof DataGroup) {
                     availableGroupModel.addElement(removes[i]);
                 } else {
@@ -406,7 +373,7 @@ public class DataTrackSelector extends JDialog implements ActionListener, ListSe
      */
     public void valueChanged(ListSelectionEvent ae) {
         // Check to see if we can add anything...
-        if (availableSetList.getSelectedIndices().length > 0 || availableGroupList.getSelectedIndices().length > 0 || availableReplicateList.getSelectedIndices().length > 0) {
+        if (availableSetList.getSelectedIndices().length > 0 || availableGroupList.getSelectedIndices().length > 0) {
             addButton.setEnabled(true);
         } else {
             addButton.setEnabled(false);

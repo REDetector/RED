@@ -128,6 +128,14 @@ public class AnnotationSet {
         return featureSet.getFeaturesForLocation(location);
     }
 
+    public Feature deleteFeatureForName(String chr, String name) {
+        return featureSet.deleteFeatureForName(chr, name);
+    }
+
+    public boolean deleteFeature(String chr, Feature feature) {
+        return featureSet.deleteFeature(chr, feature);
+    }
+
     public Feature[] getAllFeatures() {
 
         // TODO: Find a way to not load all features into memory just to do
@@ -271,6 +279,22 @@ public class AnnotationSet {
             return chrFeatures.keys();
         }
 
+        public Feature deleteFeatureForName(String chr, String name) {
+            if (chrFeatures.containsKey(chr)) {
+                return chrFeatures.get(chr).deleteFeatureForName(name);
+            } else {
+                return null;
+            }
+        }
+
+        public boolean deleteFeature(String chr, Feature feature) {
+            if (chrFeatures.contains(chr)) {
+                return chrFeatures.get(chr).deleteFeature(feature);
+            } else {
+                return false;
+            }
+        }
+
         /**
          * Gets a list of features.
          *
@@ -389,11 +413,31 @@ public class AnnotationSet {
             buildFeatures.add(f);
         }
 
+        public boolean deleteFeature(Feature feature) {
+            if (buildFeatures != null && buildFeatures.size() != 0 && buildFeatures.contains(feature)) {
+                return buildFeatures.remove(feature);
+            } else {
+                return false;
+            }
+        }
+
+        public Feature deleteFeatureForName(String name) {
+            if (buildFeatures != null && buildFeatures.size() != 0) {
+                int length = buildFeatures.size();
+                for (int i = 0; i < length; i++) {
+                    if (buildFeatures.get(i).getAliasName().equals(name) || buildFeatures.get(i).getName().equals(name)) {
+                        return buildFeatures.remove(i);
+                    }
+                }
+            }
+            return null;
+        }
+
         public Feature getFeatureForName(String name) {
             if (buildFeatures != null && buildFeatures.size() != 0) {
                 int length = buildFeatures.size();
                 for (int i = 0; i < length; i++) {
-                    if (buildFeatures.get(i).getAliasName().equalsIgnoreCase(name) || buildFeatures.get(i).getName().equalsIgnoreCase(name)) {
+                    if (buildFeatures.get(i).getAliasName().equals(name) || buildFeatures.get(i).getName().equals(name)) {
                         return buildFeatures.get(i);
                     }
                 }

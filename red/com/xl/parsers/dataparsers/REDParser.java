@@ -20,7 +20,10 @@ package com.xl.parsers.dataparsers;
  *    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-import com.xl.datatypes.*;
+import com.xl.datatypes.DataGroup;
+import com.xl.datatypes.DataSet;
+import com.xl.datatypes.DataStore;
+import com.xl.datatypes.PairedDataSet;
 import com.xl.datatypes.annotation.AnnotationSet;
 import com.xl.datatypes.genome.Genome;
 import com.xl.datatypes.genome.GenomeDescriptor;
@@ -38,10 +41,10 @@ import com.xl.main.REDApplication;
 import com.xl.parsers.annotationparsers.IGVGenomeParser;
 import com.xl.preferences.DisplayPreferences;
 import com.xl.preferences.REDPreferences;
-import com.xl.utils.GenomeUtils;
 import com.xl.utils.MessageUtils;
 import com.xl.utils.ParsingUtils;
 import com.xl.utils.Strand;
+import com.xl.utils.namemanager.GenomeUtils;
 import net.xl.genomes.GenomeDownloader;
 
 import java.io.*;
@@ -171,12 +174,6 @@ public class REDParser implements Runnable, ProgressListener {
                             throw ex;
                         }
                     }
-                } else if (sections[0].equals(ParsingUtils.REPLICATE_SETS)) {
-                    if (!genomeLoaded) {
-                        throw new REDException(
-                                "No genome definition found before data");
-                    }
-                    parseReplicates(sections);
                 } else if (sections[0].equals(ParsingUtils.PROBES)) {
                     if (!genomeLoaded) {
                         throw new REDException(
@@ -761,55 +758,6 @@ public class REDParser implements Runnable, ProgressListener {
     }
 
     /**
-     * Parses the list of replicate sets.
-     *
-     * @param sections The tab split values from the initial replicates line
-     * @throws REDException
-     * @throws IOException  Signals that an I/O exception has occurred.
-     */
-    private void parseReplicates(String[] sections) throws REDException,
-            IOException {
-        if (sections.length != 2) {
-            throw new REDException("Data Groups line didn't contain 2 sections");
-        }
-        if (!sections[0].equals("Replicate Sets")) {
-            throw new REDException("Couldn't find expected replicates line");
-        }
-
-        int n = Integer.parseInt(sections[1]);
-
-        for (int i = 0; i < n; i++) {
-            String[] replicateLine = br.readLine().split("\\t");
-            DataStore[] groupMembers = new DataStore[replicateLine.length - 1];
-
-            for (int j = 1; j < replicateLine.length; j++) {
-
-                if (replicateLine[j].startsWith("g")) {
-                    replicateLine[j] = replicateLine[j].substring(1);
-                    groupMembers[j - 1] = application.dataCollection()
-                            .getDataGroup(Integer.parseInt(replicateLine[j]));
-                } else if (replicateLine[j].startsWith("s")) {
-                    replicateLine[j] = replicateLine[j].substring(1);
-                    groupMembers[j - 1] = application.dataCollection()
-                            .getDataSet(Integer.parseInt(replicateLine[j]));
-                } else {
-                    throw new REDException("Replicate member id "
-                            + replicateLine[j] + " didn't start with g or s");
-                }
-
-                if (groupMembers[j - 1] == null) {
-                    throw new REDException(
-                            "Couldn't find replicate member from position "
-                                    + replicateLine[j]);
-                }
-            }
-
-            ReplicateSet r = new ReplicateSet(replicateLine[0], groupMembers);
-            application.dataCollection().addReplicateSet(r);
-        }
-    }
-
-    /**
      * Parses the list of probes.
      *
      * @param sections The tab split initial line from the probes section
@@ -992,7 +940,7 @@ public class REDParser implements Runnable, ProgressListener {
         int n = Integer.parseInt(sections[1]);
 
 		/*
-		 * Collect the drawn stores in an array. We used to add them as we found
+         * Collect the drawn stores in an array. We used to add them as we found
 		 * them but this was inefficient since we had to redo a calculation for
 		 * every one we added. This way we only need to calculate once.
 		 */
@@ -1016,9 +964,6 @@ public class REDParser implements Runnable, ProgressListener {
                         Integer.parseInt(storeSections[0]));
             } else if (storeSections[1].equals("group")) {
                 drawnStores[i] = application.dataCollection().getDataGroup(
-                        Integer.parseInt(storeSections[0]));
-            } else if (storeSections[1].equals("replicate")) {
-                drawnStores[i] = application.dataCollection().getReplicateSet(
                         Integer.parseInt(storeSections[0]));
             } else {
                 throw new REDException("Didn't recognise data type '"

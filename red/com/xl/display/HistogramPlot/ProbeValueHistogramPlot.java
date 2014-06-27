@@ -26,8 +26,8 @@ import com.xl.dialog.CrashReporter;
 import com.xl.exception.REDException;
 import com.xl.main.REDApplication;
 import com.xl.preferences.REDPreferences;
-import com.xl.utils.ImageSaver;
 import com.xl.utils.filefilters.TxtFileFilter;
+import com.xl.utils.imagemanager.ImageSaver;
 
 import javax.swing.*;
 import java.awt.*;

@@ -22,7 +22,6 @@ package com.xl.display.dataviewer;
 
 import com.xl.datatypes.DataGroup;
 import com.xl.datatypes.DataSet;
-import com.xl.datatypes.ReplicateSet;
 import com.xl.datatypes.annotation.AnnotationSet;
 import com.xl.datatypes.probes.ProbeList;
 
@@ -63,13 +62,6 @@ public class DataTreeRenderer extends DefaultTreeCellRenderer {
             ClassLoader
                     .getSystemResource("resources/annotation_set_icon.png"));
 
-    /**
-     * The replicate set icon.
-     */
-    private static Icon replicateSetIcon = new ImageIcon(
-            ClassLoader
-                    .getSystemResource("resources/replicate_set_icon.png"));
-
     /*
      * (non-Javadoc)
      *
@@ -93,15 +85,6 @@ public class DataTreeRenderer extends DefaultTreeCellRenderer {
             return label;
         } else if (value instanceof DataGroup) {
             JLabel label = new JLabel(value.toString(), dataGroupIcon,
-                    JLabel.LEFT);
-
-            if (selected) {
-                label.setOpaque(true);
-                label.setBackground(Color.LIGHT_GRAY);
-            }
-            return label;
-        } else if (value instanceof ReplicateSet) {
-            JLabel label = new JLabel(value.toString(), replicateSetIcon,
                     JLabel.LEFT);
 
             if (selected) {

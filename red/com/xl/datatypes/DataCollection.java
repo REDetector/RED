@@ -1,23 +1,4 @@
 package com.xl.datatypes;
-/**
- * Copyright Copyright 2007-13 Simon Andrews
- *
- *    This file is part of SeqMonk.
- *
- *    SeqMonk is free software; you can redistribute it and/or modify
- *    it under the terms of the GNU General Public License as published by
- *    the Free Software Foundation; either version 3 of the License, or
- *    (at your option) any later version.
- *
- *    SeqMonk is distributed in the hope that it will be useful,
- *    but WITHOUT ANY WARRANTY; without even the implied warranty of
- *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *    GNU General Public License for more details.
- *
- *    You should have received a copy of the GNU General Public License
- *    along with SeqMonk; if not, write to the Free Software
- *    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
- */
 
 import com.xl.datatypes.genome.Genome;
 import com.xl.datatypes.probes.ProbeList;
@@ -51,11 +32,6 @@ public class DataCollection {
      * The data groups.
      */
     private Vector<DataGroup> dataGroups = new Vector<DataGroup>();
-
-    /**
-     * The replicate sets
-     */
-    private Vector<ReplicateSet> replicateSets = new Vector<ReplicateSet>();
 
     /**
      * The active data store.
@@ -119,20 +95,6 @@ public class DataCollection {
         }
         return null;
     }
-
-    /**
-     * Gets a replicate set.
-     *
-     * @param position the position
-     * @return the replicate set
-     */
-    public ReplicateSet getReplicateSet(int position) {
-        if (position >= 0 && position < replicateSets.size()) {
-            return replicateSets.elementAt(position);
-        }
-        return null;
-    }
-
 
     /**
      * Checks if is quantitated.
@@ -225,39 +187,11 @@ public class DataCollection {
     }
 
     /**
-     * Adds the data group.
-     *
-     * @param set the group
-     */
-    public void addReplicateSet(ReplicateSet set) {
-        replicateSets.add(set);
-        set.setCollection(this);
-
-        Enumeration<DataChangeListener> e = listeners.elements();
-        while (e.hasMoreElements()) {
-            e.nextElement().replicateSetAdded(set);
-        }
-    }
-
-    /**
      * Removes the data groups.
      *
      * @param groups the groups
      */
     public void removeDataGroups(DataGroup[] groups) {
-
-        // Remove the group from any replicate sets it may be part of
-
-        for (int g = 0; g < groups.length; g++) {
-            Enumeration<ReplicateSet> e2 = replicateSets.elements();
-            while (e2.hasMoreElements()) {
-                ReplicateSet r = e2.nextElement();
-
-                if (r.containsDataStore(groups[g])) {
-                    r.removeDataStore(groups[g]);
-                }
-            }
-        }
 
         // We inform the listeners first to give
         // a chance for the tree to update.
@@ -271,26 +205,6 @@ public class DataCollection {
             groups[g].setCollection(null);
         }
 
-    }
-
-    /**
-     * Removes a replicate set.
-     *
-     * @param sets the group
-     */
-    public void removeReplicateSets(ReplicateSet[] sets) {
-
-        // We inform the listeners first to give
-        // a chance for the tree to update.
-        Enumeration<DataChangeListener> e = listeners.elements();
-        while (e.hasMoreElements()) {
-            e.nextElement().replicateSetsRemoved(sets);
-        }
-
-        for (int s = 0; s < sets.length; s++) {
-            replicateSets.remove(sets[s]);
-            sets[s].setCollection(null);
-        }
     }
 
     /**
@@ -310,23 +224,13 @@ public class DataCollection {
                     g.removeDataSet(data[d]);
                 }
             }
-
-
-            Enumeration<ReplicateSet> e2 = replicateSets.elements();
-            while (e2.hasMoreElements()) {
-                ReplicateSet r = e2.nextElement();
-
-                if (r.containsDataStore(data[d])) {
-                    r.removeDataStore(data[d]);
-                }
-            }
         }
 
         // Notify listeners before actually removing to allow the
         // tree to pick up the changes correctly
         Enumeration<DataChangeListener> e3 = listeners.elements();
         while (e3.hasMoreElements()) {
-            ((DataChangeListener) e3.nextElement()).dataSetsRemoved(data);
+            (e3.nextElement()).dataSetsRemoved(data);
         }
 
         for (int d = 0; d < data.length; d++) {
@@ -348,17 +252,6 @@ public class DataCollection {
     }
 
     /**
-     * Gets all replicate sets.
-     *
-     * @return all replicate sets
-     */
-    public ReplicateSet[] getAllReplicateSets() {
-        ReplicateSet[] sets = replicateSets.toArray(new ReplicateSet[0]);
-        Arrays.sort(sets);
-        return sets;
-    }
-
-    /**
      * Gets the all data sets.
      *
      * @return the all data sets
@@ -377,18 +270,14 @@ public class DataCollection {
     public DataStore[] getAllDataStores() {
         DataSet[] sets = getAllDataSets();
         DataGroup[] groups = getAllDataGroups();
-        ReplicateSet[] replicates = getAllReplicateSets();
 
-        DataStore[] stores = new DataStore[sets.length + groups.length + replicates.length];
+        DataStore[] stores = new DataStore[sets.length + groups.length];
 
-        for (int i = 0; i < replicates.length; i++) {
-            stores[i] = replicates[i];
-        }
         for (int i = 0; i < groups.length; i++) {
-            stores[replicates.length + i] = groups[i];
+            stores[i] = groups[i];
         }
         for (int i = 0; i < sets.length; i++) {
-            stores[replicates.length + groups.length + i] = sets[i];
+            stores[groups.length + i] = sets[i];
         }
         return stores;
     }
@@ -407,7 +296,7 @@ public class DataCollection {
      * @throws REDException the seq monk exception
      */
     public void setActiveDataStore(DataStore d) throws REDException {
-        if (d == null || dataSets.contains(d) || dataGroups.contains(d) || replicateSets.contains(d)) {
+        if (d == null || dataSets.contains(d) || dataGroups.contains(d)) {
             activeDataStore = d;
 
             Enumeration<DataChangeListener> e = listeners.elements();
@@ -496,17 +385,4 @@ public class DataCollection {
         }
     }
 
-    public void replicateSetRenamed(ReplicateSet r) {
-        Enumeration<DataChangeListener> e = listeners.elements();
-        while (e.hasMoreElements()) {
-            e.nextElement().replicateSetRenamed(r);
-        }
-    }
-
-    public void replicateSetStoresChanged(ReplicateSet r) {
-        Enumeration<DataChangeListener> e = listeners.elements();
-        while (e.hasMoreElements()) {
-            e.nextElement().replicateSetStoresChanged(r);
-        }
-    }
 }

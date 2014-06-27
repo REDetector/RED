@@ -195,15 +195,12 @@ public class REDDataWriter implements Runnable, Cancellable {
 
             DataSet[] dataSets = data.getAllDataSets();
             DataGroup[] dataGroups = data.getAllDataGroups();
-            ReplicateSet[] replicateSets = data.getAllReplicateSets();
 
             if (!printDataSets(dataSets, p)) {
                 return; // They cancelled
             }
 
             printDataGroups(dataSets, dataGroups, p);
-
-            printReplicateSets(dataSets, dataGroups, replicateSets, p);
 
             AnnotationSet[] annotationSets = data.genome()
                     .getAnnotationCollection().anotationSets();
@@ -230,7 +227,7 @@ public class REDDataWriter implements Runnable, Cancellable {
                 }
             }
 
-            printVisibleDataStores(dataSets, dataGroups, replicateSets, p);
+            printVisibleDataStores(dataSets, dataGroups, p);
 
             if (probes != null) {
                 if (!printProbeLists(probes, p)) {
@@ -493,52 +490,6 @@ public class REDDataWriter implements Runnable, Cancellable {
     }
 
     /**
-     * Prints the replicate sets.
-     *
-     * @param dataSets   the data sets
-     * @param dataGroups the data groups
-     * @param replicates the replicate sets
-     * @param p          the printwriter
-     */
-    private void printReplicateSets(DataSet[] dataSets, DataGroup[] dataGroups,
-                                    ReplicateSet[] replicates, PrintStream p) {
-
-        p.println(ParsingUtils.REPLICATE_SETS + "\t" + replicates.length);
-        for (int i = 0; i < replicates.length; i++) {
-            DataStore[] stores = replicates[i].dataStores();
-
-            StringBuffer b = new StringBuffer();
-            b.append(replicates[i].name());
-            for (int j = 0; j < stores.length; j++) {
-
-                if (stores[j] instanceof DataSet) {
-                    for (int d = 0; d < dataSets.length; d++) {
-                        if (stores[j] == dataSets[d]) {
-                            b.append("\ts");
-                            b.append(d);
-                            continue;
-                        }
-                    }
-                } else if (stores[j] instanceof DataGroup) {
-                    for (int d = 0; d < dataGroups.length; d++) {
-                        if (stores[j] == dataGroups[d]) {
-                            b.append("\tg");
-                            b.append(d);
-                            continue;
-                        }
-                    }
-                } else {
-                    throw new IllegalArgumentException(
-                            "Member of replicate set wasn't a dataset or a data group");
-                }
-
-            }
-
-            p.println(b);
-        }
-    }
-
-    /**
      * Prints the annotation set.
      *
      * @param a the a
@@ -665,7 +616,7 @@ public class REDDataWriter implements Runnable, Cancellable {
      * @param p          the p
      */
     private void printVisibleDataStores(DataSet[] dataSets,
-                                        DataGroup[] dataGroups, ReplicateSet[] replicates, PrintStream p) {
+                                        DataGroup[] dataGroups, PrintStream p) {
         // Now we can put out the list of visible stores
         // We have to refer to these by position rather than name
         // since names are not guaranteed to be unique.
@@ -683,13 +634,6 @@ public class REDDataWriter implements Runnable, Cancellable {
                         p.println(g + "\t" + "group");
                     }
                 }
-            } else {
-                for (int s = 0; s < replicates.length; s++) {
-                    if (visibleStores[i] == replicates[s]) {
-                        p.println(s + "\t" + "replicate");
-                    }
-                }
-
             }
         }
     }

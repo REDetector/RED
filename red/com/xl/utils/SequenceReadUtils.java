@@ -37,10 +37,10 @@ public class SequenceReadUtils {
 	/**
 	 * Says whether two reads which must be known to be on the same chromosome
 	 * overlap with each other.
-	 * 
-	 * @param read1
-	 * @param read2
-	 * @return true if they overlap, otherwise false
+	 *
+     * @param value1
+     * @param value2
+     * @return true if they overlap, otherwise false
 	 */
 	public static boolean overlaps(Location value1, Location value2) {
 		return (value1.getStart() <= value2.getEnd() && value1.getEnd() >= value2

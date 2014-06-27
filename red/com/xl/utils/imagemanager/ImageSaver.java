@@ -1,4 +1,4 @@
-package com.xl.utils;
+package com.xl.utils.imagemanager;
 
 import com.xl.dialog.CrashReporter;
 import com.xl.preferences.REDPreferences;

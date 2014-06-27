@@ -1,26 +1,9 @@
 package com.xl.display.dataviewer;
 
-/**
- * Copyright Copyright 2007-13 Simon Andrews
- *
- *    This file is part of SeqMonk.
- *
- *    SeqMonk is free software; you can redistribute it and/or modify
- *    it under the terms of the GNU General Public License as published by
- *    the Free Software Foundation; either version 3 of the License, or
- *    (at your option) any later version.
- *
- *    SeqMonk is distributed in the hope that it will be useful,
- *    but WITHOUT ANY WARRANTY; without even the implied warranty of
- *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *    GNU General Public License for more details.
- *
- *    You should have received a copy of the GNU General Public License
- *    along with SeqMonk; if not, write to the Free Software
- *    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
- */
-
-import com.xl.datatypes.*;
+import com.xl.datatypes.DataCollection;
+import com.xl.datatypes.DataGroup;
+import com.xl.datatypes.DataSet;
+import com.xl.datatypes.DataStore;
 import com.xl.datatypes.annotation.AnnotationSet;
 import com.xl.datatypes.annotation.CoreAnnotationSet;
 import com.xl.datatypes.probes.ProbeList;
@@ -127,8 +110,6 @@ public class DataViewer extends JPanel implements MouseListener, TreeSelectionLi
                 new DataPopupMenu((DataSet) clickedItem).show(dataTree, me.getX(), me.getY());
             } else if (clickedItem instanceof DataGroup) {
                 new GroupPopupMenu((DataGroup) clickedItem).show(dataTree, me.getX(), me.getY());
-            } else if (clickedItem instanceof ReplicateSet) {
-                new ReplicatePopupMenu((ReplicateSet) clickedItem).show(dataTree, me.getX(), me.getY());
             } else if (clickedItem instanceof ProbeList) {
                 new ProbePopupMenu((ProbeList) clickedItem).show(probeSetTree, me.getX(), me.getY());
             } else if (clickedItem instanceof AnnotationSet) {
@@ -148,8 +129,6 @@ public class DataViewer extends JPanel implements MouseListener, TreeSelectionLi
                 new DataPopupMenu((DataSet) clickedItem).actionPerformed(new ActionEvent(this, 0, "properties"));
             } else if (clickedItem instanceof DataGroup) {
                 new GroupPopupMenu((DataGroup) clickedItem).actionPerformed(new ActionEvent(this, 0, "properties"));
-            } else if (clickedItem instanceof ReplicateSet) {
-                new ReplicatePopupMenu((ReplicateSet) clickedItem).actionPerformed(new ActionEvent(this, 0, "properties"));
             } else if (clickedItem instanceof ProbeList) {
                 new ProbePopupMenu((ProbeList) clickedItem).actionPerformed(new ActionEvent(this, 0, "view"));
             } else if (clickedItem instanceof AnnotationSet) {
@@ -411,93 +390,6 @@ public class DataViewer extends JPanel implements MouseListener, TreeSelectionLi
                 }
             } else if (ae.getActionCommand().equals("delete")) {
                 collection.removeDataGroups(new DataGroup[]{d});
-            } else if (ae.getActionCommand().equals("properties")) {
-                new DataStorePropertiesDialog(d);
-            } else {
-                System.err.println("Unknown menu option '" + ae.getActionCommand() + "'");
-            }
-        }
-    }
-
-    /**
-     * The popup menu which appears when the user right-clicks on a ReplicateSet
-     */
-    private class ReplicatePopupMenu extends JPopupMenu implements ActionListener {
-
-        private ReplicateSet d;
-
-        /**
-         * Instantiates a new group popup menu.
-         *
-         * @param d
-         */
-        public ReplicatePopupMenu(ReplicateSet d) {
-            this.d = d;
-            JCheckBoxMenuItem displayTrack = new JCheckBoxMenuItem("Show track in chromosome view");
-            displayTrack.setActionCommand("display_track");
-            displayTrack.addActionListener(this);
-            if (application.dataStoreIsDrawn(d)) {
-                displayTrack.setState(true);
-            } else {
-                displayTrack.setState(false);
-            }
-            add(displayTrack);
-
-            JMenuItem readLenHistogram = new JMenuItem("Show Read Length Histogram");
-            readLenHistogram.setActionCommand("readlen_histogram");
-            readLenHistogram.addActionListener(this);
-            add(readLenHistogram);
-
-            JMenuItem probeValHistogram = new JMenuItem("Show Probe Value Histogram");
-            probeValHistogram.setActionCommand("probeval_histogram");
-            probeValHistogram.addActionListener(this);
-            if (!d.isQuantitated()) {
-                probeValHistogram.setEnabled(false);
-            }
-            add(probeValHistogram);
-
-            JMenuItem rename = new JMenuItem("Rename");
-            rename.setActionCommand("rename");
-            rename.addActionListener(this);
-            add(rename);
-
-            JMenuItem delete = new JMenuItem("Delete");
-            delete.setActionCommand("delete");
-            delete.addActionListener(this);
-            add(delete);
-
-            JMenuItem properties = new JMenuItem("Properties");
-            properties.setActionCommand("properties");
-            properties.addActionListener(this);
-            add(properties);
-
-        }
-
-        /* (non-Javadoc)
-         * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
-         */
-        public void actionPerformed(ActionEvent ae) {
-            if (ae.getActionCommand().equals("readlen_histogram")) {
-                new ReadLengthHistogramPlot(d);
-            } else if (ae.getActionCommand().equals("probeval_histogram")) {
-                try {
-                    new ProbeValueHistogramPlot(d, collection.probeSet().getActiveList());
-                } catch (REDException e) {
-                    new CrashReporter(e);
-                }
-            } else if (ae.getActionCommand().equals("display_track")) {
-                if (((JCheckBoxMenuItem) ae.getSource()).getState()) {
-                    application.addToDrawnDataStores(new DataStore[]{d});
-                } else {
-                    application.removeFromDrawnDataStores(d);
-                }
-            } else if (ae.getActionCommand().equals("rename")) {
-                String name = getNewName(d.name());
-                if (name != null) {
-                    d.setName(name);
-                }
-            } else if (ae.getActionCommand().equals("delete")) {
-                collection.removeReplicateSets(new ReplicateSet[]{d});
             } else if (ae.getActionCommand().equals("properties")) {
                 new DataStorePropertiesDialog(d);
             } else {

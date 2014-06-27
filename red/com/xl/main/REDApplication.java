@@ -4,7 +4,10 @@
 
 package com.xl.main;
 
-import com.xl.datatypes.*;
+import com.xl.datatypes.DataCollection;
+import com.xl.datatypes.DataGroup;
+import com.xl.datatypes.DataSet;
+import com.xl.datatypes.DataStore;
 import com.xl.datatypes.annotation.AnnotationSet;
 import com.xl.datatypes.genome.Genome;
 import com.xl.datatypes.probes.ProbeList;
@@ -64,7 +67,7 @@ public class REDApplication extends JFrame implements ProgressListener,
     /**
      * The version of RED
      */
-    public static final String VERSION = "0.0.4";
+    public static final String VERSION = "0.0.5";
 
     /**
      * The root menu of RED
@@ -176,8 +179,8 @@ public class REDApplication extends JFrame implements ProgressListener,
         statusPanel = new StatusPanel();
         getContentPane().add(statusPanel, BorderLayout.SOUTH);
 
-        mainPane.setDividerLocation((double) 0.25);
-        topPane.setDividerLocation((double) 0.25);
+        mainPane.setDividerLocation(0.25);
+        topPane.setDividerLocation(0.25);
     }
 
     /**
@@ -808,28 +811,6 @@ public class REDApplication extends JFrame implements ProgressListener,
     @Override
     public void probeSetReplaced(ProbeSet p) {
         p.addProbeSetChangeListener(this);
-        changesWereMade();
-    }
-
-    @Override
-    public void replicateSetAdded(ReplicateSet r) {
-        changesWereMade();
-    }
-
-    @Override
-    public void replicateSetsRemoved(ReplicateSet[] r) {
-        removeFromDrawnDataStores(r);
-        changesWereMade();
-    }
-
-    @Override
-    public void replicateSetRenamed(ReplicateSet r) {
-        chromosomeViewer.repaint();
-        changesWereMade();
-    }
-
-    @Override
-    public void replicateSetStoresChanged(ReplicateSet r) {
         changesWereMade();
     }
 

@@ -1,4 +1,4 @@
-package com.xl.utils;
+package com.xl.utils.namemanager;
 
 /**
  * Created by Administrator on 2014/6/12.

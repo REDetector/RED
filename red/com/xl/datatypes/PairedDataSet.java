@@ -1,25 +1,5 @@
 package com.xl.datatypes;
 
-/**
- * Copyright Copyright 2007-13 Simon Andrews
- *
- *    This file is part of SeqMonk.
- *
- *    SeqMonk is free software; you can redistribute it and/or modify
- *    it under the terms of the GNU General Public License as published by
- *    the Free Software Foundation; either version 3 of the License, or
- *    (at your option) any later version.
- *
- *    SeqMonk is distributed in the hope that it will be useful,
- *    but WITHOUT ANY WARRANTY; without even the implied warranty of
- *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *    GNU General Public License for more details.
- *
- *    You should have received a copy of the GNU General Public License
- *    along with SeqMonk; if not, write to the Free Software
- *    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
- */
-
 import com.xl.datatypes.genome.Chromosome;
 import com.xl.datatypes.probes.Probe;
 import com.xl.datatypes.sequence.HiCHitCollection;
@@ -323,7 +303,7 @@ public class PairedDataSet extends DataSet implements HiCDataStore {
             lastCachedHits = getHiCReadsForChromosome(c);
 
 			/*
-			 * We don't want to have to do an exhaustive search for reads so we
+             * We don't want to have to do an exhaustive search for reads so we
 			 * make an educated guess as to where to start.
 			 * 
 			 * If we are coming at this fresh we make a guess as to where to

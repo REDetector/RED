@@ -219,6 +219,7 @@ public class BAMFileParser extends DataParser {
             }
         } catch (Exception ex) {
             progressExceptionReceived(ex);
+            progressCancelled();
             return;
         }
 

@@ -45,24 +45,28 @@ public class Feature implements Comparable<Feature>, Serializable {
         return txLocation;
     }
 
+    public void setTxLocation(Location txLocation) {
+        this.txLocation = txLocation;
+    }
+
     public Location getCdsLocation() {
         return cdsLocation;
+    }
+
+    public void setCdsLocation(Location cdsLocation) {
+        this.cdsLocation = cdsLocation;
     }
 
     public Location[] getExonLocations() {
         return exonLocations;
     }
 
+    public void setExonLocation(Location[] exonLocations) {
+        this.exonLocations = exonLocations;
+    }
+
     public String getAliasName() {
         return aliasName;
-    }
-
-    public Color getColor() {
-        return color;
-    }
-
-    public void setColor(Color color) {
-        this.color = color;
     }
 
     /**

@@ -23,7 +23,6 @@ package com.xl.menu;
 import com.xl.datatypes.DataGroup;
 import com.xl.datatypes.DataSet;
 import com.xl.datatypes.DataStore;
-import com.xl.datatypes.ReplicateSet;
 import com.xl.datatypes.probes.ProbeList;
 import com.xl.datatypes.probes.ProbeSet;
 
@@ -328,18 +327,6 @@ public class MainREDToolbar extends REDToolbar {
     }
 
     public void probeSetReplaced(ProbeSet p) {
-    }
-
-    public void replicateSetAdded(ReplicateSet r) {
-    }
-
-    public void replicateSetsRemoved(ReplicateSet[] r) {
-    }
-
-    public void replicateSetRenamed(ReplicateSet r) {
-    }
-
-    public void replicateSetStoresChanged(ReplicateSet r) {
     }
 
     public void activeDataStoreChanged(DataStore s) {

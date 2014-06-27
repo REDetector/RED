@@ -97,7 +97,9 @@ public class FeatureAttributeTable extends AbstractTableModel {
                         for (Location exon : feature.getExonLocations()) {
                             str.append(exon.toString() + ",");
                         }
-                        str.deleteCharAt(str.length() - 1);
+                        if (str.length() != 0) {
+                            str.deleteCharAt(str.length() - 1);
+                        }
                         return str.toString();
                     default:
                         return null;

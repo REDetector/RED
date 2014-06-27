@@ -20,7 +20,10 @@ package com.xl.display.dataviewer;
  *    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-import com.xl.datatypes.*;
+import com.xl.datatypes.DataCollection;
+import com.xl.datatypes.DataGroup;
+import com.xl.datatypes.DataSet;
+import com.xl.datatypes.DataStore;
 import com.xl.datatypes.probes.ProbeList;
 import com.xl.datatypes.probes.ProbeSet;
 import com.xl.datatypes.probes.ProbeSetChangeListener;
@@ -245,18 +248,6 @@ public class ProbeSetTreeModel implements TreeModel, ProbeSetChangeListener, Dat
      * @see uk.ac.babraham.SeqMonk.DataTypes.DataChangeListener#dataSetRenamed(uk.ac.babraham.SeqMonk.DataTypes.DataSet)
      */
     public void dataSetRenamed(DataSet d) {
-    }
-
-    public void replicateSetAdded(ReplicateSet r) {
-    }
-
-    public void replicateSetsRemoved(ReplicateSet[] r) {
-    }
-
-    public void replicateSetRenamed(ReplicateSet r) {
-    }
-
-    public void replicateSetStoresChanged(ReplicateSet r) {
     }
 
     /* (non-Javadoc)

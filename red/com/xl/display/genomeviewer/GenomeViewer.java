@@ -23,7 +23,6 @@ package com.xl.display.genomeviewer;
 import com.xl.datatypes.DataGroup;
 import com.xl.datatypes.DataSet;
 import com.xl.datatypes.DataStore;
-import com.xl.datatypes.ReplicateSet;
 import com.xl.datatypes.genome.Chromosome;
 import com.xl.datatypes.genome.Genome;
 import com.xl.datatypes.probes.ProbeList;
@@ -223,30 +222,6 @@ public class GenomeViewer extends JPanel implements DataChangeListener,
     public void probeSetReplaced(ProbeSet p) {
         for (int i = 0; i < chromosomeDisplays.length; i++) {
             chromosomeDisplays[i].probeSetReplaced(p);
-        }
-    }
-
-    public void replicateSetAdded(ReplicateSet r) {
-        for (int i = 0; i < chromosomeDisplays.length; i++) {
-            chromosomeDisplays[i].replicateSetAdded(r);
-        }
-    }
-
-    public void replicateSetsRemoved(ReplicateSet[] r) {
-        for (int i = 0; i < chromosomeDisplays.length; i++) {
-            chromosomeDisplays[i].replicateSetsRemoved(r);
-        }
-    }
-
-    public void replicateSetRenamed(ReplicateSet r) {
-        for (int i = 0; i < chromosomeDisplays.length; i++) {
-            chromosomeDisplays[i].replicateSetRenamed(r);
-        }
-    }
-
-    public void replicateSetStoresChanged(ReplicateSet r) {
-        for (int i = 0; i < chromosomeDisplays.length; i++) {
-            chromosomeDisplays[i].replicateSetStoresChanged(r);
         }
     }
 

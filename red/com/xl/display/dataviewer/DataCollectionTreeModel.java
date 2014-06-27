@@ -1,26 +1,9 @@
 package com.xl.display.dataviewer;
 
-/**
- * Copyright 2010-13 Simon Andrews
- *
- *    This file is part of SeqMonk.
- *
- *    SeqMonk is free software; you can redistribute it and/or modify
- *    it under the terms of the GNU General Public License as published by
- *    the Free Software Foundation; either version 3 of the License, or
- *    (at your option) any later version.
- *
- *    SeqMonk is distributed in the hope that it will be useful,
- *    but WITHOUT ANY WARRANTY; without even the implied warranty of
- *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *    GNU General Public License for more details.
- *
- *    You should have received a copy of the GNU General Public License
- *    along with SeqMonk; if not, write to the Free Software
- *    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
- */
-
-import com.xl.datatypes.*;
+import com.xl.datatypes.DataCollection;
+import com.xl.datatypes.DataGroup;
+import com.xl.datatypes.DataSet;
+import com.xl.datatypes.DataStore;
 import com.xl.datatypes.annotation.AnnotationSet;
 import com.xl.datatypes.probes.ProbeList;
 import com.xl.datatypes.probes.ProbeSet;
@@ -55,27 +38,22 @@ public class DataCollectionTreeModel implements TreeModel, DataChangeListener, A
     /**
      * The root node.
      */
-    private folderNode rootNode;
+    private FolderNode rootNode;
 
     /**
      * The annotation node.
      */
-    private folderNode annotationNode;
+    private FolderNode annotationNode;
 
     /**
      * The data set node.
      */
-    private folderNode dataSetNode;
+    private FolderNode dataSetNode;
 
     /**
      * The data group node.
      */
-    private folderNode dataGroupNode;
-
-    /**
-     * The replicate set node
-     */
-    private folderNode replicateSetNode;
+    private FolderNode dataGroupNode;
 
     /**
      * Instantiates a new data collection tree model.
@@ -88,11 +66,10 @@ public class DataCollectionTreeModel implements TreeModel, DataChangeListener, A
             collection.addDataChangeListener(this);
             collection.genome().getAnnotationCollection().addAnnotationCollectionListener(this);
         }
-        rootNode = new folderNode(collection.genome().toString());
-        annotationNode = new folderNode("Annotation Sets");
-        dataSetNode = new folderNode("Data Sets");
-        dataGroupNode = new folderNode("Data Groups");
-        replicateSetNode = new folderNode("Replicate Sets");
+        rootNode = new FolderNode(collection.genome().toString());
+        annotationNode = new FolderNode("Annotation Sets");
+        dataSetNode = new FolderNode("Data Sets");
+        dataGroupNode = new FolderNode("Data Groups");
     }
 
     /* (non-Javadoc)
@@ -127,8 +104,6 @@ public class DataCollectionTreeModel implements TreeModel, DataChangeListener, A
                     return dataSetNode;
                 case 2:
                     return dataGroupNode;
-                case 3:
-                    return replicateSetNode;
             }
         } else if (node.equals(annotationNode)) {
             return collection.genome().getAnnotationCollection().anotationSets()[index];
@@ -136,8 +111,6 @@ public class DataCollectionTreeModel implements TreeModel, DataChangeListener, A
             return collection.getAllDataSets()[index];
         } else if (node.equals(dataGroupNode)) {
             return collection.getAllDataGroups()[index];
-        } else if (node.equals(replicateSetNode)) {
-            return collection.getAllReplicateSets()[index];
         }
 
         throw new NullPointerException("Null child from " + node + " at index " + index);
@@ -152,13 +125,11 @@ public class DataCollectionTreeModel implements TreeModel, DataChangeListener, A
         } else if (node.equals(annotationNode)) {
             return collection.genome().getAnnotationCollection().anotationSets().length;
         } else if (node.equals(rootNode)) {
-            return 4; // Annotation sets, DataSets, DataGroups, Replicate sets
+            return 3; // Annotation sets, DataSets, DataGroups
         } else if (node.equals(dataSetNode)) {
             return collection.getAllDataSets().length;
         } else if (node.equals(dataGroupNode)) {
             return collection.getAllDataGroups().length;
-        } else if (node.equals(replicateSetNode)) {
-            return collection.getAllReplicateSets().length;
         } else {
             return 0;
         }
@@ -193,11 +164,6 @@ public class DataCollectionTreeModel implements TreeModel, DataChangeListener, A
             for (int i = 0; i < groups.length; i++) {
                 if (groups[i] == child) return i;
             }
-        } else if (node.equals(replicateSetNode)) {
-            ReplicateSet[] sets = collection.getAllReplicateSets();
-            for (int i = 0; i < sets.length; i++) {
-                if (sets[i] == child) return i;
-            }
         }
         System.err.println("Couldn't find valid index for " + node + " and " + child);
         return 0;
@@ -216,10 +182,7 @@ public class DataCollectionTreeModel implements TreeModel, DataChangeListener, A
      * @see javax.swing.tree.TreeModel#isLeaf(java.lang.Object)
      */
     public boolean isLeaf(Object node) {
-        if (node instanceof folderNode) {
-            return false;
-        }
-        return true;
+        return (node instanceof FolderNode);
     }
 
     /* (non-Javadoc)
@@ -257,7 +220,7 @@ public class DataCollectionTreeModel implements TreeModel, DataChangeListener, A
 
         // We have to make an Integer object array before we can convert this
         // to a primitive int array
-        Integer[] deleteIndices = indices.keySet().toArray(new Integer[0]);
+        Integer[] deleteIndices = (Integer[]) indices.keySet().toArray();
         Arrays.sort(deleteIndices);
 
         DataGroup[] deleteGroups = new DataGroup[deleteIndices.length];
@@ -308,71 +271,6 @@ public class DataCollectionTreeModel implements TreeModel, DataChangeListener, A
 
     }
 
-    public void replicateSetAdded(ReplicateSet r) {
-        TreeModelEvent me = new TreeModelEvent(r, getPathToRoot(replicateSetNode), new int[]{getIndexOfChild(replicateSetNode, r)}, new ReplicateSet[]{r});
-
-        Enumeration<TreeModelListener> e = listeners.elements();
-        while (e.hasMoreElements()) {
-            e.nextElement().treeNodesInserted(me);
-        }
-    }
-
-    public void replicateSetsRemoved(ReplicateSet[] r) {
-
-        // Find the indices of each of these datasets and sort them low to high
-        // before telling the listeners
-        Hashtable<Integer, ReplicateSet> indices = new Hashtable<Integer, ReplicateSet>();
-
-        for (int i = 0; i < r.length; i++) {
-            indices.put(getIndexOfChild(replicateSetNode, r[i]), r[i]);
-        }
-
-        // We have to make an Integer object array before we can convert this
-        // to a primitive int array
-        Integer[] deleteIndices = indices.keySet().toArray(new Integer[0]);
-        Arrays.sort(deleteIndices);
-
-        ReplicateSet[] deleteSets = new ReplicateSet[deleteIndices.length];
-        for (int i = 0; i < deleteIndices.length; i++) {
-            deleteSets[i] = indices.get(deleteIndices[i]);
-        }
-
-        int[] delInd = new int[deleteIndices.length];
-        for (int i = 0; i < deleteIndices.length; i++) {
-            delInd[i] = deleteIndices[i];
-        }
-
-        TreeModelEvent me = new TreeModelEvent(r, getPathToRoot(replicateSetNode), delInd, deleteSets);
-        Enumeration<TreeModelListener> e = listeners.elements();
-        while (e.hasMoreElements()) {
-            e.nextElement().treeNodesRemoved(me);
-        }
-    }
-
-    public void replicateSetRenamed(ReplicateSet r) {
-        TreeModelEvent me = new TreeModelEvent(r, getPathToRoot(r));
-        Enumeration<TreeModelListener> e = listeners.elements();
-        while (e.hasMoreElements()) {
-            e.nextElement().treeNodesChanged(me);
-        }
-
-        // We also need to let the tree know that the structure may have
-        // changed since the new name may sort differently and therefore
-        // appear in a different position.
-        me = new TreeModelEvent(replicateSetNode, getPathToRoot(replicateSetNode));
-        e = listeners.elements();
-        while (e.hasMoreElements()) {
-            e.nextElement().treeStructureChanged(me);
-        }
-
-    }
-
-    public void replicateSetStoresChanged(ReplicateSet r) {
-        // This can affect the name we display if the group changes from being HiC
-        // to non-hiC (or vice versa) so we treat this like a name change.
-        replicateSetRenamed(r);
-    }
-
     /* (non-Javadoc)
      * @see uk.ac.babraham.SeqMonk.DataTypes.DataChangeListener#dataSetAdded(uk.ac.babraham.SeqMonk.DataTypes.DataSet)
      */
@@ -400,7 +298,7 @@ public class DataCollectionTreeModel implements TreeModel, DataChangeListener, A
 
         // We have to make an Integer object array before we can convert this
         // to a primitive int array
-        Integer[] deleteIndices = indices.keySet().toArray(new Integer[0]);
+        Integer[] deleteIndices = (Integer[]) indices.keySet().toArray();
         Arrays.sort(deleteIndices);
 
         DataSet[] deleteSets = new DataSet[deleteIndices.length];
@@ -531,20 +429,10 @@ public class DataCollectionTreeModel implements TreeModel, DataChangeListener, A
     /**
      * Gets the path to root.
      *
-     * @param s the s
-     * @return the path to root
-     */
-    private Object[] getPathToRoot(ReplicateSet s) {
-        return new Object[]{rootNode, replicateSetNode, s};
-    }
-
-    /**
-     * Gets the path to root.
-     *
      * @param f the f
      * @return the path to root
      */
-    private Object[] getPathToRoot(folderNode f) {
+    private Object[] getPathToRoot(FolderNode f) {
         if (f == rootNode) return new Object[]{f};
         else return new Object[]{rootNode, f};
     }
@@ -552,7 +440,7 @@ public class DataCollectionTreeModel implements TreeModel, DataChangeListener, A
     /**
      * The Class folderNode.
      */
-    private class folderNode {
+    private class FolderNode {
 
         /**
          * The name.
@@ -564,7 +452,7 @@ public class DataCollectionTreeModel implements TreeModel, DataChangeListener, A
          *
          * @param name the name
          */
-        public folderNode(String name) {
+        public FolderNode(String name) {
             this.name = name;
         }
 

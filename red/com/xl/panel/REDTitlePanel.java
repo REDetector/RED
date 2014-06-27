@@ -21,7 +21,7 @@ package com.xl.panel;
 
 import com.xl.main.REDApplication;
 import com.xl.utils.ColourScheme;
-import com.xl.utils.IconUtils;
+import com.xl.utils.namemanager.IconUtils;
 
 import javax.swing.*;
 import java.awt.*;

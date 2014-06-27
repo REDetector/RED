@@ -1,6 +1,6 @@
 package com.xl.datatypes.genome;
 
-import com.xl.utils.GenomeUtils;
+import com.xl.utils.namemanager.GenomeUtils;
 
 import java.io.File;
 

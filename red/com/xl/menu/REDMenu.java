@@ -16,8 +16,8 @@ import com.xl.parsers.annotationparsers.UCSCRefGeneParser;
 import com.xl.parsers.dataparsers.BAMFileParser;
 import com.xl.parsers.dataparsers.FastaFileParser;
 import com.xl.preferences.REDPreferences;
-import com.xl.utils.ImageSaver;
-import com.xl.utils.MenuUtils;
+import com.xl.utils.imagemanager.ImageSaver;
+import com.xl.utils.namemanager.MenuUtils;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;

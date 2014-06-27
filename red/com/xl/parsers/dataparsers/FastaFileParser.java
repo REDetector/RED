@@ -2,6 +2,7 @@ package com.xl.parsers.dataparsers;
 
 import com.xl.datatypes.DataCollection;
 import com.xl.datatypes.genome.Genome;
+import com.xl.datatypes.genome.GenomeDescriptor;
 import com.xl.main.REDApplication;
 import com.xl.preferences.REDPreferences;
 import com.xl.utils.ChromosomeUtils;
@@ -25,9 +26,10 @@ public class FastaFileParser extends DataParser {
     @Override
     public void run() {
         try {
-            fastaBase = new File(REDPreferences.getInstance().getGenomeBase() + "/" + genome.getDisplayName() + "/fasta");
+            fastaBase = new File(REDPreferences.getInstance().getGenomeBase() + File.separator + genome.getDisplayName() + File.separator + "fasta");
             if (fastaBase.exists()) {
-                FileReader fr = new FileReader(fastaBase.getCanonicalPath() + File.separator + CACHE_COMPLETE);
+                File cacheFile = new File(fastaBase.getCanonicalPath() + File.separator + CACHE_COMPLETE);
+                FileReader fr = new FileReader(cacheFile);
                 BufferedReader br = new BufferedReader(fr);
                 String version = br.readLine();
                 if (version.equals(REDApplication.VERSION)) {
@@ -42,6 +44,8 @@ public class FastaFileParser extends DataParser {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        GenomeDescriptor.getInstance().setFasta(true);
+        GenomeDescriptor.getInstance().setSequenceLocation(fastaBase.getAbsolutePath());
     }
 
     @Override

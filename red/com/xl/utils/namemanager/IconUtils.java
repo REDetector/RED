@@ -1,4 +1,4 @@
-package com.xl.utils;
+package com.xl.utils.namemanager;
 
 import javax.swing.*;
 

@@ -23,7 +23,6 @@ package com.xl.display.chromosomeviewer;
 import com.xl.datatypes.DataGroup;
 import com.xl.datatypes.DataSet;
 import com.xl.datatypes.DataStore;
-import com.xl.datatypes.ReplicateSet;
 import com.xl.datatypes.genome.Chromosome;
 import com.xl.datatypes.genome.GenomeDescriptor;
 import com.xl.datatypes.probes.ProbeList;
@@ -464,7 +463,7 @@ public class ChromosomeViewer extends JPanel implements DataChangeListener,
      * Gets the positional index of a feature track
      *
      * @return The position of this track in the current set of displayed
-     *         feature tracks.
+     * feature tracks.
      */
     public ChromosomeFeatureTrack getFeatureTrack() {
         return featureTrack;
@@ -475,7 +474,7 @@ public class ChromosomeViewer extends JPanel implements DataChangeListener,
      *
      * @param t The track to query
      * @return The position of this track in the current set of displayed data
-     *         tracks.
+     * tracks.
      */
     public int getIndex(ChromosomeDataTrack t) {
         return dataTracks.indexOf(t);
@@ -523,19 +522,6 @@ public class ChromosomeViewer extends JPanel implements DataChangeListener,
     public void probeSetReplaced(ProbeSet p) {
         // TODO: Do we need to do anything here? Probably not as active probe
         // list replaced will be called
-    }
-
-    public void replicateSetAdded(ReplicateSet r) {
-    }
-
-    public void replicateSetsRemoved(ReplicateSet[] r) {
-    }
-
-    public void replicateSetRenamed(ReplicateSet r) {
-        repaint();
-    }
-
-    public void replicateSetStoresChanged(ReplicateSet r) {
     }
 
     /**

@@ -17,7 +17,9 @@
  *    along with SeqMonk; if not, write to the Free Software
  *    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package com.xl.utils;
+package com.xl.utils.imagemanager;
+
+import com.xl.utils.MessageUtils;
 
 import javax.swing.*;
 import java.awt.*;
@@ -70,7 +72,7 @@ public class SVGGenerator {
     public static void writeSVG(PrintWriter pr, Component c) {
 
 		/*
-		 * Before using our Graphics class we need to disable double
+         * Before using our Graphics class we need to disable double
 		 * buffering on the component.  If we don't do this then we
 		 * just get an image from the offscreen buffer to draw into
 		 * our Graphics object - we never see the individual method

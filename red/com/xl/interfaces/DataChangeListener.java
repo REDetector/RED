@@ -3,7 +3,6 @@ package com.xl.interfaces;
 import com.xl.datatypes.DataGroup;
 import com.xl.datatypes.DataSet;
 import com.xl.datatypes.DataStore;
-import com.xl.datatypes.ReplicateSet;
 import com.xl.datatypes.probes.ProbeList;
 import com.xl.datatypes.probes.ProbeSet;
 
@@ -26,6 +25,7 @@ import com.xl.datatypes.probes.ProbeSet;
  *    along with SeqMonk; if not, write to the Free Software
  *    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
+
 /**
  * The listener interface for receiving dataChange events.
  * The class that is interested in processing a dataChange
@@ -34,77 +34,67 @@ import com.xl.datatypes.probes.ProbeSet;
  * component's <code>addDataChangeListener<code> method. When
  * the dataChange event occurs, that object's appropriate
  * method is invoked.
- * 
- * @see DataChangeEvent
  */
 public interface DataChangeListener {
 
-	/**
-	 * Data set added.
-	 * 
-	 * @param d the d
-	 */
-	public void dataSetAdded (DataSet d);
-	
-	/**
-	 * Data set removed.
-	 * 
-	 * @param d the d
-	 */
-	public void dataSetsRemoved (DataSet [] d);
-	
-	/**
-	 * Data group added.
-	 * 
-	 * @param g the g
-	 */
-	public void dataGroupAdded (DataGroup g);
+    /**
+     * Data set added.
+     *
+     * @param d the d
+     */
+    public void dataSetAdded(DataSet d);
 
-	/**
-	 * Data group removed.
-	 * 
-	 * @param g the g
-	 */
-	public void dataGroupsRemoved (DataGroup [] g);
-	
-	/**
-	 * Data set renamed.
-	 * 
-	 * @param d the d
-	 */
-	public void dataSetRenamed (DataSet d);
-	
-	/**
-	 * Data group renamed.
-	 * 
-	 * @param g the g
-	 */
-	public void dataGroupRenamed (DataGroup g);
-	
-	/**
-	 * Data group samples changed.
-	 * 
-	 * @param g the g
-	 */
-	public void dataGroupSamplesChanged (DataGroup g);
-	
-	/**
-	 * Probe set replaced.
-	 * 
-	 * @param p the p
-	 */
-	public void probeSetReplaced (ProbeSet p);
-	
-	public void replicateSetAdded (ReplicateSet r);
-	
-	public void replicateSetsRemoved (ReplicateSet [] r);
-	
-	public void replicateSetRenamed (ReplicateSet r);
-	
-	public void replicateSetStoresChanged (ReplicateSet r);
-	
-	public void activeDataStoreChanged (DataStore s);
-	
-	public void activeProbeListChanged (ProbeList l);
-	
+    /**
+     * Data set removed.
+     *
+     * @param d the d
+     */
+    public void dataSetsRemoved(DataSet[] d);
+
+    /**
+     * Data group added.
+     *
+     * @param g the g
+     */
+    public void dataGroupAdded(DataGroup g);
+
+    /**
+     * Data group removed.
+     *
+     * @param g the g
+     */
+    public void dataGroupsRemoved(DataGroup[] g);
+
+    /**
+     * Data set renamed.
+     *
+     * @param d the d
+     */
+    public void dataSetRenamed(DataSet d);
+
+    /**
+     * Data group renamed.
+     *
+     * @param g the g
+     */
+    public void dataGroupRenamed(DataGroup g);
+
+    /**
+     * Data group samples changed.
+     *
+     * @param g the g
+     */
+    public void dataGroupSamplesChanged(DataGroup g);
+
+    /**
+     * Probe set replaced.
+     *
+     * @param p the p
+     */
+    public void probeSetReplaced(ProbeSet p);
+
+    public void activeDataStoreChanged(DataStore s);
+
+    public void activeProbeListChanged(ProbeList l);
+
 }
