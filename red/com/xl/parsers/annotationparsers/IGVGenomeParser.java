@@ -16,6 +16,7 @@ import com.xl.interfaces.ProgressListener;
 import com.xl.main.REDApplication;
 import com.xl.utils.*;
 import com.xl.utils.filefilters.FileFilterImpl;
+import com.xl.utils.namemanager.GenomeUtils;
 
 import java.io.*;
 import java.util.*;
@@ -43,13 +44,9 @@ public class IGVGenomeParser implements Runnable {
     private String genomeId = null;
     private String genomeDisplayName = null;
 
-    /**
-     * The prefs.
-     */
-    // private REDPreferences prefs = REDPreferences.getInstance();
     private static Collection<Collection<String>> loadChrAliases(
             BufferedReader br) throws IOException {
-        String nextLine = "";
+        String nextLine;
         Collection<Collection<String>> synonymList = new ArrayList<Collection<String>>();
         while ((nextLine = br.readLine()) != null) {
             String[] tokens = nextLine.split("\t");
@@ -98,6 +95,9 @@ public class IGVGenomeParser implements Runnable {
                 if (!REDApplication.VERSION.equals(version)) {
                     System.err.println("Version mismatch between cache ('" + version + "') and current version ('" + REDApplication.VERSION + "') - reparsing");
                     cacheFailed = true;
+                    if (!cacheCompleteFile.delete()) {
+                        System.err.println("Can not delete 'cache.complete' file. Please delete it individually...");
+                    }
                 }
                 // We re-parse if the cache was made by a different version
             } catch (Exception ioe) {
@@ -311,7 +311,7 @@ public class IGVGenomeParser implements Runnable {
         fileInputStream = new FileInputStream(dotGenomeFile);
         zipInputStream = new ZipInputStream(fileInputStream);
         zipEntries = new HashMap<String, ZipEntry>();
-        ZipEntry zipEntry = null;
+        ZipEntry zipEntry;
         while ((zipEntry = zipInputStream.getNextEntry()) != null) {
             String zipEntryName = zipEntry.getName();
             zipEntries.put(zipEntryName, zipEntry);
