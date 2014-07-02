@@ -32,7 +32,7 @@ public abstract class AnnotationParser implements Cancellable, Runnable {
     /**
      * The genome.
      */
-    private Genome genome = null;
+    protected Genome genome = null;
 
     /**
      * The file.
@@ -60,13 +60,11 @@ public abstract class AnnotationParser implements Cancellable, Runnable {
     /**
      * Parses the annotation.
      *
-     * @param file   the file
-     * @param genome the genome
+     * @param file the file
      * @return the annotation set
      * @throws Exception the exception
      */
-    abstract protected AnnotationSet[] parseAnnotation(GeneType geneType,
-                                                       File file, Genome genome) throws Exception;
+    abstract protected AnnotationSet[] parseAnnotation(GeneType geneType, File file) throws Exception;
 
     /**
      * Name.
@@ -152,8 +150,8 @@ public abstract class AnnotationParser implements Cancellable, Runnable {
             if (requiresFile()) {
                 for (int f = 0; f < files.length; f++) {
                     GeneType geneType = ParsingUtils.parseGeneType(files[f].getName());
-                    AnnotationSet[] theseSets = parseAnnotation(geneType, files[f],
-                            genome);
+                    AnnotationSet[] theseSets = parseAnnotation(geneType, files[f]
+                    );
                     if (theseSets == null) {
                         System.out.println("theseSets == null");
                         // They cancelled or had an error which will be reported
@@ -165,10 +163,7 @@ public abstract class AnnotationParser implements Cancellable, Runnable {
                     }
                 }
             } else {
-                AnnotationSet[] theseSets = parseAnnotation(null, null, genome);
-                for (int s = 0; s < theseSets.length; s++) {
-                    parsedSets.add(theseSets[s]);
-                }
+                System.err.println("Not require files?");
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -192,7 +187,7 @@ public abstract class AnnotationParser implements Cancellable, Runnable {
     }
 
 	/*
-	 * These are the methods we use to communicate with out listeners. Some of
+     * These are the methods we use to communicate with out listeners. Some of
 	 * these can be accessed by the implementing class directly but the big ones
 	 * need to go back through this class.
 	 */

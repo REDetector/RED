@@ -41,8 +41,6 @@ public class IGVGenomeParser implements Runnable {
     private ZipInputStream zipInputStream = null;
     private Map<String, ZipEntry> zipEntries = null;
     private boolean cacheFailed = true;
-    private String genomeId = null;
-    private String genomeDisplayName = null;
 
     private static Collection<Collection<String>> loadChrAliases(
             BufferedReader br) throws IOException {
@@ -90,7 +88,8 @@ public class IGVGenomeParser implements Runnable {
             cacheFailed = false;
             try {
                 properties = new Properties();
-                properties.load(new FileReader(cacheCompleteFile));
+                InputStream is = new FileInputStream(cacheCompleteFile);
+                properties.load(is);
                 String version = properties.getProperty(GenomeUtils.KEY_VERSION_NAME);
                 if (!REDApplication.VERSION.equals(version)) {
                     System.err.println("Version mismatch between cache ('" + version + "') and current version ('" + REDApplication.VERSION + "') - reparsing");
@@ -116,21 +115,52 @@ public class IGVGenomeParser implements Runnable {
             if (properties != null) {
                 setGenomeDescriptor(properties);
             }
-            MessageUtils.showInfo(IGVGenomeParser.class, "reloadCacheGenome();");
-            reloadCacheGenome();
+            MessageUtils.showInfo(this.getClass().getName() + ":reloadCacheGenome();");
+            try {
+                reloadCacheGenome();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
-
 
     }
 
-    private void reloadCacheGenome() {
+    private void reloadCacheGenome() throws IOException {
         Enumeration<ProgressListener> el = listeners.elements();
-        if (genome == null) {
-            genome = new Genome(genomeId, genomeDisplayName, null, false);
-        }
         while (el.hasMoreElements()) {
             el.nextElement().progressUpdated("Reloading cache files", 0, 1);
         }
+        if (genome == null) {
+            GenomeDescriptor genomeDescriptor = GenomeDescriptor.getInstance();
+            String id = genomeDescriptor.getGenomeId();
+            String displayName = genomeDescriptor.getDisplayName();
+            boolean isFasta = genomeDescriptor.isFasta();
+            String[] fastaFileNames = genomeDescriptor.getFastaFileNames();
+            String sequenceLocation = genomeDescriptor.getSequenceLocation();
+            Sequence sequence;
+            boolean chromosOrdered = false;
+            if (sequenceLocation == null) {
+                sequence = null;
+            } else if (!isFasta) {
+                System.out.println(this.getClass().getName() + ":!isFasta");
+                IGVSequence igvSequence = new IGVSequence(sequenceLocation);
+                sequence = new SequenceWrapper(igvSequence);
+            } else if (fastaFileNames != null) {
+                System.out.println(this.getClass().getName()
+                        + ":fastaFileNames != null");
+                FastaDirectorySequence fastaDirectorySequence = new FastaDirectorySequence(
+                        sequenceLocation, fastaFileNames);
+                sequence = new SequenceWrapper(fastaDirectorySequence);
+            } else {
+                System.out.println(this.getClass().getName() + ":else");
+                FastaIndexedSequence fastaSequence = new FastaIndexedSequence(
+                        sequenceLocation);
+                sequence = new SequenceWrapper(fastaSequence);
+                chromosOrdered = false;
+            }
+            genome = new Genome(id, displayName, sequence, chromosOrdered);
+        }
+
         CoreAnnotationSet coreAnnotation = new CoreAnnotationSet(genome);
 
         File cacheDir = new File(baseLocation.getAbsoluteFile() + "/cache/");
@@ -156,7 +186,6 @@ public class IGVGenomeParser implements Runnable {
         File[] cacheFiles = cacheDir.listFiles(new FileFilterImpl("cache"));
         for (int i = 0; i < cacheFiles.length; i++) {
             // Update the listeners
-
             String name = cacheFiles[i].getName();
             name = name.replaceAll("\\.cache$", "");
             if (ChromosomeUtils.isStandardChromosomeName(name)) {
@@ -164,6 +193,7 @@ public class IGVGenomeParser implements Runnable {
             }
         }
         genome.getAnnotationCollection().addAnnotationSets(new AnnotationSet[]{coreAnnotation});
+        System.out.println(this.getClass().getName() + ":AllFeatures().length:" + coreAnnotation.getAllFeatures().length);
         progressComplete("load_genome", genome);
     }
 
@@ -178,7 +208,6 @@ public class IGVGenomeParser implements Runnable {
             if (genomeDescriptor.hasCytobands()) {
                 cytobandMap = loadCytoBandFile();
             }
-
             String sequenceLocation = genomeDescriptor.getSequenceLocation();
             Sequence sequence = null;
             boolean chromosOrdered = false;
@@ -229,8 +258,7 @@ public class IGVGenomeParser implements Runnable {
                     UCSCRefGeneParser parser = new UCSCRefGeneParser(genome);
                     GeneType geneType = ParsingUtils
                             .parseGeneType(geneFileName);
-                    AnnotationSet[] sets = parser.parseAnnotation(geneType,
-                            reader, genome);
+                    AnnotationSet[] sets = parser.parseAnnotation(geneType, reader);
 
                     // Here we have to add the new sets to the annotation
                     // collection before we say that we're finished otherwise

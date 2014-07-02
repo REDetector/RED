@@ -231,6 +231,7 @@ public class ChromosomeViewer extends JPanel implements DataChangeListener,
         }
         Feature[] features = application.dataCollection().genome()
                 .getAnnotationCollection().getFeaturesForChr(chromosome);
+        System.out.println(features.length);
         featureTrack = new ChromosomeFeatureTrack(this,
                 currentFeatureTrackName, features);
 
@@ -258,10 +259,14 @@ public class ChromosomeViewer extends JPanel implements DataChangeListener,
         // We weight the data tracks six times as heavily as the feature tracks
         gridBagConstraints.weighty = 0.5;
         Enumeration<ChromosomeDataTrack> e2 = dataTracks.elements();
+
         while (e2.hasMoreElements()) {
-            featurePanel.add(e2.nextElement(), gridBagConstraints);
+            ChromosomeDataTrack cdt = e2.nextElement();
+            JScrollPane scroll = new JScrollPane(cdt);
+            scroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+            featurePanel.add(cdt, gridBagConstraints);
             gridBagConstraints.gridy++;
-            System.out.println("ChromosomeDataTrack: featurePanel.add(e.nextElement(), c)");
+            System.out.println(ChromosomeViewer.class.getName() + ":ChromosomeDataTrack: featurePanel.add(e.nextElement(), c)");
         }
 
         // Finally add a scale track, which we weigh very lightly

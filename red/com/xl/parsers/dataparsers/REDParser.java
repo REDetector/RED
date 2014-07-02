@@ -324,13 +324,10 @@ public class REDParser implements Runnable, ProgressListener {
             if (sections.length == 2) {
                 setProperties(sections[0], sections[1]);
             }
-
         }
-
         File f;
         try {
-            f = new File(REDPreferences.getInstance().getGenomeBase()
-                    .getAbsoluteFile()
+            f = new File(REDPreferences.getInstance().getGenomeBase().getAbsoluteFile()
                     + File.separator + GenomeDescriptor.getInstance().getDisplayName() + File.separator + GenomeDescriptor.getInstance().getGenomeId() + ".genome");
             System.out.println(this.getClass().getName() + ":" + f.getAbsolutePath());
         } catch (FileNotFoundException e) {
@@ -346,11 +343,6 @@ public class REDParser implements Runnable, ProgressListener {
             d.addProgressListener(progressDialog);
             d.downloadGenome(GenomeDescriptor.getInstance().getGenomeId(), GenomeDescriptor.getInstance().getDisplayName(), true);
             progressDialog.requestFocus();
-            pauseWhilstLoadingGenome = true;
-            while (pauseWhilstLoadingGenome) {
-                if (exceptionReceived != null)
-                    throw exceptionReceived;
-            }
         }
 
         IGVGenomeParser parser = new IGVGenomeParser();

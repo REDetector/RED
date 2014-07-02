@@ -46,7 +46,7 @@ public class UCSCRefGeneParser extends AnnotationParser {
     }
 
     @Override
-    protected AnnotationSet[] parseAnnotation(GeneType type, File file, Genome genome)
+    protected AnnotationSet[] parseAnnotation(GeneType type, File file)
             throws Exception {
         // TODO Auto-generated method stub
         BufferedReader br = null;
@@ -62,10 +62,10 @@ public class UCSCRefGeneParser extends AnnotationParser {
             e.printStackTrace();
         }
 
-        return parseAnnotation(type, br, genome);
+        return parseAnnotation(type, br);
     }
 
-    protected AnnotationSet[] parseAnnotation(GeneType type, BufferedReader br, Genome genome)
+    protected AnnotationSet[] parseAnnotation(GeneType type, BufferedReader br)
             throws Exception {
         parseGeneType(type);
         Vector<AnnotationSet> annotationSets = new Vector<AnnotationSet>();

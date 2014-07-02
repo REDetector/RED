@@ -5,19 +5,19 @@ package com.xl.utils.namemanager;
  */
 public class GenomeUtils {
     public static final String KEY_VERSION_NAME = "Version";
-    public static final String KEY_DISPLAY_NAME = "DisplayName";
-    public static final String KEY_CHR_NAMES_ALTERED = "ChrNamesAltered";
-    public static final String KEY_GENOME_ID = "GenomeId";
-    public static final String KEY_CYTOBAND_FILE_NAME = "CytoBandFileName";
-    public static final String KEY_GENE_FILE_NAME = "GeneFileName";
-    public static final String KEY_CHR_ALIAS_FILE_NAME = "ChrAliasFileName";
-    public static final String KEY_GENE_TRACK_NAME = "GeneTrackName";
-    public static final String KEY_URL = "Url";
-    public static final String KEY_SEQUENCE_LOCATION = "SequenceLocation";
-    public static final String KEY_HAS_CUSTOM_SEQUENCE_LOCATION = "HasCustomSequenceLocation";
-    public static final String KEY_CHROMOSOMES_ARE_ORDERED = "ChromosomesAreOrdered";
-    public static final String KEY_FASTA = "Fasta";
-    public static final String KEY_FASTA_DIRECTORY = "FastaDirectory";
-    public static final String KEY_FASTA_FILE_NAME_STRING = "FastaFileNameString";
+    public static final String KEY_DISPLAY_NAME = "name";
+    public static final String KEY_CHR_NAMES_ALTERED = "filenamesAltered";
+    public static final String KEY_GENOME_ID = "id";
+    public static final String KEY_CYTOBAND_FILE_NAME = "cytobandFile";
+    public static final String KEY_GENE_FILE_NAME = "geneFile";
+    public static final String KEY_CHR_ALIAS_FILE_NAME = "chrAliasFile";
+    public static final String KEY_GENE_TRACK_NAME = "geneTrackName";
+    public static final String KEY_URL = "url";
+    public static final String KEY_SEQUENCE_LOCATION = "sequenceLocation";
+    public static final String KEY_HAS_CUSTOM_SEQUENCE_LOCATION = "customSequenceLocation";
+    public static final String KEY_CHROMOSOMES_ARE_ORDERED = "ordered";
+    public static final String KEY_FASTA = "fasta";
+    public static final String KEY_FASTA_DIRECTORY = "fastaDirectory";
+    public static final String KEY_FASTA_FILE_NAME_STRING = "fastaFiles";
 
 }
