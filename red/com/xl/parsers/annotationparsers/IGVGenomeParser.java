@@ -11,6 +11,7 @@ import com.xl.datatypes.genome.GenomeDescriptor;
 import com.xl.datatypes.sequence.IGVSequence;
 import com.xl.datatypes.sequence.Sequence;
 import com.xl.datatypes.sequence.SequenceWrapper;
+import com.xl.dialog.ProgressDialog;
 import com.xl.exception.REDException;
 import com.xl.interfaces.ProgressListener;
 import com.xl.main.REDApplication;
@@ -104,7 +105,7 @@ public class IGVGenomeParser implements Runnable {
             }
         }
         if (cacheFailed) {
-            MessageUtils.showInfo(IGVGenomeParser.class, "parseNewGenome();");
+            MessageUtils.showInfo(this.getClass().getName() + ":parseNewGenome();");
             try {
                 FileUtils.deleteDirectory(baseLocation.getCanonicalPath() + "/cache");
             } catch (IOException e) {
@@ -138,14 +139,13 @@ public class IGVGenomeParser implements Runnable {
             String[] fastaFileNames = genomeDescriptor.getFastaFileNames();
             String sequenceLocation = genomeDescriptor.getSequenceLocation();
             Sequence sequence;
-            boolean chromosOrdered = false;
             if (sequenceLocation == null) {
                 sequence = null;
             } else if (!isFasta) {
                 System.out.println(this.getClass().getName() + ":!isFasta");
                 IGVSequence igvSequence = new IGVSequence(sequenceLocation);
                 sequence = new SequenceWrapper(igvSequence);
-            } else if (fastaFileNames != null) {
+            } else if (fastaFileNames != null && fastaFileNames.length != 0) {
                 System.out.println(this.getClass().getName()
                         + ":fastaFileNames != null");
                 FastaDirectorySequence fastaDirectorySequence = new FastaDirectorySequence(
@@ -156,12 +156,9 @@ public class IGVGenomeParser implements Runnable {
                 FastaIndexedSequence fastaSequence = new FastaIndexedSequence(
                         sequenceLocation);
                 sequence = new SequenceWrapper(fastaSequence);
-                chromosOrdered = false;
             }
-            genome = new Genome(id, displayName, sequence, chromosOrdered);
+            genome = new Genome(id, displayName, sequence);
         }
-
-        CoreAnnotationSet coreAnnotation = new CoreAnnotationSet(genome);
 
         File cacheDir = new File(baseLocation.getAbsoluteFile() + "/cache/");
         // First we need to get the list of chromosomes and set those
@@ -182,18 +179,21 @@ public class IGVGenomeParser implements Runnable {
 //            new CrashReporter(e);
             e.printStackTrace();
         }
-
+        CoreAnnotationSet coreAnnotation = new CoreAnnotationSet(genome);
         File[] cacheFiles = cacheDir.listFiles(new FileFilterImpl("cache"));
         for (int i = 0; i < cacheFiles.length; i++) {
             // Update the listeners
             String name = cacheFiles[i].getName();
             name = name.replaceAll("\\.cache$", "");
             if (ChromosomeUtils.isStandardChromosomeName(name)) {
+                Enumeration<ProgressListener> en = listeners.elements();
+                while (en.hasMoreElements()) {
+                    en.nextElement().progressUpdated("Adding cache file " + cacheFiles[i].getName(), i, cacheFiles.length);
+                }
                 coreAnnotation.addPreCachedFile(name, cacheFiles[i]);
             }
         }
         genome.getAnnotationCollection().addAnnotationSets(new AnnotationSet[]{coreAnnotation});
-        System.out.println(this.getClass().getName() + ":AllFeatures().length:" + coreAnnotation.getAllFeatures().length);
         progressComplete("load_genome", genome);
     }
 
@@ -209,7 +209,7 @@ public class IGVGenomeParser implements Runnable {
                 cytobandMap = loadCytoBandFile();
             }
             String sequenceLocation = genomeDescriptor.getSequenceLocation();
-            Sequence sequence = null;
+            Sequence sequence;
             boolean chromosOrdered = false;
             if (sequenceLocation == null) {
                 sequence = null;
@@ -256,9 +256,10 @@ public class IGVGenomeParser implements Runnable {
                     BufferedReader reader = new BufferedReader(
                             new InputStreamReader(geneStream));
                     UCSCRefGeneParser parser = new UCSCRefGeneParser(genome);
+                    parser.addProgressListener(new ProgressDialog(REDApplication.getInstance(), parser.name(), parser));
                     GeneType geneType = ParsingUtils
                             .parseGeneType(geneFileName);
-                    AnnotationSet[] sets = parser.parseAnnotation(geneType, reader);
+                    AnnotationSet[] sets = parser.parseAnnotation(geneType, reader, genome);
 
                     // Here we have to add the new sets to the annotation
                     // collection before we say that we're finished otherwise
@@ -301,30 +302,30 @@ public class IGVGenomeParser implements Runnable {
 
     public void setGenomeDescriptor(Properties properties) {
         String cytobandFileName = properties
-                .getProperty("cytobandFile");
-        String geneFileName = properties.getProperty("geneFile");
+                .getProperty(GenomeUtils.KEY_CYTOBAND_FILE_NAME);
+        String geneFileName = properties.getProperty(GenomeUtils.KEY_GENE_FILE_NAME);
         String chrAliasFileName = properties
-                .getProperty("chrAliasFile");
+                .getProperty(GenomeUtils.KEY_CHR_ALIAS_FILE_NAME);
         String sequenceLocation = properties
-                .getProperty("sequenceLocation");
+                .getProperty(GenomeUtils.KEY_SEQUENCE_LOCATION);
         boolean chrNamesAltered = Boolean.parseBoolean(properties
-                .getProperty("filenamesAltered"));
+                .getProperty(GenomeUtils.KEY_CHR_NAMES_ALTERED));
         boolean fasta = Boolean.parseBoolean(properties
-                .getProperty("fasta"));
+                .getProperty(GenomeUtils.KEY_FASTA));
         boolean fastaDirectory = Boolean.parseBoolean(properties
-                .getProperty("fastaDirectory"));
+                .getProperty(GenomeUtils.KEY_FASTA_DIRECTORY));
         boolean chromosomesAreOrdered = Boolean
-                .parseBoolean(properties.getProperty("ordered"));
+                .parseBoolean(properties.getProperty(GenomeUtils.KEY_CHROMOSOMES_ARE_ORDERED));
         boolean hasCustomSequenceLocation = Boolean
                 .parseBoolean(properties
-                        .getProperty("customSequenceLocation"));
+                        .getProperty(GenomeUtils.KEY_HAS_CUSTOM_SEQUENCE_LOCATION));
         String fastaFileNameString = properties
-                .getProperty("fastaFiles");
-        String url = properties.getProperty("url");
-        String name = properties.getProperty("name");
-        String id = properties.getProperty("id");
+                .getProperty(GenomeUtils.KEY_FASTA_FILE_NAME_STRING);
+        String url = properties.getProperty(GenomeUtils.KEY_URL);
+        String name = properties.getProperty(GenomeUtils.KEY_DISPLAY_NAME);
+        String id = properties.getProperty(GenomeUtils.KEY_GENOME_ID);
         String geneTrackName = properties
-                .getProperty("geneTrackName");
+                .getProperty(GenomeUtils.KEY_GENE_TRACK_NAME);
         GenomeDescriptor.getInstance().setAttributes(name,
                 chrNamesAltered, id, cytobandFileName,
                 geneFileName, chrAliasFileName, geneTrackName, url,

@@ -85,12 +85,10 @@ public class ImageSaver {
                 PrintWriter pr = new PrintWriter(new FileWriter(file));
                 SVGGenerator.writeSVG(pr, c);
                 pr.close();
-//                SVGGenerator2.exportScreenshotSVG(file,c);
             } else if (filter instanceof EPSFileFilter) {
                 EPSGenerator.exportEpsImage(file, c);
             } else {
                 System.err.println("Unknown file filter type " + filter + " when saving image");
-                return;
             }
         } catch (IOException e) {
             new CrashReporter(e);

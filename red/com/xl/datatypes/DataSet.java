@@ -431,7 +431,7 @@ public class DataSet extends DataStore implements Runnable {
         // this to determine whether the cached index we're holding
         // is valid.
         boolean needToUpdate = lastCachedChromosome == null
-                || lastCachedChromosome != c;
+                || lastCachedChromosome.equals(c);
         if (needToUpdate) {
             lastCachedChromosome = c;
             lastProbeLocation = null;
@@ -674,7 +674,7 @@ public class DataSet extends DataStore implements Runnable {
             totalReadLength.incrementBy(readLengths);
 
             try {
-                tempFile = File.createTempFile("red_data_set", ".temp",
+                tempFile = File.createTempFile(fileName, ".temp",
                         REDPreferences.getInstance().tempDirectory());
                 ObjectOutputStream oos = new ObjectOutputStream(
                         new BufferedOutputStream(new FileOutputStream(tempFile)));

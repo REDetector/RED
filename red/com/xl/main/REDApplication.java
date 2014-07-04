@@ -118,7 +118,6 @@ public class REDApplication extends JFrame implements ProgressListener,
      */
     private DataCollection dataCollection = null;
 
-    private String currentFeatureTrackName = null;
     /**
      * A list of data stores which are currently displayed in the chromosome
      * view
@@ -438,20 +437,8 @@ public class REDApplication extends JFrame implements ProgressListener,
         return application;
     }
 
-    public String getCurrentFeatureTrackName() {
-        return currentFeatureTrackName;
-    }
-
-    public void setCurrentFeatureTrackName(String currentFeatureTrackName) {
-        this.currentFeatureTrackName = currentFeatureTrackName;
-    }
-
     public GenomeViewer genomeViewer() {
         return genomeViewer;
-    }
-
-    public static boolean hasInstance() {
-        return application != null;
     }
 
     /**
@@ -915,8 +902,8 @@ public class REDApplication extends JFrame implements ProgressListener,
                 loadProject(fileToLoad);
                 fileToLoad = null;
             }
-        } else if (command.equals("load_annotation")) {
-            System.out.println("load_annotation");
+        } else if (command.equals("annotation_loaded")) {
+            System.out.println("annotation_loaded");
         } else {
             throw new IllegalArgumentException(
                     "Don't know how to handle progress command '" + command

@@ -25,7 +25,6 @@ import com.xl.datatypes.DataSet;
 import com.xl.datatypes.DataStore;
 import com.xl.datatypes.PairedDataSet;
 import com.xl.datatypes.annotation.AnnotationSet;
-import com.xl.datatypes.genome.Genome;
 import com.xl.datatypes.genome.GenomeDescriptor;
 import com.xl.datatypes.probes.Probe;
 import com.xl.datatypes.probes.ProbeList;
@@ -590,7 +589,6 @@ public class REDParser implements Runnable, ProgressListener {
                                     .elements();
                             while (e.hasMoreElements()) {
                                 e.nextElement().progressWarningReceived(ex);
-                                continue;
                             }
                         }
                     }
@@ -1142,7 +1140,7 @@ public class REDParser implements Runnable, ProgressListener {
         if (reads.length != 3) {
             throw new REDException("This line is incomplete.");
         }
-        SequenceRead sequence = null;
+        SequenceRead sequence;
         byte[] readBases = reads[2].getBytes();
 //        byte[] qualities = reads[3].getBytes();
         sequence = new SequenceRead(chr, Integer.parseInt(reads[0]),
@@ -1172,7 +1170,7 @@ public class REDParser implements Runnable, ProgressListener {
         if (command == null)
             return;
         if (command.equals("load_genome")) {
-            application.progressComplete("load_genome", (Genome) result);
+            application.progressComplete("load_genome", result);
             genomeLoaded = true;
         } else if (command.equals("genome_downloaded")) {
             pauseWhilstLoadingGenome = false;

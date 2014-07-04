@@ -44,8 +44,10 @@ public class GenomeDescriptor {
         this.chromosomesAreOrdered = chromosomesAreOrdered;
         this.fasta = fasta;
         this.fastaDirectory = fastaDirectory;
-        if (fastaFileNameString != null) {
+        if (fastaFileNameString != null && fastaFileNameString.trim().length() != 0) {
             fastaFileNames = fastaFileNameString.split(",");
+        } else {
+            fastaFileNames = null;
         }
 
         // Fix for legacy .genome files

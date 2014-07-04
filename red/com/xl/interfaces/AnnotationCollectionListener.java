@@ -29,40 +29,39 @@ import com.xl.datatypes.annotation.AnnotationSet;
  * component's <code>addAnnotationCollectionListener<code> method. When
  * the annotationCollection event occurs, that object's appropriate
  * method is invoked.
- * 
+ *
  * @see AnnotationCollectionEvent
  */
 public interface AnnotationCollectionListener {
 
-	
-	/**
-	 * Annotation sets added.
-	 * 
-	 * @param annotationSet the newly added annotation sets
-	 */
-	public void annotationSetsAdded (AnnotationSet [] annotationSets);
-	
-	/**
-	 * Annotation set removed.
-	 * 
-	 * @param annotationSet the annotation set
-	 */
-	public void annotationSetRemoved (AnnotationSet annotationSet);
-	
-	/**
-	 * Annotation set renamed.
-	 * 
-	 * @param annotationSet the annotation set
-	 */
-	public void annotationSetRenamed (AnnotationSet annotationSet);
-	
-	/**
-	 * Annotation features renamed.
-	 * 
-	 * @param annotationSet the annotation set in which features were renamed
-	 */
-	public void annotationFeaturesRenamed (AnnotationSet annotationSet, String newName);
-	
-	
-	
+
+    /**
+     * Annotation sets added.
+     *
+     * @param annotationSets the newly added annotation sets
+     */
+    public void annotationSetsAdded(AnnotationSet[] annotationSets);
+
+    /**
+     * Annotation set removed.
+     *
+     * @param annotationSet the annotation set
+     */
+    public void annotationSetRemoved(AnnotationSet annotationSet);
+
+    /**
+     * Annotation set renamed.
+     *
+     * @param annotationSet the annotation set
+     */
+    public void annotationSetRenamed(AnnotationSet annotationSet);
+
+    /**
+     * Annotation features renamed.
+     *
+     * @param annotationSet the annotation set in which features were renamed
+     */
+    public void annotationFeaturesRenamed(AnnotationSet annotationSet, String newName);
+
+
 }

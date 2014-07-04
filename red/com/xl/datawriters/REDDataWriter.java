@@ -205,9 +205,9 @@ public class REDDataWriter implements Runnable, Cancellable {
             AnnotationSet[] annotationSets = data.genome()
                     .getAnnotationCollection().anotationSets();
             for (int a = 0; a < annotationSets.length; a++) {
-                if (annotationSets[a] instanceof CoreAnnotationSet)
+                if (annotationSets[a] instanceof CoreAnnotationSet) {
                     continue;
-
+                }
                 if (!printAnnotationSet(annotationSets[a], p)) {
                     // They cancelled
                     return;

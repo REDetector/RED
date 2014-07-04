@@ -150,8 +150,7 @@ public abstract class AnnotationParser implements Cancellable, Runnable {
             if (requiresFile()) {
                 for (int f = 0; f < files.length; f++) {
                     GeneType geneType = ParsingUtils.parseGeneType(files[f].getName());
-                    AnnotationSet[] theseSets = parseAnnotation(geneType, files[f]
-                    );
+                    AnnotationSet[] theseSets = parseAnnotation(geneType, files[f]);
                     if (theseSets == null) {
                         System.out.println("theseSets == null");
                         // They cancelled or had an error which will be reported
@@ -181,8 +180,7 @@ public abstract class AnnotationParser implements Cancellable, Runnable {
             // annotation collection.
             AnnotationSet[] sets = parsedSets.toArray(new AnnotationSet[0]);
             genome.getAnnotationCollection().addAnnotationSets(sets);
-            progressComplete("load_annotation", sets);
-            System.out.println("progressComplete(\"load_annotation\", sets);");
+            progressComplete("annotation_loaded", sets);
         }
     }
 
@@ -246,7 +244,7 @@ public abstract class AnnotationParser implements Cancellable, Runnable {
      * @param command the command
      * @param result  the result
      */
-    private void progressComplete(String command, Object result) {
+    protected void progressComplete(String command, Object result) {
         Enumeration<ProgressListener> en = listeners.elements();
         while (en.hasMoreElements()) {
             en.nextElement().progressComplete(command, result);

@@ -152,8 +152,9 @@ public class DataCollectionTreeModel implements TreeModel, DataChangeListener, A
                 if (sets[s] == child) return s;
             }
         } else if (node.equals(rootNode)) {
-            if (child.equals(dataSetNode)) return 0;
-            if (child.equals(dataGroupNode)) return 1;
+            if (child.equals(annotationNode)) return 0;
+            if (child.equals(dataSetNode)) return 1;
+            if (child.equals(dataGroupNode)) return 2;
         } else if (node.equals(dataSetNode)) {
             DataSet[] sets = collection.getAllDataSets();
             for (int i = 0; i < sets.length; i++) {
@@ -182,7 +183,7 @@ public class DataCollectionTreeModel implements TreeModel, DataChangeListener, A
      * @see javax.swing.tree.TreeModel#isLeaf(java.lang.Object)
      */
     public boolean isLeaf(Object node) {
-        return (node instanceof FolderNode);
+        return !(node instanceof FolderNode);
     }
 
     /* (non-Javadoc)

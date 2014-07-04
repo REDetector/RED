@@ -185,7 +185,7 @@ public class FindFeatureDialog extends JDialog implements ActionListener,
         if (((String) searchIn.getSelectedItem()).equals("name")) {
             feature = collection.getFeaturesForName(query);
         } else if (((String) searchIn.getSelectedItem()).equals("location")) {
-            if (query != null && query.matches("^[0-9]+$")) {
+            if (query.matches("^[0-9]+$")) {
                 feature = collection.getFeatureForLocation(Integer
                         .parseInt(query));
             }

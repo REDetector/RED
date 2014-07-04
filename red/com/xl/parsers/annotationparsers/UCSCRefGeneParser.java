@@ -9,7 +9,6 @@ import com.xl.display.featureviewer.Feature;
 import com.xl.exception.REDException;
 import com.xl.utils.ChromosomeUtils;
 import com.xl.utils.GeneType;
-import com.xl.utils.SequenceReadUtils;
 import com.xl.utils.Strand;
 import com.xl.utils.filefilters.FileFilterExt;
 
@@ -62,11 +61,12 @@ public class UCSCRefGeneParser extends AnnotationParser {
             e.printStackTrace();
         }
 
-        return parseAnnotation(type, br);
+        return parseAnnotation(type, br, genome);
     }
 
-    protected AnnotationSet[] parseAnnotation(GeneType type, BufferedReader br)
+    protected AnnotationSet[] parseAnnotation(GeneType type, BufferedReader br, Genome genome)
             throws Exception {
+        System.out.println(this.getClass().getName() + ":parseAnnotation()");
         parseGeneType(type);
         Vector<AnnotationSet> annotationSets = new Vector<AnnotationSet>();
         AnnotationSet currentAnnotation = new CoreAnnotationSet(genome);
@@ -78,6 +78,7 @@ public class UCSCRefGeneParser extends AnnotationParser {
                 progressCancelled();
                 return null;
             }
+
             if (lineCount % 1000 == 0) {
                 progressUpdated(
                         "Read " + lineCount + " lines from "
@@ -135,19 +136,10 @@ public class UCSCRefGeneParser extends AnnotationParser {
                             txLocation, cdsLocation, exonLocations, aliasName);
                     if (nameList.contains(aliasName) || nameList.contains(name)) {
                         Feature originFeature = currentAnnotation.getFeaturesForName(chr, aliasName);
-                        if (originFeature != null) {
-                            if (SequenceReadUtils.overlaps(newFeature.getTxLocation(), originFeature.getTxLocation())) {
-                                if (currentAnnotation.deleteFeature(chr, originFeature)) {
-                                    currentAnnotation.addFeature(mergeTwoFeatures(originFeature, newFeature));
-                                } else {
-                                    currentAnnotation.addFeature(newFeature);
-                                }
-                            } else {
-                                currentAnnotation.addFeature(newFeature);
-                            }
-                        } else {
-                            currentAnnotation.addFeature(newFeature);
+                        if (originFeature != null && newFeature.getTotalLength() > originFeature.getTotalLength()) {
+                            currentAnnotation.deleteFeature(chr, originFeature);
                         }
+                        currentAnnotation.addFeature(newFeature);
                     } else {
                         nameList.add(aliasName);
                         nameList.add(name);
@@ -168,15 +160,16 @@ public class UCSCRefGeneParser extends AnnotationParser {
             currentAnnotation.finalise();
             annotationSets.add(currentAnnotation);
         }
-
+        System.out.println(this.getClass().getName() + ":parseAnnotation() end");
         br.close();
+        progressComplete("annotation_loaded", annotationSets);
         return annotationSets.toArray(new AnnotationSet[0]);
     }
 
     @Override
     public String name() {
         // TODO Auto-generated method stub
-        return "UCSC refGene Parser";
+        return "UCSC Gene Parser";
     }
 
     @Override
@@ -185,39 +178,39 @@ public class UCSCRefGeneParser extends AnnotationParser {
         return new FileFilterExt(".txt");
     }
 
-    private Feature mergeTwoFeatures(Feature originalFeature, Feature newFeature) {
-        String name = originalFeature.getName().length() > newFeature.getName().length() ? newFeature.getName() : originalFeature.getName();
-        String aliasName = originalFeature.getAliasName();
-        String chr = originalFeature.getChr();
-        Strand strand = originalFeature.getStrand();
-        int txStart = originalFeature.getTxLocation().getStart() <= newFeature.getTxLocation().getStart() ? originalFeature.getTxLocation().getStart() : newFeature.getTxLocation().getStart();
-        int txEnd = originalFeature.getTxLocation().getEnd() >= newFeature.getTxLocation().getEnd() ? originalFeature.getTxLocation().getEnd() : newFeature.getTxLocation().getEnd();
-
-        Location txLocation = new SequenceRead(txStart, txEnd);
-        int cdsStart = originalFeature.getCdsLocation().getStart() <= newFeature.getCdsLocation().getStart() ? originalFeature.getCdsLocation().getStart() : newFeature.getCdsLocation().getStart();
-        int cdsEnd = originalFeature.getCdsLocation().getEnd() >= newFeature.getCdsLocation().getEnd() ? originalFeature.getCdsLocation().getEnd() : newFeature.getCdsLocation().getEnd();
-        Location cdsLocation = new SequenceRead(cdsStart, cdsEnd);
-
-        Vector<Location> exonLocations = new Vector<Location>();
-        Location[] originalExons = originalFeature.getExonLocations();
-        Location[] newExons = newFeature.getExonLocations();
-        for (int i = 0; i < originalExons.length; i++) {
-            for (int j = 0; j < newExons.length; j++) {
-                if (SequenceReadUtils.duplicate(originalExons[i], newExons[j])) {
-                    exonLocations.add(originalExons[i]);
-                    j = newExons.length;
-                } else if (SequenceReadUtils.overlaps(originalExons[i], newExons[j])) {
-                    int exonStart = originalExons[i].getStart() <= newExons[j].getStart() ? originalExons[i].getStart() : newExons[j].getStart();
-                    int exonEnd = originalExons[i].getEnd() >= newExons[j].getEnd() ? originalExons[i].getEnd() : newExons[j].getEnd();
-                    Location tmpExon = new SequenceRead(exonStart, exonEnd);
-                    exonLocations.add(tmpExon);
-                    j = newExons.length;
-                }
-            }
-        }
-        Location[] exonLocation = exonLocations.toArray(new Location[0]);
-        return new Feature(name, chr, strand, txLocation, cdsLocation, exonLocation, aliasName);
-    }
+//    private Feature mergeTwoFeatures(Feature originalFeature, Feature newFeature) {
+//        String name = originalFeature.getName().length() > newFeature.getName().length() ? newFeature.getName() : originalFeature.getName();
+//        String aliasName = originalFeature.getAliasName();
+//        String chr = originalFeature.getChr();
+//        Strand strand = originalFeature.getStrand();
+//        int txStart = originalFeature.getTxLocation().getStart() <= newFeature.getTxLocation().getStart() ? originalFeature.getTxLocation().getStart() : newFeature.getTxLocation().getStart();
+//        int txEnd = originalFeature.getTxLocation().getEnd() >= newFeature.getTxLocation().getEnd() ? originalFeature.getTxLocation().getEnd() : newFeature.getTxLocation().getEnd();
+//
+//        Location txLocation = new SequenceRead(txStart, txEnd);
+//        int cdsStart = originalFeature.getCdsLocation().getStart() <= newFeature.getCdsLocation().getStart() ? originalFeature.getCdsLocation().getStart() : newFeature.getCdsLocation().getStart();
+//        int cdsEnd = originalFeature.getCdsLocation().getEnd() >= newFeature.getCdsLocation().getEnd() ? originalFeature.getCdsLocation().getEnd() : newFeature.getCdsLocation().getEnd();
+//        Location cdsLocation = new SequenceRead(cdsStart, cdsEnd);
+//
+//        Vector<Location> exonLocations = new Vector<Location>();
+//        Location[] originalExons = originalFeature.getExonLocations();
+//        Location[] newExons = newFeature.getExonLocations();
+//        for (int i = 0; i < originalExons.length; i++) {
+//            for (int j = 0; j < newExons.length; j++) {
+//                if (SequenceReadUtils.duplicate(originalExons[i], newExons[j])) {
+//                    exonLocations.add(originalExons[i]);
+//                    j = newExons.length;
+//                } else if (SequenceReadUtils.overlaps(originalExons[i], newExons[j])) {
+//                    int exonStart = originalExons[i].getStart() <= newExons[j].getStart() ? originalExons[i].getStart() : newExons[j].getStart();
+//                    int exonEnd = originalExons[i].getEnd() >= newExons[j].getEnd() ? originalExons[i].getEnd() : newExons[j].getEnd();
+//                    Location tmpExon = new SequenceRead(exonStart, exonEnd);
+//                    exonLocations.add(tmpExon);
+//                    j = newExons.length;
+//                }
+//            }
+//        }
+//        Location[] exonLocation = exonLocations.toArray(new Location[0]);
+//        return new Feature(name, chr, strand, txLocation, cdsLocation, exonLocation, aliasName);
+//    }
 
     public void parseGeneType(GeneType type) {
         switch (type) {

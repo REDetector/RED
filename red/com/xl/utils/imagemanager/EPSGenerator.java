@@ -19,13 +19,13 @@
  */
 package com.xl.utils.imagemanager;
 
+import net.sf.epsgraphics.ColorMode;
+import net.sf.epsgraphics.EpsGraphics;
+
 import java.awt.*;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
-import java.lang.reflect.Constructor;
-
 
 public class EPSGenerator {
 
@@ -40,18 +40,11 @@ public class EPSGenerator {
         FileOutputStream fos = null;
         boolean exportSuccess = false;
         try {
-            Class colorModeClass = Class.forName("net.sf.epsgraphics.ColorMode");
-            Class graphicsClass = Class.forName("net.sf.epsgraphics.EpsGraphics");
-            Constructor constructor = graphicsClass.getConstructor(String.class, OutputStream.class,
-                    int.class, int.class, int.class, int.class, colorModeClass);
-            Object colorModeValue = Enum.valueOf(colorModeClass, "COLOR_RGB");
-            // EpsGraphics stores directly in a file
+            ColorMode colorModeClass = ColorMode.COLOR_RGB;
             fos = new FileOutputStream(file);
-            g = (Graphics2D) constructor.newInstance("eps", fos, 0, 0, c.getWidth(), c.getHeight(), colorModeValue);
-
+            g = new EpsGraphics("eps", fos, 0, 0, c.getWidth(), c.getHeight(), colorModeClass);
+            // EpsGraphics stores directly in a file
             c.paintAll(g);
-
-            graphicsClass.getMethod("close").invoke(g);
             exportSuccess = true;
 
         } catch (Exception e) {

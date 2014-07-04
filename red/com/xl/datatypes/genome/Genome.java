@@ -40,6 +40,10 @@ public class Genome {
 
     private String species = null;
 
+    public Genome(String genomeId, String displayName, Sequence sequence) {
+        this(genomeId, displayName, sequence, false);
+    }
+
     public Genome(String genomeId, String displayName, Sequence sequence,
                   boolean chromosOrdered) {
         this.genomeId = genomeId;
