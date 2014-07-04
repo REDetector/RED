@@ -6,194 +6,194 @@ import java.util.List;
 /**
  * A wrapper class that provides caching for on-disk, queried, and web-service
  * Sequence implementations.
- * 
+ *
  * @author jrobinso
  */
 public class SequenceWrapper implements Sequence {
 
-	private static boolean cacheSequences = true;
-	private static int tileSize = 1000000;
+    private static boolean cacheSequences = true;
+    private static int tileSize = 1000000;
 
-	private Sequence sequence;
-	private LinkedHashMap<String, SequenceTile> sequenceCache = new LinkedHashMap<String, SequenceTile>(
-			50);
+    private Sequence sequence;
+    private LinkedHashMap<String, SequenceTile> sequenceCache = new LinkedHashMap<String, SequenceTile>(
+            50);
 
-	public SequenceWrapper(Sequence sequence) {
-		this.sequence = sequence;
-	}
+    public SequenceWrapper(Sequence sequence) {
+        this.sequence = sequence;
+    }
 
-	public byte getBase(String chr, int position) {
-		if (cacheSequences) {
-			int tileNo = position / tileSize;
+    /**
+     * Generate unique key to be used to store/retrieve tiles. We combined the
+     * chr and tileNo, with a delimiter in between to ensure that chr1 12
+     * doesn't clash with chr11 2
+     *
+     * @param chr
+     * @param tileNo
+     * @return
+     */
+    static String getKey(String chr, int tileNo) {
+        return chr + "/" + tileNo;
+    }
 
-			// Get first chunk
-			SequenceTile tile = getSequenceTile(chr, tileNo);
-			int offset = position - tile.getStart();
-			byte[] bytes = tile.bytes;
-			if (offset > 0 && offset < bytes.length) {
-				return bytes[offset];
-			} else {
-				return 0;
-			}
+    /**
+     * This accessor provided to support unit tests.
+     *
+     * @param aChunkSize
+     */
+    static void setTileSize(int aChunkSize) {
+        tileSize = aChunkSize;
+    }
 
-		} else {
-			// TODO -- implement or disable
-			return sequence.getBase(chr, position);
-		}
-	}
+    /**
+     * Accessor to support unit tests.
+     *
+     * @param aCacheSequences
+     */
+    static void setCacheSequences(boolean aCacheSequences) {
+        cacheSequences = aCacheSequences;
+    }
 
-	@Override
-	public List<String> getChromosomeNames() {
-		return sequence.getChromosomeNames();
-	}
+    public byte getBase(String chr, int position) {
+        if (cacheSequences) {
+            int tileNo = position / tileSize;
 
-	@Override
-	public int getChromosomeLength(String chrname) {
-		return sequence.getChromosomeLength(chrname);
-	}
+            // Get first chunk
+            SequenceTile tile = getSequenceTile(chr, tileNo);
+            int offset = position - tile.getStart();
+            byte[] bytes = tile.bytes;
+            if (offset > 0 && offset < bytes.length) {
+                return bytes[offset];
+            } else {
+                return 0;
+            }
 
-	/**
-	 * Return the reference dna sequence for the exact interval specified.
-	 * 
-	 * @param chr
-	 * @param start
-	 * @param end
-	 * @return
-	 */
-	public byte[] getSequence(String chr, int start, int end) {
-		if (cacheSequences) {
-			byte[] seqbytes = new byte[end - start];
-			int startTile = start / tileSize;
-			int endTile = end / tileSize;
+        } else {
+            // TODO -- implement or disable
+            return sequence.getBase(chr, position);
+        }
+    }
 
-			// Get first chunk
-			SequenceTile tile = getSequenceTile(chr, startTile);
-			if (tile == null) {
-				return null;
-			}
+    @Override
+    public List<String> getChromosomeNames() {
+        return sequence.getChromosomeNames();
+    }
 
-			byte[] tileBytes = tile.getBytes();
-			if (tileBytes == null) {
-				return null;
-			}
+    @Override
+    public int getChromosomeLength(String chrname) {
+        return sequence.getChromosomeLength(chrname);
+    }
 
-			int fromOffset = start - tile.getStart();
-			int toOffset = 0;
+    /**
+     * Return the reference dna sequence for the exact interval specified.
+     *
+     * @param chr
+     * @param start
+     * @param end
+     * @return
+     */
+    public byte[] getSequence(String chr, int start, int end) {
+        if (cacheSequences) {
+            byte[] seqbytes = new byte[end - start];
+            int startTile = start / tileSize;
+            int endTile = end / tileSize;
 
-			// A negative offset means the requested start is < the the first
-			// tile start. This situation can arise at the
-			// left end of chromosomes. In this case we want to copy the first
-			// tile to some offset location in the
-			// destination sequence array.
-			if (fromOffset < 0) {
-				toOffset = -fromOffset;
-				fromOffset = 0;
-			}
+            // Get first chunk
+            SequenceTile tile = getSequenceTile(chr, startTile);
+            if (tile == null) {
+                return null;
+            }
 
-			// # of bytes to copy. Note that only one of fromOffset or toOffset
-			// is non-zero.
-			int nBytes = Math.min(tileBytes.length - Math.abs(fromOffset),
-					seqbytes.length - Math.abs(toOffset));
+            byte[] tileBytes = tile.getBytes();
+            if (tileBytes == null) {
+                return null;
+            }
 
-			// Copy first chunk
-			System.arraycopy(tileBytes, fromOffset, seqbytes, toOffset, nBytes);
+            int fromOffset = start - tile.getStart();
+            int toOffset = 0;
 
-			// If multiple chunks ...
-			for (int t = startTile + 1; t <= endTile; t++) {
-				tile = getSequenceTile(chr, t);
-				if (tile == null) {
-					break;
-				}
+            // A negative offset means the requested start is < the the first
+            // tile start. This situation can arise at the
+            // left end of chromosomes. In this case we want to copy the first
+            // tile to some offset location in the
+            // destination sequence array.
+            if (fromOffset < 0) {
+                toOffset = -fromOffset;
+                fromOffset = 0;
+            }
 
-				int nNext = Math.min(seqbytes.length - nBytes, tile.getSize());
+            // # of bytes to copy. Note that only one of fromOffset or toOffset
+            // is non-zero.
+            int nBytes = Math.min(tileBytes.length - Math.abs(fromOffset),
+                    seqbytes.length - Math.abs(toOffset));
 
-				System.arraycopy(tile.getBytes(), 0, seqbytes, nBytes, nNext);
-				nBytes += nNext;
-			}
+            // Copy first chunk
+            System.arraycopy(tileBytes, fromOffset, seqbytes, toOffset, nBytes);
 
-			return seqbytes;
-		} else {
-			return sequence.getSequence(chr, start, end);
-		}
-	}
+            // If multiple chunks ...
+            for (int t = startTile + 1; t <= endTile; t++) {
+                tile = getSequenceTile(chr, t);
+                if (tile == null) {
+                    break;
+                }
 
-	private SequenceTile getSequenceTile(String chr, int tileNo) {
-		String key = getKey(chr, tileNo);
-		SequenceTile tile = sequenceCache.get(key);
+                int nNext = Math.min(seqbytes.length - nBytes, tile.getSize());
 
-		if (tile == null) {
-			int start = tileNo * tileSize;
-			int end = start + tileSize; // <= UCSC coordinate conventions (end
-										// base not inclusive)
+                System.arraycopy(tile.getBytes(), 0, seqbytes, nBytes, nNext);
+                nBytes += nNext;
+            }
 
-			if (end <= start) {
-				return null;
-			}
+            return seqbytes;
+        } else {
+            return sequence.getSequence(chr, start, end);
+        }
+    }
 
-			byte[] seq = sequence.getSequence(chr, start, end);
-			tile = new SequenceTile(start, seq);
-			sequenceCache.put(key, tile);
-		}
+    private SequenceTile getSequenceTile(String chr, int tileNo) {
+        String key = getKey(chr, tileNo);
+        SequenceTile tile = sequenceCache.get(key);
 
-		return tile;
-	}
+        if (tile == null) {
+            int start = tileNo * tileSize;
+            int end = start + tileSize; // <= UCSC coordinate conventions (end
+            // base not inclusive)
 
-	/**
-	 * Generate unique key to be used to store/retrieve tiles. We combined the
-	 * chr and tileNo, with a delimiter in between to ensure that chr1 12
-	 * doesn't clash with chr11 2
-	 * 
-	 * @param chr
-	 * @param tileNo
-	 * @return
-	 */
-	static String getKey(String chr, int tileNo) {
-		return chr + "/" + tileNo;
-	}
+            if (end <= start) {
+                return null;
+            }
 
-	/**
-	 * This accessor provided to support unit tests.
-	 * 
-	 * @param aChunkSize
-	 */
-	static void setTileSize(int aChunkSize) {
-		tileSize = aChunkSize;
-	}
+            byte[] seq = sequence.getSequence(chr, start, end);
+            tile = new SequenceTile(start, seq);
+            sequenceCache.put(key, tile);
+        }
 
-	/**
-	 * Accessor to support unit tests.
-	 * 
-	 * @param aCacheSequences
-	 */
-	static void setCacheSequences(boolean aCacheSequences) {
-		cacheSequences = aCacheSequences;
-	}
+        return tile;
+    }
 
-	public void clearCache() {
-		sequenceCache.clear();
-	}
+    public void clearCache() {
+        sequenceCache.clear();
+    }
 
-	static class SequenceTile {
+    static class SequenceTile {
 
-		private int start;
-		private byte[] bytes;
+        private int start;
+        private byte[] bytes;
 
-		SequenceTile(int start, byte[] bytes) {
-			this.start = start;
-			this.bytes = bytes;
-		}
+        SequenceTile(int start, byte[] bytes) {
+            this.start = start;
+            this.bytes = bytes;
+        }
 
-		public int getStart() {
-			return start;
-		}
+        public int getStart() {
+            return start;
+        }
 
-		public int getSize() {
-			return bytes == null ? 0 : bytes.length;
-		}
+        public int getSize() {
+            return bytes == null ? 0 : bytes.length;
+        }
 
-		public byte[] getBytes() {
-			return bytes;
-		}
-	}
+        public byte[] getBytes() {
+            return bytes;
+        }
+    }
 
 }

@@ -290,6 +290,23 @@ public class DataCollection {
     }
 
     /**
+     * Gets the active data store.
+     *
+     * @return the active data store
+     */
+    public DataStore getActiveDataStore() {
+        if (activeDataStore != null) {
+            return activeDataStore;
+        } else if (getAllDataStores().length == 1) {
+            return getAllDataStores()[0];
+        } else if (REDApplication.getInstance().drawnDataStores().length == 1) {
+            return REDApplication.getInstance().drawnDataStores()[0];
+        } else {
+            return null;
+        }
+    }
+
+    /**
      * Sets the active data store.
      *
      * @param d the new active data store
@@ -306,23 +323,6 @@ public class DataCollection {
 
         } else {
             throw new REDException("Data store " + d.name() + " could not be found in the data collection");
-        }
-    }
-
-    /**
-     * Gets the active data store.
-     *
-     * @return the active data store
-     */
-    public DataStore getActiveDataStore() {
-        if (activeDataStore != null) {
-            return activeDataStore;
-        } else if (getAllDataStores().length == 1) {
-            return getAllDataStores()[0];
-        } else if (REDApplication.getInstance().drawnDataStores().length == 1) {
-            return REDApplication.getInstance().drawnDataStores()[0];
-        } else {
-            return null;
         }
     }
 

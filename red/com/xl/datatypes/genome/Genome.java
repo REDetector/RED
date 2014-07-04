@@ -16,28 +16,24 @@ import java.util.*;
  */
 public class Genome {
 
+    // TODO A hack (obviously), we need to record a species in the genome definitions
+    private static Map<String, String> ucscSpeciesMap;
     /**
      * The genome id.
      */
     private String genomeId;
-
     /**
      * The display name.
      */
     private String displayName;
-
     private List<String> chromosomeNames = null;
-
-    private LinkedHashMap<String, Chromosome> chromosomeMap = new LinkedHashMap<String, Chromosome>();
     ;
-
+    private LinkedHashMap<String, Chromosome> chromosomeMap = new LinkedHashMap<String, Chromosome>();
     /**
      * The annotation collection.
      */
     private AnnotationCollection annotationCollection = null;
-
     private Sequence sequence = null;
-
     private String species = null;
 
     public Genome(String genomeId, String displayName, Sequence sequence) {
@@ -81,6 +77,50 @@ public class Genome {
         // Initial Annotation for Genome.
         annotationCollection = new AnnotationCollection(this);
 
+    }
+
+    private static synchronized String getSpeciesForID(String id) {
+        if (ucscSpeciesMap == null) {
+            ucscSpeciesMap = new HashMap<String, String>();
+
+            InputStream is = null;
+
+            try {
+                is = Genome.class.getResourceAsStream("speciesMapping.txt");
+                BufferedReader br = new BufferedReader(
+                        new InputStreamReader(is));
+
+                String nextLine;
+                while ((nextLine = br.readLine()) != null) {
+                    if (nextLine.startsWith("#"))
+                        continue;
+                    String[] tokens = nextLine.split("\t");
+                    if (tokens.length == 2) {
+                        ucscSpeciesMap.put(tokens[0], tokens[1]);
+                    } else {
+                        // log.error("Unexpected number of tokens in species mapping file for line: "
+                        // + nextLine);
+                    }
+                }
+            } catch (IOException e) {
+                // log.error("Error reading species mapping table", e);
+            } finally {
+                if (is != null)
+                    try {
+                        is.close();
+                    } catch (IOException e) {
+                        // log.error("", e);
+                    }
+            }
+
+        }
+
+        for (Map.Entry<String, String> entry : ucscSpeciesMap.entrySet()) {
+            if (id.startsWith(entry.getKey())) {
+                return entry.getValue();
+            }
+        }
+        return null;
     }
 
     public void addChromosome(Chromosome chromosome) {
@@ -237,53 +277,6 @@ public class Genome {
             }
         }
         return longest;
-    }
-
-    // TODO A hack (obviously), we need to record a species in the genome definitions
-    private static Map<String, String> ucscSpeciesMap;
-
-    private static synchronized String getSpeciesForID(String id) {
-        if (ucscSpeciesMap == null) {
-            ucscSpeciesMap = new HashMap<String, String>();
-
-            InputStream is = null;
-
-            try {
-                is = Genome.class.getResourceAsStream("speciesMapping.txt");
-                BufferedReader br = new BufferedReader(
-                        new InputStreamReader(is));
-
-                String nextLine;
-                while ((nextLine = br.readLine()) != null) {
-                    if (nextLine.startsWith("#"))
-                        continue;
-                    String[] tokens = nextLine.split("\t");
-                    if (tokens.length == 2) {
-                        ucscSpeciesMap.put(tokens[0], tokens[1]);
-                    } else {
-                        // log.error("Unexpected number of tokens in species mapping file for line: "
-                        // + nextLine);
-                    }
-                }
-            } catch (IOException e) {
-                // log.error("Error reading species mapping table", e);
-            } finally {
-                if (is != null)
-                    try {
-                        is.close();
-                    } catch (IOException e) {
-                        // log.error("", e);
-                    }
-            }
-
-        }
-
-        for (Map.Entry<String, String> entry : ucscSpeciesMap.entrySet()) {
-            if (id.startsWith(entry.getKey())) {
-                return entry.getValue();
-            }
-        }
-        return null;
     }
 
 }

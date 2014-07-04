@@ -10,6 +10,7 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.zip.GZIPInputStream;
 
 public class ParsingUtils {
     public static final String RED_DATA_VERSION = "RED Data Version";
@@ -23,6 +24,30 @@ public class ParsingUtils {
     public static final String LISTS = "Lists";
     public static final String VISIBLE_STORES = "Visible Stores";
     public static final String DISPLAY_PREFERENCES = "Display Preferences";
+
+    public static boolean resourceExists(String path) {
+        if (isRemote(path)) {
+            try {
+                URL url = createURL(path);
+                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                int code = conn.getResponseCode();
+                return code >= 200 && code < 300;
+            } catch (IOException e) {
+                return false;
+            }
+        } else {
+            return (new File(path)).exists();
+        }
+    }
+
+
+    public static boolean isRemote(String path) {
+        if (path == null) {
+            return false;
+        }
+        return path.startsWith("http://") || path.startsWith("https://") ||
+                path.startsWith("ftp://");
+    }
 
     public static long getContentLength(String path) {
         try {
@@ -48,9 +73,44 @@ public class ParsingUtils {
         }
     }
 
+    public static InputStream openInputStream(String path) throws IOException {
+        return openInputStreamGZ(path);
+    }
+
+    /**
+     * Open an InputStream on the resource.  Wrap it in a GZIPInputStream if necessary.
+     *
+     * @param path
+     * @return
+     * @throws IOException
+     */
+    public static InputStream openInputStreamGZ(String path) throws IOException {
+
+        InputStream inputStream;
+        if (isRemote(path)) {
+            URL url = new URL(path);
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            inputStream = conn.getInputStream();
+            if ("gzip".equals(conn.getContentEncoding())) {
+                inputStream = new GZIPInputStream(inputStream);
+            }
+        } else {
+            if (path.startsWith("file://")) {
+                path = path.substring(7);
+            }
+            File file = new File(path);
+            inputStream = new FileInputStream(file);
+        }
+        if (path.endsWith("gz")) {
+            return new GZIPInputStream(inputStream);
+        } else {
+            return inputStream;
+        }
+    }
+
     public static SeekableStream getStreamFor(String path) throws IOException {
 
-        SeekableStream is = null;
+        SeekableStream is;
         if (path.toLowerCase().startsWith("http:")
                 || path.toLowerCase().startsWith("https:")) {
             final URL url = new URL(path);

@@ -17,17 +17,15 @@ import java.util.*;
 public class AnnotationSet {
 
     protected Genome genome;
+    protected FeatureSet featureSet = null;
     private String name;
     private AnnotationCollection collection = null;
-
-    private boolean finalised = false;
     /*
      * We store features by chromosome. Within each chromosome we store by
 	 * feature type for quick access and then within that we store a vector of
 	 * features.
 	 */
-
-    protected FeatureSet featureSet = null;
+    private boolean finalised = false;
 
     /**
      * Instantiates a new annotation set.

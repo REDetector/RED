@@ -62,6 +62,18 @@ public class HelpPageDisplay extends JPanel implements HyperlinkListener {
         }
     }
 
+    /* (non-Javadoc)
+     * @see javax.swing.event.HyperlinkListener#hyperlinkUpdate(javax.swing.event.HyperlinkEvent)
+     */
+    public void hyperlinkUpdate(HyperlinkEvent h) {
+        if (h.getEventType() == HyperlinkEvent.EventType.ACTIVATED) {
+            try {
+                htmlPane.setPage(h.getURL());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
 
     /**
      * The Class HelpEditor.
@@ -87,19 +99,6 @@ public class HelpPageDisplay extends JPanel implements HyperlinkListener {
                 g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
             }
             super.paint(g);
-        }
-    }
-
-    /* (non-Javadoc)
-     * @see javax.swing.event.HyperlinkListener#hyperlinkUpdate(javax.swing.event.HyperlinkEvent)
-     */
-    public void hyperlinkUpdate(HyperlinkEvent h) {
-        if (h.getEventType() == HyperlinkEvent.EventType.ACTIVATED) {
-            try {
-                htmlPane.setPage(h.getURL());
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
         }
     }
 

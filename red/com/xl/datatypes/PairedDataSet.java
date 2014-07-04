@@ -32,57 +32,6 @@ public class PairedDataSet extends DataSet implements HiCDataStore {
      * HiC data.
      */
     private static final int DISTANCE_GROUP_LENGTH = 10000;
-
-    /**
-     * This value lets us see if any of the data added needs to be sorted. We
-     * can save time if we can miss out this step
-     */
-    private boolean needToSort = false;
-
-    /**
-     * These values are used when caching reads which are to be paired when
-     * adding more data.
-     */
-    private SequenceRead lastRead = null;
-    private String lastChromosome = null;
-
-    private int minDistance;
-
-    private boolean removeDuplicates;
-    private boolean ignoreTrans;
-
-    private Hashtable<String, ChromosomeDataStore> readData = new Hashtable<String, ChromosomeDataStore>();
-
-    private Hashtable<String, Integer> cisChromosomeCounts = new Hashtable<String, Integer>();
-    private Hashtable<String, Integer> transChromosomeCounts = new Hashtable<String, Integer>();
-
-    private int cisCount = 0;
-    private int transCount = 0;
-
-    /**
-     * A flag to say if we've optimised this dataset
-     */
-    private boolean isFinalised = false;
-
-    /**
-     * This count allows us to keep track of the progress of finalisation for
-     * the individual chromosomes
-     */
-    private ThreadSafeIntCounter chromosomesStillToFinalise;
-
-    // These are cached values used when we're saving excess data to temp files
-
-    /**
-     * The reads last loaded from the cache
-     */
-    private HiCHitCollection lastCachedHits = null;
-
-    /**
-     * The last index at which a read was found on each chromosome
-     */
-    private int[] lastIndices = null;
-    private String[] lastChromosomeHitNames = null;
-
     /**
      * This variable controls how many thread we allow to finalise at the same
      * time.
@@ -94,6 +43,45 @@ public class PairedDataSet extends DataSet implements HiCDataStore {
 
     private static final int MAX_CONCURRENT_FINALISE = Math.min(Runtime
             .getRuntime().availableProcessors(), 6);
+    /**
+     * This value lets us see if any of the data added needs to be sorted. We
+     * can save time if we can miss out this step
+     */
+    private boolean needToSort = false;
+    /**
+     * These values are used when caching reads which are to be paired when
+     * adding more data.
+     */
+    private SequenceRead lastRead = null;
+    private String lastChromosome = null;
+    private int minDistance;
+    private boolean removeDuplicates;
+    private boolean ignoreTrans;
+    private Hashtable<String, ChromosomeDataStore> readData = new Hashtable<String, ChromosomeDataStore>();
+    private Hashtable<String, Integer> cisChromosomeCounts = new Hashtable<String, Integer>();
+    private Hashtable<String, Integer> transChromosomeCounts = new Hashtable<String, Integer>();
+    private int cisCount = 0;
+    private int transCount = 0;
+    /**
+     * A flag to say if we've optimised this dataset
+     */
+    private boolean isFinalised = false;
+
+    // These are cached values used when we're saving excess data to temp files
+    /**
+     * This count allows us to keep track of the progress of finalisation for
+     * the individual chromosomes
+     */
+    private ThreadSafeIntCounter chromosomesStillToFinalise;
+    /**
+     * The reads last loaded from the cache
+     */
+    private HiCHitCollection lastCachedHits = null;
+    /**
+     * The last index at which a read was found on each chromosome
+     */
+    private int[] lastIndices = null;
+    private String[] lastChromosomeHitNames = null;
 
     public PairedDataSet(String name, String fileName,
                          boolean removeDuplicates, int minDistance, boolean ignoreTrans) {
@@ -785,7 +773,7 @@ public class PairedDataSet extends DataSet implements HiCDataStore {
             // long calcStartTime = System.currentTimeMillis();
 
 			/*
-			 * Sorting the hit collection is *slow* but we need to do this for
+             * Sorting the hit collection is *slow* but we need to do this for
 			 * normal datasets. If we've been passed sorted data then we can
 			 * omit this step and save ourselves a big old chunk of time.
 			 */

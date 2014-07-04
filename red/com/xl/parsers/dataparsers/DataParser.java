@@ -37,10 +37,10 @@ import java.util.Iterator;
  */
 public abstract class DataParser implements Runnable, Cancellable {
 
-    private final ArrayList<ProgressListener> listeners;
-    private File[] files;
     protected final DataCollection collection;
+    private final ArrayList<ProgressListener> listeners;
     protected boolean cancel = false;
+    private File[] files;
 
 
     /**
@@ -98,21 +98,21 @@ public abstract class DataParser implements Runnable, Cancellable {
     abstract public String getDescription();
 
     /**
-     * Sets the files which are to be parsed
-     *
-     * @param files A list of files to parse
-     */
-    public void setFiles(File[] files) {
-        this.files = files;
-    }
-
-    /**
      * Gets the list of files to be parsed
      *
      * @return A list of files to parse
      */
     protected File[] getFiles() {
         return files;
+    }
+
+    /**
+     * Sets the files which are to be parsed
+     *
+     * @param files A list of files to parse
+     */
+    public void setFiles(File[] files) {
+        this.files = files;
     }
 
     /**

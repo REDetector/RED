@@ -31,10 +31,20 @@ public class FileUtils {
         }
     }
 
-    public static boolean isFileExist(String path) {
-        return (new File(path)).exists();
-    }
+    static public String getFileNameFromURL(String url) {
 
+        int lastIndexOfSlash = url.lastIndexOf("/");
+
+        String fileName = null;
+
+        if (lastIndexOfSlash > -1) {
+            fileName = url.substring(lastIndexOfSlash + 1, url.length());
+        } else {
+            fileName = url;
+        }
+
+        return fileName;
+    }
     /**
      * @param path
      * @param content
@@ -64,7 +74,6 @@ public class FileUtils {
     public static boolean deleteFile(String path) {
         boolean flag = false;
         File file = new File(path);
-        // ·��Ϊ�ļ��Ҳ�Ϊ�������ɾ��
         if (file.isFile() && file.exists()) {
             file.delete();
             flag = true;

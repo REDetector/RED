@@ -22,35 +22,34 @@ package com.xl.thread;
 /**
  * This class provides a thread safe implementation of a counter
  * where the increment and decrement methods can be called from
- * any number of threads with no concern that the values will 
+ * any number of threads with no concern that the values will
  * clash or updates be lost.
- * 
- * @author andrewss
  *
+ * @author andrewss
  */
 public class ThreadSafeIntCounter {
 
-	private int value = 0;
-	
-	public synchronized void increment () {
-		value++;
-	}
-	
-	public synchronized void decrement () {
-		value--;
-	}
-	
-	public synchronized void incrementBy (int amount) {
-		value += amount;
-	}
+    private int value = 0;
 
-	public synchronized void decrementBy (int amount) {
-		value -= amount;
-	}
+    public synchronized void increment() {
+        value++;
+    }
 
-	public int value () {
-		return value;
-	}
-	
-	
+    public synchronized void decrement() {
+        value--;
+    }
+
+    public synchronized void incrementBy(int amount) {
+        value += amount;
+    }
+
+    public synchronized void decrementBy(int amount) {
+        value -= amount;
+    }
+
+    public int value() {
+        return value;
+    }
+
+
 }

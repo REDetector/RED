@@ -4,7 +4,6 @@ import java.io.*;
 import java.sql.SQLException;
 
 public class Repeatedmask {
-    private String[] sql = new String[3];
     Dbcon db = new Dbcon();
     // File file;
     File file = new File("H:/hg19.fa.out");
@@ -19,6 +18,7 @@ public class Repeatedmask {
     StringBuffer s3 = new StringBuffer();
     int timer = 0;
     int minute = 0;
+    private String[] sql = new String[3];
 
     public void loadrepeat() {
         try {

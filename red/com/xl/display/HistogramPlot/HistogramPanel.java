@@ -40,35 +40,29 @@ import java.text.DecimalFormat;
 public class HistogramPanel extends JPanel implements Runnable, ChangeListener {
 
     /**
+     * The Constant df.
+     */
+    private static final DecimalFormat df = new DecimalFormat("#.##");
+    /**
      * The data.
      */
     private double[] data;
-
     /**
      * The category slider.
      */
     private JSlider categorySlider;
-
     /**
      * The main histogram panel.
      */
     private MainHistogramPanel mainHistogramPanel;
-
     /**
      * The status panel.
      */
     private StatusPanel statusPanel;
-
     /**
      * The log check box.
      */
     private JCheckBox logCheckBox;
-
-    /**
-     * The Constant df.
-     */
-    private static final DecimalFormat df = new DecimalFormat("#.##");
-
     /**
      * The calculating categories.
      */

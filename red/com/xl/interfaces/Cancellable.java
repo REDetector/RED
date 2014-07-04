@@ -24,7 +24,7 @@ package com.xl.interfaces;
  * can be cancelled.
  */
 public interface Cancellable {
-	
-	public void cancel ();
-	
+
+    public void cancel();
+
 }

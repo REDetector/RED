@@ -33,22 +33,30 @@ public class ColourScheme {
      * Any feature or read on the top strand
      */
     public static final Color FORWARD_FEATURE = new Color(220, 0, 0);
-
+    /**
+     * The border around a selected chromosome in the genome view
+     */
+    public static final Color GENOME_SELECTED_CHROMOSOME = FORWARD_FEATURE;
+    /**
+     * The list colour for datasets
+     */
+    public static final Color DATASET_LIST = FORWARD_FEATURE;
     /**
      * Any feature or read on the bottom strand
      */
     public static final Color REVERSE_FEATURE = new Color(0, 0, 220);
-
+    /**
+     * The list colour for data groups
+     */
+    public static final Color DATAGROUP_LIST = REVERSE_FEATURE;
     /**
      * Any feature or read without an assigned strand
      */
     public static final Color UNKNOWN_FEATURE = Color.GRAY;
-
     /**
      * An active feature or read
      */
     public static final Color ACTIVE_FEATURE = Color.YELLOW;
-
     /**
      * The standard color of base 'A' defined by ucsc.
      */
@@ -65,82 +73,54 @@ public class ColourScheme {
      * The standard color of base 'C' defined by ucsc.
      */
     public static final Color BASE_C = Color.BLUE;
-
     public static final Color BASE_UNKNOWN = Color.DARK_GRAY;
-
     /**
      * A feature at the same position as the active feature
      */
     public static final Color ACTIVE_FEATURE_MATCH = new Color(0, 180, 0);
-
-    /**
-     * The background to odd numbered feature tracks
-     */
-    public static final Color FEATURE_BACKGROUND_ODD = new Color(220, 220, 255);
-
-    /**
-     * The background to even numbered feature tracks
-     */
-    public static final Color FEATURE_BACKGROUND_EVEN = new Color(180, 180, 255);
-
-    /**
-     * The background colour for a selection in progress
-     */
-    public static final Color DRAGGED_SELECTION = new Color(100, 255, 100);
-
-    /**
-     * The background to odd numbered data tracks
-     */
-    public static final Color DATA_BACKGROUND_ODD = new Color(230, 230, 230);
-
-    /**
-     * The background to even numbered data tracks
-     */
-    public static final Color DATA_BACKGROUND_EVEN = new Color(255, 255, 255);
-
-    /**
-     * The fill colour for histogram bars
-     */
-    public static final Color HISTOGRAM_BAR = Color.BLUE;
-
-    /**
-     * The fill colour for histogram bars
-     */
-    public static final Color HIGHLIGHTED_HISTOGRAM_BAR = Color.RED;
-
-    /**
-     * The Chromosome colour in the genome view
-     */
-    public static final Color GENOME_CHROMOSOME = new Color(100, 100, 255);
-
-    /**
-     * The selected region in the genome view
-     */
-    public static final Color GENOME_SELECTED = new Color(220, 0, 0);
-
-    /**
-     * The border around a selected chromosome in the genome view
-     */
-    public static final Color GENOME_SELECTED_CHROMOSOME = FORWARD_FEATURE;
-
-    /**
-     * The list colour for datasets
-     */
-    public static final Color DATASET_LIST = FORWARD_FEATURE;
-
-    /**
-     * The list colour for data groups
-     */
-    public static final Color DATAGROUP_LIST = REVERSE_FEATURE;
-
-    /**
-     * The list colour for replicate sets
-     */
-    public static final Color REPLICATE_SET_LIST = new Color(140, 0, 140);
-
     /**
      * The list colour for quantitations requiring HiC data *
      */
     public static final Color HIC_QUANTITATION = ACTIVE_FEATURE_MATCH;
+    /**
+     * The background to odd numbered feature tracks
+     */
+    public static final Color FEATURE_BACKGROUND_ODD = new Color(220, 220, 255);
+    /**
+     * The background to even numbered feature tracks
+     */
+    public static final Color FEATURE_BACKGROUND_EVEN = new Color(180, 180, 255);
+    /**
+     * The background colour for a selection in progress
+     */
+    public static final Color DRAGGED_SELECTION = new Color(100, 255, 100);
+    /**
+     * The background to odd numbered data tracks
+     */
+    public static final Color DATA_BACKGROUND_ODD = new Color(230, 230, 230);
+    /**
+     * The background to even numbered data tracks
+     */
+    public static final Color DATA_BACKGROUND_EVEN = new Color(255, 255, 255);
+    /**
+     * The fill colour for histogram bars
+     */
+    public static final Color HISTOGRAM_BAR = Color.BLUE;
+    /**
+     * The fill colour for histogram bars
+     */
+    public static final Color HIGHLIGHTED_HISTOGRAM_BAR = Color.RED;
+    /**
+     * The Chromosome colour in the genome view
+     */
+    public static final Color GENOME_CHROMOSOME = new Color(100, 100, 255);
+    /**
+     * The selected region in the genome view
+     */
+    public static final Color GENOME_SELECTED = new Color(220, 0, 0);
+    /**
+     * The list colour for replicate sets
+     */
+    public static final Color REPLICATE_SET_LIST = new Color(140, 0, 140);
 
 }

@@ -24,21 +24,21 @@ package com.xl.gradients;
  * components of a colour.
  */
 public class RGB {
-	
-	public int r;
-	public int g;
-	public int b;
-	
-	/**
-	 * Instantiates a new RGB colour.
-	 * 
-	 * @param r RED
-	 * @param g GREEN
-	 * @param b BLUE
-	 */
-	public RGB (int r, int g, int b) {
-		this.r = r;
-		this.g = g;
-		this.b = b;
-	}
+
+    public int r;
+    public int g;
+    public int b;
+
+    /**
+     * Instantiates a new RGB colour.
+     *
+     * @param r RED
+     * @param g GREEN
+     * @param b BLUE
+     */
+    public RGB(int r, int g, int b) {
+        this.r = r;
+        this.g = g;
+        this.b = b;
+    }
 }

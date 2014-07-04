@@ -49,27 +49,22 @@ public class MemoryMonitor extends JPanel implements Runnable, MouseListener, Mo
      * The Constant DARK_RED.
      */
     private static final Color DARK_RED = new Color(180, 0, 0);
-
-    /**
-     * The monitor tool tip.
-     */
-    private String monitorToolTip;
-
-    /**
-     * The cache tool tip.
-     */
-    private String cacheToolTip;
-
     /**
      * The shown warning.
      */
     public boolean shownWarning = false;
-
     /**
      * The need to show warning.
      */
     public boolean needToShowWarning = false;
-
+    /**
+     * The monitor tool tip.
+     */
+    private String monitorToolTip;
+    /**
+     * The cache tool tip.
+     */
+    private String cacheToolTip;
     /**
      * Whether the cache was active since the last update
      */

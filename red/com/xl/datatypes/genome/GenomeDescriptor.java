@@ -7,12 +7,12 @@ import java.io.File;
 public class GenomeDescriptor {
 
     private static GenomeDescriptor genomeDescriptor = null;
-    private String displayName;
-    private boolean chrNamesAltered;
-    private String genomeId;
     protected String cytoBandFileName;
     protected String geneFileName;
     protected String chrAliasFileName;
+    private String displayName;
+    private boolean chrNamesAltered;
+    private String genomeId;
     private String geneTrackName;
     private String url;
     private String sequenceLocation;
@@ -23,6 +23,13 @@ public class GenomeDescriptor {
     private String[] fastaFileNames;
 
     private GenomeDescriptor() {
+    }
+
+    public static GenomeDescriptor getInstance() {
+        if (genomeDescriptor == null) {
+            genomeDescriptor = new GenomeDescriptor();
+        }
+        return genomeDescriptor;
     }
 
     public void setAttributes(String displayName, boolean chrNamesAltered, String genomeId,
@@ -59,13 +66,6 @@ public class GenomeDescriptor {
                 }
             }
         }
-    }
-
-    public static GenomeDescriptor getInstance() {
-        if (genomeDescriptor == null) {
-            genomeDescriptor = new GenomeDescriptor();
-        }
-        return genomeDescriptor;
     }
 
     public String getDisplayName() {

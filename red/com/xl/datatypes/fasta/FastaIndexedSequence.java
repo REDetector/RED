@@ -21,11 +21,10 @@ import java.util.List;
  */
 public class FastaIndexedSequence implements Sequence {
 
+    private final ArrayList<String> chromoNamesList;
     private FastaIndex index = null;
     private String path = null;
     private long contentLength = -1;
-
-    private final ArrayList<String> chromoNamesList;
 
     public FastaIndexedSequence(String path) throws IOException {
         File currentGenome = new File(REDPreferences.getInstance()
@@ -35,11 +34,13 @@ public class FastaIndexedSequence implements Sequence {
         String indexPath = null;
         if (currentGenome.exists() && currentGenome.isDirectory()) {
             File[] fastaIndexes = currentGenome.listFiles();
-            for (File file : fastaIndexes) {
-                if (file.getName().toLowerCase().endsWith("fa")) {
-                    contentLength = file.length();
-                } else if (file.getName().toLowerCase().endsWith("fai")) {
-                    indexPath = file.getAbsolutePath();
+            if (fastaIndexes != null) {
+                for (File file : fastaIndexes) {
+                    if (file.getName().toLowerCase().endsWith("fa")) {
+                        contentLength = file.length();
+                    } else if (file.getName().toLowerCase().endsWith("fai")) {
+                        indexPath = file.getAbsolutePath();
+                    }
                 }
             }
         } else {

@@ -24,13 +24,13 @@ package com.xl.exception;
  */
 public class REDException extends Exception {
 
-	/**
-	 * Instantiates a new RED exception.
-	 * 
-	 * @param error Error text
-	 */
-	public REDException (String error) {
-		super(error);
-	}
-	
+    /**
+     * Instantiates a new RED exception.
+     *
+     * @param error Error text
+     */
+    public REDException(String error) {
+        super(error);
+    }
+
 }

@@ -38,7 +38,6 @@ public class AboutDialog extends JDialog {
 
     /**
      * Instantiates a new about dialog.
-     *
      */
     public AboutDialog() {
         super(REDApplication.getInstance());

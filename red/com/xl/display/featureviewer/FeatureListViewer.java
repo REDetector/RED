@@ -68,6 +68,61 @@ public class FeatureListViewer extends JTable implements MouseListener {
         return features;
     }
 
+    /*
+     * (non-Javadoc)
+     *
+     * @see java.awt.event.MouseListener#mouseClicked(java.awt.event.MouseEvent)
+     */
+    public void mouseClicked(MouseEvent me) {
+        // We're only interested in double clicks
+        if (me.getClickCount() != 2)
+            return;
+        // This is only linked from the report JTable
+        JTable t = (JTable) me.getSource();
+        int r = t.getSelectedRow();
+        Feature f = (Feature) t.getValueAt(r, 0);
+
+        DisplayPreferences.getInstance()
+                .setLocation(
+                        application.dataCollection().genome()
+                                .getChromosome(f.getChr()),
+                        f.getTxLocation().getStart(),
+                        f.getTxLocation().getEnd());
+    }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see java.awt.event.MouseListener#mousePressed(java.awt.event.MouseEvent)
+     */
+    public void mousePressed(MouseEvent arg0) {
+    }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see
+     * java.awt.event.MouseListener#mouseReleased(java.awt.event.MouseEvent)
+     */
+    public void mouseReleased(MouseEvent arg0) {
+    }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see java.awt.event.MouseListener#mouseEntered(java.awt.event.MouseEvent)
+     */
+    public void mouseEntered(MouseEvent arg0) {
+    }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see java.awt.event.MouseListener#mouseExited(java.awt.event.MouseEvent)
+     */
+    public void mouseExited(MouseEvent arg0) {
+    }
+
     /**
      * The Class FeatureTableModel.
      */
@@ -156,60 +211,5 @@ public class FeatureListViewer extends JTable implements MouseListener {
         public boolean isCellEditable(int r, int c) {
             return false;
         }
-    }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see java.awt.event.MouseListener#mouseClicked(java.awt.event.MouseEvent)
-     */
-    public void mouseClicked(MouseEvent me) {
-        // We're only interested in double clicks
-        if (me.getClickCount() != 2)
-            return;
-        // This is only linked from the report JTable
-        JTable t = (JTable) me.getSource();
-        int r = t.getSelectedRow();
-        Feature f = (Feature) t.getValueAt(r, 0);
-
-        DisplayPreferences.getInstance()
-                .setLocation(
-                        application.dataCollection().genome()
-                                .getChromosome(f.getChr()),
-                        f.getTxLocation().getStart(),
-                        f.getTxLocation().getEnd());
-    }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see java.awt.event.MouseListener#mousePressed(java.awt.event.MouseEvent)
-     */
-    public void mousePressed(MouseEvent arg0) {
-    }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see
-     * java.awt.event.MouseListener#mouseReleased(java.awt.event.MouseEvent)
-     */
-    public void mouseReleased(MouseEvent arg0) {
-    }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see java.awt.event.MouseListener#mouseEntered(java.awt.event.MouseEvent)
-     */
-    public void mouseEntered(MouseEvent arg0) {
-    }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see java.awt.event.MouseListener#mouseExited(java.awt.event.MouseEvent)
-     */
-    public void mouseExited(MouseEvent arg0) {
     }
 }

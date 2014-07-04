@@ -6,8 +6,8 @@ import java.io.FileInputStream;
 import java.io.InputStreamReader;
 
 public class SamInput {
-    private String[] sql = new String[3];
     Dbcon db = new Dbcon();
+    private String[] sql = new String[3];
     private File file;
     private FileInputStream inputStream;
     private String line;

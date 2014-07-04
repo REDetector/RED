@@ -164,6 +164,19 @@ public class ProbeSet extends ProbeList {
     }
 
     /**
+     * Gets the active list.
+     *
+     * @return the active list
+     */
+    public ProbeList getActiveList() {
+        if (activeList != null) {
+            return activeList;
+        } else {
+            return this;
+        }
+    }
+
+    /**
      * Sets the active list.
      *
      * @param list the new active list
@@ -179,19 +192,6 @@ public class ProbeSet extends ProbeList {
 
         if (collection != null) {
             collection.activeProbeListChanged(list);
-        }
-    }
-
-    /**
-     * Gets the active list.
-     *
-     * @return the active list
-     */
-    public ProbeList getActiveList() {
-        if (activeList != null) {
-            return activeList;
-        } else {
-            return this;
         }
     }
 

@@ -139,6 +139,15 @@ public class REDPreferences {
     }
 
     /**
+     * Gets the single instance of SeqMonkPreferences.
+     *
+     * @return single instance of SeqMonkPreferences
+     */
+    public static REDPreferences getInstance() {
+        return preferences;
+    }
+
+    /**
      * Load preferences from a saved file
      */
     private void loadPreferences() {
@@ -275,15 +284,6 @@ public class REDPreferences {
 
         p.close();
 
-    }
-
-    /**
-     * Gets the single instance of SeqMonkPreferences.
-     *
-     * @return single instance of SeqMonkPreferences
-     */
-    public static REDPreferences getInstance() {
-        return preferences;
     }
 
     /**
@@ -478,6 +478,23 @@ public class REDPreferences {
     }
 
     /**
+     * Sets the genome base location
+     *
+     * @param f The folder under which new genomes should be stored
+     */
+    public void setGenomeBase(File f) {
+        // If this file is the same as the default then
+        // we leave the default in place
+        try {
+            if (!f.equals(getGenomeBase())) {
+                genomeBase = f;
+            }
+        } catch (FileNotFoundException e) {
+            genomeBase = f;
+        }
+    }
+
+    /**
      * Gets the genome download location.
      *
      * @return The URL under which new genomes can be downloaded
@@ -500,23 +517,6 @@ public class REDPreferences {
     }
 
     /**
-     * Sets the genome base location
-     *
-     * @param f The folder under which new genomes should be stored
-     */
-    public void setGenomeBase(File f) {
-        // If this file is the same as the default then
-        // we leave the default in place
-        try {
-            if (!f.equals(getGenomeBase())) {
-                genomeBase = f;
-            }
-        } catch (FileNotFoundException e) {
-            genomeBase = f;
-        }
-    }
-
-    /**
      * Gets the default data location. This will initially be the data location
      * saved in the preferneces file, but will be updated during use with the
      * last actual location where data was imported. If you definitely want the
@@ -532,6 +532,16 @@ public class REDPreferences {
     }
 
     /**
+     * Sets the default data location which will be saved in the preferences
+     * file.
+     *
+     * @param f The new data location
+     */
+    public void setDataLocation(File f) {
+        dataLocation = f;
+    }
+
+    /**
      * Gets the data location saved in the preferences file. This value is not
      * updated during use except by explicity changing the saved preference. To
      * get the last used folder use getDataLocation().
@@ -540,16 +550,6 @@ public class REDPreferences {
      */
     public File getDataLocationPreference() {
         return dataLocation;
-    }
-
-    /**
-     * Sets the default data location which will be saved in the preferences
-     * file.
-     *
-     * @param f The new data location
-     */
-    public void setDataLocation(File f) {
-        dataLocation = f;
     }
 
     /**
@@ -580,6 +580,15 @@ public class REDPreferences {
     }
 
     /**
+     * Sets the save location to record in the preferences file
+     *
+     * @param f The new save location
+     */
+    public void setSaveLocation(File f) {
+        saveLocation = f;
+    }
+
+    /**
      * Gets the default save location from the preferences file. This value will
      * always match the preferences file and will not update to reflect actual
      * usage within the current session.
@@ -593,15 +602,6 @@ public class REDPreferences {
          * getSaveLocation()
          */
         return saveLocation;
-    }
-
-    /**
-     * Sets the save location to record in the preferences file
-     *
-     * @param f The new save location
-     */
-    public void setSaveLocation(File f) {
-        saveLocation = f;
     }
 
     /**

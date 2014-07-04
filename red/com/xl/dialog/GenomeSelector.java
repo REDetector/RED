@@ -231,7 +231,6 @@ public class GenomeSelector extends JDialog {
      * component's <code>addTreeListener<code> method. When
      * the tree event occurs, that object's appropriate
      * method is invoked.
-     *
      */
     private class TreeListener implements TreeSelectionListener {
 

@@ -13,14 +13,29 @@ import javax.swing.*;
 import java.io.*;
 
 public class FastaFileParser extends DataParser {
+    private final String CACHE_COMPLETE = "fasta.complete";
     private Genome genome;
     private File fastaBase;
-    private final String CACHE_COMPLETE = "fasta.complete";
 
 
     public FastaFileParser(DataCollection collection) {
         super(collection);
         genome = collection.genome();
+    }
+
+    private static String skipToNextChr(BufferedReader br, String nextLine) throws IOException {
+        nextLine = nextLine.substring(1).split("\\s+")[0];
+        if (ChromosomeUtils.isStandardChromosomeName(nextLine)) {
+            return nextLine;
+        } else {
+            while ((nextLine = br.readLine()) != null) if (nextLine.startsWith(">")) {
+                nextLine = nextLine.substring(1).split("\\s+")[0];
+                if (ChromosomeUtils.isStandardChromosomeName(nextLine)) {
+                    return nextLine;
+                }
+            }
+        }
+        return null;
     }
 
     @Override
@@ -129,21 +144,6 @@ public class FastaFileParser extends DataParser {
         fw.write(REDApplication.VERSION);
         fw.close();
         processingComplete(null);
-    }
-
-    private static String skipToNextChr(BufferedReader br, String nextLine) throws IOException {
-        nextLine = nextLine.substring(1).split("\\s+")[0];
-        if (ChromosomeUtils.isStandardChromosomeName(nextLine)) {
-            return nextLine;
-        } else {
-            while ((nextLine = br.readLine()) != null) if (nextLine.startsWith(">")) {
-                nextLine = nextLine.substring(1).split("\\s+")[0];
-                if (ChromosomeUtils.isStandardChromosomeName(nextLine)) {
-                    return nextLine;
-                }
-            }
-        }
-        return null;
     }
 
 }

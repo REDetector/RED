@@ -20,6 +20,26 @@ import java.util.*;
 
 public class IGVSequence implements Sequence {
 
+    static Map<String, String> illegalChar = new HashMap<String, String>();
+
+    static {
+        illegalChar.put("_qm_", "\\?");
+        illegalChar.put("_fbr_", "\\[");
+        illegalChar.put("_rbr_", "]");
+        illegalChar.put("_fsl_", "/");
+        illegalChar.put("_bsl_", "\\\\");
+        illegalChar.put("_eq_", "=");
+        illegalChar.put("_pl_", "\\+");
+        illegalChar.put("_lt_", "<");
+        illegalChar.put("_gt_", ">");
+        illegalChar.put("_co_", ":");
+        illegalChar.put("_sc_", ";");
+        illegalChar.put("_dq_", "\"");
+        illegalChar.put("_sq_", "'");
+        illegalChar.put("_st_", "\\*");
+        illegalChar.put("_pp_", "\\|");
+    }
+
     private String dirPath;
     private Map<String, String> chrFileNameCache = new HashMap<String, String>();
     private HashMap<String, Integer> chromosomeLengths;
@@ -122,26 +142,6 @@ public class IGVSequence implements Sequence {
             Collections.sort(chromosomeNames,
                     ChromosomeNameComparator.getInstance());
         }
-    }
-
-    static Map<String, String> illegalChar = new HashMap<String, String>();
-
-    static {
-        illegalChar.put("_qm_", "\\?");
-        illegalChar.put("_fbr_", "\\[");
-        illegalChar.put("_rbr_", "]");
-        illegalChar.put("_fsl_", "/");
-        illegalChar.put("_bsl_", "\\\\");
-        illegalChar.put("_eq_", "=");
-        illegalChar.put("_pl_", "\\+");
-        illegalChar.put("_lt_", "<");
-        illegalChar.put("_gt_", ">");
-        illegalChar.put("_co_", ":");
-        illegalChar.put("_sc_", ";");
-        illegalChar.put("_dq_", "\"");
-        illegalChar.put("_sq_", "'");
-        illegalChar.put("_st_", "\\*");
-        illegalChar.put("_pp_", "\\|");
     }
 
 }

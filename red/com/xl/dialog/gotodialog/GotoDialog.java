@@ -40,29 +40,24 @@ import java.awt.event.KeyListener;
 public class GotoDialog extends JDialog implements ActionListener, KeyListener,
         ListSelectionListener {
 
+    private static RecentLocation[] recentLocations = new RecentLocation[10];
     /**
      * The chromosome.
      */
     private JComboBox<String> chromosome;
-
     /**
      * The start.
      */
     private JTextField start;
-
     /**
      * The end.
      */
     private JTextField end;
-
     /**
      * The ok button.
      */
     private JButton okButton;
-
     private JList<RecentLocation> recentList;
-
-    private static RecentLocation[] recentLocations = new RecentLocation[10];
 
     /**
      * Instantiates a new goto dialog.

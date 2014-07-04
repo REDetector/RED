@@ -26,5 +26,5 @@ package com.xl.interfaces;
  * number of events.
  */
 public interface CacheListener {
-	public void cacheUsed();
+    public void cacheUsed();
 }

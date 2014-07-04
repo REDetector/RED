@@ -46,6 +46,25 @@ public class ChromosomeScaleTrack extends JPanel {
 
     }
 
+    private static String commify(int number) {
+        char[] numbers = ("" + number).toCharArray();
+
+        char[] commaNumbers = new char[numbers.length
+                + ((numbers.length - 1) / 3)];
+
+        int commaPos = commaNumbers.length - 1;
+        for (int numberPos = 0; numberPos < numbers.length; numberPos++) {
+            if (numberPos % 3 == 0 && numberPos > 0) {
+                commaNumbers[commaPos] = ',';
+                commaPos--;
+            }
+            commaNumbers[commaPos] = numbers[numbers.length - (numberPos + 1)];
+            commaPos--;
+        }
+
+        return new String(commaNumbers);
+    }
+
     /*
      * (non-Javadoc)
      *
@@ -105,25 +124,6 @@ public class ChromosomeScaleTrack extends JPanel {
             currentBase += scale.getInterval();
         }
 
-    }
-
-    private static String commify(int number) {
-        char[] numbers = ("" + number).toCharArray();
-
-        char[] commaNumbers = new char[numbers.length
-                + ((numbers.length - 1) / 3)];
-
-        int commaPos = commaNumbers.length - 1;
-        for (int numberPos = 0; numberPos < numbers.length; numberPos++) {
-            if (numberPos % 3 == 0 && numberPos > 0) {
-                commaNumbers[commaPos] = ',';
-                commaPos--;
-            }
-            commaNumbers[commaPos] = numbers[numbers.length - (numberPos + 1)];
-            commaPos--;
-        }
-
-        return new String(commaNumbers);
     }
 
     /**

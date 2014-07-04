@@ -29,26 +29,28 @@ import java.io.Serializable;
  */
 public interface Location extends Serializable, Comparable<Location> {
 
-	public String getChr();
-	/**
-	 * The start position of this location. Guaranteed to not be higher than the
-	 * end position
-	 * 
-	 * @return The start position
-	 */
-	public int getStart();
+    public String getChr();
 
-	/**
-	 * The end position of this location. Guaranteed to be the same or higher
-	 * than the start position.
-	 * 
-	 * @return The end position
-	 */
-	public int getEnd();
+    /**
+     * The start position of this location. Guaranteed to not be higher than the
+     * end position
+     *
+     * @return The start position
+     */
+    public int getStart();
 
-	/**
-	 * The sequence length.
-	 * @return
-	 */
-	public int length();
+    /**
+     * The end position of this location. Guaranteed to be the same or higher
+     * than the start position.
+     *
+     * @return The end position
+     */
+    public int getEnd();
+
+    /**
+     * The sequence length.
+     *
+     * @return
+     */
+    public int length();
 }

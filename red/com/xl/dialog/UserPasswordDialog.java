@@ -14,6 +14,21 @@ import java.awt.event.ActionListener;
 public class UserPasswordDialog extends JDialog {
 
     boolean canceled = true;
+    // JFormDesigner - Variables declaration - DO NOT MODIFY  //GEN-BEGIN:variables
+    // Generated using JFormDesigner non-commercial license
+    private JPanel dialogPane;
+    private JPanel buttonBar;
+    private JButton okButton;
+    private JButton cancelButton;
+    private JPanel contentPanel2;
+    private JLabel label1;
+    private JLabel hostLabel;
+    private JLabel label3;
+    private JLabel label4;
+    private JTextField userField;
+    private JPasswordField passwordField;
+    private JPanel panel1;
+    private JLabel label2;
 
     public UserPasswordDialog(String user, String host) {
         super(REDApplication.getInstance());
@@ -27,7 +42,6 @@ public class UserPasswordDialog extends JDialog {
             hostLabel.setText(host);
         }
     }
-
 
     private void okButtonActionPerformed(ActionEvent e) {
         canceled = false;
@@ -170,22 +184,6 @@ public class UserPasswordDialog extends JDialog {
         setLocationRelativeTo(getOwner());
         // JFormDesigner - End of component initialization  //GEN-END:initComponents
     }
-
-    // JFormDesigner - Variables declaration - DO NOT MODIFY  //GEN-BEGIN:variables
-    // Generated using JFormDesigner non-commercial license
-    private JPanel dialogPane;
-    private JPanel buttonBar;
-    private JButton okButton;
-    private JButton cancelButton;
-    private JPanel contentPanel2;
-    private JLabel label1;
-    private JLabel hostLabel;
-    private JLabel label3;
-    private JLabel label4;
-    private JTextField userField;
-    private JPasswordField passwordField;
-    private JPanel panel1;
-    private JLabel label2;
     // JFormDesigner - End of variables declaration  //GEN-END:variables
 
     public String getUser() {

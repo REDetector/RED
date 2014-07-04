@@ -22,13 +22,6 @@ import java.util.Vector;
 public class DisplayPreferences {
 
     /**
-     * The single instance of this class *
-     */
-    private static DisplayPreferences instance = new DisplayPreferences();
-
-    private Vector<DisplayPreferencesListener> listeners = new Vector<DisplayPreferencesListener>();
-
-    /**
      * The set of constants for the colour type being used *
      */
     /*
@@ -38,68 +31,55 @@ public class DisplayPreferences {
     public static final int COLOUR_TYPE_FIXED = 1001;
     public static final int COLOUR_TYPE_INDEXED = 12;
     public static final int COLOUR_TYPE_GRADIENT = 11;
-
     private int currentColourType = COLOUR_TYPE_GRADIENT;
-
     /**
      * The set of constants for the read density *
      */
     /*
-	 * Some of these values are carried over from an older implementation hence
+     * Some of these values are carried over from an older implementation hence
 	 * the somewhat odd numbering
 	 */
     public static final int READ_DENSITY_LOW = 6;
+    private int currentReadDensity = READ_DENSITY_LOW;
     public static final int READ_DENSITY_MEDIUM = 7;
     public static final int READ_DENSITY_HIGH = 8;
-
-    private int currentReadDensity = READ_DENSITY_LOW;
-
     /**
      * The set of constants for the display mode *
      */
     /*
-	 * Some of these values are carried over from an older implementation hence
+     * Some of these values are carried over from an older implementation hence
 	 * the somewhat odd numbering
 	 */
     public static final int DISPLAY_MODE_READS_AND_QUANTITATION = 1;
     public static final int DISPLAY_MODE_READS_ONLY = 2;
-    public static final int DISPLAY_MODE_QUANTITATION_ONLY = 3;
-
     private int currentDisplayMode = DISPLAY_MODE_READS_ONLY;
-
+    public static final int DISPLAY_MODE_QUANTITATION_ONLY = 3;
     /**
      * The options for which gradient to use *
      */
     public static final int GRADIENT_HOT_COLD = 2001;
+    private int currentGradientValue = GRADIENT_HOT_COLD;
     public static final int GRADIENT_RED_GREEN = 2002;
     public static final int GRADIENT_GREYSCALE = 2003;
     public static final int GRADIENT_MAGENTA_GREEN = 2004;
     public static final int GRADIENT_RED_WHITE = 2005;
-
-    private ColourGradient currentGradient = new HotColdColourGradient();
-    private int currentGradientValue = GRADIENT_HOT_COLD;
-
     /**
      * The options for the type of graph drawn *
      */
     public static final int GRAPH_TYPE_BAR = 3001;
+    private int currentGraphType = GRAPH_TYPE_BAR;
     public static final int GRAPH_TYPE_LINE = 3002;
     public static final int GRAPH_TYPE_POINT = 3003;
-
-    private int currentGraphType = GRAPH_TYPE_BAR;
-
     /**
      * The options for the scale used *
      */
     /*
-	 * Some of these values are carried over from an older implementation hence
+     * Some of these values are carried over from an older implementation hence
 	 * the somewhat odd numbering
 	 */
     public static final int SCALE_TYPE_POSITIVE = 4;
     public static final int SCALE_TYPE_POSITIVE_AND_NEGATIVE = 5;
-
     private int currentScaleType = SCALE_TYPE_POSITIVE_AND_NEGATIVE;
-
     /**
      * The options for the read display *
      */
@@ -109,9 +89,13 @@ public class DisplayPreferences {
 	 */
     public static final int READ_DISPLAY_COMBINED = 9;
     public static final int READ_DISPLAY_SEPARATED = 10;
-
     private int currentReadDisplay = READ_DISPLAY_SEPARATED;
-
+    /**
+     * The single instance of this class *
+     */
+    private static DisplayPreferences instance = new DisplayPreferences();
+    private Vector<DisplayPreferencesListener> listeners = new Vector<DisplayPreferencesListener>();
+    private ColourGradient currentGradient = new HotColdColourGradient();
     /**
      * The Data zoom level *
      */
@@ -301,10 +285,6 @@ public class DisplayPreferences {
         return currentGradient;
     }
 
-    public int getGradientValue() {
-        return currentGradientValue;
-    }
-
     public void setGradient(int gradientType) {
         if (equalsAny(
                 new int[]{GRADIENT_GREYSCALE, GRADIENT_HOT_COLD,
@@ -336,6 +316,10 @@ public class DisplayPreferences {
             throw new IllegalArgumentException("Value " + gradientType
                     + " is not a valid gradient type");
         }
+    }
+
+    public int getGradientValue() {
+        return currentGradientValue;
     }
 
     /* The graph type */

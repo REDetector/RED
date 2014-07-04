@@ -31,20 +31,20 @@ import com.xl.datatypes.genome.Chromosome;
 
 public class ChromosomeWithOffset {
 
-	private Chromosome chromosome;
-	private int offset;
+    private Chromosome chromosome;
+    private int offset;
 
-	public ChromosomeWithOffset(Chromosome chromosome, int offset) {
-		this.chromosome = chromosome;
-		this.offset = offset;
-	}
+    public ChromosomeWithOffset(Chromosome chromosome, int offset) {
+        this.chromosome = chromosome;
+        this.offset = offset;
+    }
 
-	public Chromosome chromosome() {
-		return chromosome;
-	}
+    public Chromosome chromosome() {
+        return chromosome;
+    }
 
-	public int position(int basePosition) {
-		return basePosition + offset;
-	}
+    public int position(int basePosition) {
+        return basePosition + offset;
+    }
 
 }

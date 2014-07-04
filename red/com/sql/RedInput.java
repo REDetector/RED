@@ -15,7 +15,6 @@ public class RedInput {
     //File file = new File("D:/TDDOWNLOAD/HCC448T.subset.vcf");
     //File file = new File("D:/TDDOWNLOAD/test.txt");
     FileInputStream inputStream;
-    private String[] sql = new String[3];
     String line = null;
     String[] col = new String[10];
     String[] temp = new String[10];
@@ -26,6 +25,7 @@ public class RedInput {
     //insert ʱ��ʹ�õ�����
     StringBuffer s3 = new StringBuffer();
     int count = 1;
+    private String[] sql = new String[3];
 
     //	public  RedInput(String dir)
 //	{

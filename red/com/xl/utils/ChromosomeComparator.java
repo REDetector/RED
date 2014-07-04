@@ -19,6 +19,18 @@ public class ChromosomeComparator implements Comparator<Chromosome> {
         this.minSizeImportant = minSizeImportant;
     }
 
+    public static LinkedHashMap<String, Chromosome> sortChromosomeList(
+            List<Chromosome> tmpChromos, int minBig,
+            LinkedHashMap<String, Chromosome> chromosomeMap) {
+        chromosomeMap.clear();
+        Collections.sort(tmpChromos, new ChromosomeComparator(minBig));
+        for (int i = 0; i < tmpChromos.size(); i++) {
+            Chromosome chromo = tmpChromos.get(i);
+            chromosomeMap.put(chromo.getName(), chromo);
+        }
+        return chromosomeMap;
+    }
+
     @Override
     public int compare(Chromosome o1, Chromosome o2) {
         boolean o1import = isImportant(o1);
@@ -42,17 +54,5 @@ public class ChromosomeComparator implements Comparator<Chromosome> {
                 && chromo.getName().length() <= 6)
             return true;
         return false;
-    }
-
-    public static LinkedHashMap<String, Chromosome> sortChromosomeList(
-            List<Chromosome> tmpChromos, int minBig,
-            LinkedHashMap<String, Chromosome> chromosomeMap) {
-        chromosomeMap.clear();
-        Collections.sort(tmpChromos, new ChromosomeComparator(minBig));
-        for (int i = 0; i < tmpChromos.size(); i++) {
-            Chromosome chromo = tmpChromos.get(i);
-            chromosomeMap.put(chromo.getName(), chromo);
-        }
-        return chromosomeMap;
     }
 }

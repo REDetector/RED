@@ -26,71 +26,64 @@ package com.xl.interfaces;
  * component's <code>addProgressListener<code> method. When
  * the progress event occurs, that object's appropriate
  * method is invoked.
- * 
- * @see ProgressEvent
  */
 public interface ProgressListener {
 
-	/**
-	 * This interface is used generically for any operation which is spawned in
-	 * a new thread and which needs to be followed and acted upon on completion.
-	 * We used to have many different similar classes for different types of
-	 * events, but these have been consolidated into this single class to make
-	 * maintenance easier - this explains the somewhat generic way of
-	 * transferring the data we get at the end of the process
-	 * 
-	 */
+    /**
+     * This interface is used generically for any operation which is spawned in
+     * a new thread and which needs to be followed and acted upon on completion.
+     * We used to have many different similar classes for different types of
+     * events, but these have been consolidated into this single class to make
+     * maintenance easier - this explains the somewhat generic way of
+     * transferring the data we get at the end of the process
+     *
+     */
 
-	/**
-	 * Sending an exception via this method indicates that the process has
-	 * terminated due to this error and will never return it's intended result.
-	 * 
-	 * @param e the e
-	 */
-	public void progressExceptionReceived(Exception e);
+    /**
+     * Sending an exception via this method indicates that the process has
+     * terminated due to this error and will never return it's intended result.
+     *
+     * @param e the e
+     */
+    public void progressExceptionReceived(Exception e);
 
-	/**
-	 * Sending an exception via the warning method indicates a non-fatal error
-	 * and that the process will continue and a result will still be produced.
-	 * Classes implementing this method might wish to store these warnings to
-	 * let the user know what went wrong when the result is finally collected.
-	 * 
-	 * @param e the e
-	 */
-	public void progressWarningReceived(Exception e);
+    /**
+     * Sending an exception via the warning method indicates a non-fatal error
+     * and that the process will continue and a result will still be produced.
+     * Classes implementing this method might wish to store these warnings to
+     * let the user know what went wrong when the result is finally collected.
+     *
+     * @param e the e
+     */
+    public void progressWarningReceived(Exception e);
 
-	/**
-	 * The progress update will update any interactive displays to show the
-	 * current level of progress. It is intended that each process goes through
-	 * only one full cycle of 0-100% complete, but this is not enforced.
-	 * 
-	 * @param message
-	 *            the message
-	 * @param current
-	 *            the current
-	 * @param max
-	 *            the max
-	 */
-	public void progressUpdated(String message, int current, int max);
+    /**
+     * The progress update will update any interactive displays to show the
+     * current level of progress. It is intended that each process goes through
+     * only one full cycle of 0-100% complete, but this is not enforced.
+     *
+     * @param message the message
+     * @param current the current
+     * @param max     the max
+     */
+    public void progressUpdated(String message, int current, int max);
 
-	/**
-	 * This method will be called if the progress is cancelled. In this case no
-	 * result will be returned, but there was no error. This ususally happens as
-	 * the result of a user initiated cancellation.
-	 */
-	public void progressCancelled();
+    /**
+     * This method will be called if the progress is cancelled. In this case no
+     * result will be returned, but there was no error. This ususally happens as
+     * the result of a user initiated cancellation.
+     */
+    public void progressCancelled();
 
-	/**
-	 * Once the watched process completes the progress finished method will be
-	 * called. This method can return an object of results and a string
-	 * indicating what needs to be done with the attached result. Methods can
-	 * choose to not return an object in the results if that makes sense, but
-	 * they should put a sensible command name in the string.
-	 * 
-	 * @param command
-	 *            the command
-	 * @param result
-	 *            the result
-	 */
-	public void progressComplete(String command, Object result);
+    /**
+     * Once the watched process completes the progress finished method will be
+     * called. This method can return an object of results and a string
+     * indicating what needs to be done with the attached result. Methods can
+     * choose to not return an object in the results if that makes sense, but
+     * they should put a sensible command name in the string.
+     *
+     * @param command the command
+     * @param result  the result
+     */
+    public void progressComplete(String command, Object result);
 }

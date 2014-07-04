@@ -57,18 +57,15 @@ public class REDApplication extends JFrame implements ProgressListener,
         DataChangeListener, ProbeSetChangeListener,
         AnnotationCollectionListener {
 
-    private static REDApplication application;
-
-    private static final String WELCOME_CONTENT = "<html>Welcome to RED.<br><br> "
-            + "To allow the program to work you need to configure a temporary cache directory.<br><br>"
-            + "Use the button on the welcome screen to set this and you can get started";
-    private static final String WELCOME_TITLE = "Welcome - cache directory needed";
-
     /**
      * The version of RED
      */
     public static final String VERSION = "0.0.5";
-
+    private static final String WELCOME_CONTENT = "<html>Welcome to RED.<br><br> "
+            + "To allow the program to work you need to configure a temporary cache directory.<br><br>"
+            + "Use the button on the welcome screen to set this and you can get started";
+    private static final String WELCOME_TITLE = "Welcome - cache directory needed";
+    private static REDApplication application;
     /**
      * The root menu of RED
      */
@@ -180,6 +177,36 @@ public class REDApplication extends JFrame implements ProgressListener,
 
         mainPane.setDividerLocation(0.25);
         topPane.setDividerLocation(0.25);
+    }
+
+    public static REDApplication getInstance() {
+        return application;
+    }
+
+    public static void main(String[] args) {
+        try {
+            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        try {
+            Thread.setDefaultUncaughtExceptionHandler(new ErrorCatcher());
+            application = new REDApplication();
+            application.setVisible(true);
+            if (!application.welcomePanel.cacheDirectoryValid()) {
+                JOptionPane.showMessageDialog(application, WELCOME_CONTENT,
+                        WELCOME_TITLE, JOptionPane.INFORMATION_MESSAGE);
+            }
+            if (args.length > 0) {
+                File f = new File(args[0]);
+                application.loadProject(f);
+            }
+        } catch (Exception e) {
+            new CrashReporter(e);
+            e.printStackTrace();
+        }
+
     }
 
     /**
@@ -431,10 +458,6 @@ public class REDApplication extends JFrame implements ProgressListener,
 
     public DataStore[] drawnDataStores() {
         return drawnDataStores.toArray(new DataStore[0]);
-    }
-
-    public static REDApplication getInstance() {
-        return application;
     }
 
     public GenomeViewer genomeViewer() {
@@ -939,32 +962,6 @@ public class REDApplication extends JFrame implements ProgressListener,
 
     public StatusPanel statusPanel() {
         return statusPanel;
-    }
-
-    public static void main(String[] args) {
-        try {
-            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        try {
-            Thread.setDefaultUncaughtExceptionHandler(new ErrorCatcher());
-            application = new REDApplication();
-            application.setVisible(true);
-            if (!application.welcomePanel.cacheDirectoryValid()) {
-                JOptionPane.showMessageDialog(application, WELCOME_CONTENT,
-                        WELCOME_TITLE, JOptionPane.INFORMATION_MESSAGE);
-            }
-            if (args.length > 0) {
-                File f = new File(args[0]);
-                application.loadProject(f);
-            }
-        } catch (Exception e) {
-            new CrashReporter(e);
-            e.printStackTrace();
-        }
-
     }
 
 }

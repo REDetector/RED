@@ -40,8 +40,8 @@ import java.io.IOException;
  */
 public class ProbeLengthHistogramPlot extends JDialog implements ActionListener, Runnable {
 
-    private HistogramPanel plotPanel;
     private final JLabel calculatingLabel = new JLabel("Calculating Plot...", JLabel.CENTER);
+    private HistogramPanel plotPanel;
     private ProbeList p;
 
     /**

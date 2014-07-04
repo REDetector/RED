@@ -43,15 +43,13 @@ import java.io.IOException;
 public class ProbeValueHistogramPlot extends JDialog implements ActionListener, Runnable {
 
     /**
-     * The plot panel.
-     */
-    private HistogramPanel plotPanel;
-
-    /**
      * The calculating label.
      */
     private final JLabel calculatingLabel = new JLabel("Calculating Plot...", JLabel.CENTER);
-
+    /**
+     * The plot panel.
+     */
+    private HistogramPanel plotPanel;
     /**
      * The d.
      */

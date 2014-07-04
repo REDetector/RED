@@ -87,6 +87,10 @@ public class SequenceRead implements Location {
         return counts;
     }
 
+    public void setCounts(short[] counts) {
+        this.counts = counts;
+    }
+
     public short getCount(int index) {
         return counts[index];
     }
@@ -102,10 +106,6 @@ public class SequenceRead implements Location {
         } else {
             return false;
         }
-    }
-
-    public void setCounts(short[] counts) {
-        this.counts = counts;
     }
 
     public boolean hasCounts() {

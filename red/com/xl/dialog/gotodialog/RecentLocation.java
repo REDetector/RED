@@ -20,40 +20,40 @@
 package com.xl.dialog.gotodialog;
 
 public class RecentLocation {
-	private String c;
-	private int start;
-	private int end;
-	
-	public RecentLocation (String c, int start, int end) {
-		this.c = c;
-		this.start = start;
-		this.end = end;
-	}
-	
-	public String chromsome () {
-		return c;
-	}
-	
-	public long start () {
-		return start;
-	}
-	
-	public long end () {
-		return end;
-	}
-	
-	public String toString() {
-		
-		return c+":"+start+"-"+end;
-	}
+    private String c;
+    private int start;
+    private int end;
 
-	public int compareTo(RecentLocation l) {
-		if (c != l.c) {
-			return c.compareTo(l.c);
-		}
-		if (start != l.start()) {
-			return (int) (start-l.start());
-		}
-		return (int) (end - l.end());
-	}
+    public RecentLocation(String c, int start, int end) {
+        this.c = c;
+        this.start = start;
+        this.end = end;
+    }
+
+    public String chromsome() {
+        return c;
+    }
+
+    public long start() {
+        return start;
+    }
+
+    public long end() {
+        return end;
+    }
+
+    public String toString() {
+
+        return c + ":" + start + "-" + end;
+    }
+
+    public int compareTo(RecentLocation l) {
+        if (c != l.c) {
+            return c.compareTo(l.c);
+        }
+        if (start != l.start()) {
+            return (int) (start - l.start());
+        }
+        return (int) (end - l.end());
+    }
 }

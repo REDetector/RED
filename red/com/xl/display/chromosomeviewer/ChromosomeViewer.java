@@ -60,25 +60,17 @@ public class ChromosomeViewer extends JPanel implements DataChangeListener,
 	 * correctly and we'll probably get errors.
 	 */
 
+    private static boolean showAllLables = false;
     private REDApplication application;
-
     private Chromosome chromosome;
-
     private ChromosomeFeatureTrack featureTrack = null;
-
     private Vector<ChromosomeDataTrack> dataTracks = new Vector<ChromosomeDataTrack>();
-
     private JPanel featurePanel;
-
-    private JLabel titleLabel; // Tried using a TextField to get Copy/Paste, but
     // this broke SVG export
-
+    private JLabel titleLabel; // Tried using a TextField to get Copy/Paste, but
     private int selectionStart = 0;
     private int selectionEnd = 0;
     private boolean makingSelection = false;
-
-    private static boolean showAllLables = false;
-
     private int currentStart = 1;
     private int currentEnd = 1;
 

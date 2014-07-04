@@ -23,35 +23,34 @@ package com.xl.thread;
 /**
  * This class provides a thread safe implementation of a record of the max and
  * min values ever seen
- * 
+ *
  * @author andrewss
- * 
  */
 public class ThreadSafeMinMax {
 
-	private int min = 0;
-	private int max = 0;
-	private boolean anyData = false;
+    private int min = 0;
+    private int max = 0;
+    private boolean anyData = false;
 
-	public synchronized void addValue(int value) {
-		if (anyData) {
-			if (value < min)
-				min = value;
-			if (value > max)
-				max = value;
-		} else {
-			min = value;
-			max = value;
-		}
+    public synchronized void addValue(int value) {
+        if (anyData) {
+            if (value < min)
+                min = value;
+            if (value > max)
+                max = value;
+        } else {
+            min = value;
+            max = value;
+        }
 
-	}
+    }
 
-	public int min() {
-		return min;
-	}
+    public int min() {
+        return min;
+    }
 
-	public int max() {
-		return max;
-	}
+    public int max() {
+        return max;
+    }
 
 }

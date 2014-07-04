@@ -63,40 +63,6 @@ public class SVGGenerator {
 	 */
 
     /**
-     * This is the method used to create an SVG representation
-     * of a component.  The returned string contains valid SVG
-     *
-     * @param c The component to convert
-     * @return An SVG representation of the component
-     */
-    public static void writeSVG(PrintWriter pr, Component c) {
-
-		/*
-         * Before using our Graphics class we need to disable double
-		 * buffering on the component.  If we don't do this then we
-		 * just get an image from the offscreen buffer to draw into
-		 * our Graphics object - we never see the individual method
-		 * calls to the Graphics interface.
-		 * 
-		 * This only affects Windows/Linux where java does the buffering
-		 * internally.  OSX does it via the window manager so this works
-		 * without changing anything.
-		 */
-
-        boolean doubleBuffered = RepaintManager.currentManager(c).isDoubleBufferingEnabled();
-        if (doubleBuffered) {
-            RepaintManager.currentManager(c).setDoubleBufferingEnabled(false);
-        }
-
-        new SVGGenerator(pr, c);
-
-        if (doubleBuffered) {
-            RepaintManager.currentManager(c).setDoubleBufferingEnabled(true);
-        }
-
-    }
-
-    /**
      * Instantiates a new generator.  Not used externally - all external calls
      * to this class should go via the static convert to SVG method.
      *
@@ -127,6 +93,40 @@ public class SVGGenerator {
         c.paint(new SVGGraphics());
 
         pr.print("</svg>\n");
+
+    }
+
+    /**
+     * This is the method used to create an SVG representation
+     * of a component.  The returned string contains valid SVG
+     *
+     * @param c The component to convert
+     * @return An SVG representation of the component
+     */
+    public static void writeSVG(PrintWriter pr, Component c) {
+
+		/*
+         * Before using our Graphics class we need to disable double
+		 * buffering on the component.  If we don't do this then we
+		 * just get an image from the offscreen buffer to draw into
+		 * our Graphics object - we never see the individual method
+		 * calls to the Graphics interface.
+		 *
+		 * This only affects Windows/Linux where java does the buffering
+		 * internally.  OSX does it via the window manager so this works
+		 * without changing anything.
+		 */
+
+        boolean doubleBuffered = RepaintManager.currentManager(c).isDoubleBufferingEnabled();
+        if (doubleBuffered) {
+            RepaintManager.currentManager(c).setDoubleBufferingEnabled(false);
+        }
+
+        new SVGGenerator(pr, c);
+
+        if (doubleBuffered) {
+            RepaintManager.currentManager(c).setDoubleBufferingEnabled(true);
+        }
 
     }
 
@@ -343,20 +343,6 @@ public class SVGGenerator {
         }
 
         /* (non-Javadoc)
-         * @see java.awt.Graphics#setColor(java.awt.Color)
-         */
-        public void setColor(Color color) {
-            this.color = color;
-        }
-
-        /* (non-Javadoc)
-         * @see java.awt.Graphics#setFont(java.awt.Font)
-         */
-        public void setFont(Font font) {
-            this.font = font;
-        }
-
-        /* (non-Javadoc)
          * @see java.awt.Graphics#drawRect(int, int, int, int)
          */
         public void drawRect(int x, int y, int width, int height) {
@@ -481,6 +467,13 @@ public class SVGGenerator {
             return font;
         }
 
+        /* (non-Javadoc)
+         * @see java.awt.Graphics#setFont(java.awt.Font)
+         */
+        public void setFont(Font font) {
+            this.font = font;
+        }
+
         /**
          * Append color.
          */
@@ -491,18 +484,18 @@ public class SVGGenerator {
             pr.print(",");
             pr.print(color.getBlue());
         }
-	
-		/*
-		 * The following methods are required by the graphics interface
-		 * but we don't actually use them so we're just leaving them as
-		 * stubs.
-		 */
 
         /* (non-Javadoc)
          * @see java.awt.Graphics#clearRect(int, int, int, int)
          */
         public void clearRect(int arg0, int arg1, int arg2, int arg3) {
         }
+
+		/*
+         * The following methods are required by the graphics interface
+		 * but we don't actually use them so we're just leaving them as
+		 * stubs.
+		 */
 
         /* (non-Javadoc)
          * @see java.awt.Graphics#clipRect(int, int, int, int)
@@ -590,7 +583,6 @@ public class SVGGenerator {
             System.out.println("Draw polygon 2");
         }
 
-
         /* (non-Javadoc)
          * @see java.awt.Graphics#drawString(java.text.AttributedCharacterIterator, int, int)
          */
@@ -605,7 +597,6 @@ public class SVGGenerator {
             System.out.println("Fill arc");
         }
 
-
         /* (non-Javadoc)
          * @see java.awt.Graphics#fillPolygon(int[], int[], int)
          */
@@ -618,6 +609,12 @@ public class SVGGenerator {
          */
         public Shape getClip() {
             return g.getClip();
+        }
+
+        /* (non-Javadoc)
+         * @see java.awt.Graphics#setClip(java.awt.Shape)
+         */
+        public void setClip(Shape s) {
         }
 
         /* (non-Javadoc)
@@ -635,16 +632,17 @@ public class SVGGenerator {
         }
 
         /* (non-Javadoc)
+         * @see java.awt.Graphics#setColor(java.awt.Color)
+         */
+        public void setColor(Color color) {
+            this.color = color;
+        }
+
+        /* (non-Javadoc)
          * @see java.awt.Graphics#getFontMetrics(java.awt.Font)
          */
         public FontMetrics getFontMetrics(Font f) {
             return g.getFontMetrics(f);
-        }
-
-        /* (non-Javadoc)
-         * @see java.awt.Graphics#setClip(java.awt.Shape)
-         */
-        public void setClip(Shape s) {
         }
 
         /* (non-Javadoc)

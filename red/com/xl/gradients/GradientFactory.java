@@ -18,19 +18,20 @@
  *    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 package com.xl.gradients;
+
 public class GradientFactory {
 
-	private static ColourGradient [] gradients = new ColourGradient [] {
-		new HotColdColourGradient(),
-		new WhiteCyanBlueRedColourGradient(),
-		new RedGreenColourGradient(),
-		new MagentaGreenColourGradient(),
-		new RedWhiteColourGradient(),
-		new GreyscaleColourGradient(),
-	};
-	
-	
-	public static ColourGradient [] getGradients () {
-		return gradients;
-	}
+    private static ColourGradient[] gradients = new ColourGradient[]{
+            new HotColdColourGradient(),
+            new WhiteCyanBlueRedColourGradient(),
+            new RedGreenColourGradient(),
+            new MagentaGreenColourGradient(),
+            new RedWhiteColourGradient(),
+            new GreyscaleColourGradient(),
+    };
+
+
+    public static ColourGradient[] getGradients() {
+        return gradients;
+    }
 }

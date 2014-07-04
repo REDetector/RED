@@ -20,20 +20,17 @@ import java.util.Vector;
 public abstract class AnnotationParser implements Cancellable, Runnable {
 
     /**
-     * The listeners.
-     */
-    private Vector<ProgressListener> listeners = new Vector<ProgressListener>();
-
-    /**
      * The cancel.
      */
     protected boolean cancel = false;
-
     /**
      * The genome.
      */
     protected Genome genome = null;
-
+    /**
+     * The listeners.
+     */
+    private Vector<ProgressListener> listeners = new Vector<ProgressListener>();
     /**
      * The file.
      */
@@ -42,6 +39,15 @@ public abstract class AnnotationParser implements Cancellable, Runnable {
 	/*
      * These are the methods any implementing class must provide
 	 */
+
+    /**
+     * Instantiates a new annotation parser.
+     *
+     * @param genome the genome
+     */
+    public AnnotationParser(Genome genome) {
+        this.genome = genome;
+    }
 
     /**
      * File filter.
@@ -72,15 +78,6 @@ public abstract class AnnotationParser implements Cancellable, Runnable {
      * @return the string
      */
     abstract public String name();
-
-    /**
-     * Instantiates a new annotation parser.
-     *
-     * @param genome the genome
-     */
-    public AnnotationParser(Genome genome) {
-        this.genome = genome;
-    }
 
     /**
      * Genome.
