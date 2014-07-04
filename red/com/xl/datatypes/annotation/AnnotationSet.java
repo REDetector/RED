@@ -1,25 +1,5 @@
 package com.xl.datatypes.annotation;
 
-/**
- * Copyright 2010-13 Simon Andrews
- *
- *    This file is part of SeqMonk.
- *
- *    SeqMonk is free software; you can redistribute it and/or modify
- *    it under the terms of the GNU General Public License as published by
- *    the Free Software Foundation; either version 3 of the License, or
- *    (at your option) any later version.
- *
- *    SeqMonk is distributed in the hope that it will be useful,
- *    but WITHOUT ANY WARRANTY; without even the implied warranty of
- *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *    GNU General Public License for more details.
- *
- *    You should have received a copy of the GNU General Public License
- *    along with SeqMonk; if not, write to the Free Software
- *    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
- */
-
 import com.xl.datatypes.genome.Genome;
 import com.xl.dialog.CrashReporter;
 import com.xl.display.featureviewer.Feature;
@@ -128,10 +108,6 @@ public class AnnotationSet {
         return featureSet.getFeaturesForLocation(location);
     }
 
-    public Feature deleteFeatureForName(String chr, String name) {
-        return featureSet.deleteFeatureForName(chr, name);
-    }
-
     public boolean deleteFeature(String chr, Feature feature) {
         return featureSet.deleteFeature(chr, feature);
     }
@@ -144,7 +120,6 @@ public class AnnotationSet {
         Vector<Feature> allFeatures = new Vector<Feature>();
 
         Enumeration<String> chrs = featureSet.getChromosomeNames();
-
         while (chrs.hasMoreElements()) {
             String c = chrs.nextElement();
             Feature[] features = featureSet
@@ -161,7 +136,6 @@ public class AnnotationSet {
         // This is called when we're added to a collection and lets us optimise
         // storage and cache off unused data. It should only be called once
         // and we prevent the adding of more features once it's been called.
-
         if (finalised)
             return;
         finalised = true;
@@ -245,16 +219,6 @@ public class AnnotationSet {
 
         private Hashtable<String, FeatureTypeCollection> chrFeatures = new Hashtable<String, FeatureTypeCollection>();
 
-        public FeatureSet() {
-            String[] chromosomeNames = genome.getAllChromosomeNames();
-            if (chromosomeNames != null) {
-                for (String chrosmomeName : chromosomeNames) {
-                    FeatureTypeCollection t = new FeatureTypeCollection(chrosmomeName);
-                    chrFeatures.put(chrosmomeName, t);
-                }
-            }
-        }
-
         /**
          * Adds a feature.
          *
@@ -279,13 +243,6 @@ public class AnnotationSet {
             return chrFeatures.keys();
         }
 
-        public Feature deleteFeatureForName(String chr, String name) {
-            if (chrFeatures.containsKey(chr)) {
-                return chrFeatures.get(chr).deleteFeatureForName(name);
-            } else {
-                return null;
-            }
-        }
 
         public boolean deleteFeature(String chr, Feature feature) {
             if (chrFeatures.contains(chr)) {
@@ -378,13 +335,14 @@ public class AnnotationSet {
      */
     protected class FeatureTypeCollection implements Runnable {
 
-        private LinkedList<Feature> buildFeatures = new LinkedList<Feature>();
+        private LinkedList<Feature> buildFeatures = null;
         private Feature[] featureList = null;
         private File cacheFile = null;
         private String chr = null;
 
         public FeatureTypeCollection(String chr) {
             this.chr = chr;
+            buildFeatures = new LinkedList<Feature>();
         }
 
         /**
@@ -419,18 +377,6 @@ public class AnnotationSet {
             } else {
                 return false;
             }
-        }
-
-        public Feature deleteFeatureForName(String name) {
-            if (buildFeatures != null && buildFeatures.size() != 0) {
-                int length = buildFeatures.size();
-                for (int i = 0; i < length; i++) {
-                    if (buildFeatures.get(i).getAliasName().equals(name) || buildFeatures.get(i).getName().equals(name)) {
-                        return buildFeatures.remove(i);
-                    }
-                }
-            }
-            return null;
         }
 
         public Feature getFeatureForName(String name) {
@@ -504,21 +450,21 @@ public class AnnotationSet {
             // If this isn't core annotation then we cache this to the normal
             // cache directory and set a shutdown hook to delete it at the end
             // of the session.
-            else if (featureList.length > 500) {
-                try {
-                    cacheFile = File.createTempFile("red_anotation", ".temp",
-                            REDPreferences.getInstance().tempDirectory());
-                    ObjectOutputStream oos = new ObjectOutputStream(
-                            new BufferedOutputStream(new FileOutputStream(
-                                    cacheFile)));
-                    oos.writeObject(featureList);
-                    oos.close();
-                    featureList = null;
-                    Runtime.getRuntime().addShutdownHook(new Thread(this));
-                } catch (IOException ioe) {
-                    new CrashReporter(ioe);
-                }
-            }
+//            else if (featureList.length > 500) {
+//                try {
+//                    cacheFile = File.createTempFile("red_anotation", ".temp",
+//                            REDPreferences.getInstance().tempDirectory());
+//                    ObjectOutputStream oos = new ObjectOutputStream(
+//                            new BufferedOutputStream(new FileOutputStream(
+//                                    cacheFile)));
+//                    oos.writeObject(featureList);
+//                    oos.close();
+//                    featureList = null;
+//                    Runtime.getRuntime().addShutdownHook(new Thread(this));
+//                } catch (IOException ioe) {
+//                    new CrashReporter(ioe);
+//                }
+//            }
         }
 
         /*
