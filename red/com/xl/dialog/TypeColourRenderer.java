@@ -37,11 +37,6 @@ public class TypeColourRenderer extends DefaultListCellRenderer {
         } else if (value instanceof DataGroup) {
             l.setForeground(ColourScheme.DATAGROUP_LIST);
             l.setBackground(ColourScheme.DATAGROUP_LIST);
-        } else {
-            // Should only be replicate sets
-            l.setForeground(ColourScheme.REPLICATE_SET_LIST);
-            l.setBackground(ColourScheme.REPLICATE_SET_LIST);
-
         }
 
         if (selected) {

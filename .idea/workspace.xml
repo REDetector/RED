@@ -2,17 +2,13 @@
 <project version="4">
   <component name="ChangeListManager">
     <list id="84c5056e-4735-415e-9374-ef14f745da71" name="Default" comment="Add the color of base. Namely," />
-    <list default="true" id="7bfbcd82-43d2-4bb3-bf21-1f16164d2c5a" name="Rejected commit: Default" comment="Add methods to load fasta files.">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/com/xl/datatypes/annotation/AnnotationCollection.java" afterPath="$PROJECT_DIR$/red/com/xl/datatypes/annotation/AnnotationCollection.java" />
+    <list default="true" id="7bfbcd82-43d2-4bb3-bf21-1f16164d2c5a" name="Rejected commit: Default" comment=".">
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/red/com/xl/utils/FontManager.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/com/xl/display/chromosomeviewer/ChromosomeDataTrack.java" afterPath="$PROJECT_DIR$/red/com/xl/display/chromosomeviewer/ChromosomeDataTrack.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/com/xl/display/chromosomeviewer/ChromosomeFeatureTrack.java" afterPath="$PROJECT_DIR$/red/com/xl/display/chromosomeviewer/ChromosomeFeatureTrack.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/com/xl/display/chromosomeviewer/ChromosomeViewer.java" afterPath="$PROJECT_DIR$/red/com/xl/display/chromosomeviewer/ChromosomeViewer.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/com/xl/utils/ColourScheme.java" afterPath="$PROJECT_DIR$/red/com/xl/utils/ColourScheme.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/com/xl/parsers/dataparsers/DataParser.java" afterPath="$PROJECT_DIR$/red/com/xl/parsers/dataparsers/DataParser.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/com/xl/parsers/dataparsers/FastaFileParser.java" afterPath="$PROJECT_DIR$/red/com/xl/parsers/dataparsers/FastaFileParser.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/com/xl/main/REDApplication.java" afterPath="$PROJECT_DIR$/red/com/xl/main/REDApplication.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/com/xl/panel/REDInfoPanel.java" afterPath="$PROJECT_DIR$/red/com/xl/panel/REDInfoPanel.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/com/xl/menu/REDMenu.java" afterPath="$PROJECT_DIR$/red/com/xl/menu/REDMenu.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/com/xl/panel/REDTitlePanel.java" afterPath="$PROJECT_DIR$/red/com/xl/panel/REDTitlePanel.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/com/xl/datatypes/DataSet.java" afterPath="$PROJECT_DIR$/red/com/xl/datatypes/DataSet.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/com/xl/dialog/TypeColourRenderer.java" afterPath="$PROJECT_DIR$/red/com/xl/dialog/TypeColourRenderer.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <list id="7653a5be-4308-4b8a-af47-b29b059d9163" name="Rejected commit: Rejected commit: Default" comment="Fix some bugs." />
@@ -85,7 +81,7 @@
       <file leaf-file-name="FastaFileParser.java" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/red/com/xl/parsers/dataparsers/FastaFileParser.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="2594" max-vertical-offset="3080">
+            <state vertical-scroll-proportion="0.0" vertical-offset="2599" max-vertical-offset="3080">
               <caret line="155" column="21" selection-start-line="155" selection-start-column="21" selection-end-line="155" selection-end-column="21" />
               <folding>
                 <element signature="e#2816#2817#0" expanded="true" />
@@ -107,7 +103,7 @@
       <file leaf-file-name="AnnotationCollection.java" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/red/com/xl/datatypes/annotation/AnnotationCollection.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="2565" max-vertical-offset="4040">
+            <state vertical-scroll-proportion="0.0" vertical-offset="2840" max-vertical-offset="4040">
               <caret line="155" column="25" selection-start-line="155" selection-start-column="23" selection-end-line="155" selection-end-column="23" />
               <folding>
                 <element signature="e#783#813#0" expanded="true" />
@@ -119,7 +115,7 @@
       <file leaf-file-name="DataParser.java" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/red/com/xl/parsers/dataparsers/DataParser.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="3801" max-vertical-offset="4420">
+            <state vertical-scroll-proportion="0.0" vertical-offset="3926" max-vertical-offset="4420">
               <caret line="252" column="42" selection-start-line="252" selection-start-column="31" selection-end-line="252" selection-end-column="31" />
               <folding />
             </state>
@@ -129,24 +125,46 @@
       <file leaf-file-name="ChromosomeFeatureTrack.java" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/red/com/xl/display/chromosomeviewer/ChromosomeFeatureTrack.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="3480" max-vertical-offset="11020">
-              <caret line="227" column="56" selection-start-line="227" selection-start-column="56" selection-end-line="227" selection-end-column="56" />
+            <state vertical-scroll-proportion="0.0" vertical-offset="2160" max-vertical-offset="9540">
+              <caret line="164" column="83" selection-start-line="164" selection-start-column="47" selection-end-line="164" selection-end-column="47" />
               <folding>
-                <element signature="e#4160#4161#0" expanded="true" />
-                <element signature="e#4194#4195#0" expanded="true" />
-                <element signature="e#7297#7298#0" expanded="true" />
-                <element signature="e#7341#7342#0" expanded="true" />
+                <element signature="e#3025#3026#0" expanded="true" />
+                <element signature="e#3059#3060#0" expanded="true" />
+                <element signature="e#6269#6270#0" expanded="true" />
+                <element signature="e#6313#6314#0" expanded="true" />
+                <element signature="e#11145#11146#0" expanded="true" />
+                <element signature="e#11200#11201#0" expanded="true" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="ChromosomeDataTrack.java" pinned="false" current="false" current-in-tab="false">
+      <file leaf-file-name="FontManager.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/red/com/xl/utils/FontManager.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="320">
+              <caret line="8" column="34" selection-start-line="8" selection-start-column="23" selection-end-line="8" selection-end-column="34" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="ChromosomeDataTrack.java" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/red/com/xl/display/chromosomeviewer/ChromosomeDataTrack.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="5000" max-vertical-offset="10240">
-              <caret line="250" column="26" selection-start-line="250" selection-start-column="26" selection-end-line="250" selection-end-column="26" />
-              <folding />
+            <state vertical-scroll-proportion="0.4989605" vertical-offset="6400" max-vertical-offset="9460">
+              <caret line="332" column="45" selection-start-line="332" selection-start-column="0" selection-end-line="332" selection-end-column="0" />
+              <folding>
+                <element signature="imports" expanded="true" />
+                <element signature="e#1488#1499#0" expanded="true" />
+                <element signature="e#10285#10294#0" expanded="true" />
+                <element signature="e#11184#11185#0" expanded="true" />
+                <element signature="e#11241#11242#0" expanded="true" />
+                <element signature="e#13434#13435#0" expanded="true" />
+                <element signature="e#13511#13512#0" expanded="true" />
+                <element signature="e#14861#14862#0" expanded="true" />
+                <element signature="e#14942#14943#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -154,28 +172,18 @@
       <file leaf-file-name="ColourScheme.java" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/red/com/xl/utils/ColourScheme.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="550" max-vertical-offset="2820">
-              <caret line="35" column="77" selection-start-line="35" selection-start-column="7" selection-end-line="35" selection-end-column="7" />
+            <state vertical-scroll-proportion="0.0" vertical-offset="2466" max-vertical-offset="3020">
+              <caret line="130" column="36" selection-start-line="130" selection-start-column="24" selection-end-line="130" selection-end-column="36" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="WelcomePanel.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/red/com/xl/panel/WelcomePanel.java">
+      <file leaf-file-name="REDParser.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/red/com/xl/parsers/dataparsers/REDParser.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="396" max-vertical-offset="1120">
-              <caret line="53" column="29" selection-start-line="53" selection-start-column="29" selection-end-line="53" selection-end-column="29" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="REDTitlePanel.java" pinned="false" current="true" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/red/com/xl/panel/REDTitlePanel.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.7611336" vertical-offset="1144" max-vertical-offset="2340">
-              <caret line="99" column="40" selection-start-line="99" selection-start-column="35" selection-end-line="99" selection-end-column="35" />
+            <state vertical-scroll-proportion="0.0" vertical-offset="8700" max-vertical-offset="23960">
+              <caret line="471" column="16" selection-start-line="471" selection-start-column="8" selection-end-line="471" selection-end-column="16" />
               <folding />
             </state>
           </provider>
@@ -199,8 +207,6 @@
   <component name="IdeDocumentHistory">
     <option name="changedFiles">
       <list>
-        <option value="$PROJECT_DIR$/red/com/xl/datatypes/DataCollection.java" />
-        <option value="$PROJECT_DIR$/red/com/xl/datatypes/PairedDataSet.java" />
         <option value="$PROJECT_DIR$/red/com/xl/datatypes/DataGroup.java" />
         <option value="$PROJECT_DIR$/red/com/xl/parsers/dataparsers/BAMFileParser.java" />
         <option value="$PROJECT_DIR$/red/com/xl/display/featureviewer/Feature.java" />
@@ -241,15 +247,17 @@
         <option value="$PROJECT_DIR$/red/com/xl/menu/REDMenu.java" />
         <option value="$PROJECT_DIR$/red/com/xl/parsers/dataparsers/FastaFileParser.java" />
         <option value="$PROJECT_DIR$/red/com/xl/parsers/dataparsers/DataParser.java" />
-        <option value="$PROJECT_DIR$/red/com/xl/datatypes/DataSet.java" />
         <option value="$PROJECT_DIR$/red/com/xl/main/REDApplication.java" />
         <option value="$PROJECT_DIR$/red/com/xl/datatypes/annotation/AnnotationCollection.java" />
         <option value="$PROJECT_DIR$/red/com/xl/display/chromosomeviewer/ChromosomeViewer.java" />
+        <option value="$PROJECT_DIR$/red/com/xl/panel/REDInfoPanel.java" />
+        <option value="$PROJECT_DIR$/red/com/xl/panel/REDTitlePanel.java" />
+        <option value="$PROJECT_DIR$/red/com/xl/datatypes/DataSet.java" />
+        <option value="$PROJECT_DIR$/red/com/xl/utils/ColourScheme.java" />
+        <option value="$PROJECT_DIR$/red/com/xl/dialog/TypeColourRenderer.java" />
+        <option value="$PROJECT_DIR$/red/com/xl/utils/FontManager.java" />
         <option value="$PROJECT_DIR$/red/com/xl/display/chromosomeviewer/ChromosomeFeatureTrack.java" />
         <option value="$PROJECT_DIR$/red/com/xl/display/chromosomeviewer/ChromosomeDataTrack.java" />
-        <option value="$PROJECT_DIR$/red/com/xl/panel/REDInfoPanel.java" />
-        <option value="$PROJECT_DIR$/red/com/xl/utils/ColourScheme.java" />
-        <option value="$PROJECT_DIR$/red/com/xl/panel/REDTitlePanel.java" />
       </list>
     </option>
   </component>
@@ -407,30 +415,8 @@
               <option name="myItemId" value="xl" />
               <option name="myItemType" value="com.android.tools.idea.gradle.projectView.AndroidPsiDirectoryNode" />
             </PATH_ELEMENT>
-          </PATH>
-          <PATH>
             <PATH_ELEMENT>
-              <option name="myItemId" value="REDetector" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="REDetector" />
-              <option name="myItemType" value="com.android.tools.idea.gradle.projectView.AndroidPsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="red" />
-              <option name="myItemType" value="com.android.tools.idea.gradle.projectView.AndroidPsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="com" />
-              <option name="myItemType" value="com.android.tools.idea.gradle.projectView.AndroidPsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="xl" />
-              <option name="myItemType" value="com.android.tools.idea.gradle.projectView.AndroidPsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="panel" />
+              <option name="myItemId" value="utils" />
               <option name="myItemType" value="com.android.tools.idea.gradle.projectView.AndroidPsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -453,10 +439,6 @@
             </PATH_ELEMENT>
             <PATH_ELEMENT>
               <option name="myItemId" value="xl" />
-              <option name="myItemType" value="com.android.tools.idea.gradle.projectView.AndroidPsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="menu" />
               <option name="myItemType" value="com.android.tools.idea.gradle.projectView.AndroidPsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -482,7 +464,63 @@
               <option name="myItemType" value="com.android.tools.idea.gradle.projectView.AndroidPsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="main" />
+              <option name="myItemId" value="parsers" />
+              <option name="myItemType" value="com.android.tools.idea.gradle.projectView.AndroidPsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="dataparsers" />
+              <option name="myItemType" value="com.android.tools.idea.gradle.projectView.AndroidPsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="REDetector" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="REDetector" />
+              <option name="myItemType" value="com.android.tools.idea.gradle.projectView.AndroidPsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="red" />
+              <option name="myItemType" value="com.android.tools.idea.gradle.projectView.AndroidPsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="com" />
+              <option name="myItemType" value="com.android.tools.idea.gradle.projectView.AndroidPsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="xl" />
+              <option name="myItemType" value="com.android.tools.idea.gradle.projectView.AndroidPsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="parsers" />
+              <option name="myItemType" value="com.android.tools.idea.gradle.projectView.AndroidPsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="REDetector" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="REDetector" />
+              <option name="myItemType" value="com.android.tools.idea.gradle.projectView.AndroidPsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="red" />
+              <option name="myItemType" value="com.android.tools.idea.gradle.projectView.AndroidPsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="com" />
+              <option name="myItemType" value="com.android.tools.idea.gradle.projectView.AndroidPsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="xl" />
+              <option name="myItemType" value="com.android.tools.idea.gradle.projectView.AndroidPsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="gradients" />
               <option name="myItemType" value="com.android.tools.idea.gradle.projectView.AndroidPsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -509,62 +547,6 @@
             </PATH_ELEMENT>
             <PATH_ELEMENT>
               <option name="myItemId" value="display" />
-              <option name="myItemType" value="com.android.tools.idea.gradle.projectView.AndroidPsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="REDetector" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="REDetector" />
-              <option name="myItemType" value="com.android.tools.idea.gradle.projectView.AndroidPsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="red" />
-              <option name="myItemType" value="com.android.tools.idea.gradle.projectView.AndroidPsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="com" />
-              <option name="myItemType" value="com.android.tools.idea.gradle.projectView.AndroidPsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="xl" />
-              <option name="myItemType" value="com.android.tools.idea.gradle.projectView.AndroidPsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="datatypes" />
-              <option name="myItemType" value="com.android.tools.idea.gradle.projectView.AndroidPsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="REDetector" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="REDetector" />
-              <option name="myItemType" value="com.android.tools.idea.gradle.projectView.AndroidPsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="red" />
-              <option name="myItemType" value="com.android.tools.idea.gradle.projectView.AndroidPsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="com" />
-              <option name="myItemType" value="com.android.tools.idea.gradle.projectView.AndroidPsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="xl" />
-              <option name="myItemType" value="com.android.tools.idea.gradle.projectView.AndroidPsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="datatypes" />
-              <option name="myItemType" value="com.android.tools.idea.gradle.projectView.AndroidPsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="annotation" />
               <option name="myItemType" value="com.android.tools.idea.gradle.projectView.AndroidPsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -996,7 +978,11 @@
       <created>1404627173351</created>
       <updated>1404627173351</updated>
     </task>
-    <option name="localTasksCounter" value="50" />
+    <task id="LOCAL-00050" summary=".">
+      <created>1404627227392</created>
+      <updated>1404627227392</updated>
+    </task>
+    <option name="localTasksCounter" value="51" />
     <servers />
   </component>
   <component name="TodoView" selected-index="0">
@@ -1034,9 +1020,9 @@
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.22165605" sideWeight="0.5" order="8" side_tool="true" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="1" side_tool="true" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.20127389" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32866243" sideWeight="0.5" order="12" side_tool="false" content_ui="tabs" />
-      <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32738853" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
-      <window_info id="Structure" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.14398281" sideWeight="0.75994515" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32847682" sideWeight="0.5" order="12" side_tool="false" content_ui="tabs" />
+      <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3271523" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
+      <window_info id="Structure" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.14255014" sideWeight="0.75994515" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Application Servers" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
@@ -1086,12 +1072,12 @@
     <MESSAGE value="Detect whether we have cached the fasta file." />
     <MESSAGE value="Duplicate all same alias UCSC name and provide a method to merge them." />
     <MESSAGE value="Delete all code about ReplicateSet because we won't need it." />
-    <MESSAGE value="." />
     <MESSAGE value="Fix a SEVERE bug when loading the annotation cache file." />
     <MESSAGE value="Can load .genome and cache properly..." />
     <MESSAGE value="Add methods to load fasta files." />
     <MESSAGE value="Change arranging method of sequence read, making it more efficient to import them and display on the screen." />
-    <option name="LAST_COMMIT_MESSAGE" value="Change arranging method of sequence read, making it more efficient to import them and display on the screen." />
+    <MESSAGE value="." />
+    <option name="LAST_COMMIT_MESSAGE" value="." />
     <option name="OPTIMIZE_IMPORTS_BEFORE_PROJECT_COMMIT" value="true" />
     <option name="REFORMAT_BEFORE_PROJECT_COMMIT" value="true" />
   </component>
@@ -1125,22 +1111,6 @@
     <option name="FILTER_TARGETS" value="false" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/red/com/xl/datatypes/genome/GenomeDescriptor.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="1.3387978" vertical-offset="0" max-vertical-offset="3360">
-          <caret line="51" column="13" selection-start-line="51" selection-start-column="0" selection-end-line="51" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/red/com/xl/display/dataviewer/DataCollectionTreeModel.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.505423" vertical-offset="3327" max-vertical-offset="8860">
-          <caret line="199" column="52" selection-start-line="199" selection-start-column="45" selection-end-line="199" selection-end-column="45" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/red/com/xl/parsers/annotationparsers/AnnotationParserRunner.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="1.0682731" vertical-offset="148" max-vertical-offset="880">
@@ -1173,14 +1143,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/red/com/xl/parsers/dataparsers/REDParser.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.90569746" vertical-offset="9179" max-vertical-offset="23960">
-          <caret line="516" column="12" selection-start-line="516" selection-start-column="0" selection-end-line="516" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/red/com/xl/datawriters/REDDataWriter.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="3400" max-vertical-offset="14540">
@@ -1194,8 +1156,8 @@
         <state vertical-scroll-proportion="-0.0" vertical-offset="440" max-vertical-offset="4920">
           <caret line="32" column="80" selection-start-line="32" selection-start-column="80" selection-end-line="32" selection-end-column="80" />
           <folding>
-            <element signature="e#2574#2575#0" expanded="true" />
-            <element signature="e#2603#2604#0" expanded="true" />
+            <element signature="e#2574#2575#0" expanded="false" />
+            <element signature="e#2603#2604#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -1404,26 +1366,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/red/com/xl/parsers/dataparsers/FastaFileParser.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="2594" max-vertical-offset="3080">
-          <caret line="155" column="21" selection-start-line="155" selection-start-column="21" selection-end-line="155" selection-end-column="21" />
-          <folding>
-            <element signature="e#2816#2817#0" expanded="true" />
-            <element signature="e#2843#2844#0" expanded="true" />
-            <element signature="e#2897#2898#0" expanded="true" />
-            <element signature="e#2925#2926#0" expanded="true" />
-            <element signature="e#2976#2977#0" expanded="true" />
-            <element signature="e#3003#3004#0" expanded="true" />
-            <element signature="e#3051#3052#0" expanded="true" />
-            <element signature="e#3095#3096#0" expanded="true" />
-            <element signature="e#3147#3148#0" expanded="true" />
-            <element signature="e#3231#3232#0" expanded="true" />
-            <element signature="e#3833#3841#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/red/com/xl/datatypes/annotation/AnnotationCollection.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="2565" max-vertical-offset="4040">
@@ -1431,14 +1373,6 @@
           <folding>
             <element signature="e#783#813#0" expanded="true" />
           </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/red/com/xl/parsers/dataparsers/DataParser.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="3921" max-vertical-offset="4420">
-          <caret line="252" column="42" selection-start-line="252" selection-start-column="31" selection-end-line="252" selection-end-column="31" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1455,12 +1389,12 @@
         <state vertical-scroll-proportion="0.8494624" vertical-offset="685" max-vertical-offset="11260">
           <caret line="77" column="28" selection-start-line="77" selection-start-column="16" selection-end-line="77" selection-end-column="28" />
           <folding>
-            <element signature="e#3075#3076#0" expanded="true" />
-            <element signature="e#3117#3118#0" expanded="true" />
-            <element signature="e#3188#3189#0" expanded="true" />
-            <element signature="e#3250#3251#0" expanded="true" />
-            <element signature="e#15692#15693#0" expanded="true" />
-            <element signature="e#15727#15728#0" expanded="true" />
+            <element signature="e#2975#2976#0" expanded="true" />
+            <element signature="e#3017#3018#0" expanded="true" />
+            <element signature="e#3088#3089#0" expanded="true" />
+            <element signature="e#3150#3151#0" expanded="true" />
+            <element signature="e#15593#15594#0" expanded="true" />
+            <element signature="e#15628#15629#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -1470,27 +1404,6 @@
         <state vertical-scroll-proportion="0.37246963" vertical-offset="37156" max-vertical-offset="72320">
           <caret line="1920" column="27" selection-start-line="1920" selection-start-column="24" selection-end-line="1920" selection-end-column="27" />
           <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/red/com/xl/datatypes/DataSet.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="1.2474012" vertical-offset="12660" max-vertical-offset="13540">
-          <caret line="686" column="18" selection-start-line="686" selection-start-column="0" selection-end-line="686" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/red/com/xl/display/chromosomeviewer/ChromosomeFeatureTrack.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="3480" max-vertical-offset="11020">
-          <caret line="227" column="56" selection-start-line="227" selection-start-column="56" selection-end-line="227" selection-end-column="56" />
-          <folding>
-            <element signature="e#4160#4161#0" expanded="true" />
-            <element signature="e#4194#4195#0" expanded="true" />
-            <element signature="e#7297#7298#0" expanded="true" />
-            <element signature="e#7341#7342#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -1506,14 +1419,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.34095633" vertical-offset="3276" max-vertical-offset="24460">
           <caret line="199" column="25" selection-start-line="199" selection-start-column="25" selection-end-line="199" selection-end-column="25" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/red/com/xl/display/chromosomeviewer/ChromosomeDataTrack.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="5000" max-vertical-offset="10240">
-          <caret line="250" column="26" selection-start-line="250" selection-start-column="26" selection-end-line="250" selection-end-column="26" />
           <folding />
         </state>
       </provider>
@@ -1542,27 +1447,120 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/red/com/xl/panel/REDTitlePanel.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="2.6720648" vertical-offset="0" max-vertical-offset="2340">
+          <caret line="89" column="63" selection-start-line="89" selection-start-column="33" selection-end-line="89" selection-end-column="33" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/red/com/xl/panel/WelcomePanel.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="396" max-vertical-offset="1120">
+        <state vertical-scroll-proportion="0.49392712" vertical-offset="396" max-vertical-offset="1120">
           <caret line="53" column="29" selection-start-line="53" selection-start-column="29" selection-end-line="53" selection-end-column="29" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/red/com/xl/datatypes/DataSet.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="1.2168142" vertical-offset="12730" max-vertical-offset="13540">
+          <caret line="687" column="44" selection-start-line="687" selection-start-column="44" selection-end-line="687" selection-end-column="44" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/red/com/xl/parsers/dataparsers/FastaFileParser.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="2594" max-vertical-offset="3080">
+          <caret line="155" column="21" selection-start-line="155" selection-start-column="21" selection-end-line="155" selection-end-column="21" />
+          <folding>
+            <element signature="e#2816#2817#0" expanded="true" />
+            <element signature="e#2843#2844#0" expanded="true" />
+            <element signature="e#2897#2898#0" expanded="true" />
+            <element signature="e#2925#2926#0" expanded="true" />
+            <element signature="e#2976#2977#0" expanded="true" />
+            <element signature="e#3003#3004#0" expanded="true" />
+            <element signature="e#3051#3052#0" expanded="true" />
+            <element signature="e#3095#3096#0" expanded="true" />
+            <element signature="e#3147#3148#0" expanded="true" />
+            <element signature="e#3231#3232#0" expanded="true" />
+            <element signature="e#3833#3841#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/red/com/xl/parsers/dataparsers/DataParser.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="3921" max-vertical-offset="4420">
+          <caret line="252" column="42" selection-start-line="252" selection-start-column="31" selection-end-line="252" selection-end-column="31" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/red/com/xl/dialog/TypeColourRenderer.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.9147609" vertical-offset="0" max-vertical-offset="660">
+          <caret line="45" column="17" selection-start-line="45" selection-start-column="17" selection-end-line="45" selection-end-column="17" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/red/com/xl/utils/ColourScheme.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="550" max-vertical-offset="2820">
-          <caret line="35" column="77" selection-start-line="35" selection-start-column="7" selection-end-line="35" selection-end-column="7" />
+        <state vertical-scroll-proportion="0.0" vertical-offset="2466" max-vertical-offset="3020">
+          <caret line="130" column="36" selection-start-line="130" selection-start-column="24" selection-end-line="130" selection-end-column="36" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/red/com/xl/panel/REDTitlePanel.java">
+    <entry file="file://$PROJECT_DIR$/red/com/xl/parsers/dataparsers/REDParser.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.7611336" vertical-offset="1144" max-vertical-offset="2340">
-          <caret line="99" column="40" selection-start-line="99" selection-start-column="35" selection-end-line="99" selection-end-column="35" />
+        <state vertical-scroll-proportion="0.0" vertical-offset="8700" max-vertical-offset="23960">
+          <caret line="471" column="16" selection-start-line="471" selection-start-column="8" selection-end-line="471" selection-end-column="16" />
           <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/red/com/xl/utils/FontManager.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="320">
+          <caret line="8" column="34" selection-start-line="8" selection-start-column="23" selection-end-line="8" selection-end-column="34" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/red/com/xl/display/chromosomeviewer/ChromosomeFeatureTrack.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="2160" max-vertical-offset="9540">
+          <caret line="164" column="83" selection-start-line="164" selection-start-column="47" selection-end-line="164" selection-end-column="47" />
+          <folding>
+            <element signature="e#3025#3026#0" expanded="true" />
+            <element signature="e#3059#3060#0" expanded="true" />
+            <element signature="e#6269#6270#0" expanded="true" />
+            <element signature="e#6313#6314#0" expanded="true" />
+            <element signature="e#11145#11146#0" expanded="true" />
+            <element signature="e#11200#11201#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/red/com/xl/display/chromosomeviewer/ChromosomeDataTrack.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.4989605" vertical-offset="6400" max-vertical-offset="9460">
+          <caret line="332" column="45" selection-start-line="332" selection-start-column="0" selection-end-line="332" selection-end-column="0" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="e#1488#1499#0" expanded="true" />
+            <element signature="e#10285#10294#0" expanded="true" />
+            <element signature="e#11184#11185#0" expanded="true" />
+            <element signature="e#11241#11242#0" expanded="true" />
+            <element signature="e#13434#13435#0" expanded="true" />
+            <element signature="e#13511#13512#0" expanded="true" />
+            <element signature="e#14861#14862#0" expanded="true" />
+            <element signature="e#14942#14943#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>

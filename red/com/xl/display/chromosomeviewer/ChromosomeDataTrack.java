@@ -22,8 +22,7 @@ import java.util.List;
  * view containing the data from a single data store. Depending on the display
  * preferences it can show either just raw data, or quantitated data, or both.
  */
-public class ChromosomeDataTrack extends JPanel implements MouseListener,
-        MouseMotionListener {
+public class ChromosomeDataTrack extends JPanel {
 
     // private static final int MAX_HEIGHT = 500;
 
@@ -53,6 +52,9 @@ public class ChromosomeDataTrack extends JPanel implements MouseListener,
     private int viewerCurrentEnd = 0;
 
     private int readPixel = 0;
+
+    private boolean timing = true;
+
     /**
      * The drawn reads.
      */
@@ -70,7 +72,6 @@ public class ChromosomeDataTrack extends JPanel implements MouseListener,
      * The height of each read
      */
     private int readHeight = 10;
-    private int maxCoverage = -1;
     private int[] readsYIndex = null;
 
     /**
@@ -84,8 +85,9 @@ public class ChromosomeDataTrack extends JPanel implements MouseListener,
         this.data = data;
         updateReads();
         // System.out.println("Chr"+viewer.chromosome().name()+" has "+probes.length+" probes on it");
-        addMouseMotionListener(this);
-        addMouseListener(this);
+        SequenceListner listner = new SequenceListner();
+        addMouseMotionListener(listner);
+        addMouseListener(listner);
     }
 
     /**
@@ -230,17 +232,7 @@ public class ChromosomeDataTrack extends JPanel implements MouseListener,
             g.setFont(new Font("Times New Roman", Font.PLAIN, readHeight));
             for (int i = 0; i < cChar.length; i++) {
                 char c = cChar[i];
-                if (c == 'a' || c == 'A') {
-                    g.setColor(ColourScheme.BASE_A);
-                } else if (c == 'g' || c == 'G') {
-                    g.setColor(ColourScheme.BASE_G);
-                } else if (c == 't' || c == 'T') {
-                    g.setColor(ColourScheme.BASE_T);
-                } else if (c == 'c' || c == 'C') {
-                    g.setColor(ColourScheme.BASE_C);
-                } else {
-                    g.setColor(ColourScheme.BASE_UNKNOWN);
-                }
+                g.setColor(ColourScheme.getBaseColor(c));
                 g.drawString(String.valueOf(c), (int) (pixelXStart + basePixel * i + basePixel / 2), pixelYStart + readHeight);
             }
         }
@@ -312,108 +304,6 @@ public class ChromosomeDataTrack extends JPanel implements MouseListener,
         }
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see
-     * java.awt.event.MouseMotionListener#mouseDragged(java.awt.event.MouseEvent
-     * )
-     */
-    public void mouseDragged(MouseEvent me) {
-        viewer.setSelectionEnd(me.getX());
-    }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see
-     * java.awt.event.MouseMotionListener#mouseMoved(java.awt.event.MouseEvent)
-     */
-    public void mouseMoved(MouseEvent me) {
-        int x = me.getX();
-        int y = me.getY();
-
-		/*
-         * In many cases we don't need to search through reads and probes, so we
-		 * can quickly work out what we should be looking for from what we're
-		 * drawing and where the mouse is.
-		 */
-
-        findRead(x, y);
-    }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see java.awt.event.MouseListener#mouseClicked(java.awt.event.MouseEvent)
-     */
-    public void mouseClicked(MouseEvent me) {
-        if ((me.getModifiers() & InputEvent.BUTTON3_MASK) == InputEvent.BUTTON3_MASK) {
-            viewer.zoomOut();
-        } else if (me.getClickCount() == 2) {
-            viewer.zoomIn();
-        }
-    }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see java.awt.event.MouseListener#mousePressed(java.awt.event.MouseEvent)
-     */
-    public void mousePressed(MouseEvent me) {
-        // Don't start making a selection if they click the right mouse button
-        if ((me.getModifiers() & InputEvent.BUTTON3_MASK) == InputEvent.BUTTON3_MASK) {
-            return;
-        }
-        viewer.setMakingSelection(true);
-        viewer.setSelectionStart(me.getX());
-        viewer.setSelectionEnd(me.getX());
-    }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see
-     * java.awt.event.MouseListener#mouseReleased(java.awt.event.MouseEvent)
-     */
-    public void mouseReleased(MouseEvent me) {
-        // Don't process anything if they released the right mouse button
-        if ((me.getModifiers() & InputEvent.BUTTON3_MASK) == InputEvent.BUTTON3_MASK) {
-            return;
-        }
-        viewer.setMakingSelection(false);
-
-        int width = viewer.selectionEnd() - viewer.selectionStart();
-        if (width < 0) {
-            width = 0 - width;
-        }
-        if (width < 2)
-            return;
-
-        DisplayPreferences.getInstance().setLocation(
-                pixelToBp(viewer.selectionStart()),
-                pixelToBp(viewer.selectionEnd()));
-    }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see java.awt.event.MouseListener#mouseEntered(java.awt.event.MouseEvent)
-     */
-    public void mouseEntered(MouseEvent arg0) {
-        viewer.application().setStatusText(" " + data.name());
-    }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see java.awt.event.MouseListener#mouseExited(java.awt.event.MouseEvent)
-     */
-    public void mouseExited(MouseEvent arg0) {
-        activeRead = null;
-        repaint();
-    }
-
     private void processSequence() {
         if (reads == null || reads.length == 0) {
             return;
@@ -438,13 +328,84 @@ public class ChromosomeDataTrack extends JPanel implements MouseListener,
                 lastYIndexes.add(reads[i].getEnd());
             }
         }
-//        for(int i=0;i<1000;i++){
-//            System.out.print(readsYIndex[i]+" ");
-//            if(i%20==0){
-//                System.out.println();
-//            }
-//        }
-//        System.out.println(this.getClass().getName()+":"+lastYIndexes.size());
+    }
+
+
+    private class SequenceListner implements MouseListener, MouseMotionListener {
+
+        @Override
+        public void mouseDragged(MouseEvent me) {
+            viewer.setSelectionEnd(me.getX());
+        }
+
+        @Override
+        public void mouseMoved(MouseEvent me) {
+        /*
+         * In many cases we don't need to search through reads and probes, so we
+		 * can quickly work out what we should be looking for from what we're
+		 * drawing and where the mouse is.
+		 */
+            findRead(me.getX(), me.getY());
+            long lastTime = System.currentTimeMillis();
+            while (timing) {
+                if (System.currentTimeMillis() - lastTime > 1000) {
+                    setToolTipText("Double left click to zoom in and double right click to zoom out.");
+                    timing = false;
+                }
+            }
+        }
+
+        @Override
+        public void mouseClicked(MouseEvent me) {
+            if ((me.getModifiers() & InputEvent.BUTTON3_MASK) == InputEvent.BUTTON3_MASK && me.getClickCount() == 2) {
+                viewer.zoomOut();
+            } else if (me.getClickCount() == 2) {
+                viewer.zoomIn();
+            }
+        }
+
+        @Override
+        public void mousePressed(MouseEvent me) {
+            // Don't start making a selection if they click the right mouse button
+            if ((me.getModifiers() & InputEvent.BUTTON3_MASK) == InputEvent.BUTTON3_MASK) {
+                return;
+            }
+            viewer.setMakingSelection(true);
+            viewer.setSelectionStart(me.getX());
+            viewer.setSelectionEnd(me.getX());
+        }
+
+        @Override
+        public void mouseReleased(MouseEvent me) {
+            // Don't process anything if they released the right mouse button
+            if ((me.getModifiers() & InputEvent.BUTTON3_MASK) == InputEvent.BUTTON3_MASK) {
+                return;
+            }
+            viewer.setMakingSelection(false);
+
+            int width = viewer.selectionEnd() - viewer.selectionStart();
+            if (width < 0) {
+                width = 0 - width;
+            }
+            if (width < 5)
+                return;
+
+            DisplayPreferences.getInstance().setLocation(
+                    pixelToBp(viewer.selectionStart()),
+                    pixelToBp(viewer.selectionEnd()));
+        }
+
+        @Override
+        public void mouseEntered(MouseEvent arg0) {
+            viewer.application().setStatusText(" " + data.name());
+        }
+
+        @Override
+        public void mouseExited(MouseEvent arg0) {
+            activeRead = null;
+            timing = true;
+            repaint();
+        }
     }
 
     /**

@@ -127,9 +127,19 @@ public class ColourScheme {
      * The selected region in the genome view
      */
     public static final Color GENOME_SELECTED = new Color(220, 0, 0);
-    /**
-     * The list colour for replicate sets
-     */
-    public static final Color REPLICATE_SET_LIST = new Color(140, 0, 140);
+
+    public static Color getBaseColor(char c) {
+        if (c == 'a' || c == 'A') {
+            return ColourScheme.BASE_A;
+        } else if (c == 'g' || c == 'G') {
+            return ColourScheme.BASE_G;
+        } else if (c == 't' || c == 'T') {
+            return ColourScheme.BASE_T;
+        } else if (c == 'c' || c == 'C') {
+            return ColourScheme.BASE_C;
+        } else {
+            return ColourScheme.BASE_UNKNOWN;
+        }
+    }
 
 }

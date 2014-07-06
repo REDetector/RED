@@ -1,33 +1,10 @@
 package com.xl.display.chromosomeviewer;
 
-/**
- * Copyright Copyright 2007-13 Simon Andrews
- *
- *    This file is part of SeqMonk.
- *
- *    SeqMonk is free software; you can redistribute it and/or modify
- *    it under the terms of the GNU General Public License as published by
- *    the Free Software Foundation; either version 3 of the License, or
- *    (at your option) any later version.
- *
- *    SeqMonk is distributed in the hope that it will be useful,
- *    but WITHOUT ANY WARRANTY; without even the implied warranty of
- *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *    GNU General Public License for more details.
- *
- *    You should have received a copy of the GNU General Public License
- *    along with SeqMonk; if not, write to the Free Software
- *    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
- */
-
 import com.xl.datatypes.sequence.Location;
 import com.xl.display.featureviewer.Feature;
 import com.xl.display.featureviewer.FeatureViewer;
 import com.xl.preferences.DisplayPreferences;
-import com.xl.utils.AsciiUtils;
-import com.xl.utils.ColourScheme;
-import com.xl.utils.PositionFormat;
-import com.xl.utils.Strand;
+import com.xl.utils.*;
 
 import javax.swing.*;
 import java.awt.*;
@@ -79,7 +56,7 @@ public class ChromosomeFeatureTrack extends JPanel {
 
     private int yLableHeight = 0;
 
-    private int txHeight = 2;
+
     private int exonHeight = 20;
     private int cdsHeight = exonHeight / 2;
     private int txYPosition;
@@ -87,12 +64,6 @@ public class ChromosomeFeatureTrack extends JPanel {
     private int exonYPosition;
 
     private int cursorXPosition = 0;
-
-    /**
-     * An optimisation to allow us to miss out features which would be drawn
-     * right on top of each other
-     */
-    private long lastXStart = 0;
 
     /**
      * A list of drawn features, used for lookups when finding an active feature
@@ -117,8 +88,8 @@ public class ChromosomeFeatureTrack extends JPanel {
         this.featureName = featureName;
         this.features = features;
         this.fastaFile = fastaFile;
-        addMouseMotionListener(new BasicFeatureListener());
-        addMouseListener(new BasicFeatureListener());
+        addMouseMotionListener(new FeatureListener());
+        addMouseListener(new FeatureListener());
         drawnFeatures = new Vector<DrawnBasicFeature>();
     }
 
@@ -186,9 +157,10 @@ public class ChromosomeFeatureTrack extends JPanel {
             } catch (IOException e) {
                 e.printStackTrace();
             }
+            g.drawRoundRect(0, displayHeight - 10, displayWidth, 10, 3, 3);
+            g.setFont(FontManager.defaultFont);
             drawSequence(sequence, g);
         }
-        lastXStart = 0;
         if (activeFeature != null)
             drawBasicFeature(activeFeature, g);
 
@@ -223,25 +195,26 @@ public class ChromosomeFeatureTrack extends JPanel {
     }
 
     private void drawSequence(byte[] sequence, Graphics g) {
-        g.drawRoundRect(0, displayHeight - 10, displayWidth, 10, 3, 3);
         char[] cChar = AsciiUtils.getChars(sequence);
         double pixelForEachBase = (double) displayWidth / (sequence.length);
-        g.setFont(new Font("Times New Roman", Font.PLAIN, 10));
-        for (int i = 0; i < cChar.length; i++) {
+        for (int i = 0, len = cChar.length; i < len; i++) {
             char c = cChar[i];
-            if (c == 'a' || c == 'A') {
-                g.setColor(ColourScheme.BASE_A);
-            } else if (c == 'g' || c == 'G') {
-                g.setColor(ColourScheme.BASE_G);
-            } else if (c == 't' || c == 'T') {
-                g.setColor(ColourScheme.BASE_T);
-            } else if (c == 'c' || c == 'C') {
-                g.setColor(ColourScheme.BASE_C);
-            } else {
-                g.setColor(ColourScheme.BASE_UNKNOWN);
-            }
+            g.setColor(ColourScheme.getBaseColor(c));
             g.drawString(String.valueOf(c), (int) (pixelForEachBase * i + pixelForEachBase / 2), displayHeight);
         }
+    }
+
+    private Color getSequenceColor(Feature feature) {
+        if (feature.getStrand() == Strand.POSITIVE) {
+            return ColourScheme.FORWARD_FEATURE;
+        } else if (feature.getStrand() == Strand.NEGATIVE) {
+            return ColourScheme.REVERSE_FEATURE;
+        } else if (feature == activeFeature) {
+            return ColourScheme.ACTIVE_FEATURE;
+        } else {
+            return ColourScheme.UNKNOWN_FEATURE;
+        }
+
     }
 
     /**
@@ -251,30 +224,14 @@ public class ChromosomeFeatureTrack extends JPanel {
      * @param g       the graphics object to use for drawing
      */
     private void drawBasicFeature(Feature feature, Graphics g) {
+        g.setColor(getSequenceColor(feature));
 
-        if (feature.getStrand() == Strand.POSITIVE) {
-            g.setColor(ColourScheme.FORWARD_FEATURE);
-        } else if (feature.getStrand() == Strand.NEGATIVE) {
-            g.setColor(ColourScheme.REVERSE_FEATURE);
-        } else {
-            g.setColor(ColourScheme.UNKNOWN_FEATURE);
-        }
-
-        if (feature == activeFeature) {
-            g.setColor(ColourScheme.ACTIVE_FEATURE);
-        }
-
-        // If there's space we'll put a label on the track as
-        // well as the feature.
+        // If there's space we'll put a label on the track as well as the feature.
         boolean drawLabel = false;
-        // int yBoxStart = 2;
-        // int yBoxEnd = displayHeight - 2;
-        // int yText = 0;
         if (displayHeight > 25) {
             drawLabel = true;
             yLableHeight = 5;
         }
-
         Location tx = feature.getTxLocation();
         Location cds = feature.getCdsLocation();
         Location[] exons = feature.getExonLocations();
@@ -282,19 +239,10 @@ public class ChromosomeFeatureTrack extends JPanel {
         int wholeXEnd = bpToPixel(tx.getEnd());
         drawnFeatures.add(new DrawnBasicFeature(wholeXStart, wholeXEnd,
                 feature));
-        g.fillRect(wholeXStart, txYPosition - yLableHeight, wholeXEnd - wholeXStart,
-                txHeight);
+        g.fillRect(wholeXStart, txYPosition - yLableHeight, wholeXEnd - wholeXStart, 2);
 
-        if (wholeXEnd - wholeXStart < 3) {
-            if (wholeXStart - lastXStart < 4) {
-                return; // Skip this feature.
-            }
-            wholeXStart = wholeXEnd - 2;
-        }
-        int thickStart = cds.getStart();
-        int thickEnd = cds.getEnd();
-        int cdsStart = bpToPixel(thickStart);
-        int cdsEnd = bpToPixel(thickEnd) - cdsStart;
+        int cdsStart = bpToPixel(cds.getStart());
+        int cdsEnd = bpToPixel(cds.getEnd()) - cdsStart;
         g.fillRect(cdsStart, cdsYPosition - yLableHeight, cdsEnd, cdsHeight);
         for (Location exon : exons) {
             int exonStart = bpToPixel(exon.getStart());
@@ -305,13 +253,9 @@ public class ChromosomeFeatureTrack extends JPanel {
 
             if (drawLabel && (feature == activeFeature || viewer.showAllLables())) {
 //                g.setColor(Color.DARK_GRAY);
-//                System.out.println(displayHeight + "\t" + ((wholeXStart + wholeXEnd) / 2) + "\t" + ((displayHeight + exonHeight) / 2 + yLableHeight));
                 g.drawString(feature.getChr() + ":" + feature.getAliasName(), cursorXPosition, ((displayHeight + exonHeight) / 2 + yLableHeight));
             }
-
-
         }
-
     }
 
     /**
@@ -344,12 +288,8 @@ public class ChromosomeFeatureTrack extends JPanel {
 
     private boolean isFeatureVisible(Feature feature, int currentStart,
                                      int currentEnd) {
-        if (feature.getTxLocation().getStart() < currentEnd
-                && feature.getTxLocation().getEnd() > currentStart)
-            return true;
-        else {
-            return false;
-        }
+        return (feature.getTxLocation().getStart() < currentEnd
+                && feature.getTxLocation().getEnd() > currentStart);
     }
 
     /**
@@ -395,11 +335,7 @@ public class ChromosomeFeatureTrack extends JPanel {
          * feature
          */
         public boolean isInFeature(int x) {
-            if (x >= start && x <= end) {
-                return true;
-            } else {
-                return false;
-            }
+            return (x >= start && x <= end);
         }
 
     }
@@ -412,7 +348,7 @@ public class ChromosomeFeatureTrack extends JPanel {
      * the feature event occurs, that object's appropriate
      * method is invoked.
      */
-    private class BasicFeatureListener implements MouseMotionListener,
+    private class FeatureListener implements MouseMotionListener,
             MouseListener {
 
         /*
@@ -443,34 +379,19 @@ public class ChromosomeFeatureTrack extends JPanel {
                     if (activeFeature != drawnFeature.feature) {
                         int length = drawnFeature.feature.getTotalLength();
                         viewer.application().setStatusText(
-                                drawnFeature.feature.getChr()
-                                        + ": "
-                                        + drawnFeature.feature.getAliasName()
-                                        + " "
-                                        + drawnFeature.feature.getTxLocation()
-                                        .getStart()
-                                        + "-"
-                                        + drawnFeature.feature.getTxLocation()
-                                        .getEnd() + " ("
-                                        + PositionFormat.formatLength(length, PositionFormat.UNIT_BASEPAIR)
-                                        + ")");
+                                drawnFeature.feature.getChr() + ": " + drawnFeature.feature.getAliasName() + " " +
+                                        drawnFeature.feature.getTxLocation().getStart() + "-" + drawnFeature.feature
+                                        .getTxLocation().getEnd() + " (" + PositionFormat.formatLength(length,
+                                        PositionFormat.UNIT_BASEPAIR) + ")");
                         activeFeature = drawnFeature.feature;
                         repaint();
                         return;
                     } else {
                         int length = activeFeature.getTotalLength();
                         viewer.application().setStatusText(
-                                activeFeature.getChr()
-                                        + ": "
-                                        + activeFeature.getAliasName()
-                                        + " "
-                                        + activeFeature.getTxLocation()
-                                        .getStart()
-                                        + "-"
-                                        + activeFeature.getTxLocation()
-                                        .getEnd() + " ("
-                                        + PositionFormat.formatLength(length, PositionFormat.UNIT_BASEPAIR)
-                                        + ")");
+                                activeFeature.getChr() + ": " + activeFeature.getAliasName() + " " + activeFeature
+                                        .getTxLocation().getStart() + "-" + activeFeature.getTxLocation().getEnd() +
+                                        " (" + PositionFormat.formatLength(length, PositionFormat.UNIT_BASEPAIR) + ")");
                         repaint();
                         return;
                     }
@@ -491,11 +412,13 @@ public class ChromosomeFeatureTrack extends JPanel {
          * java.awt.event.MouseListener#mouseClicked(java.awt.event.MouseEvent)
          */
         public void mouseClicked(MouseEvent me) {
-            if ((me.getModifiers() & InputEvent.BUTTON3_MASK) == InputEvent.BUTTON3_MASK) {
+            if ((me.getModifiers() & InputEvent.BUTTON3_MASK) == InputEvent.BUTTON3_MASK && me.getClickCount() == 2) {
                 viewer.zoomOut();
-                return;
-            }
-            if (me.getClickCount() >= 2) {
+            } else if ((me.getModifiers() & InputEvent.BUTTON1_MASK) == InputEvent.BUTTON1_MASK && me.getClickCount()
+                    == 2) {
+                viewer.zoomIn();
+            } else if ((me.getModifiers() & InputEvent.BUTTON1_MASK) == InputEvent.BUTTON1_MASK && me.getClickCount()
+                    == 1) {
                 if (activeFeature != null) {
                     new FeatureViewer(activeFeature);
                 }

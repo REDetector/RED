@@ -674,7 +674,7 @@ public class DataSet extends DataStore implements Runnable {
             totalReadLength.incrementBy(readLengths);
 
             try {
-                tempFile = File.createTempFile(fileName, ".temp",
+                tempFile = File.createTempFile("data_set", ".temp",
                         REDPreferences.getInstance().tempDirectory());
                 ObjectOutputStream oos = new ObjectOutputStream(
                         new BufferedOutputStream(new FileOutputStream(tempFile)));
