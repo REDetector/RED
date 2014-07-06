@@ -11,6 +11,7 @@ import com.xl.utils.ParsingUtils;
 
 import javax.swing.*;
 import java.io.*;
+import java.util.Vector;
 
 public class FastaFileParser extends DataParser {
     private final String CACHE_COMPLETE = "fasta.complete";
@@ -53,6 +54,13 @@ public class FastaFileParser extends DataParser {
                     FileUtils.deleteDirectory(fastaBase.getCanonicalPath());
                     reparseFasta();
                 }
+            } else {
+                if (!fastaBase.mkdirs()) {
+                    System.err.println("Fasta file path " + fastaBase.getAbsolutePath() + " can be accessed.");
+                    progressCancelled();
+                } else {
+                    reparseFasta();
+                }
             }
         } catch (FileNotFoundException e) {
             e.printStackTrace();
@@ -60,6 +68,7 @@ public class FastaFileParser extends DataParser {
             e.printStackTrace();
         }
         GenomeDescriptor.getInstance().setFasta(true);
+        GenomeDescriptor.getInstance().setFastaDirectory(true);
         GenomeDescriptor.getInstance().setSequenceLocation(fastaBase.getAbsolutePath());
     }
 
@@ -104,6 +113,7 @@ public class FastaFileParser extends DataParser {
         String currentChr = null;
         File[] fastaFiles = getFiles();
         String nextLine;
+        Vector<String> fastaFilesPath = new Vector<String>(24);
         for (File fastaFile : fastaFiles) {
             br = ParsingUtils.openBufferedReader(fastaFile);
             int line = 0;
@@ -119,27 +129,27 @@ public class FastaFileParser extends DataParser {
                     if (currentChr != null) {
                         chr++;
                         line = 0;
-                        fos = new FileOutputStream(fastaBase.getAbsolutePath() + File.separator + currentChr + ".fasta", true);
-                        System.out.println(FastaFileParser.this.getClass() + ":" + currentChr);
+                        String currentChrPath = fastaBase.getAbsolutePath() + File.separator + currentChr + "" +
+                                ".fasta.cache";
+                        fos = new FileOutputStream(currentChrPath, true);
+                        fastaFilesPath.add(currentChrPath);
                     }
                 } else {
                     if (fos != null) {
                         fos.write(nextLine.trim().getBytes());
-                        line++;
-                        if (line % 100000 == 0) {
+                        if (line++ % 100000 == 0) {
                             progressUpdated("Read " + line + " lines from " + currentChr + ", " + genome.getDisplayName(), chr, 24);
                         }
                     }
                 }
             }
-            // Add last chr
             if (fos != null) {
                 fos.flush();
                 fos.close();
+                System.gc();
             }
             br.close();
         }
-        System.gc();
         FileWriter fw = new FileWriter(fastaBase.getAbsolutePath() + File.separator + CACHE_COMPLETE);
         fw.write(REDApplication.VERSION);
         fw.close();

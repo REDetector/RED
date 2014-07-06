@@ -261,7 +261,7 @@ public class REDInfoPanel extends JPanel implements Runnable, ActionListener {
                 add(setGenomesFolderButton, gridBagConstraints);
             }
 
-            if (!gb.exists()) {
+            if (gb == null || !gb.exists()) {
                 // There is no default genomes folder
                 genomesLabel.setIcon(IconUtils.ERRORICON);
                 genomesLabelText
@@ -293,7 +293,7 @@ public class REDInfoPanel extends JPanel implements Runnable, ActionListener {
             }
         } else {
             // They're using the default
-            File gb = null;
+            File gb;
             try {
                 gb = REDPreferences.getInstance().getGenomeBase();
 

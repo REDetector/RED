@@ -4,10 +4,12 @@ import com.xl.datatypes.genome.Chromosome;
 import com.xl.datatypes.genome.Genome;
 import com.xl.display.featureviewer.Feature;
 import com.xl.interfaces.AnnotationCollectionListener;
+import com.xl.preferences.REDPreferences;
 
-import java.util.Arrays;
-import java.util.Enumeration;
-import java.util.Vector;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.RandomAccessFile;
+import java.util.*;
 
 /**
  * The Class AnnotationCollection is the main object through which annotation
@@ -24,6 +26,8 @@ public class AnnotationCollection {
      * The annotation sets.
      */
     private Vector<AnnotationSet> annotationSets = new Vector<AnnotationSet>();
+
+    private Map<Chromosome, RandomAccessFile> fastaFile = new HashMap<Chromosome, RandomAccessFile>();
 
     /**
      * The listeners.
@@ -131,6 +135,25 @@ public class AnnotationCollection {
         Enumeration<AnnotationCollectionListener> l = listeners.elements();
         while (l.hasMoreElements()) {
             l.nextElement().annotationFeaturesRenamed(set, name);
+        }
+    }
+
+    public RandomAccessFile getFastaForChr(Chromosome chromosome) {
+        System.out.println(this.getClass().getName() + ":getFastaForChr():" + chromosome.getName());
+        if (fastaFile.containsKey(chromosome)) {
+            return fastaFile.get(chromosome);
+        } else {
+            RandomAccessFile raf;
+            try {
+                raf = new RandomAccessFile(REDPreferences.getInstance().getGenomeBase() + File
+                        .separator + genome.getDisplayName() + File.separator + "fasta" + File
+                        .separator + chromosome.getName() + ".fasta.cache", "r");
+                fastaFile.put(chromosome, raf);
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+                return null;
+            }
+            return raf;
         }
     }
 

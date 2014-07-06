@@ -42,7 +42,6 @@ public abstract class DataParser implements Runnable, Cancellable {
     protected boolean cancel = false;
     private File[] files;
 
-
     /**
      * Instantiates a new data parser.
      *

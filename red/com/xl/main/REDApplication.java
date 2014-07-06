@@ -905,7 +905,11 @@ public class REDApplication extends JFrame implements ProgressListener,
             // No result is returned
             startNewProject();
         } else if (command.equals("datasets_loaded")) {
-            addNewDataSets((DataSet[]) result);
+            if (result != null) {
+                addNewDataSets((DataSet[]) result);
+            } else {
+                chromosomeViewer.setEnableFastaSequence(true);
+            }
             changesWereMade();
         } else if (command.equals("data_written")) {
             // Since we've just saved we can reset the changes flag

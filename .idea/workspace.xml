@@ -3,210 +3,16 @@
   <component name="ChangeListManager">
     <list id="84c5056e-4735-415e-9374-ef14f745da71" name="Default" comment="Add the color of base. Namely," />
     <list default="true" id="7bfbcd82-43d2-4bb3-bf21-1f16164d2c5a" name="Rejected commit: Default" comment="Add methods to load fasta files.">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/red/com/xl/utils/FastaUtils.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/codeStyleSettings.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/Help/1 Introduction/1.1 What is SeqMonk.html" afterPath="$PROJECT_DIR$/red/Help/1 Introduction/1.1 What is SeqMonk.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/Help/1 Introduction/1.2 Terminology.html" afterPath="$PROJECT_DIR$/red/Help/1 Introduction/1.2 Terminology.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/Help/2 Opening a Project/2.1 Opening an Existing Project.html" afterPath="$PROJECT_DIR$/red/Help/2 Opening a Project/2.1 Opening an Existing Project.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/Help/2 Opening a Project/2.2 Starting a New Project/2.2 Starting a New Project.html" afterPath="$PROJECT_DIR$/red/Help/2 Opening a Project/2.2 Starting a New Project/2.2 Starting a New Project.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/Help/2 Opening a Project/2.2 Starting a New Project/2.2.1 Selecting a Genome.html" afterPath="$PROJECT_DIR$/red/Help/2 Opening a Project/2.2 Starting a New Project/2.2.1 Selecting a Genome.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/Help/2 Opening a Project/2.2 Starting a New Project/2.2.2 Importing Data/2.2.2 Importing Data.html" afterPath="$PROJECT_DIR$/red/Help/2 Opening a Project/2.2 Starting a New Project/2.2.2 Importing Data/2.2.2 Importing Data.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/Help/2 Opening a Project/2.2 Starting a New Project/2.2.2 Importing Data/2.2.2.1 BED Files.html" afterPath="$PROJECT_DIR$/red/Help/2 Opening a Project/2.2 Starting a New Project/2.2.2 Importing Data/2.2.2.1 BED Files.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/Help/2 Opening a Project/2.2 Starting a New Project/2.2.2 Importing Data/2.2.2.10 Importing Probes as Data.html" afterPath="$PROJECT_DIR$/red/Help/2 Opening a Project/2.2 Starting a New Project/2.2.2 Importing Data/2.2.2.10 Importing Probes as Data.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/Help/2 Opening a Project/2.2 Starting a New Project/2.2.2 Importing Data/2.2.2.3 Bowtie Files.html" afterPath="$PROJECT_DIR$/red/Help/2 Opening a Project/2.2 Starting a New Project/2.2.2 Importing Data/2.2.2.3 Bowtie Files.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/Help/2 Opening a Project/2.2 Starting a New Project/2.2.2 Importing Data/2.2.2.4 Eland Files.html" afterPath="$PROJECT_DIR$/red/Help/2 Opening a Project/2.2 Starting a New Project/2.2.2 Importing Data/2.2.2.4 Eland Files.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/Help/2 Opening a Project/2.2 Starting a New Project/2.2.2 Importing Data/2.2.2.5 GFF Files.html" afterPath="$PROJECT_DIR$/red/Help/2 Opening a Project/2.2 Starting a New Project/2.2.2 Importing Data/2.2.2.5 GFF Files.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/Help/2 Opening a Project/2.2 Starting a New Project/2.2.2 Importing Data/2.2.2.6 Maq Files.html" afterPath="$PROJECT_DIR$/red/Help/2 Opening a Project/2.2 Starting a New Project/2.2.2 Importing Data/2.2.2.6 Maq Files.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/Help/2 Opening a Project/2.2 Starting a New Project/2.2.2 Importing Data/2.2.2.7 SAM or BAM Files.html" afterPath="$PROJECT_DIR$/red/Help/2 Opening a Project/2.2 Starting a New Project/2.2.2 Importing Data/2.2.2.7 SAM or BAM Files.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/Help/2 Opening a Project/2.2 Starting a New Project/2.2.2 Importing Data/2.2.2.8 Generic Text Files.html" afterPath="$PROJECT_DIR$/red/Help/2 Opening a Project/2.2 Starting a New Project/2.2.2 Importing Data/2.2.2.8 Generic Text Files.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/Help/2 Opening a Project/2.2 Starting a New Project/2.2.2 Importing Data/2.2.2.9 Reimporting Existing Data.html" afterPath="$PROJECT_DIR$/red/Help/2 Opening a Project/2.2 Starting a New Project/2.2.2 Importing Data/2.2.2.9 Reimporting Existing Data.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/Help/2 Opening a Project/2.2 Starting a New Project/2.2.3 Grouping Samples.html" afterPath="$PROJECT_DIR$/red/Help/2 Opening a Project/2.2 Starting a New Project/2.2.3 Grouping Samples.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/Help/2 Opening a Project/2.2 Starting a New Project/2.2.4 Importing Extra Annotation/2.2.4 Importing Extra Annotation.html" afterPath="$PROJECT_DIR$/red/Help/2 Opening a Project/2.2 Starting a New Project/2.2.4 Importing Extra Annotation/2.2.4 Importing Extra Annotation.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/Help/2 Opening a Project/2.2 Starting a New Project/2.2.4 Importing Extra Annotation/2.2.4.1 Importing Annotation from GFF or GTF Files.html" afterPath="$PROJECT_DIR$/red/Help/2 Opening a Project/2.2 Starting a New Project/2.2.4 Importing Extra Annotation/2.2.4.1 Importing Annotation from GFF or GTF Files.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/Help/2 Opening a Project/2.2 Starting a New Project/2.2.4 Importing Extra Annotation/2.2.4.2 Importing Annotation from a Probe List.html" afterPath="$PROJECT_DIR$/red/Help/2 Opening a Project/2.2 Starting a New Project/2.2.4 Importing Extra Annotation/2.2.4.2 Importing Annotation from a Probe List.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/Help/2 Opening a Project/2.2 Starting a New Project/2.2.4 Importing Extra Annotation/2.2.4.3 Importing Annotation from Generic Text Files.html" afterPath="$PROJECT_DIR$/red/Help/2 Opening a Project/2.2 Starting a New Project/2.2.4 Importing Extra Annotation/2.2.4.3 Importing Annotation from Generic Text Files.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/Help/3 Visualisation/3.1 The Main Display/3.1 The Main Display.html" afterPath="$PROJECT_DIR$/red/Help/3 Visualisation/3.1 The Main Display/3.1 The Main Display.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/Help/3 Visualisation/3.1 The Main Display/3.1.1 The Data View.html" afterPath="$PROJECT_DIR$/red/Help/3 Visualisation/3.1 The Main Display/3.1.1 The Data View.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/Help/3 Visualisation/3.1 The Main Display/3.1.2 The Genome View.html" afterPath="$PROJECT_DIR$/red/Help/3 Visualisation/3.1 The Main Display/3.1.2 The Genome View.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/Help/3 Visualisation/3.1 The Main Display/3.1.3 The Chromosome View.html" afterPath="$PROJECT_DIR$/red/Help/3 Visualisation/3.1 The Main Display/3.1.3 The Chromosome View.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/Help/3 Visualisation/3.1 The Main Display/3.1.4 The Toolbar.html" afterPath="$PROJECT_DIR$/red/Help/3 Visualisation/3.1 The Main Display/3.1.4 The Toolbar.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/Help/3 Visualisation/3.1 The Main Display/3.1.5 The Status Bar.html" afterPath="$PROJECT_DIR$/red/Help/3 Visualisation/3.1 The Main Display/3.1.5 The Status Bar.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/Help/3 Visualisation/3.2 Figures and Graphs/3.2 Figures and Graphs.html" afterPath="$PROJECT_DIR$/red/Help/3 Visualisation/3.2 Figures and Graphs/3.2 Figures and Graphs.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/Help/3 Visualisation/3.2 Figures and Graphs/3.2.1 The BoxWhisker Plot.html" afterPath="$PROJECT_DIR$/red/Help/3 Visualisation/3.2 Figures and Graphs/3.2.1 The BoxWhisker Plot.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/Help/3 Visualisation/3.2 Figures and Graphs/3.2.10 The Correlation Matrix.html" afterPath="$PROJECT_DIR$/red/Help/3 Visualisation/3.2 Figures and Graphs/3.2.10 The Correlation Matrix.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/Help/3 Visualisation/3.2 Figures and Graphs/3.2.11 The Cumulative Distribution Plot.html" afterPath="$PROJECT_DIR$/red/Help/3 Visualisation/3.2 Figures and Graphs/3.2.11 The Cumulative Distribution Plot.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/Help/3 Visualisation/3.2 Figures and Graphs/3.2.12 The HiC Heatmap Plot.html" afterPath="$PROJECT_DIR$/red/Help/3 Visualisation/3.2 Figures and Graphs/3.2.12 The HiC Heatmap Plot.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/Help/3 Visualisation/3.2 Figures and Graphs/3.2.13 The MA Plot.html" afterPath="$PROJECT_DIR$/red/Help/3 Visualisation/3.2 Figures and Graphs/3.2.13 The MA Plot.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/Help/3 Visualisation/3.2 Figures and Graphs/3.2.14 The HiC Length Histogram.html" afterPath="$PROJECT_DIR$/red/Help/3 Visualisation/3.2 Figures and Graphs/3.2.14 The HiC Length Histogram.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/Help/3 Visualisation/3.2 Figures and Graphs/3.2.15 The Hierarchical Profile Plot.html" afterPath="$PROJECT_DIR$/red/Help/3 Visualisation/3.2 Figures and Graphs/3.2.15 The Hierarchical Profile Plot.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/Help/3 Visualisation/3.2 Figures and Graphs/3.2.16 The HiC Cis-Trans Scatterplot.html" afterPath="$PROJECT_DIR$/red/Help/3 Visualisation/3.2 Figures and Graphs/3.2.16 The HiC Cis-Trans Scatterplot.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/Help/3 Visualisation/3.2 Figures and Graphs/3.2.17 The Domainogram.html" afterPath="$PROJECT_DIR$/red/Help/3 Visualisation/3.2 Figures and Graphs/3.2.17 The Domainogram.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/Help/3 Visualisation/3.2 Figures and Graphs/3.2.18 The Quantitation Trend Plot.html" afterPath="$PROJECT_DIR$/red/Help/3 Visualisation/3.2 Figures and Graphs/3.2.18 The Quantitation Trend Plot.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/Help/3 Visualisation/3.2 Figures and Graphs/3.2.2 The DataStore Tree.html" afterPath="$PROJECT_DIR$/red/Help/3 Visualisation/3.2 Figures and Graphs/3.2.2 The DataStore Tree.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/Help/3 Visualisation/3.2 Figures and Graphs/3.2.3 The Probe Value Histogram.html" afterPath="$PROJECT_DIR$/red/Help/3 Visualisation/3.2 Figures and Graphs/3.2.3 The Probe Value Histogram.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/Help/3 Visualisation/3.2 Figures and Graphs/3.2.4 The Probe Length Histogram.html" afterPath="$PROJECT_DIR$/red/Help/3 Visualisation/3.2 Figures and Graphs/3.2.4 The Probe Length Histogram.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/Help/3 Visualisation/3.2 Figures and Graphs/3.2.5 The Reading Length Histogram.html" afterPath="$PROJECT_DIR$/red/Help/3 Visualisation/3.2 Figures and Graphs/3.2.5 The Reading Length Histogram.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/Help/3 Visualisation/3.2 Figures and Graphs/3.2.6 The Probe Trend Plot.html" afterPath="$PROJECT_DIR$/red/Help/3 Visualisation/3.2 Figures and Graphs/3.2.6 The Probe Trend Plot.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/Help/3 Visualisation/3.2 Figures and Graphs/3.2.7 The Aligned Probes Plot.html" afterPath="$PROJECT_DIR$/red/Help/3 Visualisation/3.2 Figures and Graphs/3.2.7 The Aligned Probes Plot.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/Help/3 Visualisation/3.2 Figures and Graphs/3.2.8 The Scatter Plot.html" afterPath="$PROJECT_DIR$/red/Help/3 Visualisation/3.2 Figures and Graphs/3.2.8 The Scatter Plot.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/Help/3 Visualisation/3.2 Figures and Graphs/3.2.9 The Line Graph.html" afterPath="$PROJECT_DIR$/red/Help/3 Visualisation/3.2 Figures and Graphs/3.2.9 The Line Graph.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/Help/3 Visualisation/3.3 Movement Controls.html" afterPath="$PROJECT_DIR$/red/Help/3 Visualisation/3.3 Movement Controls.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/Help/3 Visualisation/3.4 Searching.html" afterPath="$PROJECT_DIR$/red/Help/3 Visualisation/3.4 Searching.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/Help/4 Quantitation/4 Quantitation.html" afterPath="$PROJECT_DIR$/red/Help/4 Quantitation/4 Quantitation.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/Help/4 Quantitation/4.1 Probe Generators/4.1.1 Running Window Probe Generator.html" afterPath="$PROJECT_DIR$/red/Help/4 Quantitation/4.1 Probe Generators/4.1.1 Running Window Probe Generator.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/Help/4 Quantitation/4.1 Probe Generators/4.1.10 Merge Consecutive Probe Generator.html" afterPath="$PROJECT_DIR$/red/Help/4 Quantitation/4.1 Probe Generators/4.1.10 Merge Consecutive Probe Generator.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/Help/4 Quantitation/4.1 Probe Generators/4.1.11 MACS Peak Caller Probe Generator.html" afterPath="$PROJECT_DIR$/red/Help/4 Quantitation/4.1 Probe Generators/4.1.11 MACS Peak Caller Probe Generator.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/Help/4 Quantitation/4.1 Probe Generators/4.1.12 Random Probe Generator.html" afterPath="$PROJECT_DIR$/red/Help/4 Quantitation/4.1 Probe Generators/4.1.12 Random Probe Generator.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/Help/4 Quantitation/4.1 Probe Generators/4.1.2 Contig Probe Generator.html" afterPath="$PROJECT_DIR$/red/Help/4 Quantitation/4.1 Probe Generators/4.1.2 Contig Probe Generator.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/Help/4 Quantitation/4.1 Probe Generators/4.1.3 Feature Probe Generator.html" afterPath="$PROJECT_DIR$/red/Help/4 Quantitation/4.1 Probe Generators/4.1.3 Feature Probe Generator.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/Help/4 Quantitation/4.1 Probe Generators/4.1.4 Load Probes From File.html" afterPath="$PROJECT_DIR$/red/Help/4 Quantitation/4.1 Probe Generators/4.1.4 Load Probes From File.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/Help/4 Quantitation/4.1 Probe Generators/4.1.5 Create Probes from Existing List Generator.html" afterPath="$PROJECT_DIR$/red/Help/4 Quantitation/4.1 Probe Generators/4.1.5 Create Probes from Existing List Generator.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/Help/4 Quantitation/4.1 Probe Generators/4.1.6 Interstitial Probe Generator.html" afterPath="$PROJECT_DIR$/red/Help/4 Quantitation/4.1 Probe Generators/4.1.6 Interstitial Probe Generator.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/Help/4 Quantitation/4.1 Probe Generators/4.1.7 Deduplication Probe Generator.html" afterPath="$PROJECT_DIR$/red/Help/4 Quantitation/4.1 Probe Generators/4.1.7 Deduplication Probe Generator.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/Help/4 Quantitation/4.1 Probe Generators/4.1.8 Read Position Probe Generator.html" afterPath="$PROJECT_DIR$/red/Help/4 Quantitation/4.1 Probe Generators/4.1.8 Read Position Probe Generator.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/Help/4 Quantitation/4.1 Probe Generators/4.1.9 Current Region Probe Generator.html" afterPath="$PROJECT_DIR$/red/Help/4 Quantitation/4.1 Probe Generators/4.1.9 Current Region Probe Generator.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/Help/4 Quantitation/4.2 Quantitation Methods/4.2.1 Read Count Quantitation.html" afterPath="$PROJECT_DIR$/red/Help/4 Quantitation/4.2 Quantitation Methods/4.2.1 Read Count Quantitation.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/Help/4 Quantitation/4.2 Quantitation Methods/4.2.10 Per Probe Normalisation Quantitation.html" afterPath="$PROJECT_DIR$/red/Help/4 Quantitation/4.2 Quantitation Methods/4.2.10 Per Probe Normalisation Quantitation.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/Help/4 Quantitation/4.2 Quantitation Methods/4.2.11 Exact Overlap Quantitation.html" afterPath="$PROJECT_DIR$/red/Help/4 Quantitation/4.2 Quantitation Methods/4.2.11 Exact Overlap Quantitation.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/Help/4 Quantitation/4.2 Quantitation Methods/4.2.12 Z-Score Quantitation.html" afterPath="$PROJECT_DIR$/red/Help/4 Quantitation/4.2 Quantitation Methods/4.2.12 Z-Score Quantitation.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/Help/4 Quantitation/4.2 Quantitation Methods/4.2.13 Match Distribution Quantitation.html" afterPath="$PROJECT_DIR$/red/Help/4 Quantitation/4.2 Quantitation Methods/4.2.13 Match Distribution Quantitation.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/Help/4 Quantitation/4.2 Quantitation Methods/4.2.14 Fixed Value Quantitation.html" afterPath="$PROJECT_DIR$/red/Help/4 Quantitation/4.2 Quantitation Methods/4.2.14 Fixed Value Quantitation.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/Help/4 Quantitation/4.2 Quantitation Methods/4.2.15 HiC Read Count Quantitation.html" afterPath="$PROJECT_DIR$/red/Help/4 Quantitation/4.2 Quantitation Methods/4.2.15 HiC Read Count Quantitation.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/Help/4 Quantitation/4.2 Quantitation Methods/4.2.16 HiC Trans Cis Quantitation.html" afterPath="$PROJECT_DIR$/red/Help/4 Quantitation/4.2 Quantitation Methods/4.2.16 HiC Trans Cis Quantitation.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/Help/4 Quantitation/4.2 Quantitation Methods/4.2.17 HiC Prev Next Quantitation.html" afterPath="$PROJECT_DIR$/red/Help/4 Quantitation/4.2 Quantitation Methods/4.2.17 HiC Prev Next Quantitation.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/Help/4 Quantitation/4.2 Quantitation Methods/4.2.18 HiC PCA Domain Quantitation.html" afterPath="$PROJECT_DIR$/red/Help/4 Quantitation/4.2 Quantitation Methods/4.2.18 HiC PCA Domain Quantitation.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/Help/4 Quantitation/4.2 Quantitation Methods/4.2.19 4C Enrichment Quantitation.html" afterPath="$PROJECT_DIR$/red/Help/4 Quantitation/4.2 Quantitation Methods/4.2.19 4C Enrichment Quantitation.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/Help/4 Quantitation/4.2 Quantitation Methods/4.2.2 Base Pair Quantitation.html" afterPath="$PROJECT_DIR$/red/Help/4 Quantitation/4.2 Quantitation Methods/4.2.2 Base Pair Quantitation.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/Help/4 Quantitation/4.2 Quantitation Methods/4.2.20 Distance to Feature Quantitation.html" afterPath="$PROJECT_DIR$/red/Help/4 Quantitation/4.2 Quantitation Methods/4.2.20 Distance to Feature Quantitation.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/Help/4 Quantitation/4.2 Quantitation Methods/4.2.21 Smoothing Quantitation.html" afterPath="$PROJECT_DIR$/red/Help/4 Quantitation/4.2 Quantitation Methods/4.2.21 Smoothing Quantitation.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/Help/4 Quantitation/4.2 Quantitation Methods/4.2.22 Probe Length Quantitation.html" afterPath="$PROJECT_DIR$/red/Help/4 Quantitation/4.2 Quantitation Methods/4.2.22 Probe Length Quantitation.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/Help/4 Quantitation/4.2 Quantitation Methods/4.2.23 Smoothing Subtraction Quantitation.html" afterPath="$PROJECT_DIR$/red/Help/4 Quantitation/4.2 Quantitation Methods/4.2.23 Smoothing Subtraction Quantitation.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/Help/4 Quantitation/4.2 Quantitation Methods/4.2.24 Log Transform Quantitation.html" afterPath="$PROJECT_DIR$/red/Help/4 Quantitation/4.2 Quantitation Methods/4.2.24 Log Transform Quantitation.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/Help/4 Quantitation/4.2 Quantitation Methods/4.2.25 Subset Normalisation Quantitation.html" afterPath="$PROJECT_DIR$/red/Help/4 Quantitation/4.2 Quantitation Methods/4.2.25 Subset Normalisation Quantitation.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/Help/4 Quantitation/4.2 Quantitation Methods/4.2.3 Enrichment Quantitation.html" afterPath="$PROJECT_DIR$/red/Help/4 Quantitation/4.2 Quantitation Methods/4.2.3 Enrichment Quantitation.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/Help/4 Quantitation/4.2 Quantitation Methods/4.2.4 Difference Quantitation.html" afterPath="$PROJECT_DIR$/red/Help/4 Quantitation/4.2 Quantitation Methods/4.2.4 Difference Quantitation.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/Help/4 Quantitation/4.2 Quantitation Methods/4.2.5 Coverage Depth Quantitation.html" afterPath="$PROJECT_DIR$/red/Help/4 Quantitation/4.2 Quantitation Methods/4.2.5 Coverage Depth Quantitation.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/Help/4 Quantitation/4.2 Quantitation Methods/4.2.6 Percentage Coverage Quantitation.html" afterPath="$PROJECT_DIR$/red/Help/4 Quantitation/4.2 Quantitation Methods/4.2.6 Percentage Coverage Quantitation.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/Help/4 Quantitation/4.2 Quantitation Methods/4.2.7 Relative Quantitation.html" afterPath="$PROJECT_DIR$/red/Help/4 Quantitation/4.2 Quantitation Methods/4.2.7 Relative Quantitation.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/Help/4 Quantitation/4.2 Quantitation Methods/4.2.8 Manual Correction Quantitation.html" afterPath="$PROJECT_DIR$/red/Help/4 Quantitation/4.2 Quantitation Methods/4.2.8 Manual Correction Quantitation.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/Help/4 Quantitation/4.2 Quantitation Methods/4.2.9 Percentile Normalisation Quantitation.html" afterPath="$PROJECT_DIR$/red/Help/4 Quantitation/4.2 Quantitation Methods/4.2.9 Percentile Normalisation Quantitation.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/Help/4 Quantitation/4.2 Quantitation Methods/4.2.9 Rank Quantitation.html" afterPath="$PROJECT_DIR$/red/Help/4 Quantitation/4.2 Quantitation Methods/4.2.9 Rank Quantitation.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/Help/4 Quantitation/4.3 Pipelines/4.3.1 RNA-Seq quantitation pipeline.html" afterPath="$PROJECT_DIR$/red/Help/4 Quantitation/4.3 Pipelines/4.3.1 RNA-Seq quantitation pipeline.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/Help/4 Quantitation/4.3 Pipelines/4.3.2 Wiggle pipeline.html" afterPath="$PROJECT_DIR$/red/Help/4 Quantitation/4.3 Pipelines/4.3.2 Wiggle pipeline.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/Help/4 Quantitation/4.3 Pipelines/4.3.3 Bisulphite feature methylation pipeline.html" afterPath="$PROJECT_DIR$/red/Help/4 Quantitation/4.3 Pipelines/4.3.3 Bisulphite feature methylation pipeline.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/Help/4 Quantitation/4.3 Pipelines/4.3.4 Splicing Efficiency pipeline.html" afterPath="$PROJECT_DIR$/red/Help/4 Quantitation/4.3 Pipelines/4.3.4 Splicing Efficiency pipeline.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/Help/4 Quantitation/4.3 Pipelines/4.3.5 Antisense Transcription pipeline.html" afterPath="$PROJECT_DIR$/red/Help/4 Quantitation/4.3 Pipelines/4.3.5 Antisense Transcription pipeline.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/Help/5 Filtering/5 Filtering.html" afterPath="$PROJECT_DIR$/red/Help/5 Filtering/5 Filtering.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/Help/5 Filtering/5.1 Value Filters/5.1.1 Individual Probe Value Filter.html" afterPath="$PROJECT_DIR$/red/Help/5 Filtering/5.1 Value Filters/5.1.1 Individual Probe Value Filter.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/Help/5 Filtering/5.1 Value Filters/5.1.2 Windowed Value Filter.html" afterPath="$PROJECT_DIR$/red/Help/5 Filtering/5.1 Value Filters/5.1.2 Windowed Value Filter.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/Help/5 Filtering/5.1 Value Filters/5.1.3 Individual Probe Value Difference Filter.html" afterPath="$PROJECT_DIR$/red/Help/5 Filtering/5.1 Value Filters/5.1.3 Individual Probe Value Difference Filter.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/Help/5 Filtering/5.1 Value Filters/5.1.4 Windowed Value Difference Filter.html" afterPath="$PROJECT_DIR$/red/Help/5 Filtering/5.1 Value Filters/5.1.4 Windowed Value Difference Filter.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/Help/5 Filtering/5.1 Value Filters/5.1.5 Value Distribution Filter.html" afterPath="$PROJECT_DIR$/red/Help/5 Filtering/5.1 Value Filters/5.1.5 Value Distribution Filter.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/Help/5 Filtering/5.2 Statistical Filters/5.2.1 BoxWhisker Filter.html" afterPath="$PROJECT_DIR$/red/Help/5 Filtering/5.2 Statistical Filters/5.2.1 BoxWhisker Filter.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/Help/5 Filtering/5.2 Statistical Filters/5.2.2 Windowed Replicate Filter.html" afterPath="$PROJECT_DIR$/red/Help/5 Filtering/5.2 Statistical Filters/5.2.2 Windowed Replicate Filter.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/Help/5 Filtering/5.2 Statistical Filters/5.2.3 Replicate Set Filter.html" afterPath="$PROJECT_DIR$/red/Help/5 Filtering/5.2 Statistical Filters/5.2.3 Replicate Set Filter.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/Help/5 Filtering/5.2 Statistical Filters/5.2.4 Intensity Difference Filter.html" afterPath="$PROJECT_DIR$/red/Help/5 Filtering/5.2 Statistical Filters/5.2.4 Intensity Difference Filter.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/Help/5 Filtering/5.2 Statistical Filters/5.2.4 Intensity Replicate Filter.html" afterPath="$PROJECT_DIR$/red/Help/5 Filtering/5.2 Statistical Filters/5.2.4 Intensity Replicate Filter.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/Help/5 Filtering/5.2 Statistical Filters/5.2.6 Monte Carlo Filter.html" afterPath="$PROJECT_DIR$/red/Help/5 Filtering/5.2 Statistical Filters/5.2.6 Monte Carlo Filter.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/Help/5 Filtering/5.2 Statistical Filters/5.2.7 Chi Square Filter.html" afterPath="$PROJECT_DIR$/red/Help/5 Filtering/5.2 Statistical Filters/5.2.7 Chi Square Filter.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/Help/5 Filtering/5.4 Other Filters/5.3.1 Feature Filter.html" afterPath="$PROJECT_DIR$/red/Help/5 Filtering/5.4 Other Filters/5.3.1 Feature Filter.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/Help/5 Filtering/5.4 Other Filters/5.3.2 Position Filter.html" afterPath="$PROJECT_DIR$/red/Help/5 Filtering/5.4 Other Filters/5.3.2 Position Filter.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/Help/5 Filtering/5.4 Other Filters/5.3.3 Probe Length Filter.html" afterPath="$PROJECT_DIR$/red/Help/5 Filtering/5.4 Other Filters/5.3.3 Probe Length Filter.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/Help/5 Filtering/5.4 Other Filters/5.3.4 Inter-Probe Distance Filter.html" afterPath="$PROJECT_DIR$/red/Help/5 Filtering/5.4 Other Filters/5.3.4 Inter-Probe Distance Filter.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/Help/5 Filtering/5.4 Other Filters/5.3.5 Random Probes Filter.html" afterPath="$PROJECT_DIR$/red/Help/5 Filtering/5.4 Other Filters/5.3.5 Random Probes Filter.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/Help/5 Filtering/5.4 Other Filters/5.3.6 Combine Existing Lists.html" afterPath="$PROJECT_DIR$/red/Help/5 Filtering/5.4 Other Filters/5.3.6 Combine Existing Lists.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/Help/5 Filtering/5.4 Other Filters/5.3.7 Deduplication Filter.html" afterPath="$PROJECT_DIR$/red/Help/5 Filtering/5.4 Other Filters/5.3.7 Deduplication Filter.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/Help/5 Filtering/5.4 Other Filters/5.3.8 Feature Name Filter.html" afterPath="$PROJECT_DIR$/red/Help/5 Filtering/5.4 Other Filters/5.3.8 Feature Name Filter.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/Help/5 Filtering/5.4 Other Filters/5.3.9 Probe Name Filter.html" afterPath="$PROJECT_DIR$/red/Help/5 Filtering/5.4 Other Filters/5.3.9 Probe Name Filter.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/Help/5 Filtering/5.4 Correlation Filters/5.4.1 Correlation Cluster Filter.html" afterPath="$PROJECT_DIR$/red/Help/5 Filtering/5.4 Correlation Filters/5.4.1 Correlation Cluster Filter.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/Help/5 Filtering/5.4 Correlation Filters/5.4.2 Probe List Correlation Filter.html" afterPath="$PROJECT_DIR$/red/Help/5 Filtering/5.4 Correlation Filters/5.4.2 Probe List Correlation Filter.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/Help/5 Filtering/5.4 Correlation Filters/5.4.3 Manual Probe Correlation Filter.html" afterPath="$PROJECT_DIR$/red/Help/5 Filtering/5.4 Correlation Filters/5.4.3 Manual Probe Correlation Filter.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/Help/5 Filtering/5.5 Manging Probe Lists.html" afterPath="$PROJECT_DIR$/red/Help/5 Filtering/5.5 Manging Probe Lists.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/Help/6 Reports/6.1 The Annotated Probe Report.html" afterPath="$PROJECT_DIR$/red/Help/6 Reports/6.1 The Annotated Probe Report.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/Help/6 Reports/6.2 The Probe Group Report.html" afterPath="$PROJECT_DIR$/red/Help/6 Reports/6.2 The Probe Group Report.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/Help/6 Reports/6.3 The Feature Report.html" afterPath="$PROJECT_DIR$/red/Help/6 Reports/6.3 The Feature Report.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/Help/6 Reports/6.4 The DataStore Summary Report.html" afterPath="$PROJECT_DIR$/red/Help/6 Reports/6.4 The DataStore Summary Report.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/Help/6 Reports/6.5 The Probe List Description Report.html" afterPath="$PROJECT_DIR$/red/Help/6 Reports/6.5 The Probe List Description Report.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/Help/7 Saving Data/7.1 Saving a Project.html" afterPath="$PROJECT_DIR$/red/Help/7 Saving Data/7.1 Saving a Project.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/Help/7 Saving Data/7.2 Saving Images.html" afterPath="$PROJECT_DIR$/red/Help/7 Saving Data/7.2 Saving Images.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/Help/7 Saving Data/7.3 Saving Text.html" afterPath="$PROJECT_DIR$/red/Help/7 Saving Data/7.3 Saving Text.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/Help/7 Saving Data/7.4 Saving Quantitation Annotation Tracks.html" afterPath="$PROJECT_DIR$/red/Help/7 Saving Data/7.4 Saving Quantitation Annotation Tracks.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/Help/8 Configuration/8.1 SeqMonk Preferences.html" afterPath="$PROJECT_DIR$/red/Help/8 Configuration/8.1 SeqMonk Preferences.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/Help/8 Configuration/8.2 Memory Settings.html" afterPath="$PROJECT_DIR$/red/Help/8 Configuration/8.2 Memory Settings.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/Help/9 Troubleshooting/9.1 Common Problems.html" afterPath="$PROJECT_DIR$/red/Help/9 Troubleshooting/9.1 Common Problems.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/Help/9 Troubleshooting/9.2 Reporting Bugs.html" afterPath="$PROJECT_DIR$/red/Help/9 Troubleshooting/9.2 Reporting Bugs.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/com/xl/dialog/AboutDialog.java" afterPath="$PROJECT_DIR$/red/com/xl/dialog/AboutDialog.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/com/xl/parsers/annotationparsers/AnnotationParser.java" afterPath="$PROJECT_DIR$/red/com/xl/parsers/annotationparsers/AnnotationParser.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/com/xl/datatypes/annotation/AnnotationSet.java" afterPath="$PROJECT_DIR$/red/com/xl/datatypes/annotation/AnnotationSet.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/com/xl/utils/AxisScale.java" afterPath="$PROJECT_DIR$/red/com/xl/utils/AxisScale.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/com/sql/BasicFilter.java" afterPath="$PROJECT_DIR$/red/com/sql/BasicFilter.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/com/xl/interfaces/CacheListener.java" afterPath="$PROJECT_DIR$/red/com/xl/interfaces/CacheListener.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/com/xl/interfaces/Cancellable.java" afterPath="$PROJECT_DIR$/red/com/xl/interfaces/Cancellable.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/com/xl/utils/ChromosomeComparator.java" afterPath="$PROJECT_DIR$/red/com/xl/utils/ChromosomeComparator.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/com/xl/utils/ChromosomeNameComparator.java" afterPath="$PROJECT_DIR$/red/com/xl/utils/ChromosomeNameComparator.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/com/xl/display/chromosomeviewer/ChromosomeScaleTrack.java" afterPath="$PROJECT_DIR$/red/com/xl/display/chromosomeviewer/ChromosomeScaleTrack.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/com/xl/datatypes/annotation/AnnotationCollection.java" afterPath="$PROJECT_DIR$/red/com/xl/datatypes/annotation/AnnotationCollection.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/com/xl/display/chromosomeviewer/ChromosomeFeatureTrack.java" afterPath="$PROJECT_DIR$/red/com/xl/display/chromosomeviewer/ChromosomeFeatureTrack.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/com/xl/display/chromosomeviewer/ChromosomeViewer.java" afterPath="$PROJECT_DIR$/red/com/xl/display/chromosomeviewer/ChromosomeViewer.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/com/xl/utils/ChromosomeWithOffset.java" afterPath="$PROJECT_DIR$/red/com/xl/utils/ChromosomeWithOffset.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/com/xl/utils/ColourScheme.java" afterPath="$PROJECT_DIR$/red/com/xl/utils/ColourScheme.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/com/sql/Conn.java" afterPath="$PROJECT_DIR$/red/com/sql/Conn.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/com/xl/datatypes/annotation/Cytoband.java" afterPath="$PROJECT_DIR$/red/com/xl/datatypes/annotation/Cytoband.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/com/xl/datatypes/DataCollection.java" afterPath="$PROJECT_DIR$/red/com/xl/datatypes/DataCollection.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/com/xl/exception/DataLoadException.java" afterPath="$PROJECT_DIR$/red/com/xl/exception/DataLoadException.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/com/xl/parsers/dataparsers/DataParser.java" afterPath="$PROJECT_DIR$/red/com/xl/parsers/dataparsers/DataParser.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/com/xl/preferences/DisplayPreferences.java" afterPath="$PROJECT_DIR$/red/com/xl/preferences/DisplayPreferences.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/com/xl/interfaces/DisplayPreferencesListener.java" afterPath="$PROJECT_DIR$/red/com/xl/interfaces/DisplayPreferencesListener.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/com/sql/DnaRna.java" afterPath="$PROJECT_DIR$/red/com/sql/DnaRna.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/com/xl/parsers/dataparsers/FastaFileParser.java" afterPath="$PROJECT_DIR$/red/com/xl/parsers/dataparsers/FastaFileParser.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/com/xl/datatypes/fasta/FastaIndexedSequence.java" afterPath="$PROJECT_DIR$/red/com/xl/datatypes/fasta/FastaIndexedSequence.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/com/xl/display/featureviewer/FeatureListViewer.java" afterPath="$PROJECT_DIR$/red/com/xl/display/featureviewer/FeatureListViewer.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/com/xl/utils/FileUtils.java" afterPath="$PROJECT_DIR$/red/com/xl/utils/FileUtils.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/com/xl/utils/GeneType.java" afterPath="$PROJECT_DIR$/red/com/xl/utils/GeneType.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/com/xl/datatypes/genome/Genome.java" afterPath="$PROJECT_DIR$/red/com/xl/datatypes/genome/Genome.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/com/xl/datatypes/genome/GenomeDescriptor.java" afterPath="$PROJECT_DIR$/red/com/xl/datatypes/genome/GenomeDescriptor.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/com/xl/dialog/GenomeDownloadSelector.java" afterPath="$PROJECT_DIR$/red/com/xl/dialog/GenomeDownloadSelector.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/net/xl/genomes/GenomeLists.java" afterPath="$PROJECT_DIR$/red/net/xl/genomes/GenomeLists.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/com/xl/dialog/GenomeSelector.java" afterPath="$PROJECT_DIR$/red/com/xl/dialog/GenomeSelector.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/com/xl/dialog/gotodialog/GotoDialog.java" afterPath="$PROJECT_DIR$/red/com/xl/dialog/gotodialog/GotoDialog.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/com/xl/gradients/GradientFactory.java" afterPath="$PROJECT_DIR$/red/com/xl/gradients/GradientFactory.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/com/xl/help/HelpPageDisplay.java" afterPath="$PROJECT_DIR$/red/com/xl/help/HelpPageDisplay.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/com/xl/interfaces/HiCDataStore.java" afterPath="$PROJECT_DIR$/red/com/xl/interfaces/HiCDataStore.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/com/xl/utils/HiCLocationComparator.java" afterPath="$PROJECT_DIR$/red/com/xl/utils/HiCLocationComparator.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/com/xl/display/HistogramPlot/HistogramPanel.java" afterPath="$PROJECT_DIR$/red/com/xl/display/HistogramPlot/HistogramPanel.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/com/xl/parsers/annotationparsers/IGVGenomeParser.java" afterPath="$PROJECT_DIR$/red/com/xl/parsers/annotationparsers/IGVGenomeParser.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/com/xl/datatypes/sequence/IGVSequence.java" afterPath="$PROJECT_DIR$/red/com/xl/datatypes/sequence/IGVSequence.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/com/xl/datatypes/sequence/Location.java" afterPath="$PROJECT_DIR$/red/com/xl/datatypes/sequence/Location.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/com/xl/utils/LocationComparator.java" afterPath="$PROJECT_DIR$/red/com/xl/utils/LocationComparator.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/com/xl/utils/LocationSorter.java" afterPath="$PROJECT_DIR$/red/com/xl/utils/LocationSorter.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/com/xl/utils/MemoryMonitor.java" afterPath="$PROJECT_DIR$/red/com/xl/utils/MemoryMonitor.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/com/xl/datatypes/PairedDataSet.java" afterPath="$PROJECT_DIR$/red/com/xl/datatypes/PairedDataSet.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/com/xl/exception/ParserException.java" afterPath="$PROJECT_DIR$/red/com/xl/exception/ParserException.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/com/xl/utils/ParsingUtils.java" afterPath="$PROJECT_DIR$/red/com/xl/utils/ParsingUtils.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/com/xl/datatypes/probes/Probe.java" afterPath="$PROJECT_DIR$/red/com/xl/datatypes/probes/Probe.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/com/xl/display/HistogramPlot/ProbeLengthHistogramPlot.java" afterPath="$PROJECT_DIR$/red/com/xl/display/HistogramPlot/ProbeLengthHistogramPlot.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/com/xl/datatypes/probes/ProbeList.java" afterPath="$PROJECT_DIR$/red/com/xl/datatypes/probes/ProbeList.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/com/xl/datatypes/probes/ProbeSet.java" afterPath="$PROJECT_DIR$/red/com/xl/datatypes/probes/ProbeSet.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/com/xl/datatypes/probes/ProbeSetChangeListener.java" afterPath="$PROJECT_DIR$/red/com/xl/datatypes/probes/ProbeSetChangeListener.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/com/xl/display/HistogramPlot/ProbeValueHistogramPlot.java" afterPath="$PROJECT_DIR$/red/com/xl/display/HistogramPlot/ProbeValueHistogramPlot.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/com/xl/interfaces/ProgressListener.java" afterPath="$PROJECT_DIR$/red/com/xl/interfaces/ProgressListener.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/com/xl/main/REDApplication.java" afterPath="$PROJECT_DIR$/red/com/xl/main/REDApplication.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/com/xl/exception/REDException.java" afterPath="$PROJECT_DIR$/red/com/xl/exception/REDException.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/com/xl/preferences/REDPreferences.java" afterPath="$PROJECT_DIR$/red/com/xl/preferences/REDPreferences.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/com/xl/gradients/RGB.java" afterPath="$PROJECT_DIR$/red/com/xl/gradients/RGB.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/com/xl/dialog/gotodialog/RecentLocation.java" afterPath="$PROJECT_DIR$/red/com/xl/dialog/gotodialog/RecentLocation.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/com/sql/RedInput.java" afterPath="$PROJECT_DIR$/red/com/sql/RedInput.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/com/sql/Repeatedmask.java" afterPath="$PROJECT_DIR$/red/com/sql/Repeatedmask.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/com/xl/utils/imagemanager/SVGGenerator.java" afterPath="$PROJECT_DIR$/red/com/xl/utils/imagemanager/SVGGenerator.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/com/sql/SamInput.java" afterPath="$PROJECT_DIR$/red/com/sql/SamInput.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/com/xl/datatypes/sequence/Sequence.java" afterPath="$PROJECT_DIR$/red/com/xl/datatypes/sequence/Sequence.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/com/xl/datatypes/sequence/SequenceRead.java" afterPath="$PROJECT_DIR$/red/com/xl/datatypes/sequence/SequenceRead.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/com/xl/utils/SequenceReadUtils.java" afterPath="$PROJECT_DIR$/red/com/xl/utils/SequenceReadUtils.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/com/xl/datatypes/sequence/SequenceWrapper.java" afterPath="$PROJECT_DIR$/red/com/xl/datatypes/sequence/SequenceWrapper.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/com/xl/utils/Strand.java" afterPath="$PROJECT_DIR$/red/com/xl/utils/Strand.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/com/sun/java/TableSorter.java" afterPath="$PROJECT_DIR$/red/com/sun/java/TableSorter.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/com/xl/thread/ThreadSafeIntCounter.java" afterPath="$PROJECT_DIR$/red/com/xl/thread/ThreadSafeIntCounter.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/com/xl/thread/ThreadSafeLongCounter.java" afterPath="$PROJECT_DIR$/red/com/xl/thread/ThreadSafeLongCounter.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/com/xl/thread/ThreadSafeMinMax.java" afterPath="$PROJECT_DIR$/red/com/xl/thread/ThreadSafeMinMax.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/com/xl/dialog/UserPasswordDialog.java" afterPath="$PROJECT_DIR$/red/com/xl/dialog/UserPasswordDialog.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/com/xl/panel/REDInfoPanel.java" afterPath="$PROJECT_DIR$/red/com/xl/panel/REDInfoPanel.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/com/xl/menu/REDMenu.java" afterPath="$PROJECT_DIR$/red/com/xl/menu/REDMenu.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/com/xl/panel/REDTitlePanel.java" afterPath="$PROJECT_DIR$/red/com/xl/panel/REDTitlePanel.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <list id="7653a5be-4308-4b8a-af47-b29b059d9163" name="Rejected commit: Rejected commit: Default" comment="Fix some bugs." />
@@ -276,101 +82,100 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="FileUtils.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/red/com/xl/utils/FileUtils.java">
+      <file leaf-file-name="FastaFileParser.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/red/com/xl/parsers/dataparsers/FastaFileParser.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="1280" max-vertical-offset="2380">
-              <caret line="70" column="19" selection-start-line="70" selection-start-column="18" selection-end-line="70" selection-end-column="18" />
+            <state vertical-scroll-proportion="0.0" vertical-offset="2594" max-vertical-offset="3080">
+              <caret line="155" column="21" selection-start-line="155" selection-start-column="21" selection-end-line="155" selection-end-column="21" />
+              <folding>
+                <element signature="e#2816#2817#0" expanded="true" />
+                <element signature="e#2843#2844#0" expanded="true" />
+                <element signature="e#2897#2898#0" expanded="true" />
+                <element signature="e#2925#2926#0" expanded="true" />
+                <element signature="e#2976#2977#0" expanded="true" />
+                <element signature="e#3003#3004#0" expanded="true" />
+                <element signature="e#3051#3052#0" expanded="true" />
+                <element signature="e#3095#3096#0" expanded="true" />
+                <element signature="e#3147#3148#0" expanded="true" />
+                <element signature="e#3231#3232#0" expanded="true" />
+                <element signature="e#3833#3841#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="AnnotationCollection.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/red/com/xl/datatypes/annotation/AnnotationCollection.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0" vertical-offset="2565" max-vertical-offset="4040">
+              <caret line="155" column="25" selection-start-line="155" selection-start-column="23" selection-end-line="155" selection-end-column="23" />
+              <folding>
+                <element signature="e#783#813#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="DataParser.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/red/com/xl/parsers/dataparsers/DataParser.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0" vertical-offset="3801" max-vertical-offset="4420">
+              <caret line="252" column="42" selection-start-line="252" selection-start-column="31" selection-end-line="252" selection-end-column="31" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="4.1.12 Random Probe Generator.html" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/red/Help/4 Quantitation/4.1 Probe Generators/4.1.12 Random Probe Generator.html">
+      <file leaf-file-name="ChromosomeFeatureTrack.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/red/com/xl/display/chromosomeviewer/ChromosomeFeatureTrack.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-0.0" vertical-offset="520" max-vertical-offset="680">
-              <caret line="26" column="0" selection-start-line="26" selection-start-column="0" selection-end-line="26" selection-end-column="0" />
+            <state vertical-scroll-proportion="0.0" vertical-offset="3480" max-vertical-offset="11020">
+              <caret line="227" column="56" selection-start-line="227" selection-start-column="56" selection-end-line="227" selection-end-column="56" />
+              <folding>
+                <element signature="e#4160#4161#0" expanded="true" />
+                <element signature="e#4194#4195#0" expanded="true" />
+                <element signature="e#7297#7298#0" expanded="true" />
+                <element signature="e#7341#7342#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="ChromosomeDataTrack.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/red/com/xl/display/chromosomeviewer/ChromosomeDataTrack.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0" vertical-offset="5000" max-vertical-offset="10240">
+              <caret line="250" column="26" selection-start-line="250" selection-start-column="26" selection-end-line="250" selection-end-column="26" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="4.1.10 Merge Consecutive Probe Generator.html" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/red/Help/4 Quantitation/4.1 Probe Generators/4.1.10 Merge Consecutive Probe Generator.html">
+      <file leaf-file-name="ColourScheme.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/red/com/xl/utils/ColourScheme.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-0.0" vertical-offset="640" max-vertical-offset="800">
-              <caret line="32" column="0" selection-start-line="32" selection-start-column="0" selection-end-line="32" selection-end-column="5" />
+            <state vertical-scroll-proportion="0.0" vertical-offset="550" max-vertical-offset="2820">
+              <caret line="35" column="77" selection-start-line="35" selection-start-column="7" selection-end-line="35" selection-end-column="7" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="ProgressListener.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/red/com/xl/interfaces/ProgressListener.java">
+      <file leaf-file-name="WelcomePanel.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/red/com/xl/panel/WelcomePanel.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="200" max-vertical-offset="1540">
-              <caret line="28" column="0" selection-start-line="28" selection-start-column="0" selection-end-line="28" selection-end-column="0" />
+            <state vertical-scroll-proportion="0.0" vertical-offset="396" max-vertical-offset="1120">
+              <caret line="53" column="29" selection-start-line="53" selection-start-column="29" selection-end-line="53" selection-end-column="29" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="ProbeSetChangeListener.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/red/com/xl/datatypes/probes/ProbeSetChangeListener.java">
+      <file leaf-file-name="REDTitlePanel.java" pinned="false" current="true" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/red/com/xl/panel/REDTitlePanel.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="260" max-vertical-offset="880">
-              <caret line="31" column="0" selection-start-line="31" selection-start-column="0" selection-end-line="31" selection-end-column="0" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="2.2.3 Grouping Samples.html" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/red/Help/2 Opening a Project/2.2 Starting a New Project/2.2.3 Grouping Samples.html">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-0.0" vertical-offset="1560" max-vertical-offset="1720">
-              <caret line="78" column="5" selection-start-line="78" selection-start-column="5" selection-end-line="78" selection-end-column="5" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="3.2.18 The Quantitation Trend Plot.html" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/red/Help/3 Visualisation/3.2 Figures and Graphs/3.2.18 The Quantitation Trend Plot.html">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-0.0" vertical-offset="880" max-vertical-offset="1040">
-              <caret line="44" column="5" selection-start-line="44" selection-start-column="5" selection-end-line="44" selection-end-column="5" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="3.2.17 The Domainogram.html" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/red/Help/3 Visualisation/3.2 Figures and Graphs/3.2.17 The Domainogram.html">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-0.0" vertical-offset="1040" max-vertical-offset="1200">
-              <caret line="52" column="5" selection-start-line="52" selection-start-column="5" selection-end-line="52" selection-end-column="5" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="4.1.11 MACS Peak Caller Probe Generator.html" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/red/Help/4 Quantitation/4.1 Probe Generators/4.1.11 MACS Peak Caller Probe Generator.html">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-0.0" vertical-offset="1200" max-vertical-offset="1360">
-              <caret line="60" column="5" selection-start-line="60" selection-start-column="5" selection-end-line="60" selection-end-column="5" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="3.2.1 The BoxWhisker Plot.html" pinned="false" current="true" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/red/Help/3 Visualisation/3.2 Figures and Graphs/3.2.1 The BoxWhisker Plot.html">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.28850856" vertical-offset="1162" max-vertical-offset="1620">
-              <caret line="64" column="44" selection-start-line="64" selection-start-column="0" selection-end-line="64" selection-end-column="0" />
+            <state vertical-scroll-proportion="0.7611336" vertical-offset="1144" max-vertical-offset="2340">
+              <caret line="99" column="40" selection-start-line="99" selection-start-column="35" selection-end-line="99" selection-end-column="35" />
               <folding />
             </state>
           </provider>
@@ -394,26 +199,16 @@
   <component name="IdeDocumentHistory">
     <option name="changedFiles">
       <list>
-        <option value="$PROJECT_DIR$/red/com/xl/display/genomeviewer/ChromosomeDisplay.java" />
-        <option value="$PROJECT_DIR$/red/com/xl/display/genomeviewer/GenomeViewer.java" />
-        <option value="$PROJECT_DIR$/red/com/xl/menu/MainREDToolbar.java" />
-        <option value="$PROJECT_DIR$/red/com/xl/utils/namemanager/IconUtils.java" />
-        <option value="$PROJECT_DIR$/red/com/xl/utils/namemanager/MenuUtils.java" />
-        <option value="$PROJECT_DIR$/red/com/xl/datatypes/DataStore.java" />
         <option value="$PROJECT_DIR$/red/com/xl/datatypes/DataCollection.java" />
         <option value="$PROJECT_DIR$/red/com/xl/datatypes/PairedDataSet.java" />
         <option value="$PROJECT_DIR$/red/com/xl/datatypes/DataGroup.java" />
         <option value="$PROJECT_DIR$/red/com/xl/parsers/dataparsers/BAMFileParser.java" />
-        <option value="$PROJECT_DIR$/red/com/xl/display/chromosomeviewer/ChromosomeFeatureTrack.java" />
         <option value="$PROJECT_DIR$/red/com/xl/display/featureviewer/Feature.java" />
         <option value="$PROJECT_DIR$/red/com/xl/utils/SequenceReadUtils.java" />
         <option value="$PROJECT_DIR$/red/com/xl/display/featureviewer/FeatureAttributeTable.java" />
-        <option value="$PROJECT_DIR$/red/com/xl/display/chromosomeviewer/ChromosomeDataTrack.java" />
         <option value="$PROJECT_DIR$/red/com/xl/utils/namemanager/GenomeUtils.java" />
         <option value="$PROJECT_DIR$/red/com/xl/display/chromosomeviewer/ChromosomeScaleTrack.java" />
-        <option value="$PROJECT_DIR$/red/com/xl/datatypes/annotation/AnnotationCollection.java" />
         <option value="$PROJECT_DIR$/red/com/xl/datatypes/genome/GenomeDescriptor.java" />
-        <option value="$PROJECT_DIR$/red/com/xl/display/chromosomeviewer/ChromosomeViewer.java" />
         <option value="$PROJECT_DIR$/red/com/xl/utils/imagemanager/EPSGenerator.java" />
         <option value="$PROJECT_DIR$/red/com/xl/utils/imagemanager/ImageSaver.java" />
         <option value="$PROJECT_DIR$/REDetector.iml" />
@@ -425,8 +220,6 @@
         <option value="$PROJECT_DIR$/red/com/xl/display/dataviewer/DataCollectionTreeModel.java" />
         <option value="$PROJECT_DIR$/red/com/xl/datatypes/genome/Genome.java" />
         <option value="$PROJECT_DIR$/red/com/xl/parsers/dataparsers/REDParser.java" />
-        <option value="$PROJECT_DIR$/red/com/xl/datatypes/DataSet.java" />
-        <option value="$PROJECT_DIR$/red/com/xl/main/REDApplication.java" />
         <option value="$PROJECT_DIR$/red/com/xl/parsers/annotationparsers/AnnotationParser.java" />
         <option value="$PROJECT_DIR$/red/com/xl/parsers/annotationparsers/UCSCRefGeneParser.java" />
         <option value="$PROJECT_DIR$/red/com/xl/datatypes/sequence/SequenceWrapper.java" />
@@ -445,14 +238,26 @@
         <option value="$PROJECT_DIR$/red/Help/3 Visualisation/3.2 Figures and Graphs/3.2.17 The Domainogram.html" />
         <option value="$PROJECT_DIR$/red/Help/4 Quantitation/4.1 Probe Generators/4.1.11 MACS Peak Caller Probe Generator.html" />
         <option value="$PROJECT_DIR$/red/Help/3 Visualisation/3.2 Figures and Graphs/3.2.1 The BoxWhisker Plot.html" />
+        <option value="$PROJECT_DIR$/red/com/xl/menu/REDMenu.java" />
+        <option value="$PROJECT_DIR$/red/com/xl/parsers/dataparsers/FastaFileParser.java" />
+        <option value="$PROJECT_DIR$/red/com/xl/parsers/dataparsers/DataParser.java" />
+        <option value="$PROJECT_DIR$/red/com/xl/datatypes/DataSet.java" />
+        <option value="$PROJECT_DIR$/red/com/xl/main/REDApplication.java" />
+        <option value="$PROJECT_DIR$/red/com/xl/datatypes/annotation/AnnotationCollection.java" />
+        <option value="$PROJECT_DIR$/red/com/xl/display/chromosomeviewer/ChromosomeViewer.java" />
+        <option value="$PROJECT_DIR$/red/com/xl/display/chromosomeviewer/ChromosomeFeatureTrack.java" />
+        <option value="$PROJECT_DIR$/red/com/xl/display/chromosomeviewer/ChromosomeDataTrack.java" />
+        <option value="$PROJECT_DIR$/red/com/xl/panel/REDInfoPanel.java" />
+        <option value="$PROJECT_DIR$/red/com/xl/utils/ColourScheme.java" />
+        <option value="$PROJECT_DIR$/red/com/xl/panel/REDTitlePanel.java" />
       </list>
     </option>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="-1448" />
+    <option name="x" value="-8" />
     <option name="y" value="-8" />
     <option name="width" value="1456" />
-    <option name="height" value="916" />
+    <option name="height" value="886" />
   </component>
   <component name="ProjectInspectionProfilesVisibleTreeState">
     <entry key="Project Default">
@@ -602,32 +407,6 @@
               <option name="myItemId" value="xl" />
               <option name="myItemType" value="com.android.tools.idea.gradle.projectView.AndroidPsiDirectoryNode" />
             </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="utils" />
-              <option name="myItemType" value="com.android.tools.idea.gradle.projectView.AndroidPsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="REDetector" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="REDetector" />
-              <option name="myItemType" value="com.android.tools.idea.gradle.projectView.AndroidPsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="red" />
-              <option name="myItemType" value="com.android.tools.idea.gradle.projectView.AndroidPsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="com" />
-              <option name="myItemType" value="com.android.tools.idea.gradle.projectView.AndroidPsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="xl" />
-              <option name="myItemType" value="com.android.tools.idea.gradle.projectView.AndroidPsiDirectoryNode" />
-            </PATH_ELEMENT>
           </PATH>
           <PATH>
             <PATH_ELEMENT>
@@ -651,11 +430,7 @@
               <option name="myItemType" value="com.android.tools.idea.gradle.projectView.AndroidPsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="parsers" />
-              <option name="myItemType" value="com.android.tools.idea.gradle.projectView.AndroidPsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="dataparsers" />
+              <option name="myItemId" value="panel" />
               <option name="myItemType" value="com.android.tools.idea.gradle.projectView.AndroidPsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -681,11 +456,7 @@
               <option name="myItemType" value="com.android.tools.idea.gradle.projectView.AndroidPsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="parsers" />
-              <option name="myItemType" value="com.android.tools.idea.gradle.projectView.AndroidPsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="annotationparsers" />
+              <option name="myItemId" value="menu" />
               <option name="myItemType" value="com.android.tools.idea.gradle.projectView.AndroidPsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -793,37 +564,7 @@
               <option name="myItemType" value="com.android.tools.idea.gradle.projectView.AndroidPsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="genome" />
-              <option name="myItemType" value="com.android.tools.idea.gradle.projectView.AndroidPsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="REDetector" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="REDetector" />
-              <option name="myItemType" value="com.android.tools.idea.gradle.projectView.AndroidPsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="red" />
-              <option name="myItemType" value="com.android.tools.idea.gradle.projectView.AndroidPsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="com" />
-              <option name="myItemType" value="com.android.tools.idea.gradle.projectView.AndroidPsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="xl" />
-              <option name="myItemType" value="com.android.tools.idea.gradle.projectView.AndroidPsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="datatypes" />
-              <option name="myItemType" value="com.android.tools.idea.gradle.projectView.AndroidPsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="fasta" />
+              <option name="myItemId" value="annotation" />
               <option name="myItemType" value="com.android.tools.idea.gradle.projectView.AndroidPsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -1247,7 +988,15 @@
       <created>1404457069683</created>
       <updated>1404457069683</updated>
     </task>
-    <option name="localTasksCounter" value="48" />
+    <task id="LOCAL-00048" summary="Add methods to load fasta files.">
+      <created>1404462070761</created>
+      <updated>1404462070761</updated>
+    </task>
+    <task id="LOCAL-00049" summary="Change arranging method of sequence read, making it more efficient to import them and display on the screen.">
+      <created>1404627173351</created>
+      <updated>1404627173351</updated>
+    </task>
+    <option name="localTasksCounter" value="50" />
     <servers />
   </component>
   <component name="TodoView" selected-index="0">
@@ -1271,7 +1020,7 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="-1448" y="-8" width="1456" height="916" extended-state="6" />
+    <frame x="-8" y="-8" width="1456" height="886" extended-state="6" />
     <editor active="true" />
     <layout>
       <window_info id="Palette&#9;" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
@@ -1279,23 +1028,23 @@
       <window_info id="Designer" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.317817" sideWeight="0.5" order="11" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.21589404" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4522293" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.22165605" sideWeight="0.5" order="8" side_tool="true" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="1" side_tool="true" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.20127389" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.32824427" sideWeight="0.5" order="12" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32866243" sideWeight="0.5" order="12" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32738853" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.14398281" sideWeight="0.75994515" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Application Servers" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.20057307" sideWeight="0.75994515" order="0" side_tool="false" content_ui="combo" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.29681528" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" x="22" y="345" width="1396" height="180" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.2754967" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" x="22" y="345" width="1396" height="180" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="JetGradle" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.355414" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
     </layout>
@@ -1317,7 +1066,6 @@
     <option name="myTodoPanelSettings">
       <TodoPanelSettings />
     </option>
-    <MESSAGE value="Solve the problem of overlapping reads." />
     <MESSAGE value="Change the genome parser information." />
     <MESSAGE value="Add the information of GenomeDescriptor to the part of genome." />
     <MESSAGE value="Change the aligned algorithm of sequence reads to the viewer." />
@@ -1342,7 +1090,8 @@
     <MESSAGE value="Fix a SEVERE bug when loading the annotation cache file." />
     <MESSAGE value="Can load .genome and cache properly..." />
     <MESSAGE value="Add methods to load fasta files." />
-    <option name="LAST_COMMIT_MESSAGE" value="Add methods to load fasta files." />
+    <MESSAGE value="Change arranging method of sequence read, making it more efficient to import them and display on the screen." />
+    <option name="LAST_COMMIT_MESSAGE" value="Change arranging method of sequence read, making it more efficient to import them and display on the screen." />
     <option name="OPTIMIZE_IMPORTS_BEFORE_PROJECT_COMMIT" value="true" />
     <option name="REFORMAT_BEFORE_PROJECT_COMMIT" value="true" />
   </component>
@@ -1376,118 +1125,6 @@
     <option name="FILTER_TARGETS" value="false" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/.idea/copyright/profiles_settings.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="732">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/.idea/uiDesigner.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="2620">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/.idea/vcs.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="732">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/.idea/modules.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="732">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/.idea/misc.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="719">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/.idea/encodings.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="732">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/.idea/compiler.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="580">
-          <caret line="18" column="4" selection-start-line="18" selection-start-column="4" selection-end-line="18" selection-end-column="4" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/REDetector.iml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.11494253" vertical-offset="0" max-vertical-offset="522">
-          <caret line="3" column="30" selection-start-line="3" selection-start-column="22" selection-end-line="3" selection-end-column="22" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/red/com/xl/interfaces/AnnotationCollectionListener.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="314" max-vertical-offset="1120">
-          <caret line="34" column="21" selection-start-line="34" selection-start-column="17" selection-end-line="34" selection-end-column="45" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/red/com/xl/interfaces/CacheListener.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.40160644" vertical-offset="0" max-vertical-offset="498">
-          <caret line="28" column="16" selection-start-line="28" selection-start-column="16" selection-end-line="28" selection-end-column="16" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/red/com/xl/dialog/FindFeatureDialog.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-1.6092715" vertical-offset="3989" max-vertical-offset="5580">
-          <caret line="195" column="35" selection-start-line="195" selection-start-column="28" selection-end-line="195" selection-end-column="35" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/red/com/xl/datatypes/annotation/CoreAnnotationSet.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="254" max-vertical-offset="2400">
-          <caret line="33" column="9" selection-start-line="33" selection-start-column="9" selection-end-line="33" selection-end-column="9" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/red/com/xl/datatypes/sequence/Sequence.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.6708861" vertical-offset="2" max-vertical-offset="500">
-          <caret line="16" column="21" selection-start-line="16" selection-start-column="21" selection-end-line="16" selection-end-column="21" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/red/com/xl/display/featureviewer/Feature.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.33333334" vertical-offset="1402" max-vertical-offset="1980">
-          <caret line="102" column="15" selection-start-line="102" selection-start-column="15" selection-end-line="102" selection-end-column="15" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/red/com/xl/datatypes/probes/ProbeList.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="929" max-vertical-offset="8640">
-          <caret line="116" column="29" selection-start-line="116" selection-start-column="0" selection-end-line="116" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/red/com/xl/datatypes/genome/GenomeDescriptor.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="1.3387978" vertical-offset="0" max-vertical-offset="3360">
@@ -1500,14 +1137,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.505423" vertical-offset="3327" max-vertical-offset="8860">
           <caret line="199" column="52" selection-start-line="199" selection-start-column="45" selection-end-line="199" selection-end-column="45" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/red/com/xl/datatypes/annotation/AnnotationCollection.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="3620">
-          <caret line="47" column="29" selection-start-line="47" selection-start-column="15" selection-end-line="47" selection-end-column="29" />
           <folding />
         </state>
       </provider>
@@ -1536,20 +1165,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/red/com/xl/datatypes/DataSet.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-3.877193" vertical-offset="11328" max-vertical-offset="13620">
-          <caret line="493" column="14" selection-start-line="493" selection-start-column="13" selection-end-line="493" selection-end-column="13" />
-          <folding>
-            <element signature="e#2714#2743#0" expanded="false" />
-            <element signature="e#6565#6566#0" expanded="false" />
-            <element signature="e#6605#6606#0" expanded="false" />
-            <element signature="e#8055#8056#0" expanded="false" />
-            <element signature="e#8086#8087#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/red/com/xl/datatypes/annotation/AnnotationSet.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="-0.082474224" vertical-offset="420" max-vertical-offset="9700">
@@ -1570,14 +1185,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="3400" max-vertical-offset="14540">
           <caret line="212" column="27" selection-start-line="212" selection-start-column="27" selection-end-line="212" selection-end-column="27" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/red/com/xl/main/REDApplication.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.62139916" vertical-offset="16378" max-vertical-offset="17960">
-          <caret line="906" column="41" selection-start-line="906" selection-start-column="16" selection-end-line="906" selection-end-column="16" />
           <folding />
         </state>
       </provider>
@@ -1709,34 +1316,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/red/com/xl/utils/FileUtils.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="1122" max-vertical-offset="2380">
-          <caret line="70" column="19" selection-start-line="70" selection-start-column="18" selection-end-line="70" selection-end-column="18" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/red/Help/4 Quantitation/4.1 Probe Generators/4.1.12 Random Probe Generator.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-0.0" vertical-offset="520" max-vertical-offset="680">
-          <caret line="26" column="0" selection-start-line="26" selection-start-column="0" selection-end-line="26" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/red/Help/4 Quantitation/4.1 Probe Generators/4.1.10 Merge Consecutive Probe Generator.html">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="-0.0" vertical-offset="640" max-vertical-offset="800">
           <caret line="32" column="0" selection-start-line="32" selection-start-column="0" selection-end-line="32" selection-end-column="5" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/red/com/xl/interfaces/ProgressListener.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="200" max-vertical-offset="1540">
-          <caret line="28" column="0" selection-start-line="28" selection-start-column="0" selection-end-line="28" selection-end-column="0" />
           <folding />
         </state>
       </provider>
@@ -1757,14 +1340,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/red/Help/3 Visualisation/3.2 Figures and Graphs/3.2.18 The Quantitation Trend Plot.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-0.0" vertical-offset="880" max-vertical-offset="1040">
-          <caret line="44" column="5" selection-start-line="44" selection-start-column="5" selection-end-line="44" selection-end-column="5" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/red/Help/3 Visualisation/3.2 Figures and Graphs/3.2.17 The Domainogram.html">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="-0.0" vertical-offset="1040" max-vertical-offset="1200">
@@ -1773,18 +1348,220 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/red/Help/3 Visualisation/3.2 Figures and Graphs/3.2.1 The BoxWhisker Plot.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="2.25" vertical-offset="562" max-vertical-offset="1620">
+          <caret line="74" column="55" selection-start-line="74" selection-start-column="7" selection-end-line="74" selection-end-column="7" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/red/Help/4 Quantitation/4.1 Probe Generators/4.1.11 MACS Peak Caller Probe Generator.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-0.0" vertical-offset="1200" max-vertical-offset="1360">
+        <state vertical-scroll-proportion="0.64044946" vertical-offset="915" max-vertical-offset="1360">
           <caret line="60" column="5" selection-start-line="60" selection-start-column="5" selection-end-line="60" selection-end-column="5" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/red/Help/3 Visualisation/3.2 Figures and Graphs/3.2.1 The BoxWhisker Plot.html">
+    <entry file="file://$PROJECT_DIR$/red/Help/3 Visualisation/3.2 Figures and Graphs/3.2.18 The Quantitation Trend Plot.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.28850856" vertical-offset="1162" max-vertical-offset="1600">
-          <caret line="64" column="44" selection-start-line="64" selection-start-column="0" selection-end-line="64" selection-end-column="0" />
+        <state vertical-scroll-proportion="0.64044946" vertical-offset="595" max-vertical-offset="1040">
+          <caret line="44" column="5" selection-start-line="44" selection-start-column="5" selection-end-line="44" selection-end-column="5" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/red/com/xl/interfaces/ProgressListener.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="200" max-vertical-offset="1540">
+          <caret line="28" column="0" selection-start-line="28" selection-start-column="0" selection-end-line="28" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/red/Help/4 Quantitation/4.1 Probe Generators/4.1.12 Random Probe Generator.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.65884864" vertical-offset="211" max-vertical-offset="680">
+          <caret line="26" column="0" selection-start-line="26" selection-start-column="0" selection-end-line="26" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/red/com/xl/utils/FileUtils.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.72289157" vertical-offset="1220" max-vertical-offset="2380">
+          <caret line="85" column="32" selection-start-line="85" selection-start-column="14" selection-end-line="85" selection-end-column="14" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/red/com/xl/menu/REDMenu.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="1.0553192" vertical-offset="6344" max-vertical-offset="10720">
+          <caret line="364" column="49" selection-start-line="364" selection-start-column="49" selection-end-line="364" selection-end-column="49" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/red/com/xl/parsers/dataparsers/FastaFileParser.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="2594" max-vertical-offset="3080">
+          <caret line="155" column="21" selection-start-line="155" selection-start-column="21" selection-end-line="155" selection-end-column="21" />
+          <folding>
+            <element signature="e#2816#2817#0" expanded="true" />
+            <element signature="e#2843#2844#0" expanded="true" />
+            <element signature="e#2897#2898#0" expanded="true" />
+            <element signature="e#2925#2926#0" expanded="true" />
+            <element signature="e#2976#2977#0" expanded="true" />
+            <element signature="e#3003#3004#0" expanded="true" />
+            <element signature="e#3051#3052#0" expanded="true" />
+            <element signature="e#3095#3096#0" expanded="true" />
+            <element signature="e#3147#3148#0" expanded="true" />
+            <element signature="e#3231#3232#0" expanded="true" />
+            <element signature="e#3833#3841#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/red/com/xl/datatypes/annotation/AnnotationCollection.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="2565" max-vertical-offset="4040">
+          <caret line="155" column="25" selection-start-line="155" selection-start-column="23" selection-end-line="155" selection-end-column="23" />
+          <folding>
+            <element signature="e#783#813#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/red/com/xl/parsers/dataparsers/DataParser.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="3921" max-vertical-offset="4420">
+          <caret line="252" column="42" selection-start-line="252" selection-start-column="31" selection-end-line="252" selection-end-column="31" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/red/com/xl/main/REDApplication.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="4505" max-vertical-offset="17980">
+          <caret line="281" column="0" selection-start-line="281" selection-start-column="0" selection-end-line="281" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/red/com/xl/display/chromosomeviewer/ChromosomeViewer.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.8494624" vertical-offset="685" max-vertical-offset="11260">
+          <caret line="77" column="28" selection-start-line="77" selection-start-column="16" selection-end-line="77" selection-end-column="28" />
+          <folding>
+            <element signature="e#3075#3076#0" expanded="true" />
+            <element signature="e#3117#3118#0" expanded="true" />
+            <element signature="e#3188#3189#0" expanded="true" />
+            <element signature="e#3250#3251#0" expanded="true" />
+            <element signature="e#15692#15693#0" expanded="true" />
+            <element signature="e#15727#15728#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://C:/Program Files/Java/jdk1.7.0_21/src.zip!/java/util/Arrays.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.37246963" vertical-offset="37156" max-vertical-offset="72320">
+          <caret line="1920" column="27" selection-start-line="1920" selection-start-column="24" selection-end-line="1920" selection-end-column="27" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/red/com/xl/datatypes/DataSet.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="1.2474012" vertical-offset="12660" max-vertical-offset="13540">
+          <caret line="686" column="18" selection-start-line="686" selection-start-column="0" selection-end-line="686" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/red/com/xl/display/chromosomeviewer/ChromosomeFeatureTrack.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="3480" max-vertical-offset="11020">
+          <caret line="227" column="56" selection-start-line="227" selection-start-column="56" selection-end-line="227" selection-end-column="56" />
+          <folding>
+            <element signature="e#4160#4161#0" expanded="true" />
+            <element signature="e#4194#4195#0" expanded="true" />
+            <element signature="e#7297#7298#0" expanded="true" />
+            <element signature="e#7341#7342#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/red/com/xl/gradients/ColourGradient.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.20242915" vertical-offset="0" max-vertical-offset="2000">
+          <caret line="23" column="22" selection-start-line="23" selection-start-column="22" selection-end-line="23" selection-end-column="22" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://C:/Program Files/Java/jdk1.7.0_21/src.zip!/java/awt/Graphics.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.34095633" vertical-offset="3276" max-vertical-offset="24460">
+          <caret line="199" column="25" selection-start-line="199" selection-start-column="25" selection-end-line="199" selection-end-column="25" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/red/com/xl/display/chromosomeviewer/ChromosomeDataTrack.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="5000" max-vertical-offset="10240">
+          <caret line="250" column="26" selection-start-line="250" selection-start-column="26" selection-end-line="250" selection-end-column="26" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/red/com/xl/display/genomeviewer/ChromosomeDisplay.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.21863118" vertical-offset="3605" max-vertical-offset="11180">
+          <caret line="207" column="40" selection-start-line="207" selection-start-column="40" selection-end-line="207" selection-end-column="40" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/red/com/xl/panel/StatusPanel.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.54042554" vertical-offset="426" max-vertical-offset="1160">
+          <caret line="38" column="33" selection-start-line="38" selection-start-column="0" selection-end-line="38" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/red/com/xl/panel/REDInfoPanel.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="6016" max-vertical-offset="8980">
+          <caret line="352" column="60" selection-start-line="352" selection-start-column="49" selection-end-line="352" selection-end-column="60" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/red/com/xl/panel/WelcomePanel.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="396" max-vertical-offset="1120">
+          <caret line="53" column="29" selection-start-line="53" selection-start-column="29" selection-end-line="53" selection-end-column="29" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/red/com/xl/utils/ColourScheme.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="550" max-vertical-offset="2820">
+          <caret line="35" column="77" selection-start-line="35" selection-start-column="7" selection-end-line="35" selection-end-column="7" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/red/com/xl/panel/REDTitlePanel.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.7611336" vertical-offset="1144" max-vertical-offset="2340">
+          <caret line="99" column="40" selection-start-line="99" selection-start-column="35" selection-end-line="99" selection-end-column="35" />
           <folding />
         </state>
       </provider>

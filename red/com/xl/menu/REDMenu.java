@@ -348,13 +348,13 @@ public class REDMenu extends JMenuBar implements ActionListener {
             redApplication.importData(new BAMFileParser(redApplication
                     .dataCollection()));
         } else if (action.equals(MenuUtils.DNA)) {
-            redApplication.importData(new FastaFileParser(redApplication.dataCollection()));
+
         } else if (action.equals(MenuUtils.ANNOTATION)) {
             AnnotationParserRunner.RunAnnotationParser(redApplication,
                     new UCSCRefGeneParser(redApplication.dataCollection()
                             .genome()));
         } else if (action.equals(MenuUtils.LOAD_GENOME)) {
-            redApplication.startNewProject();
+            redApplication.importData(new FastaFileParser(redApplication.dataCollection()));
         } else if (action.equals(MenuUtils.EXPORT_IMAGE)) {
             ImageSaver.saveImage(redApplication.chromosomeViewer());
         } else if (action.equals(MenuUtils.EXIT)) {

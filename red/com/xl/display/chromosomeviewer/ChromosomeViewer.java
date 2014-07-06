@@ -38,6 +38,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
+import java.io.RandomAccessFile;
 import java.util.Enumeration;
 import java.util.Vector;
 
@@ -73,6 +74,16 @@ public class ChromosomeViewer extends JPanel implements DataChangeListener,
     private boolean makingSelection = false;
     private int currentStart = 1;
     private int currentEnd = 1;
+
+    public boolean isEnableFastaSequence() {
+        return enableFastaSequence;
+    }
+
+    public void setEnableFastaSequence(boolean enableFastaSequence) {
+        this.enableFastaSequence = enableFastaSequence;
+    }
+
+    private boolean enableFastaSequence = false;
 
     /**
      * Instantiates a new chromosome viewer.
@@ -131,9 +142,10 @@ public class ChromosomeViewer extends JPanel implements DataChangeListener,
             Feature[] features = application.dataCollection().genome()
                     .getAnnotationCollection()
                     .getFeaturesForChr(chromosome);
-            featureTrack.updateBasicFeatures(features);
+            RandomAccessFile raf = application.dataCollection().genome()
+                    .getAnnotationCollection().getFastaForChr(chromosome);
+            featureTrack.updateBasicFeatures(features, raf);
         }
-
     }
 
     /**
@@ -223,8 +235,10 @@ public class ChromosomeViewer extends JPanel implements DataChangeListener,
         }
         Feature[] features = application.dataCollection().genome()
                 .getAnnotationCollection().getFeaturesForChr(chromosome);
+        RandomAccessFile raf = application.dataCollection().genome().getAnnotationCollection().getFastaForChr
+                (chromosome);
         featureTrack = new ChromosomeFeatureTrack(this,
-                currentFeatureTrackName, features);
+                currentFeatureTrackName, features, raf);
 
         DataStore[] dataStores = application.drawnDataStores();
         System.out.println(this.getClass().getName() + ":dataStores\t"

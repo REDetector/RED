@@ -28,11 +28,20 @@ import java.awt.*;
  * whole application.
  */
 public class ColourScheme {
+    /**
+     * The software name in title panel
+     */
+    public static final Color SOFTWARE = new Color(220, 0, 0);
+
+    /**
+     * The software name in title panel
+     */
+    public static final Color VERSION = new Color(0, 0, 220);
 
     /**
      * Any feature or read on the top strand
      */
-    public static final Color FORWARD_FEATURE = new Color(220, 0, 0);
+    public static final Color FORWARD_FEATURE = new Color(198, 43, 158);
     /**
      * The border around a selected chromosome in the genome view
      */
@@ -44,7 +53,7 @@ public class ColourScheme {
     /**
      * Any feature or read on the bottom strand
      */
-    public static final Color REVERSE_FEATURE = new Color(0, 0, 220);
+    public static final Color REVERSE_FEATURE = new Color(19, 91, 28);
     /**
      * The list colour for data groups
      */

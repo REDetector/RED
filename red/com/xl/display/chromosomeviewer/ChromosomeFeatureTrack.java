@@ -24,6 +24,7 @@ import com.xl.datatypes.sequence.Location;
 import com.xl.display.featureviewer.Feature;
 import com.xl.display.featureviewer.FeatureViewer;
 import com.xl.preferences.DisplayPreferences;
+import com.xl.utils.AsciiUtils;
 import com.xl.utils.ColourScheme;
 import com.xl.utils.PositionFormat;
 import com.xl.utils.Strand;
@@ -34,6 +35,8 @@ import java.awt.event.InputEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
+import java.io.IOException;
+import java.io.RandomAccessFile;
 import java.util.Enumeration;
 import java.util.Vector;
 
@@ -85,7 +88,6 @@ public class ChromosomeFeatureTrack extends JPanel {
 
     private int cursorXPosition = 0;
 
-
     /**
      * An optimisation to allow us to miss out features which would be drawn
      * right on top of each other
@@ -96,6 +98,8 @@ public class ChromosomeFeatureTrack extends JPanel {
      * A list of drawn features, used for lookups when finding an active feature
      */
     private Vector<DrawnBasicFeature> drawnFeatures = new Vector<DrawnBasicFeature>();
+
+    private RandomAccessFile fastaFile;
 
     /**
      * Instantiates a new chromosome feature track. We have to send the name of
@@ -108,17 +112,19 @@ public class ChromosomeFeatureTrack extends JPanel {
      * @param features    A list of features we're going to show
      */
     public ChromosomeFeatureTrack(ChromosomeViewer viewer, String featureName,
-                                  Feature[] features) {
+                                  Feature[] features, RandomAccessFile fastaFile) {
         this.viewer = viewer;
         this.featureName = featureName;
         this.features = features;
+        this.fastaFile = fastaFile;
         addMouseMotionListener(new BasicFeatureListener());
         addMouseListener(new BasicFeatureListener());
         drawnFeatures = new Vector<DrawnBasicFeature>();
     }
 
-    public void updateBasicFeatures(Feature[] features) {
+    public void updateBasicFeatures(Feature[] features, RandomAccessFile fastaFile) {
         this.features = features;
+        this.fastaFile = fastaFile;
         repaint();
     }
 
@@ -172,7 +178,16 @@ public class ChromosomeFeatureTrack extends JPanel {
                 }
             }
         }
-
+        if (endBp - startBp < getWidth()) {
+            byte[] sequence = new byte[endBp - startBp];
+            try {
+                fastaFile.seek(startBp - 1);
+                fastaFile.read(sequence, 0, endBp - startBp);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            drawSequence(sequence, g);
+        }
         lastXStart = 0;
         if (activeFeature != null)
             drawBasicFeature(activeFeature, g);
@@ -205,6 +220,28 @@ public class ChromosomeFeatureTrack extends JPanel {
 	 */
     public Dimension getMinimumSize() {
         return new Dimension(30, 30);
+    }
+
+    private void drawSequence(byte[] sequence, Graphics g) {
+        g.drawRoundRect(0, displayHeight - 10, displayWidth, 10, 3, 3);
+        char[] cChar = AsciiUtils.getChars(sequence);
+        double pixelForEachBase = (double) displayWidth / (sequence.length);
+        g.setFont(new Font("Times New Roman", Font.PLAIN, 10));
+        for (int i = 0; i < cChar.length; i++) {
+            char c = cChar[i];
+            if (c == 'a' || c == 'A') {
+                g.setColor(ColourScheme.BASE_A);
+            } else if (c == 'g' || c == 'G') {
+                g.setColor(ColourScheme.BASE_G);
+            } else if (c == 't' || c == 'T') {
+                g.setColor(ColourScheme.BASE_T);
+            } else if (c == 'c' || c == 'C') {
+                g.setColor(ColourScheme.BASE_C);
+            } else {
+                g.setColor(ColourScheme.BASE_UNKNOWN);
+            }
+            g.drawString(String.valueOf(c), (int) (pixelForEachBase * i + pixelForEachBase / 2), displayHeight);
+        }
     }
 
     /**
