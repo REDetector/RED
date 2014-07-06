@@ -4,7 +4,9 @@ import com.xl.datatypes.DataStore;
 import com.xl.datatypes.sequence.SequenceRead;
 import com.xl.interfaces.HiCDataStore;
 import com.xl.preferences.DisplayPreferences;
-import com.xl.utils.*;
+import com.xl.utils.AsciiUtils;
+import com.xl.utils.ColourScheme;
+import com.xl.utils.Strand;
 
 import javax.swing.*;
 import java.awt.*;
@@ -12,10 +14,8 @@ import java.awt.event.InputEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
-import java.util.ArrayList;
-import java.util.Enumeration;
+import java.util.*;
 import java.util.List;
-import java.util.Vector;
 
 /**
  * The Class ChromosomeDataTrack represents a single track in the chromosome
@@ -71,13 +71,7 @@ public class ChromosomeDataTrack extends JPanel implements MouseListener,
      */
     private int readHeight = 10;
     private int maxCoverage = -1;
-    private List<Integer> seqIndex = null;
-
-    private List<Integer> coverage = null;
-    private List<Integer> overlapReads = null;
-
-    private int overlapIndex = 0;
-    /** The amount of space between reads */
+    private int[] readsYIndex = null;
 
     /**
      * Instantiates a new chromosome data track.
@@ -103,6 +97,8 @@ public class ChromosomeDataTrack extends JPanel implements MouseListener,
         System.out.println(this.getClass().getName() + ":updateReads()\t");
         reads = data.getReadsForChromosome(DisplayPreferences.getInstance()
                 .getCurrentChromosome().getName());
+        readsYIndex = new int[reads.length];
+        Arrays.fill(readsYIndex, -1);
 //        File file = new File("D:/test.txt");
 //        FileWriter pw = null;
 //        try {
@@ -116,10 +112,7 @@ public class ChromosomeDataTrack extends JPanel implements MouseListener,
 //            e.printStackTrace();
 //        }
 
-        // Reads should come ready sorted
-        overlapReads = new ArrayList<Integer>();
-        coverage = new ArrayList<Integer>();
-        seqIndex = processSequence();
+        processSequence();
         // Force the slots to be reassigned
         displayHeight = 0;
 
@@ -143,7 +136,7 @@ public class ChromosomeDataTrack extends JPanel implements MouseListener,
         if (reads != null && reads.length != 0) {
             readPixel = bpToPixel(reads[0].length() + viewerCurrentStart);
         } else {
-            MessageUtils.showError(ChromosomeDataTrack.class, "Can't get the reads of this chromosome.");
+            System.err.println(this.getClass().getName() + ": Can't get the reads of this chromosome.");
             return;
         }
         if (readPixel == 0) {
@@ -171,70 +164,16 @@ public class ChromosomeDataTrack extends JPanel implements MouseListener,
         }
 
 
-        if (seqIndex == null || seqIndex.size() == 0) {
-            return;
-        }
-
-        // Now go through all the reads figuring out whether they
-        // need to be displayed
-        int pixelReadXStart;
-        int startFirstRowIndex = 0;
-        int endFirstRowIndex = 0;
-        int length = seqIndex.size();
-        for (int i = 0; i < length; i++) {
-            if (reads[seqIndex.get(i)].getStart() > viewerCurrentStart) {
-                startFirstRowIndex = i >= 2 ? i - 2 : i;
-                break;
+        int readsLength = reads.length;
+        for (int i = 0; i < readsLength; i++) {
+            if (reads[i].getEnd() > viewerCurrentStart && reads[i].getStart() < viewerCurrentEnd) {
+                drawRead(g, reads[i], bpToPixel(reads[i].getStart()), readsYIndex[i] * readHeight);
             }
         }
-        for (int i = length - 1; i >= 0; i--) {
-            if (reads[seqIndex.get(i)].getEnd() < viewerCurrentEnd) {
-                endFirstRowIndex = (i + 2) <= length ? i + 2 : i;
-                break;
-            }
+//        Always draw the active read last
+        if (activeRead != null) {
+            drawRead(g, activeRead, bpToPixel(activeRead.getStart()), activeReadIndex);
         }
-        // System.out.println("Start:\t"+startBp+"End:\t"+endBp);
-//        System.out.println("Sequence Start:\t" + reads[startFirstRowIndex] + "\t" + "Sequence End:\t" + reads[endFirstRowIndex]);
-        for (int i = startFirstRowIndex; i < endFirstRowIndex; i++) {
-            int startIndex = seqIndex.get(i);
-            int secondIndex = seqIndex.get((i + 1) != length ? i + 1 : length);
-            int pixelReadYStart;
-            overlapIndex = 0;
-            for (int j = startIndex; j < secondIndex; j++) {
-                if (overlapReads.contains(j)) {
-                    int preCoverage = coverage.get(i >= 2 ? i - 2 : 0);
-                    int afterCoverage = coverage.get(i >= 1 ? i - 1 : 0);
-                    overlapIndex++;
-                    if (preCoverage > afterCoverage) {
-                        pixelReadYStart = (preCoverage + overlapIndex) * readHeight;
-                    } else {
-                        pixelReadYStart = (afterCoverage + overlapIndex) * readHeight;
-                    }
-                } else {
-                    pixelReadYStart = (j - startIndex) * readHeight;
-                }
-                pixelReadXStart = bpToPixel(reads[j].getStart());
-                drawRead(g, reads[j], pixelReadXStart, pixelReadYStart);
-            }
-        }
-
-        // for (int i = 0; i < reads.length; i++) {
-        // // System.out.println("Looking at read " + i + " Start: "
-        // // + reads[i].getLocation().getStart() + " End: "
-        // // + reads[i].getLocation().getEnd() + " Global Start:"
-        // // + startBp + " End:" + endBp);
-        // if (reads[i].getLocation().getEnd() > startBp
-        // && reads[i].getLocation().getStart() < endBp) {
-        // }
-        // }
-
-        // Always draw the active read last
-//        if (activeRead != null) {
-//            pixelReadXStart = bpToPixel(activeRead.getStart());
-//            drawRead(g, activeRead, pixelReadXStart, activeReadIndex);
-//        }
-
-//        System.out.println("Drew "+drawnReads.size()+" reads");
 
         // Draw a line across the bottom of the display
         g.setColor(Color.LIGHT_GRAY);
@@ -278,10 +217,7 @@ public class ChromosomeDataTrack extends JPanel implements MouseListener,
 
     private void drawRead(Graphics g, SequenceRead r, int pixelXStart, int pixelYStart) {
 
-        // System.out.println("Drawing read from "+r.start()+"-"+r.end()+" "+wholeXEnd+"-"+wholeXEnd+" lastX slot"+slotValues[index]+" end "+lastReadXEnds[slotValues[index]]);
         g.setColor(getSequenceColor(r, pixelYStart));
-        // System.out.println("Sequence Start: "+r.getLocation().getStart()+"\tSequence End:"+r.getLocation().getEnd());
-        // System.out.println("Drawing read from "+wholeXStart+","+yBoxStart+","+wholeXEnd+","+yBoxEnd);
         drawnReads.add(new DrawnRead(pixelXStart, pixelXStart + readPixel, pixelYStart,
                 pixelYStart + readHeight, r));
         if (viewerCurrentEnd - viewerCurrentStart >= getWidth()) {
@@ -290,7 +226,7 @@ public class ChromosomeDataTrack extends JPanel implements MouseListener,
             g.drawRoundRect(pixelXStart, pixelYStart, readPixel, readHeight, 3, 3);
             byte[] readBases = r.getReadBases();
             char[] cChar = AsciiUtils.getChars(readBases);
-            double basePixel = (double) (readPixel) / (readBases.length + 1);
+            double basePixel = (double) (readPixel) / (readBases.length);
             g.setFont(new Font("Times New Roman", Font.PLAIN, readHeight));
             for (int i = 0; i < cChar.length; i++) {
                 char c = cChar[i];
@@ -350,7 +286,6 @@ public class ChromosomeDataTrack extends JPanel implements MouseListener,
      * @return the int
      */
     private int bpToPixel(int bp) {
-//        System.out.println("bp:" + bp + "\tCurrent start:" + viewerCurrentStart + "\tCurrent end:" + viewer.currentEnd() + "\tDisplay width:" + displayWidth);
         return (int) (((double) (bp - viewerCurrentStart) / ((viewerCurrentEnd - viewerCurrentStart))) * displayWidth);
     }
 
@@ -365,11 +300,11 @@ public class ChromosomeDataTrack extends JPanel implements MouseListener,
         while (e.hasMoreElements()) {
             DrawnRead r = e.nextElement();
             if (r.isInFeature(x, y)) {
-                if (activeRead != r.read || r.top != activeReadIndex) {
+                if (activeRead != r.read || r.bottom != activeReadIndex) {
                     viewer.application().setStatusText(
                             " " + data.name() + " " + r.read.toString());
                     activeRead = r.read;
-                    activeReadIndex = r.top;
+                    activeReadIndex = r.bottom;
                     repaint();
                 }
                 return;
@@ -415,6 +350,8 @@ public class ChromosomeDataTrack extends JPanel implements MouseListener,
     public void mouseClicked(MouseEvent me) {
         if ((me.getModifiers() & InputEvent.BUTTON3_MASK) == InputEvent.BUTTON3_MASK) {
             viewer.zoomOut();
+        } else if (me.getClickCount() == 2) {
+            viewer.zoomIn();
         }
     }
 
@@ -477,72 +414,37 @@ public class ChromosomeDataTrack extends JPanel implements MouseListener,
         repaint();
     }
 
-    private List<Integer> processSequence() {
+    private void processSequence() {
         if (reads == null || reads.length == 0) {
-            return null;
+            return;
         }
-//		File file = new File("D:/reads_location.txt")
-//		try {
-//			FileWriter fw = new FileWriter(file);
-//			for(int i =0;i<reads.length;i++){
-//				fw.write(reads[i].getStart());
-//			}
-//			fw.close();
-//		} catch (IOException e) {
-//			e.printStackTrace();
-//		}
-
-        List<Integer> seqIndex = new ArrayList<Integer>();
-
-        int j = 0;
-        //Add the first index of column.
-        seqIndex.add(j);
-        int index;
-        int lastSecondIndex = 0;
-        int seqIndexSize;
-        for (index = 0; index < reads.length; index++) {
-
-            if (j >= 1 && j != index && (index + lastSecondIndex) < 2 * j) {
-
-//                MessageUtils.showInfo("(index - j + lastSecondIndex):" + (index - j + lastSecondIndex) + "\tindex:" + index + "\tj:" + j + "\tlastSecondIndex:" + lastSecondIndex);
-                if (SequenceReadUtils.overlaps(reads[index], reads[index - j + lastSecondIndex])) {
-                    overlapReads.add(index);
+        List<Integer> lastYIndexes = new ArrayList<Integer>();
+        lastYIndexes.add(reads[0].getEnd());
+        int readsLength = reads.length;
+        readsYIndex[0] = 0;
+        for (int i = 1; i < readsLength; i++) {
+            int j = 0;
+            int yIndexLength = lastYIndexes.size();
+            int currentReadStart = reads[i].getStart();
+            for (; j < yIndexLength; j++) {
+                if (currentReadStart - lastYIndexes.get(j) > 0) {
+                    readsYIndex[i] = j;
+                    lastYIndexes.set(j, reads[i].getEnd());
+                    j = yIndexLength;
                 }
             }
-            if (!SequenceReadUtils.overlaps(reads[index], reads[j])) {
-                seqIndex.add(index);
-                coverage.add(index - j);
-
-                if (maxCoverage < index - j) {
-                    maxCoverage = index - j;
-                }
-                j = index;
-                seqIndexSize = seqIndex.size();
-                if (seqIndexSize >= 2) {
-                    lastSecondIndex = seqIndex.get(seqIndexSize - 2);
-                }
+            if (readsYIndex[i] == -1) {
+                readsYIndex[i] = j + 1;
+                lastYIndexes.add(reads[i].getEnd());
             }
         }
-//		File file = new File("D:/test.txt");
-//		try {
-//			FileWriter fw = new FileWriter(file);
-//			for (int i = 0; i < seqIndex.size() - 1; i++) {
-//				if (seqIndex.get(i + 1) - seqIndex.get(i) == maxCoverage) {
-//					for (int k = seqIndex.get(i); k < seqIndex
-//							.get(i + 1); k++) {
-//						fw.write(reads[k].toWrite() + "\t" + k + "\t" + i
-//								+ "\n");
-//					}
-//				}
-//			}
-//			fw.close();
-//		} catch (IOException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
-
-        System.out.println(this.getClass().getName() + ":maxCoverage\t" + maxCoverage + "\toverlapReads:" + overlapReads.size());
-        return seqIndex;
+//        for(int i=0;i<1000;i++){
+//            System.out.print(readsYIndex[i]+" ");
+//            if(i%20==0){
+//                System.out.println();
+//            }
+//        }
+//        System.out.println(this.getClass().getName()+":"+lastYIndexes.size());
     }
 
     /**
