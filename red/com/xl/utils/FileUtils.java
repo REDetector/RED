@@ -31,11 +31,16 @@ public class FileUtils {
         }
     }
 
-    static public String getFileNameFromURL(String url) {
+    public static boolean createDirectory(String path) {
+        File f = new File(path);
+        return f.exists() || f.mkdirs();
+    }
+
+    public static String getFileNameFromURL(String url) {
 
         int lastIndexOfSlash = url.lastIndexOf("/");
 
-        String fileName = null;
+        String fileName;
 
         if (lastIndexOfSlash > -1) {
             fileName = url.substring(lastIndexOfSlash + 1, url.length());
@@ -45,6 +50,7 @@ public class FileUtils {
 
         return fileName;
     }
+
     /**
      * @param path
      * @param content
@@ -67,6 +73,7 @@ public class FileUtils {
         }
     }
 
+
     /**
      * @param path
      * @return
@@ -75,8 +82,24 @@ public class FileUtils {
         boolean flag = false;
         File file = new File(path);
         if (file.isFile() && file.exists()) {
-            file.delete();
-            flag = true;
+            if (file.delete()) {
+                flag = true;
+            }
+        }
+        return flag;
+    }
+
+    /**
+     * @param path
+     * @return
+     */
+    public static boolean deleteFileWithSuffix(String path, String suffix) {
+        boolean flag = false;
+        File file = new File(path);
+        if (file.isFile() && file.exists() && file.getName().endsWith(suffix)) {
+            if (file.delete()) {
+                flag = true;
+            }
         }
         return flag;
     }
@@ -96,13 +119,11 @@ public class FileUtils {
         boolean flag = true;
         File[] files = dirFile.listFiles();
         for (int i = 0; i < files.length; i++) {
-            // ɾ�����ļ�
             if (files[i].isFile()) {
                 flag = deleteFile(files[i].getAbsolutePath());
                 if (!flag)
                     break;
-            } // ɾ����Ŀ¼
-            else {
+            } else {
                 flag = deleteDirectory(files[i].getAbsolutePath());
                 if (!flag)
                     break;
@@ -115,5 +136,29 @@ public class FileUtils {
         } else {
             return false;
         }
+    }
+
+    /**
+     * @param path
+     * @return
+     */
+    public static boolean deleteAllFilesWithSuffix(String path, String suffix) {
+        if (!path.endsWith(File.separator)) {
+            path = path + File.separator;
+        }
+        File dirFile = new File(path);
+        if (!dirFile.exists() || !dirFile.isDirectory()) {
+            return false;
+        }
+        boolean flag = true;
+        File[] files = dirFile.listFiles();
+        for (int i = 0; i < files.length; i++) {
+            if (files[i].isFile()) {
+                flag = deleteFileWithSuffix(files[i].getAbsolutePath(), suffix);
+                if (!flag)
+                    break;
+            }
+        }
+        return flag;
     }
 }

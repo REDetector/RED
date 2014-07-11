@@ -38,7 +38,7 @@ import java.util.Iterator;
 public abstract class DataParser implements Runnable, Cancellable {
 
     protected final DataCollection collection;
-    private final ArrayList<ProgressListener> listeners;
+    protected final ArrayList<ProgressListener> listeners;
     protected boolean cancel = false;
     private File[] files;
 

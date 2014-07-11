@@ -37,7 +37,7 @@ import com.xl.parsers.annotationparsers.IGVGenomeParser;
 import com.xl.parsers.dataparsers.DataParser;
 import com.xl.parsers.dataparsers.REDParser;
 import com.xl.preferences.DisplayPreferences;
-import com.xl.preferences.REDPreferences;
+import com.xl.preferences.LocationPreferences;
 import com.xl.utils.filefilters.FileFilterExt;
 import net.xl.genomes.GenomeDownloader;
 
@@ -45,7 +45,6 @@ import javax.swing.*;
 import javax.swing.filechooser.FileFilter;
 import java.awt.*;
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.Vector;
@@ -472,8 +471,7 @@ public class REDApplication extends JFrame implements ProgressListener,
     public void importData(DataParser parser) {
         parser.addProgressListener(this);
 
-        JFileChooser chooser = new JFileChooser(REDPreferences.getInstance()
-                .getDataLocation());
+        JFileChooser chooser = new JFileChooser(LocationPreferences.getInstance().getProjectDataDirectory());
         chooser.setMultiSelectionEnabled(true);
         FileFilter filter = parser.getFileFilter();
 
@@ -492,8 +490,8 @@ public class REDApplication extends JFrame implements ProgressListener,
                 return;
             }
 
-            REDPreferences.getInstance().setLastUsedDataLocation(
-                    chooser.getSelectedFile());
+            LocationPreferences.getInstance().setProjectSaveLocation(
+                    chooser.getSelectedFile().getAbsolutePath());
 
             parser.setFiles(chooser.getSelectedFiles());
         }
@@ -529,12 +527,6 @@ public class REDApplication extends JFrame implements ProgressListener,
      */
     public void loadGenome(File baseLocation) {
         System.out.println(this.getClass().getName() + ":loadGenome(File baseLocation)");
-        try {
-            System.out.println(this.getClass().getName() + ":" + baseLocation.getCanonicalPath());
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
         GotoDialog.clearRecentLocations();
         IGVGenomeParser parser = new IGVGenomeParser();
         ProgressDialog progressDialog = new ProgressDialog(this,
@@ -551,8 +543,7 @@ public class REDApplication extends JFrame implements ProgressListener,
      * Launches a FileChooser to select a project file to open
      */
     public void loadProject() {
-        JFileChooser chooser = new JFileChooser(REDPreferences.getInstance()
-                .getSaveLocation());
+        JFileChooser chooser = new JFileChooser(LocationPreferences.getInstance().getProjectSaveLocation());
         chooser.setMultiSelectionEnabled(false);
         REDPreviewPanel previewPanel = new REDPreviewPanel();
         chooser.setAccessory(previewPanel);
@@ -564,7 +555,7 @@ public class REDApplication extends JFrame implements ProgressListener,
             return;
 
         File file = chooser.getSelectedFile();
-        REDPreferences.getInstance().setLastUsedSaveLocation(file);
+        LocationPreferences.getInstance().setProjectSaveLocation(file.getAbsolutePath());
 
         loadProject(file);
     }
@@ -607,7 +598,7 @@ public class REDApplication extends JFrame implements ProgressListener,
             }
         }
 
-        REDPreferences.getInstance().setLastUsedSaveLocation(file);
+        LocationPreferences.getInstance().setProjectSaveLocation(file.getAbsolutePath());
 
         wipeAllData();
 
@@ -622,7 +613,7 @@ public class REDApplication extends JFrame implements ProgressListener,
         progressDialog.requestFocus();
         setTitle("RED [" + file.getName() + "]");
 
-        REDPreferences.getInstance().addRecentlyOpenedFile(
+        LocationPreferences.getInstance().addRecentlyOpenedFile(
                 file.getAbsolutePath());
 
     }
@@ -644,9 +635,9 @@ public class REDApplication extends JFrame implements ProgressListener,
     public void removeFromDrawnDataStores(DataStore[] stores) {
         // Remember that we changed something
         changesWereMade();
-        for (int d = 0; d < stores.length; d++) {
-            if (drawnDataStores.contains(stores[d])) {
-                drawnDataStores.remove(stores[d]);
+        for (DataStore store : stores) {
+            if (drawnDataStores.contains(store)) {
+                drawnDataStores.remove(store);
             }
         }
         chromosomeViewer.tracksUpdated();
@@ -659,8 +650,8 @@ public class REDApplication extends JFrame implements ProgressListener,
     public void resetChangesWereMade() {
         changesWereMade = false;
         if (getTitle().endsWith("*")) {
-            // setTitle(getTitle().replaceAll("\\*$", ""));
-            setTitle(getTitle().substring(0, getTitle().length() - 1));
+            setTitle(getTitle().replaceAll("\\*$", ""));
+//            setTitle(getTitle().substring(0, getTitle().length() - 1));
         }
     }
 
@@ -691,7 +682,7 @@ public class REDApplication extends JFrame implements ProgressListener,
         writer.writeData(this, file);
 
         setTitle("RED [" + file.getName() + "]");
-        REDPreferences.getInstance().addRecentlyOpenedFile(
+        LocationPreferences.getInstance().addRecentlyOpenedFile(
                 file.getAbsolutePath());
     }
 
@@ -700,8 +691,7 @@ public class REDApplication extends JFrame implements ProgressListener,
      * which to save
      */
     public void saveProjectAs() {
-        JFileChooser chooser = new JFileChooser(REDPreferences.getInstance()
-                .getSaveLocation());
+        JFileChooser chooser = new JFileChooser(LocationPreferences.getInstance().getProjectSaveLocation());
         chooser.setMultiSelectionEnabled(false);
         chooser.setFileFilter(new FileFilterExt("red"));
         int result = chooser.showSaveDialog(this);
@@ -905,11 +895,11 @@ public class REDApplication extends JFrame implements ProgressListener,
             // No result is returned
             startNewProject();
         } else if (command.equals("datasets_loaded")) {
-            if (result != null) {
-                addNewDataSets((DataSet[]) result);
-            } else {
-                chromosomeViewer.setEnableFastaSequence(true);
-            }
+            addNewDataSets((DataSet[]) result);
+            changesWereMade();
+        } else if (command.equals("fasta_loaded")) {
+            System.out.println("fasta_loaded");
+            chromosomeViewer.setEnableFastaSequence(true);
             changesWereMade();
         } else if (command.equals("data_written")) {
             // Since we've just saved we can reset the changes flag

@@ -1,22 +1,24 @@
 package com.xl.parsers.dataparsers;
 
 import com.xl.datatypes.DataCollection;
+import com.xl.datatypes.DataSet;
 import com.xl.datatypes.genome.Genome;
 import com.xl.datatypes.genome.GenomeDescriptor;
+import com.xl.interfaces.ProgressListener;
 import com.xl.main.REDApplication;
-import com.xl.preferences.REDPreferences;
+import com.xl.preferences.LocationPreferences;
 import com.xl.utils.ChromosomeUtils;
 import com.xl.utils.FileUtils;
 import com.xl.utils.ParsingUtils;
+import com.xl.utils.namemanager.SuffixUtils;
 
 import javax.swing.*;
 import java.io.*;
-import java.util.Vector;
+import java.util.Iterator;
 
 public class FastaFileParser extends DataParser {
-    private final String CACHE_COMPLETE = "fasta.complete";
     private Genome genome;
-    private File fastaBase;
+    private String fastaCacheDirectory;
 
 
     public FastaFileParser(DataCollection collection) {
@@ -42,34 +44,35 @@ public class FastaFileParser extends DataParser {
     @Override
     public void run() {
         try {
-            fastaBase = new File(REDPreferences.getInstance().getGenomeBase() + File.separator + genome.getDisplayName() + File.separator + "fasta");
-            if (fastaBase.exists()) {
-                File cacheFile = new File(fastaBase.getCanonicalPath() + File.separator + CACHE_COMPLETE);
-                FileReader fr = new FileReader(cacheFile);
-                BufferedReader br = new BufferedReader(fr);
-                String version = br.readLine();
-                if (version.equals(REDApplication.VERSION)) {
-                    processingComplete(null);
+            fastaCacheDirectory = LocationPreferences.getInstance().getCacheDirectory() + File.separator + genome
+                    .getDisplayName();
+            if (FileUtils.createDirectory(fastaCacheDirectory)) {
+                File cacheCompleteFile = new File(fastaCacheDirectory + File.separator + SuffixUtils.CACHE_FASTA_COMPLETE);
+                if (cacheCompleteFile.exists()) {
+                    BufferedReader br = new BufferedReader(new FileReader(cacheCompleteFile));
+                    String version = br.readLine();
+                    if (version.equals(REDApplication.VERSION)) {
+                        processingComplete(null);
+                    } else {
+                        br.close();
+                        cacheCompleteFile.delete();
+                        FileUtils.deleteAllFilesWithSuffix(fastaCacheDirectory, SuffixUtils.CACHE_FASTA);
+                        reparseFasta();
+                    }
                 } else {
-                    FileUtils.deleteDirectory(fastaBase.getCanonicalPath());
                     reparseFasta();
                 }
             } else {
-                if (!fastaBase.mkdirs()) {
-                    System.err.println("Fasta file path " + fastaBase.getAbsolutePath() + " can be accessed.");
-                    progressCancelled();
-                } else {
-                    reparseFasta();
-                }
+                System.err.println("Fasta cache file path " + fastaCacheDirectory + " can not be accessed.");
+                progressCancelled();
             }
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
+            GenomeDescriptor.getInstance().setFasta(true);
+            GenomeDescriptor.getInstance().setFastaDirectory(true);
+            GenomeDescriptor.getInstance().setSequenceLocation(fastaCacheDirectory);
         } catch (IOException e) {
             e.printStackTrace();
         }
-        GenomeDescriptor.getInstance().setFasta(true);
-        GenomeDescriptor.getInstance().setFastaDirectory(true);
-        GenomeDescriptor.getInstance().setSequenceLocation(fastaBase.getAbsolutePath());
+
     }
 
     @Override
@@ -99,21 +102,13 @@ public class FastaFileParser extends DataParser {
 
     /**
      * Read an entire fasta file, which might be local or remote and might be gzipped.
-     *
-     * @param
      */
     public void reparseFasta() throws IOException {
-        if (!fastaBase.exists()) {
-            if (!fastaBase.mkdirs()) {
-                throw new IOException("The path '" + fastaBase.getCanonicalPath() + "' can not be accessed. ");
-            }
-        }
         BufferedReader br;
         FileOutputStream fos = null;
         String currentChr = null;
         File[] fastaFiles = getFiles();
         String nextLine;
-        Vector<String> fastaFilesPath = new Vector<String>(24);
         for (File fastaFile : fastaFiles) {
             br = ParsingUtils.openBufferedReader(fastaFile);
             int line = 0;
@@ -129,10 +124,8 @@ public class FastaFileParser extends DataParser {
                     if (currentChr != null) {
                         chr++;
                         line = 0;
-                        String currentChrPath = fastaBase.getAbsolutePath() + File.separator + currentChr + "" +
-                                ".fasta.cache";
+                        String currentChrPath = fastaCacheDirectory + File.separator + currentChr + SuffixUtils.CACHE_FASTA;
                         fos = new FileOutputStream(currentChrPath, true);
-                        fastaFilesPath.add(currentChrPath);
                     }
                 } else {
                     if (fos != null) {
@@ -150,10 +143,17 @@ public class FastaFileParser extends DataParser {
             }
             br.close();
         }
-        FileWriter fw = new FileWriter(fastaBase.getAbsolutePath() + File.separator + CACHE_COMPLETE);
+        FileWriter fw = new FileWriter(fastaCacheDirectory + File.separator + SuffixUtils.CACHE_FASTA_COMPLETE);
         fw.write(REDApplication.VERSION);
         fw.close();
         processingComplete(null);
     }
 
+    @Override
+    protected void processingComplete(DataSet[] dataSets) {
+        Iterator<ProgressListener> i = listeners.iterator();
+        for (; i.hasNext(); ) {
+            i.next().progressComplete("fasta_loaded", null);
+        }
+    }
 }

@@ -20,7 +20,6 @@
 package com.xl.dialog;
 
 import com.xl.main.REDApplication;
-import com.xl.preferences.REDPreferences;
 import net.xl.genomes.DownloadableGenomeSet;
 import net.xl.genomes.DownloadableGenomeTreeModel;
 import net.xl.genomes.GenomeLists;
@@ -129,8 +128,6 @@ public class GenomeDownloadSelector extends JDialog {
                 setVisible(false);
                 GenomeLists selectedGenome = (GenomeLists) tree
                         .getSelectionPath().getLastPathComponent();
-                REDPreferences.getInstance().setGenomeDownloadLocation(
-                        selectedGenome.getGenomeDownloadLocation());
                 application.downloadGenome(selectedGenome.getId(),
                         selectedGenome.getDisplayName());
                 System.out.println(this.getClass().getName() + ":"

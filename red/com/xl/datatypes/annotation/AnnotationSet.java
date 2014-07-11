@@ -4,7 +4,9 @@ import com.xl.datatypes.genome.Genome;
 import com.xl.dialog.CrashReporter;
 import com.xl.display.featureviewer.Feature;
 import com.xl.main.REDApplication;
-import com.xl.preferences.REDPreferences;
+import com.xl.preferences.LocationPreferences;
+import com.xl.utils.FileUtils;
+import com.xl.utils.namemanager.SuffixUtils;
 
 import java.io.*;
 import java.util.*;
@@ -15,7 +17,6 @@ import java.util.*;
  * provide the full set of genome annotations used by the program.
  */
 public class AnnotationSet {
-
     protected Genome genome;
     protected FeatureSet featureSet = null;
     private String name;
@@ -193,7 +194,7 @@ public class AnnotationSet {
      *
      * @return The genome which underlies this annotation set
      */
-    public Genome genome() {
+    public Genome getGenome() {
         return genome;
     }
 
@@ -273,7 +274,7 @@ public class AnnotationSet {
          */
         public Feature getFeaturesForName(String name) {
             Enumeration<String> e = chrFeatures.keys();
-            Feature feature = null;
+            Feature feature;
             while (e.hasMoreElements()) {
                 feature = chrFeatures.get(e.nextElement()).getFeatureForName(
                         name);
@@ -281,7 +282,7 @@ public class AnnotationSet {
                     return feature;
                 }
             }
-            return feature;
+            return null;
         }
 
         public Feature getFeaturesForLocation(int location) {
@@ -305,9 +306,7 @@ public class AnnotationSet {
         }
 
         protected void addPreCacheFeatureTypeCollection(String chr, File file) {
-            if (!chrFeatures.containsKey(chr)) {
-                chrFeatures.put(chr, new FeatureTypeCollection(chr, file));
-            }
+            chrFeatures.put(chr, new FeatureTypeCollection(chr, file));
         }
 
         /**
@@ -420,19 +419,10 @@ public class AnnotationSet {
             // need to keep them all.
             if (AnnotationSet.this instanceof CoreAnnotationSet) {
                 try {
-                    File cacheBase = new File(REDPreferences.getInstance()
-                            .getGenomeBase()
-                            + "/"
-                            + genome.getDisplayName() + "/cache");
-                    if (!cacheBase.exists()) {
-                        if (!cacheBase.mkdir()) {
-                            throw new IOException(
-                                    "Can't create cache file for core annotation set");
-                        }
-                    }
-
-                    cacheFile = new File(cacheBase.getAbsoluteFile() + "/"
-                            + chr + ".cache");
+                    String cacheBase = LocationPreferences.getInstance().getCacheDirectory()
+                            + File.separator + genome.getDisplayName();
+                    FileUtils.createDirectory(cacheBase);
+                    cacheFile = new File(cacheBase + File.separator + chr + SuffixUtils.CACHE_GENOME);
                     ObjectOutputStream oos = new ObjectOutputStream(
                             new BufferedOutputStream(new FileOutputStream(
                                     cacheFile)));

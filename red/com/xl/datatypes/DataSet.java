@@ -5,7 +5,7 @@ import com.xl.datatypes.sequence.Location;
 import com.xl.datatypes.sequence.SequenceRead;
 import com.xl.exception.REDException;
 import com.xl.main.REDApplication;
-import com.xl.preferences.REDPreferences;
+import com.xl.preferences.LocationPreferences;
 import com.xl.thread.ThreadSafeIntCounter;
 import com.xl.thread.ThreadSafeLongCounter;
 import com.xl.thread.ThreadSafeMinMax;
@@ -675,7 +675,7 @@ public class DataSet extends DataStore implements Runnable {
 
             try {
                 tempFile = File.createTempFile("data_set", ".temp",
-                        REDPreferences.getInstance().tempDirectory());
+                        new File(LocationPreferences.getInstance().getTempDirectory()));
                 ObjectOutputStream oos = new ObjectOutputStream(
                         new BufferedOutputStream(new FileOutputStream(tempFile)));
                 oos.writeObject(sequenceReads);

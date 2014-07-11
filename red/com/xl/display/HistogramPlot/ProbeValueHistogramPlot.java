@@ -25,7 +25,7 @@ import com.xl.datatypes.probes.ProbeList;
 import com.xl.dialog.CrashReporter;
 import com.xl.exception.REDException;
 import com.xl.main.REDApplication;
-import com.xl.preferences.REDPreferences;
+import com.xl.preferences.LocationPreferences;
 import com.xl.utils.filefilters.TxtFileFilter;
 import com.xl.utils.imagemanager.ImageSaver;
 
@@ -141,7 +141,7 @@ public class ProbeValueHistogramPlot extends JDialog implements ActionListener, 
         } else if (ae.getActionCommand().equals("save")) {
             ImageSaver.saveImage(plotPanel.mainHistogramPanel());
         } else if (ae.getActionCommand().equals("export")) {
-            JFileChooser chooser = new JFileChooser(REDPreferences.getInstance().getSaveLocation());
+            JFileChooser chooser = new JFileChooser(LocationPreferences.getInstance().getProjectSaveLocation());
             chooser.setMultiSelectionEnabled(false);
             chooser.setFileFilter(new TxtFileFilter());
 
@@ -149,7 +149,7 @@ public class ProbeValueHistogramPlot extends JDialog implements ActionListener, 
             if (result == JFileChooser.CANCEL_OPTION) return;
 
             File file = chooser.getSelectedFile();
-            REDPreferences.getInstance().setLastUsedSaveLocation(file);
+            LocationPreferences.getInstance().setProjectSaveLocation(file.getAbsolutePath());
 
             if (file.isDirectory()) return;
 
@@ -159,7 +159,9 @@ public class ProbeValueHistogramPlot extends JDialog implements ActionListener, 
 
             // Check if we're stepping on anyone's toes...
             if (file.exists()) {
-                int answer = JOptionPane.showOptionDialog(this, file.getName() + " exists.  Do you want to overwrite the existing file?", "Overwrite file?", 0, JOptionPane.QUESTION_MESSAGE, null, new String[]{"Overwrite and Save", "Cancel"}, "Overwrite and Save");
+                int answer = JOptionPane.showOptionDialog(this, file.getName() + " exists.  Do you want to overwrite " +
+                                "the existing file?", "Overwrite file?", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null,
+                        new String[]{"Overwrite and Save", "Cancel"}, "Overwrite and Save");
 
                 if (answer > 0) {
                     return;

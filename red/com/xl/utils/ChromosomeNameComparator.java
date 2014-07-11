@@ -69,8 +69,8 @@ public class ChromosomeNameComparator implements Comparator<String> {
             if (alphaCmp != 0) {
                 return alphaCmp;
             } else {
-                int dig1 = 0;
-                int dig2 = 0;
+                int dig1;
+                int dig2;
                 try {
                     dig1 = Integer.parseInt(chr0.substring(range0[0], range0[1]));
                     dig2 = Integer.parseInt(chr1.substring(range1[0], range1[1]));

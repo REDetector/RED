@@ -27,7 +27,6 @@ public class Genome {
      */
     private String displayName;
     private List<String> chromosomeNames = null;
-    ;
     private LinkedHashMap<String, Chromosome> chromosomeMap = new LinkedHashMap<String, Chromosome>();
     /**
      * The annotation collection.
@@ -44,39 +43,41 @@ public class Genome {
                   boolean chromosOrdered) {
         this.genomeId = genomeId;
         this.displayName = displayName;
+        setSequence(sequence, chromosOrdered);
+        // Initial Annotation for Genome.
+        annotationCollection = new AnnotationCollection(this);
+
+    }
+
+    public void setSequence(Sequence sequence, boolean chromosOrdered) {
         this.sequence = sequence;
         if (sequence != null) {
             chromosomeNames = sequence.getChromosomeNames();
             int chromosomeLength = chromosomeNames.size();
-
-            List<Chromosome> tmpChromosomes = null;
-            if (!chromosOrdered) {
-                tmpChromosomes = new ArrayList<Chromosome>(chromosomeLength);
-            }
             int maxLength = -1;
-
-            for (int i = 0; i < chromosomeLength; i++) {
-                String chr = chromosomeNames.get(i);
-                int length = sequence.getChromosomeLength(chr);
-                maxLength = Math.max(maxLength, length);
-                Chromosome chrom = new Chromosome(chr, length);
-                if (chromosOrdered) {
-                    addChromosome(chrom);
-                } else {
+            if (chromosOrdered) {
+                for (String chrName : chromosomeNames) {
+                    int length = sequence.getChromosomeLength(chrName);
+                    maxLength = Math.max(maxLength, length);
+                    addChromosome(new Chromosome(chrName, length));
+                }
+            } else {
+                List<Chromosome> tmpChromosomes = new ArrayList<Chromosome>(chromosomeLength);
+                for (String chrName : chromosomeNames) {
+                    int length = sequence.getChromosomeLength(chrName);
+                    maxLength = Math.max(maxLength, length);
+                    Chromosome chrom = new Chromosome(chrName, length);
                     tmpChromosomes.add(chrom);
                 }
-            }
-
-            if (!chromosOrdered) {
                 ChromosomeComparator.sortChromosomeList(tmpChromosomes,
                         maxLength / 10, chromosomeMap);
                 chromosomeNames = new ArrayList<String>(chromosomeMap.keySet());
             }
-
         }
-        // Initial Annotation for Genome.
-        annotationCollection = new AnnotationCollection(this);
+    }
 
+    public void setSequence(Sequence sequence) {
+        setSequence(sequence, false);
     }
 
     private static synchronized String getSpeciesForID(String id) {
@@ -97,9 +98,6 @@ public class Genome {
                     String[] tokens = nextLine.split("\t");
                     if (tokens.length == 2) {
                         ucscSpeciesMap.put(tokens[0], tokens[1]);
-                    } else {
-                        // log.error("Unexpected number of tokens in species mapping file for line: "
-                        // + nextLine);
                     }
                 }
             } catch (IOException e) {
@@ -195,18 +193,6 @@ public class Genome {
         return displayName;
     }
 
-    /**
-     * Return the reference base at the given position. Can return null if
-     * reference sequence is unknown
-     *
-     * @param chr
-     * @param pos
-     * @return the reference base, or null if unknown
-     */
-    public byte getReference(String chr, int pos) {
-        return sequence == null ? null : sequence.getBase(chr, pos);
-    }
-
     public void setCytobands(LinkedHashMap<String, List<Cytoband>> chrCytoMap) {
 
         for (Map.Entry<String, List<Cytoband>> entry : chrCytoMap.entrySet()) {
@@ -245,11 +231,7 @@ public class Genome {
      * @return true, if successful
      */
     public boolean hasChromosome(Chromosome c) {
-        if (chromosomeMap.containsValue(c)) {
-            return true;
-        } else {
-            return false;
-        }
+        return chromosomeMap.containsValue(c);
     }
 
     /*

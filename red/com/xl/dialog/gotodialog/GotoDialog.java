@@ -34,8 +34,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
 /**
- * The Class GotoDialog provides a quick way to jump to a known position in the
- * genome.
+ * The Class GotoDialog provides a quick way to jump to a known position in the gGenome.
  */
 public class GotoDialog extends JDialog implements ActionListener, KeyListener,
         ListSelectionListener {

@@ -157,8 +157,8 @@ public class BAMFileParser extends DataParser {
                     // name rather than 0/=
                     if (pairedEndImport && !separateSplicedReads
                             && !prefs.isHiC()
-                            && samRecord.getMateReferenceName() == "0") {
-                        if (samRecord.getMateReferenceName() != "=") {
+                            && samRecord.getMateReferenceName().equals("0")) {
+                        if (samRecord.getMateReferenceName().equals("=")) {
                             try {
                                 throw new REDException(
                                         "Unexpected mate referenece name "

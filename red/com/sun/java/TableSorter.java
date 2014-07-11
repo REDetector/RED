@@ -432,6 +432,7 @@ public class TableSorter extends AbstractTableModel {
                 fireTableChanged(new TableModelEvent(TableSorter.this,
                         viewIndex, viewIndex,
                         column, e.getType()));
+
                 return;
             }
 

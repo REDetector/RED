@@ -2,9 +2,12 @@ package com.xl.datatypes.annotation;
 
 import com.xl.datatypes.genome.Chromosome;
 import com.xl.datatypes.genome.Genome;
+import com.xl.dialog.CrashReporter;
 import com.xl.display.featureviewer.Feature;
+import com.xl.exception.REDException;
 import com.xl.interfaces.AnnotationCollectionListener;
-import com.xl.preferences.REDPreferences;
+import com.xl.preferences.LocationPreferences;
+import com.xl.utils.namemanager.SuffixUtils;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -84,7 +87,7 @@ public class AnnotationCollection {
         System.out.println(AnnotationCollection.class.getName() + ":addAnnotationSets(AnnotationSet[] newSets)\t" + newSets.length);
         for (int s = 0; s < newSets.length; s++) {
 
-            if (newSets[s].genome() != genome) {
+            if (newSets[s].getGenome() != genome) {
                 throw new IllegalArgumentException(
                         "Annotation set genome doesn't match annotation collection");
             }
@@ -145,17 +148,24 @@ public class AnnotationCollection {
         } else {
             RandomAccessFile raf;
             try {
-                raf = new RandomAccessFile(REDPreferences.getInstance().getGenomeBase() + File
-                        .separator + genome.getDisplayName() + File.separator + "fasta" + File
-                        .separator + chromosome.getName() + ".fasta.cache", "r");
-                fastaFile.put(chromosome, raf);
+                File f = new File(LocationPreferences.getInstance().getCacheDirectory() + File.separator +
+                        genome.getDisplayName() + File.separator + chromosome.getName() + SuffixUtils.CACHE_FASTA);
+                if (!f.exists()) {
+                    return null;
+                } else {
+                    raf = new RandomAccessFile(f, "r");
+                    fastaFile.put(chromosome, raf);
+                }
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
+                new CrashReporter(new REDException("The fasta file has not been loaded or this file could not be " +
+                        "cache correctly..."));
                 return null;
             }
             return raf;
         }
     }
+
 
     /**
      * Gets the features for type.

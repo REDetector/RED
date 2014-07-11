@@ -21,7 +21,7 @@ package net.xl.genomes;
 
 import com.xl.exception.REDException;
 import com.xl.interfaces.ProgressListener;
-import com.xl.preferences.REDPreferences;
+import com.xl.preferences.LocationPreferences;
 import com.xl.utils.PositionFormat;
 
 import java.io.*;
@@ -38,7 +38,6 @@ import java.util.Vector;
 public class GenomeDownloader implements Runnable {
 
     private Vector<ProgressListener> listeners = new Vector<ProgressListener>();
-    private REDPreferences prefs = REDPreferences.getInstance();
     private String id = null;
     private String displayName = null;
     private boolean allowCaching;
@@ -94,7 +93,7 @@ public class GenomeDownloader implements Runnable {
         try {
 
             // System.out.println("Downloading "+prefs.getGenomeDownloadLocation()+species+"/"+assembly+".zip");
-            URL url = new URL(prefs.getGenomeDownloadLocation());
+            URL url = new URL(LocationPreferences.getInstance().getGenomeDownloadLists());
             URLConnection connection = url.openConnection();
             connection.setUseCaches(allowCaching);
 
@@ -105,9 +104,9 @@ public class GenomeDownloader implements Runnable {
 
             InputStream is = connection.getInputStream();
             DataInputStream d = new DataInputStream(new BufferedInputStream(is));
-            File outFile = new File(prefs.getGenomeBase() + File.separator + displayName);
+            File outFile = new File(LocationPreferences.getInstance().getGenomeDirectory() + File.separator + displayName);
             File dotGenomeFile = new File(outFile.getAbsolutePath()
-                    + File.separator + id + ".genome");
+                    + File.separator + id + ".getGenome");
             if (outFile.exists()) {
                 if (dotGenomeFile.exists() && dotGenomeFile.length() == size) {
                     ProgressListener[] en = listeners.toArray(new ProgressListener[0]);
@@ -117,6 +116,8 @@ public class GenomeDownloader implements Runnable {
                     return;
                     // throw new
                     // REDException("The genome file already exists! You can just load it.");
+                } else if (dotGenomeFile.exists() && dotGenomeFile.length() != size) {
+                    dotGenomeFile.delete();
                 }
             } else {
                 outFile.mkdirs();

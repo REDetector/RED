@@ -21,6 +21,7 @@ package com.xl.panel;
 
 import com.xl.dialog.CrashReporter;
 import com.xl.main.REDApplication;
+import com.xl.preferences.LocationPreferences;
 import com.xl.preferences.REDPreferences;
 import com.xl.utils.namemanager.IconUtils;
 import com.xl.utils.namemanager.InfoPanelUtils;
@@ -31,7 +32,6 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.DecimalFormat;
@@ -83,7 +83,6 @@ public class REDInfoPanel extends JPanel implements Runnable, ActionListener {
 
         removeAll();
         validate();
-        invalidCacheDirectory = false;
 
         // We prepare a couple of buttons for optional later use
 
@@ -146,20 +145,9 @@ public class REDInfoPanel extends JPanel implements Runnable, ActionListener {
 
         // This will record whether our temp dir is invalid
 
-        File tempDir = REDPreferences.getInstance().tempDirectory();
+        File tempDir = new File(LocationPreferences.getInstance().getTempDirectory());
 
-        if (tempDir == null) {
-            JLabel tempLabel = new JLabel(IconUtils.ERRORICON);
-            add(tempLabel, gridBagConstraints);
-            gridBagConstraints.gridx = 1;
-            gridBagConstraints.weightx = 0.999;
-            add(new JLabel(InfoPanelUtils.CACHE_DIRECTORY_CONFIGURE,
-                    JLabel.LEFT), gridBagConstraints);
-            gridBagConstraints.gridx = 2;
-            gridBagConstraints.weightx = 0.001;
-            add(setTempDirButton, gridBagConstraints);
-            invalidCacheDirectory = true;
-        } else if (!(tempDir.exists() && tempDir.isDirectory()
+        if (!(tempDir.exists() && tempDir.isDirectory()
                 && tempDir.canRead() && tempDir.canWrite() && tempDir
                 .listFiles() != null)) {
             JLabel tempLabel = new JLabel(IconUtils.ERRORICON);
@@ -178,7 +166,7 @@ public class REDInfoPanel extends JPanel implements Runnable, ActionListener {
 
             try {
                 File tempFile = File.createTempFile("red_test_data",
-                        ".temp", REDPreferences.getInstance().tempDirectory());
+                        ".temp", tempDir);
                 FileOutputStream fis = new FileOutputStream(tempFile);
                 fis.write(123456789);
                 fis.close();
@@ -243,96 +231,39 @@ public class REDInfoPanel extends JPanel implements Runnable, ActionListener {
         // Check the genomes directory
 
         JLabel genomesLabel = new JLabel(IconUtils.ERRORICON);
-        JLabel genomesLabelText = new JLabel(
-                InfoPanelUtils.GENOMES_CHECK_FOLDER_DISABLE);
+        JLabel genomesLabelText = new JLabel(InfoPanelUtils.GENOMES_CHECK_FOLDER_DISABLE);
 
-        if (REDPreferences.getInstance().customGenomeBaseUsed()) {
-            // They're using a custom genomes folder
-            File gb = null;
-            try {
-                gb = REDPreferences.getInstance().getGenomeBase();
-            } catch (FileNotFoundException e) {
-                // There is no default genomes folder
-                genomesLabel.setIcon(IconUtils.ERRORICON);
-                genomesLabelText
-                        .setText(InfoPanelUtils.GENOMES_FOLDER_GET_FAIL);
-                gridBagConstraints.gridx = 2;
-                gridBagConstraints.weightx = 0.001;
-                add(setGenomesFolderButton, gridBagConstraints);
-            }
+        // They're using a custom genomes folder
+        File gb = new File(LocationPreferences.getInstance().getGenomeDirectory());
 
-            if (gb == null || !gb.exists()) {
-                // There is no default genomes folder
-                genomesLabel.setIcon(IconUtils.ERRORICON);
-                genomesLabelText
-                        .setText(InfoPanelUtils.GENOMES_FOLDER_GET_FAIL);
-                gridBagConstraints.gridx = 2;
-                gridBagConstraints.weightx = 0.001;
-                add(setGenomesFolderButton, gridBagConstraints);
-            } else if (!gb.canRead()) {
-                // The default genomes folder is present but useless
-                genomesLabel.setIcon(IconUtils.ERRORICON);
-                genomesLabelText.setText(InfoPanelUtils.PERMISSION_DENIED_READ);
-                gridBagConstraints.gridx = 2;
-                gridBagConstraints.weightx = 0.001;
-                add(setGenomesFolderButton, gridBagConstraints);
-            } else if (!gb.canWrite()) {
-                // The default genomes folder is present, but we can't import
-                // new genomes
-                genomesLabel.setIcon(IconUtils.WARNINGICON);
-                genomesLabelText
-                        .setText(InfoPanelUtils.PERMISSION_DENIED_WRITE);
-                gridBagConstraints.gridx = 2;
-                gridBagConstraints.weightx = 0.001;
-                add(setGenomesFolderButton, gridBagConstraints);
-            } else {
-                // Everything is OK
-                genomesLabel.setIcon(IconUtils.INFOICON);
-                genomesLabelText
-                        .setText(InfoPanelUtils.GENOMES_USE_CUSTUM_FOLDER);
-            }
+        if (!gb.exists()) {
+            // There is no default genomes folder
+            genomesLabel.setIcon(IconUtils.ERRORICON);
+            genomesLabelText.setText(InfoPanelUtils.GENOMES_FOLDER_GET_FAIL);
+            gridBagConstraints.gridx = 2;
+            gridBagConstraints.weightx = 0.001;
+            add(setGenomesFolderButton, gridBagConstraints);
+        } else if (!gb.canRead()) {
+            // The default genomes folder is present but useless
+            genomesLabel.setIcon(IconUtils.ERRORICON);
+            genomesLabelText.setText(InfoPanelUtils.PERMISSION_DENIED_READ);
+            gridBagConstraints.gridx = 2;
+            gridBagConstraints.weightx = 0.001;
+            add(setGenomesFolderButton, gridBagConstraints);
+        } else if (!gb.canWrite()) {
+            // The default genomes folder is present, but we can't import
+            // new genomes
+            genomesLabel.setIcon(IconUtils.WARNINGICON);
+            genomesLabelText
+                    .setText(InfoPanelUtils.PERMISSION_DENIED_WRITE);
+            gridBagConstraints.gridx = 2;
+            gridBagConstraints.weightx = 0.001;
+            add(setGenomesFolderButton, gridBagConstraints);
         } else {
-            // They're using the default
-            File gb;
-            try {
-                gb = REDPreferences.getInstance().getGenomeBase();
-
-                if (!gb.canRead()) {
-                    // The default genomes folder is present but useless
-                    genomesLabel.setIcon(IconUtils.ERRORICON);
-                    genomesLabelText
-                            .setText(InfoPanelUtils.GENOMES_USE_CUSTUM_FOLDER_READ_FAIL);
-                    gridBagConstraints.gridx = 2;
-                    gridBagConstraints.weightx = 0.001;
-                    add(setGenomesFolderButton, gridBagConstraints);
-                } else if (!gb.canWrite()) {
-                    // The default genomes folder is present, but we can't
-                    // import new genomes
-                    genomesLabel.setIcon(IconUtils.WARNINGICON);
-                    genomesLabelText
-                            .setText(InfoPanelUtils.GENOMES_USE_CUSTUM_FOLDER_WRITE_FAIL);
-                    gridBagConstraints.gridx = 2;
-                    gridBagConstraints.weightx = 0.001;
-                    add(setGenomesFolderButton, gridBagConstraints);
-                } else {
-                    // Everything is OK
-                    genomesLabel.setIcon(IconUtils.INFOICON);
-                    genomesLabelText
-                            .setText(InfoPanelUtils.GENOMES_USE_DEFALT_FOLDER);
-                    gridBagConstraints.gridx = 2;
-                    gridBagConstraints.weightx = 0.001;
-                    add(setGenomesFolderButton, gridBagConstraints);
-                }
-
-            } catch (FileNotFoundException e) {
-                // There is no default genomes folder
-                genomesLabel.setIcon(IconUtils.ERRORICON);
-                genomesLabelText
-                        .setText(InfoPanelUtils.GENOMES_FOLDER_NOT_EXIST);
-                gridBagConstraints.gridx = 2;
-                gridBagConstraints.weightx = 0.001;
-                add(setGenomesFolderButton, gridBagConstraints);
-            }
+            // Everything is OK
+            genomesLabel.setIcon(IconUtils.INFOICON);
+            genomesLabelText
+                    .setText(InfoPanelUtils.GENOMES_USE_CUSTUM_FOLDER);
         }
 
         gridBagConstraints.gridx = 0;
@@ -419,8 +350,8 @@ public class REDInfoPanel extends JPanel implements Runnable, ActionListener {
             chooser.setDialogTitle("Select a Cache Directory");
             chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
             if (chooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
-                REDPreferences.getInstance().setTempDirectory(
-                        chooser.getSelectedFile());
+                LocationPreferences.getInstance().setTempDirectory(
+                        chooser.getSelectedFile().getAbsolutePath());
                 try {
                     REDPreferences.getInstance().savePreferences();
                     populatePanel();
@@ -435,8 +366,8 @@ public class REDInfoPanel extends JPanel implements Runnable, ActionListener {
             chooser.setDialogTitle("Select a Genomes Directory");
             chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
             if (chooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
-                REDPreferences.getInstance().setGenomeBase(
-                        chooser.getSelectedFile());
+                LocationPreferences.getInstance().setGenomeDirectory(
+                        chooser.getSelectedFile().getAbsolutePath());
                 try {
                     REDPreferences.getInstance().savePreferences();
                     populatePanel();
@@ -455,8 +386,8 @@ public class REDInfoPanel extends JPanel implements Runnable, ActionListener {
             if (answer == JOptionPane.CANCEL_OPTION)
                 return;
 
-            File[] tempFiles = REDPreferences.getInstance().tempDirectory()
-                    .listFiles();
+            File tempDirectory = new File(LocationPreferences.getInstance().getTempDirectory());
+            File[] tempFiles = tempDirectory.listFiles();
 
             // int deletedCount = 0;
             for (int f = 0; f < tempFiles.length; f++) {

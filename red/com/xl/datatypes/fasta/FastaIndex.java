@@ -1,8 +1,9 @@
 package com.xl.datatypes.fasta;
 
 import com.xl.datatypes.genome.GenomeDescriptor;
-import com.xl.preferences.REDPreferences;
+import com.xl.preferences.LocationPreferences;
 import com.xl.utils.ChromosomeUtils;
+import com.xl.utils.FileUtils;
 import com.xl.utils.ParsingUtils;
 
 import java.io.*;
@@ -68,20 +69,20 @@ public class FastaIndex {
             reader = ParsingUtils.openBufferedReader(indexFile);
             boolean isHttpPath = ParsingUtils.isHttpPath(indexFile);
             if (isHttpPath) {
-                String indexName = indexFile.substring(
-                        indexFile.lastIndexOf("/") + 1, indexFile.length());
+                String indexName = FileUtils.getFileNameFromURL(indexFile);
                 System.out.println(this.getClass().getName() + ":indexName:" + indexName);
-                String indexPath = REDPreferences.getInstance().getGenomeBase()
+                String indexPath = LocationPreferences.getInstance().getFastaDirectory()
                         + File.separator
-                        + GenomeDescriptor.getInstance().getDisplayName()
-                        + File.separator + indexName;
-                File file = new File(indexPath);
-                fw = new FileWriter(file);
-                bw = new BufferedWriter(fw);
+                        + GenomeDescriptor.getInstance().getDisplayName();
+                if (FileUtils.createDirectory(indexPath)) {
+                    fw = new FileWriter(indexPath + File.separator + indexName);
+                    bw = new BufferedWriter(fw);
+                } else {
+                    throw new IOException();
+                }
             }
             String nextLine;
             while ((nextLine = reader.readLine()) != null) {
-
                 // Tokenize and validate the index line.
                 String[] tokens = nextLine.split("\t|( +)");
                 int nTokens = tokens.length;

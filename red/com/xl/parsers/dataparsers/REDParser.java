@@ -1,25 +1,5 @@
 package com.xl.parsers.dataparsers;
 
-/**
- * Copyright Copyright 2007-13 Simon Andrews
- *
- *    This file is part of SeqMonk.
- *
- *    SeqMonk is free software; you can redistribute it and/or modify
- *    it under the terms of the GNU General Public License as published by
- *    the Free Software Foundation; either version 3 of the License, or
- *    (at your option) any later version.
- *
- *    SeqMonk is distributed in the hope that it will be useful,
- *    but WITHOUT ANY WARRANTY; without even the implied warranty of
- *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *    GNU General Public License for more details.
- *
- *    You should have received a copy of the GNU General Public License
- *    along with SeqMonk; if not, write to the Free Software
- *    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
- */
-
 import com.xl.datatypes.DataGroup;
 import com.xl.datatypes.DataSet;
 import com.xl.datatypes.DataStore;
@@ -39,7 +19,7 @@ import com.xl.interfaces.ProgressListener;
 import com.xl.main.REDApplication;
 import com.xl.parsers.annotationparsers.IGVGenomeParser;
 import com.xl.preferences.DisplayPreferences;
-import com.xl.preferences.REDPreferences;
+import com.xl.preferences.LocationPreferences;
 import com.xl.utils.MessageUtils;
 import com.xl.utils.ParsingUtils;
 import com.xl.utils.Strand;
@@ -52,7 +32,7 @@ import java.util.Vector;
 import java.util.zip.GZIPInputStream;
 
 /**
- * The SeqMonkParser reads the main SeqMonk file format. It is different to all
+ * The REDParser reads the main RED file format. It is different to all
  * other data parsers in that it does not extend DataParser since it not only
  * contains data, but can also load genomes and probes and can set visual
  * preferences.
@@ -74,7 +54,6 @@ public class REDParser implements Runnable, ProgressListener {
     private DataGroup[] dataGroups;
     private boolean genomeLoaded = false;
     private Exception exceptionReceived = null;
-    private boolean pauseWhilstLoadingGenome = false;
     private Probe[] probes;
     private int thisDataVersion = -1;
 
@@ -146,19 +125,19 @@ public class REDParser implements Runnable, ProgressListener {
                 } else if (sections[0].equals(ParsingUtils.SAMPLES)) {
                     if (!genomeLoaded) {
                         throw new REDException(
-                                "No genome definition found before data");
+                                "No getGenome definition found before data");
                     }
                     parseSamples(sections);
                 } else if (sections[0].equals(ParsingUtils.ANNOTATION)) {
                     if (!genomeLoaded) {
                         throw new REDException(
-                                "No genome definition found before data");
+                                "No getGenome definition found before data");
                     }
                     annotationSets.add(parseAnnotation(sections));
                 } else if (sections[0].equals(ParsingUtils.DATA_GROUPS)) {
                     if (!genomeLoaded) {
                         throw new REDException(
-                                "No genome definition found before data");
+                                "No getGenome definition found before data");
                     }
                     try {
                         parseGroups(sections);
@@ -176,13 +155,13 @@ public class REDParser implements Runnable, ProgressListener {
                 } else if (sections[0].equals(ParsingUtils.PROBES)) {
                     if (!genomeLoaded) {
                         throw new REDException(
-                                "No genome definition found before data");
+                                "No getGenome definition found before data");
                     }
                     parseProbes(sections);
                 } else if (sections[0].equals(ParsingUtils.LISTS)) {
                     if (!genomeLoaded) {
                         throw new REDException(
-                                "No genome definition found before data");
+                                "No getGenome definition found before data");
                     }
                     parseLists(sections);
                 } else if (sections[0].equals(ParsingUtils.GENOME_INFORMATION_START)) {
@@ -190,13 +169,13 @@ public class REDParser implements Runnable, ProgressListener {
                 } else if (sections[0].equals(ParsingUtils.VISIBLE_STORES)) {
                     if (!genomeLoaded) {
                         throw new REDException(
-                                "No genome definition found before data");
+                                "No getGenome definition found before data");
                     }
                     parseVisibleStores(sections);
                 } else if (sections[0].equals(ParsingUtils.DISPLAY_PREFERENCES)) {
                     if (!genomeLoaded) {
                         throw new REDException(
-                                "No genome definition found before data");
+                                "No getGenome definition found before data");
                     }
 
                     // Add any annotation sets we've parsed at this point
@@ -325,20 +304,15 @@ public class REDParser implements Runnable, ProgressListener {
             }
         }
         File f;
-        try {
-            f = new File(REDPreferences.getInstance().getGenomeBase().getAbsoluteFile()
-                    + File.separator + GenomeDescriptor.getInstance().getDisplayName() + File.separator + GenomeDescriptor.getInstance().getGenomeId() + ".genome");
-            System.out.println(this.getClass().getName() + ":" + f.getAbsolutePath());
-        } catch (FileNotFoundException e) {
-            throw new REDException(
-                    "Couldn't find the folder which should contain the genome files.  Please check your file preferences.");
-        }
+        f = new File(LocationPreferences.getInstance().getGenomeDirectory()
+                + File.separator + GenomeDescriptor.getInstance().getDisplayName() + File.separator + GenomeDescriptor.getInstance().getGenomeId() + ".getGenome");
+        System.out.println(this.getClass().getName() + ":" + f.getAbsolutePath());
         if (!f.exists()) {
             // The user doesn't have this genome - yet...
             GenomeDownloader d = new GenomeDownloader();
             d.addProgressListener(this);
             ProgressDialog progressDialog = new ProgressDialog(application,
-                    "Downloading genome...");
+                    "Downloading getGenome...");
             d.addProgressListener(progressDialog);
             d.downloadGenome(GenomeDescriptor.getInstance().getGenomeId(), GenomeDescriptor.getInstance().getDisplayName(), true);
             progressDialog.requestFocus();
@@ -1172,8 +1146,6 @@ public class REDParser implements Runnable, ProgressListener {
         if (command.equals("load_genome")) {
             application.progressComplete("load_genome", result);
             genomeLoaded = true;
-        } else if (command.equals("genome_downloaded")) {
-            pauseWhilstLoadingGenome = false;
         } else {
             throw new IllegalArgumentException(
                     "Don't know how to handle command '" + command + "'");

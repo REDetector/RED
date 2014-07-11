@@ -24,7 +24,7 @@ import com.xl.datatypes.DataStore;
 import com.xl.datatypes.sequence.SequenceRead;
 import com.xl.dialog.CrashReporter;
 import com.xl.main.REDApplication;
-import com.xl.preferences.REDPreferences;
+import com.xl.preferences.LocationPreferences;
 import com.xl.utils.filefilters.TxtFileFilter;
 import com.xl.utils.imagemanager.ImageSaver;
 
@@ -88,21 +88,18 @@ public class ReadLengthHistogramPlot extends JDialog implements ActionListener {
      * @return the read lengths
      */
     private double[] getReadLengths(DataStore d) {
-        double[] data = new double[(int) d.getTotalReadCount()];
+        double[] data = new double[d.getTotalReadCount()];
 
         int offset = 0;
 
         String[] chrs = d.collection().genome().getAllChromosomeNames();
-
-        for (int c = 0; c < chrs.length; c++) {
-            SequenceRead[] reads = d.getReadsForChromosome(chrs[c]);
-
+        for (String chr : chrs) {
+            SequenceRead[] reads = d.getReadsForChromosome(chr);
             for (int r = 0; r < reads.length; r++) {
                 data[offset + r] = reads[r].length();
             }
             offset += reads.length;
         }
-
         return data;
     }
 
@@ -116,7 +113,7 @@ public class ReadLengthHistogramPlot extends JDialog implements ActionListener {
         } else if (ae.getActionCommand().equals("save")) {
             ImageSaver.saveImage(plotPanel.mainHistogramPanel());
         } else if (ae.getActionCommand().equals("export")) {
-            JFileChooser chooser = new JFileChooser(REDPreferences.getInstance().getSaveLocation());
+            JFileChooser chooser = new JFileChooser(LocationPreferences.getInstance().getProjectSaveLocation());
             chooser.setMultiSelectionEnabled(false);
             chooser.setFileFilter(new TxtFileFilter());
 
@@ -124,7 +121,7 @@ public class ReadLengthHistogramPlot extends JDialog implements ActionListener {
             if (result == JFileChooser.CANCEL_OPTION) return;
 
             File file = chooser.getSelectedFile();
-            REDPreferences.getInstance().setLastUsedSaveLocation(file);
+            LocationPreferences.getInstance().setProjectSaveLocation(file.getAbsolutePath());
 
             if (file.isDirectory()) return;
 
@@ -134,7 +131,9 @@ public class ReadLengthHistogramPlot extends JDialog implements ActionListener {
 
             // Check if we're stepping on anyone's toes...
             if (file.exists()) {
-                int answer = JOptionPane.showOptionDialog(this, file.getName() + " exists.  Do you want to overwrite the existing file?", "Overwrite file?", 0, JOptionPane.QUESTION_MESSAGE, null, new String[]{"Overwrite and Save", "Cancel"}, "Overwrite and Save");
+                int answer = JOptionPane.showOptionDialog(this, file.getName() + " exists.  " +
+                                "Do you want to overwrite the existing file?", "Overwrite file?", JOptionPane.YES_NO_OPTION,
+                        JOptionPane.QUESTION_MESSAGE, null, new String[]{"Overwrite and Save", "Cancel"}, "Overwrite and Save");
 
                 if (answer > 0) {
                     return;

@@ -64,8 +64,7 @@ public class UCSCRefGeneParser extends AnnotationParser {
         return parseAnnotation(type, br, genome);
     }
 
-    protected AnnotationSet[] parseAnnotation(GeneType type, BufferedReader br, Genome genome)
-            throws Exception {
+    protected AnnotationSet[] parseAnnotation(GeneType type, BufferedReader br, Genome genome) throws IOException {
         System.out.println(this.getClass().getName() + ":parseAnnotation()");
         parseGeneType(type);
         Vector<AnnotationSet> annotationSets = new Vector<AnnotationSet>();

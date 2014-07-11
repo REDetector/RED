@@ -142,7 +142,7 @@ public class REDDataWriter implements Runnable, Cancellable {
      */
     public void writeData(REDApplication application, File file) {
         data = application.dataCollection();
-        // System.out.println(this.getClass().getDisplayName()+":"+data.genome().species());
+        // System.out.println(this.getClass().getDisplayName()+":"+data.getGenome().species());
         this.genome = data.genome();
         this.file = file;
         visibleStores = application.drawnDataStores();

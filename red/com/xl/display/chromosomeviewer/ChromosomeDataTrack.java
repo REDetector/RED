@@ -101,19 +101,6 @@ public class ChromosomeDataTrack extends JPanel {
                 .getCurrentChromosome().getName());
         readsYIndex = new int[reads.length];
         Arrays.fill(readsYIndex, -1);
-//        File file = new File("D:/test.txt");
-//        FileWriter pw = null;
-//        try {
-//            pw = new FileWriter(file);
-//            for (int i = 0; i < Math.min(1000, reads.length); i++) {
-//
-//                pw.write(reads[i].toWrite() + "\t" + reads[i].length() + "\n");
-//            }
-//            pw.close();
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-
         processSequence();
         // Force the slots to be reassigned
         displayHeight = 0;

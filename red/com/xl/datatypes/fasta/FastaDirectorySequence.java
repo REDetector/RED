@@ -3,6 +3,7 @@ package com.xl.datatypes.fasta;
 import com.xl.datatypes.sequence.Sequence;
 import com.xl.utils.ChromosomeNameComparator;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.*;
 
@@ -26,7 +27,7 @@ public class FastaDirectorySequence implements Sequence {
     private void readIndexes(String directoryPath, String[] fastaFiles) throws IOException {
         sequenceMap = new LinkedHashMap<String, FastaIndexedSequence>();
         for (String file : fastaFiles) {
-            String fastaPath = directoryPath + "/" + file;
+            String fastaPath = directoryPath + File.separator + file;
             FastaIndexedSequence fastaSequence = new FastaIndexedSequence(fastaPath);
             for (String chr : fastaSequence.getChromosomeNames()) {
                 sequenceMap.put(chr, fastaSequence);
@@ -54,14 +55,11 @@ public class FastaDirectorySequence implements Sequence {
     }
 
     public byte[] getSequence(String chr, int start, int end) {
-
-
         if (!sequenceMap.containsKey(chr)) {
             return null;
         }
         return sequenceMap.get(chr).getSequence(chr, start, end);
     }
-
 
     @Override
     public List<String> getChromosomeNames() {
@@ -70,7 +68,7 @@ public class FastaDirectorySequence implements Sequence {
 
     @Override
     public byte getBase(String chr, int position) {
-        throw new RuntimeException("getBase() is not implemented for class " + FastaIndexedSequence.class.getName());
+        throw new RuntimeException("getBase() is not implemented for class " + FastaDirectorySequence.class.getName());
     }
 
     @Override

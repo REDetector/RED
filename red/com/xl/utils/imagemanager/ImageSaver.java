@@ -1,7 +1,7 @@
 package com.xl.utils.imagemanager;
 
 import com.xl.dialog.CrashReporter;
-import com.xl.preferences.REDPreferences;
+import com.xl.preferences.LocationPreferences;
 import com.xl.utils.filefilters.EPSFileFilter;
 import com.xl.utils.filefilters.PNGFileFilter;
 import com.xl.utils.filefilters.SVGFileFilter;
@@ -30,7 +30,7 @@ public class ImageSaver {
      * @param c The component to save.
      */
     public static void saveImage(Component c) {
-        JFileChooser chooser = new JFileChooser(REDPreferences.getInstance().getSaveLocation());
+        JFileChooser chooser = new JFileChooser(LocationPreferences.getInstance().getProjectSaveLocation());
         chooser.setMultiSelectionEnabled(false);
         chooser.addChoosableFileFilter(new SVGFileFilter());
         chooser.addChoosableFileFilter(new EPSFileFilter());
@@ -42,7 +42,7 @@ public class ImageSaver {
         if (result == JFileChooser.CANCEL_OPTION) return;
 
         File file = chooser.getSelectedFile();
-        REDPreferences.getInstance().setLastUsedSaveLocation(file);
+        LocationPreferences.getInstance().setProjectSaveLocation(file.getAbsolutePath());
 
         if (file.isDirectory()) return;
 
@@ -79,7 +79,6 @@ public class ImageSaver {
                 BufferedImage b = new BufferedImage(c.getWidth(), c.getHeight(), BufferedImage.TYPE_INT_RGB);
                 Graphics g = b.getGraphics();
                 c.paint(g);
-
                 ImageIO.write(b, "PNG", file);
             } else if (filter instanceof SVGFileFilter) {
                 PrintWriter pr = new PrintWriter(new FileWriter(file));

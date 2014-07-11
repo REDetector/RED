@@ -8,7 +8,7 @@ import com.xl.dialog.CrashReporter;
 import com.xl.exception.REDException;
 import com.xl.interfaces.HiCDataStore;
 import com.xl.main.REDApplication;
-import com.xl.preferences.REDPreferences;
+import com.xl.preferences.LocationPreferences;
 import com.xl.thread.ThreadSafeIntCounter;
 import com.xl.utils.SequenceReadUtils;
 import com.xl.utils.Strand;
@@ -943,8 +943,8 @@ public class PairedDataSet extends DataSet implements HiCDataStore {
                 // System.err.println("Started writing cache file for "+chromosome.name());
 
                 // long cacheWriteStart = System.currentTimeMillis();
-                tempFile = File.createTempFile("seqmonk_data_hic", ".temp",
-                        REDPreferences.getInstance().tempDirectory());
+                tempFile = File.createTempFile("red_data_hic", ".temp",
+                        new File(LocationPreferences.getInstance().getTempDirectory()));
                 ObjectOutputStream oos = new ObjectOutputStream(
                         new BufferedOutputStream(new FileOutputStream(tempFile)));
                 oos.writeObject(hitCollection);

@@ -93,7 +93,7 @@ public class ChromosomeFeatureTrack extends JPanel {
         drawnFeatures = new Vector<DrawnBasicFeature>();
     }
 
-    public void updateBasicFeatures(Feature[] features, RandomAccessFile fastaFile) {
+    public void updateFeatureAndSequence(Feature[] features, RandomAccessFile fastaFile) {
         this.features = features;
         this.fastaFile = fastaFile;
         repaint();
@@ -149,17 +149,10 @@ public class ChromosomeFeatureTrack extends JPanel {
                 }
             }
         }
-        if (endBp - startBp < getWidth()) {
-            byte[] sequence = new byte[endBp - startBp];
-            try {
-                fastaFile.seek(startBp - 1);
-                fastaFile.read(sequence, 0, endBp - startBp);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+        if (endBp - startBp < getWidth() && fastaFile != null) {
             g.drawRoundRect(0, displayHeight - 10, displayWidth, 10, 3, 3);
             g.setFont(FontManager.defaultFont);
-            drawSequence(sequence, g);
+            drawSequence(getSequenceForChr(fastaFile, startBp, endBp), g);
         }
         if (activeFeature != null)
             drawBasicFeature(activeFeature, g);
@@ -169,11 +162,6 @@ public class ChromosomeFeatureTrack extends JPanel {
         int nameWidth = g.getFontMetrics().stringWidth(featureName);
         int nameHeight = g.getFontMetrics().getAscent();
 
-        // if (viewer.getIndex(this) % 2 == 0) {
-        // g.setColor(ColourScheme.FEATURE_BACKGROUND_EVEN);
-        // } else {
-        // g.setColor(ColourScheme.FEATURE_BACKGROUND_ODD);
-        // }
         g.setColor(Color.ORANGE);
         g.fillRect(0, 1, nameWidth + 3, nameHeight + 3);
 
@@ -181,6 +169,22 @@ public class ChromosomeFeatureTrack extends JPanel {
         g.setColor(Color.GRAY);
         g.drawString(featureName, 2, nameHeight + 2);
 
+    }
+
+    public byte[] getSequenceForChr(RandomAccessFile raf, int start, int end) {
+        byte[] sequence = new byte[end - start];
+        try {
+            raf.seek(start - 1);
+            int len = raf.read(sequence);
+            if (len == end - start) {
+                return sequence;
+            } else {
+                return null;
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     // There's no sense in letting the annotation tracks get too tall. We're

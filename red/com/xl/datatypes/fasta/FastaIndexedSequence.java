@@ -2,8 +2,8 @@ package com.xl.datatypes.fasta;
 
 import com.xl.datatypes.genome.GenomeDescriptor;
 import com.xl.datatypes.sequence.Sequence;
-import com.xl.preferences.REDPreferences;
-import com.xl.utils.ParsingUtils;
+import com.xl.preferences.LocationPreferences;
+import com.xl.utils.FileUtils;
 import net.sf.samtools.seekablestream.SeekableFileStream;
 import net.sf.samtools.seekablestream.SeekableStream;
 
@@ -24,37 +24,21 @@ public class FastaIndexedSequence implements Sequence {
     private final ArrayList<String> chromoNamesList;
     private FastaIndex index = null;
     private String path = null;
-    private long contentLength = -1;
 
     public FastaIndexedSequence(String path) throws IOException {
-        File currentGenome = new File(REDPreferences.getInstance()
-                .getGenomeBase().getAbsolutePath()
-                + File.separator
-                + GenomeDescriptor.getInstance().getDisplayName());
-        String indexPath = null;
-        if (currentGenome.exists() && currentGenome.isDirectory()) {
-            File[] fastaIndexes = currentGenome.listFiles();
-            if (fastaIndexes != null) {
-                for (File file : fastaIndexes) {
-                    if (file.getName().toLowerCase().endsWith("fa")) {
-                        contentLength = file.length();
-                    } else if (file.getName().toLowerCase().endsWith("fai")) {
-                        indexPath = file.getAbsolutePath();
-                    }
-                }
-            }
+        String indexFileName = FileUtils.getFileNameFromURL(path);
+        File currentGenome = new File(LocationPreferences.getInstance().getFastaDirectory() + File.separator +
+                GenomeDescriptor.getInstance().getDisplayName() + File.separator + indexFileName + ".fai");
+        String indexPath;
+        if (currentGenome.exists()) {
+            indexPath = currentGenome.getPath();
         } else {
-            contentLength = ParsingUtils.getContentLength(path);
-            indexPath = path + ".fai";
-        }
-        if (indexPath == null) {
             indexPath = path + ".fai";
         }
 
         System.out.println(this.getClass().getName() + ":indexPath:" + indexPath);
 
         index = new FastaIndex(indexPath);
-        contentLength = index.getTotalSize();
 
         chromoNamesList = new ArrayList<String>(index.getSequenceNames());
     }
@@ -106,8 +90,7 @@ public class FastaIndexedSequence implements Sequence {
 
             int base1 = endLine * basesPerLine;
             int offset1 = end - base1;
-            long endByte = Math.min(contentLength, position + endLine
-                    * bytesPerLine + offset1);
+            long endByte = position + endLine * bytesPerLine + offset1;
 
             if (startByte >= endByte) {
                 return null;

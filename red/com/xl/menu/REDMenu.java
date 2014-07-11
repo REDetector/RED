@@ -15,7 +15,7 @@ import com.xl.parsers.annotationparsers.AnnotationParserRunner;
 import com.xl.parsers.annotationparsers.UCSCRefGeneParser;
 import com.xl.parsers.dataparsers.BAMFileParser;
 import com.xl.parsers.dataparsers.FastaFileParser;
-import com.xl.preferences.REDPreferences;
+import com.xl.preferences.LocationPreferences;
 import com.xl.utils.imagemanager.ImageSaver;
 import com.xl.utils.namemanager.MenuUtils;
 
@@ -24,6 +24,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.io.File;
+import java.util.List;
 import java.util.Vector;
 
 /**
@@ -172,10 +173,10 @@ public class REDMenu extends JMenuBar implements ActionListener {
                     KeyEvent.VK_E, false);
             fileMenu.addSeparator();
 
-            String[] recentPaths = REDPreferences.getInstance()
+            List<String> recentPaths = LocationPreferences.getInstance()
                     .getRecentlyOpenedFiles();
-            for (int i = 0; i < recentPaths.length; i++) {
-                File f = new File(recentPaths[i]);
+            for (int i = 0, len = recentPaths.size(); i < len; i++) {
+                File f = new File(recentPaths.get(i));
                 if (f.exists()) {
                     JMenuItem menuItem2 = new JMenuItem(f.getName());
                     menuItem2.addActionListener(new FileOpener(redApplication,

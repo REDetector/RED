@@ -5,11 +5,12 @@ import com.xl.datatypes.genome.Genome;
 import com.xl.datatypes.genome.GenomeDescriptor;
 import com.xl.dialog.CrashReporter;
 import com.xl.main.REDApplication;
-import com.xl.preferences.REDPreferences;
+import com.xl.preferences.LocationPreferences;
+import com.xl.utils.FileUtils;
 import com.xl.utils.namemanager.GenomeUtils;
+import com.xl.utils.namemanager.SuffixUtils;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
 
@@ -19,8 +20,7 @@ import java.io.PrintWriter;
  * but are assumed to be available from the online repositories.
  */
 public class CoreAnnotationSet extends AnnotationSet {
-
-	/*
+    /*
      * This class is used merely to signify that an annotation set comes from
 	 * the core annotation for that genome and not a user supplied set.
 	 */
@@ -48,22 +48,16 @@ public class CoreAnnotationSet extends AnnotationSet {
     }
 
     public synchronized void finalise() {
-
+        String currentCacheDirectory = LocationPreferences.getInstance().getCacheDirectory()
+                + File.separator + genome.getDisplayName();
+        FileUtils.createDirectory(currentCacheDirectory);
         // If this dataset has already been finalised (ie loaded entirely from
         // cache), then we don't need to do anything here
         File cacheCompleteCheckFile;
-        try {
-            cacheCompleteCheckFile = new File(REDPreferences.getInstance()
-                    .getGenomeBase()
-                    + "/"
-                    + genome.getDisplayName()
-                    + "/cache/cache.complete");
-            if (cacheCompleteCheckFile.exists()) {
-                // System.out.println("Skipping finalisation for core annotation set");
-                return;
-            }
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
+        cacheCompleteCheckFile = new File(currentCacheDirectory + File.separator + SuffixUtils.CACHE_GENOME_COMPLETE);
+        if (cacheCompleteCheckFile.exists()) {
+            // System.out.println("Skipping finalisation for core annotation set");
+            return;
         }
 
         super.finalise();
@@ -73,26 +67,11 @@ public class CoreAnnotationSet extends AnnotationSet {
         // how long they are for next time.
 
         try {
-
             // If for some reason someone has constructed a genome with no
             // features in it it's possible that the cache folder won't yet have
             // been constructed, so we might need to create it here
 
-            File cacheBase = new File(REDPreferences.getInstance()
-                    .getGenomeBase()
-                    + "/"
-                    + genome.getDisplayName() + "/cache");
-            if (!cacheBase.exists()) {
-                if (!cacheBase.mkdirs()) {
-                    throw new IOException(
-                            "Can't create cache file for core annotation set");
-                }
-            }
-
-            File chrListFile = new File(REDPreferences.getInstance()
-                    .getGenomeBase()
-                    + "/"
-                    + genome.getDisplayName() + "/cache/chr_list");
+            File chrListFile = new File(currentCacheDirectory + File.separator + "chr_list.txt");
             PrintWriter pr = new PrintWriter(chrListFile);
 
             Chromosome[] chrs = genome.getAllChromosomes();
@@ -109,10 +88,7 @@ public class CoreAnnotationSet extends AnnotationSet {
         // a complete cache set they can use.
 
         try {
-            File cacheCompleteFile = new File(REDPreferences.getInstance()
-                    .getGenomeBase()
-                    + "/"
-                    + genome.getDisplayName() + "/cache/cache.complete");
+            File cacheCompleteFile = new File(currentCacheDirectory + File.separator + SuffixUtils.CACHE_GENOME_COMPLETE);
             PrintWriter pr = new PrintWriter(cacheCompleteFile);
             pr.println(GenomeUtils.KEY_VERSION_NAME + "=" + REDApplication.VERSION + "\n");
             pr.println(GenomeDescriptor.getInstance().toString());

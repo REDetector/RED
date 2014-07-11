@@ -3,6 +3,7 @@ package com.xl.datatypes.sequence;
 import com.xl.datatypes.annotation.Cytoband;
 import com.xl.datatypes.fasta.FastaIndexedSequence;
 import com.xl.utils.ChromosomeNameComparator;
+import com.xl.utils.ChromosomeUtils;
 import com.xl.utils.ParsingUtils;
 import net.sf.samtools.seekablestream.SeekableStream;
 
@@ -20,7 +21,7 @@ import java.util.*;
 
 public class IGVSequence implements Sequence {
 
-    static Map<String, String> illegalChar = new HashMap<String, String>();
+    private static Map<String, String> illegalChar = new HashMap<String, String>();
 
     static {
         illegalChar.put("_qm_", "\\?");
@@ -131,7 +132,9 @@ public class IGVSequence implements Sequence {
         chromosomeNames = new ArrayList<String>(chrCytoMap.size());
         for (Map.Entry<String, List<Cytoband>> entry : chrCytoMap.entrySet()) {
             String chr = entry.getKey();
-            chromosomeNames.add(chr);
+            if (ChromosomeUtils.isStandardChromosomeName(chr)) {
+                chromosomeNames.add(chr);
+            }
 
             List<Cytoband> cytobands = entry.getValue();
             int length = cytobands.get(cytobands.size() - 1).getEnd();

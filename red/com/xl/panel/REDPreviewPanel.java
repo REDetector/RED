@@ -19,6 +19,8 @@
  */
 package com.xl.panel;
 
+import com.xl.utils.ParsingUtils;
+
 import javax.swing.*;
 import java.awt.*;
 import java.beans.PropertyChangeEvent;
@@ -66,7 +68,7 @@ public class REDPreviewPanel extends JPanel implements PropertyChangeListener {
     private void previewFile(File file) {
 
         FileInputStream fis = null;
-        BufferedReader br = null;
+        BufferedReader br;
 
         try {
             fis = new FileInputStream(file);
@@ -91,7 +93,7 @@ public class REDPreviewPanel extends JPanel implements PropertyChangeListener {
             // the first line.
             String header = br.readLine();
 
-            if (header == null || !header.startsWith("RED Data Version")) {
+            if (header == null || !header.startsWith(ParsingUtils.RED_DATA_VERSION)) {
                 label.setText("Not a RED file");
                 br.close();
                 return;
@@ -103,7 +105,7 @@ public class REDPreviewPanel extends JPanel implements PropertyChangeListener {
             // The next line should be the genome species and version
 
             String genome = br.readLine();
-            if (!genome.startsWith("Genome\t")) {
+            if (!genome.equals(ParsingUtils.GENOME_INFORMATION_START)) {
                 label.setText("Not a RED file");
                 br.close();
                 return;
@@ -125,7 +127,7 @@ public class REDPreviewPanel extends JPanel implements PropertyChangeListener {
                     break;
                 }
 
-                if (line.startsWith("Samples\t")) {
+                if (line.startsWith(ParsingUtils.SAMPLES)) {
                     sb.append("Samples:<br>");
                     int sampleCount = Integer.parseInt((line.split("\t"))[1]);
                     for (int i = 0; i < sampleCount; i++) {

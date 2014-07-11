@@ -1,6 +1,5 @@
 package com.xl.datatypes.sequence;
 
-import com.xl.main.REDApplication;
 import com.xl.utils.Strand;
 
 import java.util.Arrays;
@@ -93,11 +92,6 @@ public class SequenceRead implements Location {
 
     public short getCount(int index) {
         return counts[index];
-    }
-
-    public byte[] getReferenceSequence() {
-        return REDApplication.getInstance().dataCollection().genome()
-                .getSequence(chr, getStart(), getEnd());
     }
 
     public boolean contains(int position) {

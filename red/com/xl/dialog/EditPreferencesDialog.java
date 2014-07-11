@@ -6,6 +6,7 @@ package com.xl.dialog;
 
 import com.xl.help.HelpDialog;
 import com.xl.main.REDApplication;
+import com.xl.preferences.LocationPreferences;
 import com.xl.preferences.REDPreferences;
 
 import javax.swing.*;
@@ -15,28 +16,43 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.Collection;
 
 /**
  * A Dialog to allow the viewing and editing of all SeqMonk preferences.
  */
 public class EditPreferencesDialog extends JDialog implements ActionListener {
 
-    /**
-     * The genome base.
-     */
-    private JTextField genomeBase;
+    REDPreferences preferences = REDPreferences.getInstance();
+    LocationPreferences locationPreferences = LocationPreferences.getInstance();
 
     /**
      * The data location.
      */
-    private JTextField dataLocation;
+    private JTextField projectDataDirectory;
+
+    private JTextField fastaDirectory;
 
     /**
-     * The save location.
+     * The genome base.
      */
-    private JTextField saveLocation;
+    private JTextField genomeDirectory;
+
+    private JTextField rnaDirectory;
+
+    private JTextField dnaDirectory;
+
+    private JTextField annotationDirectory;
+
+    /**
+     * The temp directory.
+     */
+    private JTextField tempDirectory;
+
+    private JTextField othersDirectory;
+
+    private JTextField cacheDirectory;
 
     /**
      * The proxy host.
@@ -51,128 +67,148 @@ public class EditPreferencesDialog extends JDialog implements ActionListener {
     /**
      * The download location.
      */
-    private JTextField downloadLocation;
+    private JTextField downloadLists;
 
     /**
      * The check for updates.
      */
     private JCheckBox checkForUpdates;
 
+    private JTextField crashEmail;
+
     /**
      * Whether to compress output
      */
     private JCheckBox compressOutput;
 
-    /**
-     * The temp directory.
-     */
-    private JTextField tempDirectory;
 
+    private void addItem(GridBagConstraints c, JPanel filePanel, JLabel jLable, JTextField jTextField, JButton jButton) {
+        c.gridx = 0;
+        c.weightx = 0.1;
+        c.weighty = 0.5;
+        c.fill = GridBagConstraints.HORIZONTAL;
+        filePanel.add(jLable, c);
+        c.gridx = 1;
+        c.weightx = 0.5;
+        filePanel.add(jTextField, c);
+        c.gridx = 2;
+        c.weightx = 0.1;
+        filePanel.add(jButton, c);
+    }
 
     /**
      * Instantiates a new edits the preferences dialog.
      */
     public EditPreferencesDialog() {
         super(REDApplication.getInstance(), "Edit Preferences...");
-        setSize(600, 280);
+        setSize(600, 300);
         setLocationRelativeTo(REDApplication.getInstance());
         setModal(true);
-        REDPreferences preferences = REDPreferences.getInstance();
 
         JTabbedPane tabs = new JTabbedPane();
 
         JPanel filePanel = new JPanel();
         filePanel.setBorder(BorderFactory.createEmptyBorder(4, 4, 4, 4));
         filePanel.setLayout(new GridBagLayout());
+
         GridBagConstraints c = new GridBagConstraints();
-        c.gridx = 0;
         c.gridy = 0;
-        c.weightx = 0.1;
-        c.weighty = 0.5;
-        c.fill = GridBagConstraints.HORIZONTAL;
-        filePanel.add(new JLabel("Genome Base Location"), c);
-        c.gridx = 1;
-        c.weightx = 0.5;
-        genomeBase = new JTextField();
-        try {
-            genomeBase.setText(preferences.getGenomeBase().getAbsolutePath());
-        } catch (FileNotFoundException e) {
-            JOptionPane.showMessageDialog(this, "Couldn't find the folder which was supposed to hold the genomes", "Warning", JOptionPane.WARNING_MESSAGE);
-            e.printStackTrace();
-        }
-        genomeBase.setEditable(false);
-        filePanel.add(genomeBase, c);
-        c.gridx = 2;
-        c.weightx = 0.1;
+        JLabel projectDataLable = new JLabel("Project Data Directory");
+        projectDataDirectory = new JTextField();
+        projectDataDirectory.setText(locationPreferences.getProjectDataDirectory());
+        projectDataDirectory.setEditable(false);
+        JButton projectDataButton = new JButton("Browse");
+        projectDataButton.setActionCommand(LocationPreferences.PROJECT_DATA_DIRECTORY);
+        projectDataButton.addActionListener(this);
+        addItem(c, filePanel, projectDataLable, projectDataDirectory, projectDataButton);
+
+        c.gridy++;
+        JLabel genomeLable = new JLabel("Genome Directory");
+        genomeDirectory = new JTextField();
+        genomeDirectory.setText(locationPreferences.getGenomeDirectory());
+        genomeDirectory.setEditable(false);
         JButton genomeButton = new JButton("Browse");
-        genomeButton.setActionCommand("genomeBase");
+        genomeButton.setActionCommand(LocationPreferences.GENOME_DIRECTORY);
         genomeButton.addActionListener(this);
-        filePanel.add(genomeButton, c);
+        addItem(c, filePanel, genomeLable, genomeDirectory, genomeButton);
 
-        c.gridx = 0;
         c.gridy++;
-        c.weightx = 0.1;
-        filePanel.add(new JLabel("Default Data Location"), c);
-        c.gridx = 1;
-        c.weightx = 0.5;
-        dataLocation = new JTextField(preferences.getDataLocationPreference().getAbsolutePath());
-        dataLocation.setEditable(false);
-        filePanel.add(dataLocation, c);
-        c.gridx = 2;
-        c.weightx = 0.1;
-        JButton dataButton = new JButton("Browse");
-        dataButton.setActionCommand("dataLocation");
-        dataButton.addActionListener(this);
-        filePanel.add(dataButton, c);
+        JLabel fastaLable = new JLabel("Fasta Directory");
+        fastaDirectory = new JTextField();
+        fastaDirectory.setText(locationPreferences.getFastaDirectory());
+        fastaDirectory.setEditable(false);
+        JButton fastaButton = new JButton("Browse");
+        fastaButton.setActionCommand(LocationPreferences.FASTA_DIRECTORY);
+        fastaButton.addActionListener(this);
+        addItem(c, filePanel, fastaLable, fastaDirectory, fastaButton);
 
-        c.gridx = 0;
         c.gridy++;
-        c.weightx = 0.1;
-        filePanel.add(new JLabel("Default Save Location"), c);
-        c.gridx = 1;
-        c.weightx = 0.5;
-        saveLocation = new JTextField(preferences.getSaveLocationPreference().getAbsolutePath());
-        saveLocation.setEditable(false);
-        filePanel.add(saveLocation, c);
-        c.gridx = 2;
-        c.weightx = 0.1;
-        JButton saveLocationButton = new JButton("Browse");
-        saveLocationButton.setActionCommand("saveLocation");
-        saveLocationButton.addActionListener(this);
-        filePanel.add(saveLocationButton, c);
+        JLabel rnaLable = new JLabel("RNA Directory");
+        rnaDirectory = new JTextField();
+        rnaDirectory.setText(locationPreferences.getRnaDirectory());
+        rnaDirectory.setEditable(false);
+        JButton rnaButton = new JButton("Browse");
+        rnaButton.setActionCommand(LocationPreferences.RNA_DIRECTORY);
+        rnaButton.addActionListener(this);
+        addItem(c, filePanel, rnaLable, rnaDirectory, rnaButton);
+
+        c.gridy++;
+        JLabel dnaLable = new JLabel("DNA Directory");
+        dnaDirectory = new JTextField();
+        dnaDirectory.setText(locationPreferences.getDnaDirectory());
+        dnaDirectory.setEditable(false);
+        JButton dnaButton = new JButton("Browse");
+        dnaButton.setActionCommand(LocationPreferences.DNA_DIRECTORY);
+        dnaButton.addActionListener(this);
+        addItem(c, filePanel, dnaLable, dnaDirectory, dnaButton);
+
+        c.gridy++;
+        JLabel annotationLable = new JLabel("Annotation Directory");
+        annotationDirectory = new JTextField();
+        annotationDirectory.setText(locationPreferences.getAnnotationDirectory());
+        annotationDirectory.setEditable(false);
+        JButton annotationButton = new JButton("Browse");
+        annotationButton.setActionCommand(LocationPreferences.ANNOTATION_DIRECTORY);
+        annotationButton.addActionListener(this);
+        addItem(c, filePanel, annotationLable, annotationDirectory, annotationButton);
+
+        c.gridy++;
+        JLabel othersLable = new JLabel("Others Directory");
+        othersDirectory = new JTextField();
+        othersDirectory.setText(locationPreferences.getOthersDirectory());
+        othersDirectory.setEditable(false);
+        JButton othersButton = new JButton("Browse");
+        othersButton.setActionCommand(LocationPreferences.OTHERS_DIRECTORY);
+        othersButton.addActionListener(this);
+        addItem(c, filePanel, othersLable, othersDirectory, othersButton);
+
+        c.gridy++;
+        JLabel tempLable = new JLabel("Temp Directory");
+        tempDirectory = new JTextField();
+        tempDirectory.setText(locationPreferences.getTempDirectory());
+        tempDirectory.setEditable(false);
+        JButton tempButton = new JButton("Browse");
+        tempButton.setActionCommand(LocationPreferences.TEMP_DIRECTORY);
+        tempButton.addActionListener(this);
+        addItem(c, filePanel, tempLable, tempDirectory, tempButton);
 
         tabs.addTab("Files", filePanel);
 
+
         JPanel memoryPanel = new JPanel();
         memoryPanel.setBorder(BorderFactory.createEmptyBorder(4, 4, 4, 4));
-
-
         memoryPanel.setLayout(new GridBagLayout());
         c = new GridBagConstraints();
-        c.gridx = 0;
+
         c.gridy = 0;
-        c.weightx = 0.1;
-        c.weighty = 0.5;
-        c.fill = GridBagConstraints.HORIZONTAL;
-
-        memoryPanel.add(new JLabel("Cache read data to disk"), c);
-        c.gridx = 1;
-        c.weightx = 0.5;
-        JPanel tempDirPanel = new JPanel();
-        tempDirPanel.setLayout(new BorderLayout());
-
-        tempDirectory = new JTextField();
-        if (preferences.tempDirectory() != null) {
-            tempDirectory.setText(preferences.tempDirectory().getAbsolutePath());
-        }
-        tempDirectory.setEditable(false);
-        tempDirPanel.add(tempDirectory, BorderLayout.CENTER);
-        JButton tempDirBrowseButton = new JButton("Browse");
-        tempDirBrowseButton.setActionCommand("tempDir");
-        tempDirBrowseButton.addActionListener(this);
-        tempDirPanel.add(tempDirBrowseButton, BorderLayout.EAST);
-
-        memoryPanel.add(tempDirPanel, c);
+        JLabel cacheLable = new JLabel("Cache read data to disk");
+        cacheDirectory = new JTextField();
+        cacheDirectory.setText(locationPreferences.getCacheDirectory());
+        cacheDirectory.setEditable(false);
+        JButton cacheButton = new JButton("Browse");
+        cacheButton.setActionCommand(LocationPreferences.CACHE_DIRECTORY);
+        cacheButton.addActionListener(this);
+        addItem(c, memoryPanel, cacheLable, cacheDirectory, cacheButton);
 
         c.gridx = 0;
         c.gridy++;
@@ -252,8 +288,18 @@ public class EditPreferencesDialog extends JDialog implements ActionListener {
         networkPanel.add(new JLabel("Genome Download URL"), c);
         c.gridx = 1;
         c.weightx = 0.5;
-        downloadLocation = new JTextField(preferences.getGenomeDownloadLocation());
-        networkPanel.add(downloadLocation, c);
+        downloadLists = new JTextField(locationPreferences.getGenomeDownloadLists());
+        networkPanel.add(downloadLists, c);
+
+        c.gridx = 0;
+        c.gridy++;
+        c.weightx = 0.1;
+        networkPanel.add(new JLabel("Email Address:"), c);
+        c.gridx = 1;
+        c.weightx = 0.5;
+        crashEmail = new JTextField(preferences.getCrashEmail());
+        networkPanel.add(crashEmail, c);
+
         tabs.addTab("Network", networkPanel);
 
         JPanel updatesPanel = new JPanel();
@@ -299,16 +345,17 @@ public class EditPreferencesDialog extends JDialog implements ActionListener {
     /**
      * Launches a file browser to select a directory
      *
-     * @param f the TextFild from which to take the starting directory
-     * @return the selected directory
+     * @param action The action.
+     * @param f      the TextFild from which to take the starting directory
      */
-    private void getDir(JTextField f) {
+    private void getDir(String action, JTextField f) {
         JFileChooser chooser = new JFileChooser();
         chooser.setCurrentDirectory(new File(f.getText()));
         chooser.setDialogTitle("Select Directory");
         chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
         if (chooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
             f.setText(chooser.getSelectedFile().getAbsolutePath());
+            LocationPreferences.getInstance().getDirectories().put(action, chooser.getSelectedFile().getAbsolutePath());
         }
     }
 
@@ -316,48 +363,38 @@ public class EditPreferencesDialog extends JDialog implements ActionListener {
      * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
      */
     public void actionPerformed(ActionEvent ae) {
-        String c = ae.getActionCommand();
+        String action = ae.getActionCommand();
 
-        if (c.equals("genomeBase")) {
-            getDir(genomeBase);
-        } else if (c.equals("dataLocation")) {
-            getDir(dataLocation);
-        } else if (c.equals("saveLocation")) {
-            getDir(saveLocation);
-        } else if (c.equals("tempDir")) {
-            getDir(tempDirectory);
-        } else if (c.equals("cancel")) {
+        if (action.equals(LocationPreferences.PROJECT_DATA_DIRECTORY)) {
+            getDir(action, projectDataDirectory);
+        } else if (action.equals(LocationPreferences.GENOME_DIRECTORY)) {
+            getDir(action, genomeDirectory);
+        } else if (action.equals(LocationPreferences.FASTA_DIRECTORY)) {
+            getDir(action, fastaDirectory);
+        } else if (action.equals(LocationPreferences.RNA_DIRECTORY)) {
+            getDir(action, rnaDirectory);
+        } else if (action.equals(LocationPreferences.DNA_DIRECTORY)) {
+            getDir(action, dnaDirectory);
+        } else if (action.equals(LocationPreferences.ANNOTATION_DIRECTORY)) {
+            getDir(action, annotationDirectory);
+        } else if (action.equals(LocationPreferences.OTHERS_DIRECTORY)) {
+            getDir(action, othersDirectory);
+        } else if (action.equals(LocationPreferences.CACHE_DIRECTORY)) {
+            getDir(action, cacheDirectory);
+        } else if (action.equals(LocationPreferences.TEMP_DIRECTORY)) {
+            getDir(action, tempDirectory);
+        } else if (action.equals("cancel")) {
             setVisible(false);
             dispose();
-        } else if (c.equals("save")) {
-            File genomeBaseFile = new File(genomeBase.getText());
-            if (!genomeBaseFile.exists()) {
-                JOptionPane.showMessageDialog(this, "Invalid genome base location", "Error", JOptionPane.ERROR_MESSAGE);
-                return;
-            }
-
-            File dataLocationFile = new File(dataLocation.getText());
-            if (!dataLocationFile.exists()) {
-                JOptionPane.showMessageDialog(this, "Invalid data location", "Error", JOptionPane.ERROR_MESSAGE);
-                return;
-            }
-
-            File saveLocationFile = new File(saveLocation.getText());
-            if (!saveLocationFile.exists()) {
-                JOptionPane.showMessageDialog(this, "Invalid save location", "Error", JOptionPane.ERROR_MESSAGE);
-                return;
-            }
-
-            File tempDirFile;
-            if (tempDirectory.getText().length() > 0) {
-                tempDirFile = new File(tempDirectory.getText());
-                if (!tempDirFile.exists()) {
-                    JOptionPane.showMessageDialog(this, "Invalid temp dir", "Error", JOptionPane.ERROR_MESSAGE);
+        } else if (action.equals("save")) {
+            Collection<String> allDirectories = locationPreferences.getDirectories().values();
+            for (String directory : allDirectories) {
+                File f = new File(directory);
+                if (!f.exists()) {
+                    JOptionPane.showMessageDialog(this, "Invalid location :" + directory, "Error", JOptionPane.ERROR_MESSAGE);
+                    locationPreferences.initialDirectories();
                     return;
                 }
-            } else {
-                JOptionPane.showMessageDialog(this, "No temp dir specified", "Error", JOptionPane.ERROR_MESSAGE);
-                return;
             }
 
             String proxyHostValue = proxyHost.getText();
@@ -380,19 +417,17 @@ public class EditPreferencesDialog extends JDialog implements ActionListener {
             // OK that's everything which could have gone wrong.  Let's save it
             // to the preferences file
 
-            REDPreferences p = REDPreferences.getInstance();
 
-            p.setCheckForUpdates(checkForUpdates.isSelected());
-            p.setDataLocation(dataLocationFile);
-            p.setSaveLocation(saveLocationFile);
-            p.setGenomeBase(genomeBaseFile);
-            p.setProxy(proxyHostValue, proxyPortValue);
-            p.setGenomeDownloadLocation(downloadLocation.getText());
-            p.setTempDirectory(tempDirFile);
-            p.setCompressOutput(compressOutput.isSelected());
+            preferences.setCheckForUpdates(checkForUpdates.isSelected());
+            preferences.setCompressOutput(compressOutput.isSelected());
+            preferences.setProxy(proxyHostValue, proxyPortValue);
+            preferences.setCrashEmail(crashEmail.getText());
+
+            locationPreferences.setGenomeDownloadLists(downloadLists.getText());
+            locationPreferences.updateDirectories();
 
             try {
-                p.savePreferences();
+                preferences.savePreferences();
             } catch (IOException e) {
                 new CrashReporter(e);
                 return;

@@ -1,6 +1,6 @@
 package net.xl.genomes;
 
-import com.xl.preferences.REDPreferences;
+import com.xl.preferences.LocationPreferences;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -14,7 +14,7 @@ public class DownloadableGenomeSet {
     public DownloadableGenomeSet() throws IOException {
 
         //A. baumannii str. ATCC	http://igv.broadinstitute.org/genomes/ABaumannii_ATCC_17978.genome	ABaumannii_ATCC_17978
-        URL genomeIndexURL = new URL(REDPreferences.getInstance()
+        URL genomeIndexURL = new URL(LocationPreferences.getInstance()
                 .getGenomeDownloadLists() + "genomes.txt");
 
         BufferedReader genomeIndexReader = new BufferedReader(

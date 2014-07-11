@@ -52,13 +52,6 @@ public class SamInput {
                 db.con.commit();
                 s1.delete(0, s1.length());
             }
-            // sql[1] = "select * from RED";
-            // db.rs = db.stmt.executeQuery(sql[1]);
-            // db.con.commit();
-            // while (db.rs.next()) {
-            // System.out.println(db.rs.getGenomeId(9)+ "\t" +
-            // db.rs.getGenomeId(6));// �����ص���int���Ϳ�����getInt()
-            // }
             System.out.println(s1);
             return true;
         } catch (Exception e) {

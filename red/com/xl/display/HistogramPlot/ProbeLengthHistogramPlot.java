@@ -23,7 +23,7 @@ import com.xl.datatypes.probes.Probe;
 import com.xl.datatypes.probes.ProbeList;
 import com.xl.dialog.CrashReporter;
 import com.xl.main.REDApplication;
-import com.xl.preferences.REDPreferences;
+import com.xl.preferences.LocationPreferences;
 import com.xl.utils.filefilters.TxtFileFilter;
 import com.xl.utils.imagemanager.ImageSaver;
 
@@ -113,7 +113,7 @@ public class ProbeLengthHistogramPlot extends JDialog implements ActionListener,
         } else if (ae.getActionCommand().equals("save")) {
             ImageSaver.saveImage(plotPanel.mainHistogramPanel());
         } else if (ae.getActionCommand().equals("export")) {
-            JFileChooser chooser = new JFileChooser(REDPreferences.getInstance().getSaveLocation());
+            JFileChooser chooser = new JFileChooser(LocationPreferences.getInstance().getProjectSaveLocation());
             chooser.setMultiSelectionEnabled(false);
             chooser.setFileFilter(new TxtFileFilter());
 
@@ -121,7 +121,7 @@ public class ProbeLengthHistogramPlot extends JDialog implements ActionListener,
             if (result == JFileChooser.CANCEL_OPTION) return;
 
             File file = chooser.getSelectedFile();
-            REDPreferences.getInstance().setLastUsedSaveLocation(file);
+            LocationPreferences.getInstance().setProjectSaveLocation(file.getAbsolutePath());
 
             if (file.isDirectory()) return;
 

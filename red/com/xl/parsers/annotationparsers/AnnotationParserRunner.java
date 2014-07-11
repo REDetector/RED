@@ -3,7 +3,7 @@ package com.xl.parsers.annotationparsers;
 
 import com.xl.dialog.ProgressDialog;
 import com.xl.main.REDApplication;
-import com.xl.preferences.REDPreferences;
+import com.xl.preferences.LocationPreferences;
 
 import javax.swing.*;
 import java.io.File;
@@ -24,7 +24,7 @@ public class AnnotationParserRunner {
 
         File[] files = null;
         if (parser.requiresFile()) {
-            JFileChooser chooser = new JFileChooser(REDPreferences.getInstance().getDataLocation());
+            JFileChooser chooser = new JFileChooser(LocationPreferences.getInstance().getProjectSaveLocation());
             chooser.setMultiSelectionEnabled(true);
             chooser.setFileFilter(parser.fileFilter());
 
@@ -32,7 +32,7 @@ public class AnnotationParserRunner {
             if (result == JFileChooser.CANCEL_OPTION) return;
 
             files = chooser.getSelectedFiles();
-            REDPreferences.getInstance().setLastUsedDataLocation(files[0]);
+            LocationPreferences.getInstance().setProjectSaveLocation(files[0].getAbsolutePath());
         }
 
         parser.addProgressListener(new ProgressDialog(application, parser.name(), parser));

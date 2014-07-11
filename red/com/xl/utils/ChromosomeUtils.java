@@ -15,18 +15,6 @@ public class ChromosomeUtils {
     }
 
     public static boolean isStandardChromosomeName(String chr) {
-//        int chrNameLength = chr.length();
-//        if (chrNameLength < 6 && chr.substring(0, 3).equalsIgnoreCase("chr")) {
-//            if (Character.isDigit(chr.charAt(3))) {
-//                return true;
-//            } else if (chr.toLowerCase().charAt(3) == 'x' || chr.toLowerCase().charAt(3) == 'y') {
-//                return true;
-//            } else {
-//                return false;
-//            }
-//        } else {
-//            return false;
-//        }
         if (chrNameSets.contains(chr)) {
             return true;
         } else {

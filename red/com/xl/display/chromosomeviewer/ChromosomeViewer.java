@@ -138,13 +138,12 @@ public class ChromosomeViewer extends JPanel implements DataChangeListener,
             while (en.hasMoreElements()) {
                 en.nextElement().updateReads();
             }
-
             Feature[] features = application.dataCollection().genome()
                     .getAnnotationCollection()
                     .getFeaturesForChr(chromosome);
             RandomAccessFile raf = application.dataCollection().genome()
                     .getAnnotationCollection().getFastaForChr(chromosome);
-            featureTrack.updateBasicFeatures(features, raf);
+            featureTrack.updateFeatureAndSequence(features, raf);
         }
     }
 
