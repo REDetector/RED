@@ -97,24 +97,6 @@ public class DataCollection {
     }
 
     /**
-     * Checks if is quantitated.
-     *
-     * @return true, if is quantitated
-     */
-    public boolean isQuantitated() {
-
-        if (probeSet == null || probeSet.getAllProbes().length == 0) return false;
-
-        DataStore[] stores = getAllDataStores();
-
-        for (int i = 0; i < stores.length; i++) {
-            if (stores[i].isQuantitated()) return true;
-        }
-
-        return false;
-    }
-
-    /**
      * Sets the probe set.
      *
      * @param newProbeSet the new probe set
