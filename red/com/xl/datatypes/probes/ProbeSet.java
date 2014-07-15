@@ -1,25 +1,5 @@
 package com.xl.datatypes.probes;
 
-/**
- * Copyright Copyright 2007-13 Simon Andrews
- *
- *    This file is part of SeqMonk.
- *
- *    SeqMonk is free software; you can redistribute it and/or modify
- *    it under the terms of the GNU General Public License as published by
- *    the Free Software Foundation; either version 3 of the License, or
- *    (at your option) any later version.
- *
- *    SeqMonk is distributed in the hope that it will be useful,
- *    but WITHOUT ANY WARRANTY; without even the implied warranty of
- *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *    GNU General Public License for more details.
- *
- *    You should have received a copy of the GNU General Public License
- *    along with SeqMonk; if not, write to the Free Software
- *    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
- */
-
 import com.xl.datatypes.DataCollection;
 import com.xl.exception.REDException;
 
@@ -44,11 +24,6 @@ public class ProbeSet extends ProbeList {
     private Vector<ProbeSetChangeListener> listeners = new Vector<ProbeSetChangeListener>();
 
     /**
-     * The index count.
-     */
-    private int indexCount = 0;
-
-    /**
      * The expected total count.
      */
     private int expectedTotalCount = 0;
@@ -58,8 +33,6 @@ public class ProbeSet extends ProbeList {
      */
     private DataCollection collection = null;
 
-    private String currentQuantitation = null;
-
     /**
      * Instantiates a new probe set.
      *
@@ -67,7 +40,7 @@ public class ProbeSet extends ProbeList {
      * @param probes      the probes
      */
     public ProbeSet(String description, Probe[] probes) {
-        super(null, "All Probes", description, null);
+        super(null, "All Probes", description);
         setProbes(probes);
     }
 
@@ -84,7 +57,7 @@ public class ProbeSet extends ProbeList {
          * Ideally we'd go back to sort out this requirement by changing the
          * SeqMonk file format, but for now we're stuck with this work round
          */
-        super(null, "All Probes", description, null);
+        super(null, "All Probes", description);
         expectedTotalCount = expectedSize;
     }
 
@@ -95,7 +68,7 @@ public class ProbeSet extends ProbeList {
      * uk.ac.babraham.SeqMonk.DataTypes.Probes.ProbeList#addProbe(uk.ac.babraham
      * .SeqMonk.DataTypes.Probes.Probe, java.lang.Double)
      */
-    public void addProbe(Probe p, Float value) {
+    public void addProbe(Probe p) {
 
         /**
          * This method is only used by the SeqMonk parser. All other probe
@@ -103,13 +76,9 @@ public class ProbeSet extends ProbeList {
          * is more efficient.
          */
 
-        // Update the index
-        p.setIndex(indexCount);
-        indexCount++;
-
         // Call the super method so we can still be treated like a
         // normal probe list
-        super.addProbe(p, value);
+        super.addProbe(p);
     }
 
     public void setCollection(DataCollection collection) {
@@ -123,35 +92,16 @@ public class ProbeSet extends ProbeList {
      */
     private void setProbes(Probe[] probes) {
 
-        // Reset the probe index
-        indexCount = 0;
         expectedTotalCount = probes.length;
 
-        for (int p = 0; p < probes.length; p++) {
-            addProbe(probes[p], null);
+        for (Probe probe : probes) {
+            addProbe(probe);
         }
 
     }
 
     public String justDescription() {
         return super.description();
-    }
-
-    public String description() {
-        if (currentQuantitation != null) {
-            return super.description() + ". Quantitated with "
-                    + currentQuantitation;
-        } else {
-            return super.description();
-        }
-    }
-
-    public String currentQuantitation() {
-        return currentQuantitation;
-    }
-
-    public void setCurrentQuantitation(String currentQuantitation) {
-        this.currentQuantitation = currentQuantitation;
     }
 
     /**
