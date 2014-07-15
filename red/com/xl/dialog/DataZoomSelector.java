@@ -59,9 +59,9 @@ public class DataZoomSelector extends JDialog implements ActionListener,
 
             for (int i = 0; i <= 20; i++) {
                 if (i % 2 == 0) {
-                    labels.put(new Integer(i), new JLabel("" + i));
+                    labels.put(i, new JLabel("" + i));
                 } else {
-                    labels.put(new Integer(i), new JLabel(""));
+                    labels.put(i, new JLabel(""));
                 }
             }
         }
@@ -99,7 +99,7 @@ public class DataZoomSelector extends JDialog implements ActionListener,
         Hashtable<Integer, Component> labelTable = new Hashtable<Integer, Component>();
 
         for (int i = 0; i <= 200; i += 20) {
-            labelTable.put(new Integer(i), new JLabel("" + (i / 10)));
+            labelTable.put(i, new JLabel("" + (i / 10)));
         }
         slider.setLabelTable(labelTable);
 
