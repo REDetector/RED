@@ -7,55 +7,10 @@
   </component>
   <component name="ChangeListManager">
     <list id="84c5056e-4735-415e-9374-ef14f745da71" name="Default" comment="Add the color of base. Namely," />
-    <list default="true" id="7bfbcd82-43d2-4bb3-bf21-1f16164d2c5a" name="Rejected commit: Default" comment="Change the structure of data-saved location. We divide the data into genome/fasta/dna/rna/annotation/cache/others, and we create the temp directory to store some temp files.">
-      <change type="DELETED" beforePath="E:\Workspace\REDetector\red\com\xl\display\HistogramPlot\ProbeValueHistogramPlot.java" afterPath="" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/Help/2 Opening a Project/2.2 Starting a New Project/2.2.2 Importing Data/2.2.2 Importing Data.html" afterPath="$PROJECT_DIR$/red/Help/2 Opening a Project/2.2 Starting a New Project/2.2.2 Importing Data/2.2.2 Importing Data.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/Help/2 Opening a Project/2.2 Starting a New Project/2.2.2 Importing Data/2.2.2.1 BED Files.html" afterPath="$PROJECT_DIR$/red/Help/2 Opening a Project/2.2 Starting a New Project/2.2.2 Importing Data/2.2.2.1 BED Files.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/Help/2 Opening a Project/2.2 Starting a New Project/2.2.2 Importing Data/2.2.2.3 Bowtie Files.html" afterPath="$PROJECT_DIR$/red/Help/2 Opening a Project/2.2 Starting a New Project/2.2.2 Importing Data/2.2.2.3 Bowtie Files.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/Help/2 Opening a Project/2.2 Starting a New Project/2.2.2 Importing Data/2.2.2.5 GFF Files.html" afterPath="$PROJECT_DIR$/red/Help/2 Opening a Project/2.2 Starting a New Project/2.2.2 Importing Data/2.2.2.5 GFF Files.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/Help/2 Opening a Project/2.2 Starting a New Project/2.2.2 Importing Data/2.2.2.8 Generic Text Files.html" afterPath="$PROJECT_DIR$/red/Help/2 Opening a Project/2.2 Starting a New Project/2.2.2 Importing Data/2.2.2.8 Generic Text Files.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/Help/2 Opening a Project/2.2 Starting a New Project/2.2.4 Importing Extra Annotation/2.2.4 Importing Extra Annotation.html" afterPath="$PROJECT_DIR$/red/Help/2 Opening a Project/2.2 Starting a New Project/2.2.4 Importing Extra Annotation/2.2.4 Importing Extra Annotation.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/Help/2 Opening a Project/2.2 Starting a New Project/2.2.4 Importing Extra Annotation/2.2.4.3 Importing Annotation from Generic Text Files.html" afterPath="$PROJECT_DIR$/red/Help/2 Opening a Project/2.2 Starting a New Project/2.2.4 Importing Extra Annotation/2.2.4.3 Importing Annotation from Generic Text Files.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/Help/3 Visualisation/3.1 The Main Display/3.1.1 The Data View.html" afterPath="$PROJECT_DIR$/red/Help/3 Visualisation/3.1 The Main Display/3.1.1 The Data View.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/Help/3 Visualisation/3.1 The Main Display/3.1.2 The Genome View.html" afterPath="$PROJECT_DIR$/red/Help/3 Visualisation/3.1 The Main Display/3.1.2 The Genome View.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/Help/3 Visualisation/3.1 The Main Display/3.1.3 The Chromosome View.html" afterPath="$PROJECT_DIR$/red/Help/3 Visualisation/3.1 The Main Display/3.1.3 The Chromosome View.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/Help/3 Visualisation/3.1 The Main Display/3.1.4 The Toolbar.html" afterPath="$PROJECT_DIR$/red/Help/3 Visualisation/3.1 The Main Display/3.1.4 The Toolbar.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/Help/3 Visualisation/3.2 Figures and Graphs/3.2.12 The HiC Heatmap Plot.html" afterPath="$PROJECT_DIR$/red/Help/3 Visualisation/3.2 Figures and Graphs/3.2.12 The HiC Heatmap Plot.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/Help/3 Visualisation/3.2 Figures and Graphs/3.2.14 The HiC Length Histogram.html" afterPath="$PROJECT_DIR$/red/Help/3 Visualisation/3.2 Figures and Graphs/3.2.14 The HiC Length Histogram.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/Help/3 Visualisation/3.2 Figures and Graphs/3.2.9 The Line Graph.html" afterPath="$PROJECT_DIR$/red/Help/3 Visualisation/3.2 Figures and Graphs/3.2.9 The Line Graph.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/Help/3 Visualisation/3.3 Movement Controls.html" afterPath="$PROJECT_DIR$/red/Help/3 Visualisation/3.3 Movement Controls.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/Help/3 Visualisation/3.4 Searching.html" afterPath="$PROJECT_DIR$/red/Help/3 Visualisation/3.4 Searching.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/Help/4 Quantitation/4 Quantitation.html" afterPath="$PROJECT_DIR$/red/Help/4 Quantitation/4 Quantitation.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/Help/4 Quantitation/4.1 Probe Generators/4.1.6 Interstitial Probe Generator.html" afterPath="$PROJECT_DIR$/red/Help/4 Quantitation/4.1 Probe Generators/4.1.6 Interstitial Probe Generator.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/Help/4 Quantitation/4.1 Probe Generators/4.1.9 Current Region Probe Generator.html" afterPath="$PROJECT_DIR$/red/Help/4 Quantitation/4.1 Probe Generators/4.1.9 Current Region Probe Generator.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/Help/4 Quantitation/4.2 Quantitation Methods/4.2.16 HiC Trans Cis Quantitation.html" afterPath="$PROJECT_DIR$/red/Help/4 Quantitation/4.2 Quantitation Methods/4.2.16 HiC Trans Cis Quantitation.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/Help/4 Quantitation/4.2 Quantitation Methods/4.2.20 Distance to Feature Quantitation.html" afterPath="$PROJECT_DIR$/red/Help/4 Quantitation/4.2 Quantitation Methods/4.2.20 Distance to Feature Quantitation.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/Help/4 Quantitation/4.3 Pipelines/4.3.2 Wiggle pipeline.html" afterPath="$PROJECT_DIR$/red/Help/4 Quantitation/4.3 Pipelines/4.3.2 Wiggle pipeline.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/Help/5 Filtering/5.4 Other Filters/5.3.2 Position Filter.html" afterPath="$PROJECT_DIR$/red/Help/5 Filtering/5.4 Other Filters/5.3.2 Position Filter.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/Help/5 Filtering/5.5 Manging Probe Lists.html" afterPath="$PROJECT_DIR$/red/Help/5 Filtering/5.5 Manging Probe Lists.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/Help/6 Reports/6.1 The Annotated Probe Report.html" afterPath="$PROJECT_DIR$/red/Help/6 Reports/6.1 The Annotated Probe Report.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/Help/6 Reports/6.2 The Probe Group Report.html" afterPath="$PROJECT_DIR$/red/Help/6 Reports/6.2 The Probe Group Report.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/Help/6 Reports/6.3 The Feature Report.html" afterPath="$PROJECT_DIR$/red/Help/6 Reports/6.3 The Feature Report.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/Help/7 Saving Data/7.1 Saving a Project.html" afterPath="$PROJECT_DIR$/red/Help/7 Saving Data/7.1 Saving a Project.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/com/xl/parsers/annotationparsers/AnnotationParser.java" afterPath="$PROJECT_DIR$/red/com/xl/parsers/annotationparsers/AnnotationParser.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/com/xl/display/chromosomeviewer/ChromosomeDataTrack.java" afterPath="$PROJECT_DIR$/red/com/xl/display/chromosomeviewer/ChromosomeDataTrack.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/com/xl/display/genomeviewer/ChromosomeDisplay.java" afterPath="$PROJECT_DIR$/red/com/xl/display/genomeviewer/ChromosomeDisplay.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/com/xl/display/chromosomeviewer/ChromosomeViewer.java" afterPath="$PROJECT_DIR$/red/com/xl/display/chromosomeviewer/ChromosomeViewer.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/com/xl/display/dataviewer/DataViewer.java" afterPath="$PROJECT_DIR$/red/com/xl/display/dataviewer/DataViewer.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/com/xl/datatypes/fasta/FastaIndex.java" afterPath="$PROJECT_DIR$/red/com/xl/datatypes/fasta/FastaIndex.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/com/xl/parsers/annotationparsers/IGVGenomeParser.java" afterPath="$PROJECT_DIR$/red/com/xl/parsers/annotationparsers/IGVGenomeParser.java" />
+    <list default="true" id="7bfbcd82-43d2-4bb3-bf21-1f16164d2c5a" name="Rejected commit: Default" comment="Fix some bugs.">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/com/xl/preferences/LocationPreferences.java" afterPath="$PROJECT_DIR$/red/com/xl/preferences/LocationPreferences.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/com/xl/menu/MainREDToolbar.java" afterPath="$PROJECT_DIR$/red/com/xl/menu/MainREDToolbar.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/com/xl/utils/namemanager/MenuUtils.java" afterPath="$PROJECT_DIR$/red/com/xl/utils/namemanager/MenuUtils.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/com/xl/display/dataviewer/ProbeSetTreeModel.java" afterPath="$PROJECT_DIR$/red/com/xl/display/dataviewer/ProbeSetTreeModel.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/com/xl/main/REDApplication.java" afterPath="$PROJECT_DIR$/red/com/xl/main/REDApplication.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/com/xl/datawriters/REDDataWriter.java" afterPath="$PROJECT_DIR$/red/com/xl/datawriters/REDDataWriter.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/com/xl/menu/REDMenu.java" afterPath="$PROJECT_DIR$/red/com/xl/menu/REDMenu.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/com/xl/parsers/dataparsers/REDParser.java" afterPath="$PROJECT_DIR$/red/com/xl/parsers/dataparsers/REDParser.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/com/xl/preferences/REDPreferences.java" afterPath="$PROJECT_DIR$/red/com/xl/preferences/REDPreferences.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/com/xl/menu/REDToolbar.java" afterPath="$PROJECT_DIR$/red/com/xl/menu/REDToolbar.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/com/xl/datatypes/sequence/SequenceRead.java" afterPath="$PROJECT_DIR$/red/com/xl/datatypes/sequence/SequenceRead.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/com/xl/utils/SequenceReadUtils.java" afterPath="$PROJECT_DIR$/red/com/xl/utils/SequenceReadUtils.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <list id="7653a5be-4308-4b8a-af47-b29b059d9163" name="Rejected commit: Rejected commit: Default" comment="Fix some bugs." />
@@ -128,8 +83,8 @@
       <file leaf-file-name="Probe.java" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/red/com/xl/datatypes/probes/Probe.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.77799606" vertical-offset="304" max-vertical-offset="1380">
-              <caret line="39" column="37" selection-start-line="39" selection-start-column="0" selection-end-line="39" selection-end-column="0" />
+            <state vertical-scroll-proportion="0.66797644" vertical-offset="0" max-vertical-offset="1380">
+              <caret line="17" column="38" selection-start-line="17" selection-start-column="29" selection-end-line="17" selection-end-column="29" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -201,11 +156,11 @@
         <option value="$PROJECT_DIR$/red/com/xl/parsers/dataparsers/REDParser.java" />
         <option value="$PROJECT_DIR$/red/com/xl/display/dataviewer/DataViewer.java" />
         <option value="$PROJECT_DIR$/red/com/xl/display/genomeviewer/ChromosomeDisplay.java" />
-        <option value="$PROJECT_DIR$/red/com/xl/preferences/LocationPreferences.java" />
-        <option value="$PROJECT_DIR$/red/com/xl/preferences/REDPreferences.java" />
-        <option value="$PROJECT_DIR$/red/com/xl/menu/REDMenu.java" />
         <option value="$PROJECT_DIR$/red/com/xl/main/REDApplication.java" />
         <option value="$PROJECT_DIR$/red/com/xl/datatypes/probes/Probe.java" />
+        <option value="$PROJECT_DIR$/red/com/xl/preferences/REDPreferences.java" />
+        <option value="$PROJECT_DIR$/red/com/xl/preferences/LocationPreferences.java" />
+        <option value="$PROJECT_DIR$/red/com/xl/menu/REDMenu.java" />
       </list>
     </option>
   </component>
@@ -1073,7 +1028,11 @@
       <created>1405408653607</created>
       <updated>1405408653607</updated>
     </task>
-    <option name="localTasksCounter" value="56" />
+    <task id="LOCAL-00056" summary="Fix some bugs.">
+      <created>1405408712431</created>
+      <updated>1405408712431</updated>
+    </task>
+    <option name="localTasksCounter" value="57" />
     <servers />
   </component>
   <component name="TodoView" selected-index="0">
@@ -1153,7 +1112,6 @@
     <MESSAGE value="Change the 'toString()' splitter from &quot;\t&quot; to &quot;=&quot; and then we can use Properties to load the genome descriptor." />
     <MESSAGE value="Add a key &quot;KEY_VERSION_NAME&quot;." />
     <MESSAGE value="Genome Descriptor &quot;\t&quot; -&gt; &quot;=&quot;" />
-    <MESSAGE value="Fix some bugs." />
     <MESSAGE value="Change file 'red_prefs.txt' from user.home to the project root directory." />
     <MESSAGE value="Detect whether we have cached the fasta file." />
     <MESSAGE value="Duplicate all same alias UCSC name and provide a method to merge them." />
@@ -1168,7 +1126,8 @@
     <MESSAGE value="Change the structure of Probe from a rectangle to a point. We need to find out the editing sites instead of reads. The function has not been tested." />
     <MESSAGE value="Fix the Probe functions to meet our command." />
     <MESSAGE value="Something has been done to fix the zoom function since I change the way of zooming." />
-    <option name="LAST_COMMIT_MESSAGE" value="Something has been done to fix the zoom function since I change the way of zooming." />
+    <MESSAGE value="Fix some bugs." />
+    <option name="LAST_COMMIT_MESSAGE" value="Fix some bugs." />
     <option name="OPTIMIZE_IMPORTS_BEFORE_PROJECT_COMMIT" value="true" />
     <option name="REFORMAT_BEFORE_PROJECT_COMMIT" value="true" />
   </component>
@@ -1437,7 +1396,7 @@
             <element signature="imports" expanded="true" />
             <element signature="e#1640#1651#0" expanded="true" />
             <element signature="e#1706#1713#0" expanded="true" />
-            <element signature="e#10462#10471#0" expanded="true" />
+            <element signature="e#10463#10472#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -1588,48 +1547,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/red/com/xl/menu/REDMenu.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="2931" max-vertical-offset="10860">
-          <caret line="183" column="36" selection-start-line="183" selection-start-column="36" selection-end-line="183" selection-end-column="36" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/red/com/xl/preferences/LocationPreferences.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-0.1779661" vertical-offset="4484" max-vertical-offset="6140">
-          <caret line="272" column="42" selection-start-line="272" selection-start-column="5" selection-end-line="272" selection-end-column="5" />
-          <folding>
-            <element signature="e#3367#3375#0" expanded="true" />
-            <element signature="e#8647#8648#0" expanded="true" />
-            <element signature="e#8689#8690#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/red/com/xl/main/REDApplication.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="1963" max-vertical-offset="17900">
-          <caret line="157" column="29" selection-start-line="157" selection-start-column="29" selection-end-line="157" selection-end-column="29" />
-          <folding>
-            <element signature="e#5741#5742#0" expanded="true" />
-            <element signature="e#5775#5776#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/red/com/xl/preferences/REDPreferences.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.375" vertical-offset="143" max-vertical-offset="4700">
-          <caret line="35" column="52" selection-start-line="35" selection-start-column="7" selection-end-line="35" selection-end-column="7" />
-          <folding>
-            <element signature="e#3222#3223#0" expanded="true" />
-            <element signature="e#3259#3260#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/red/com/xl/parsers/dataparsers/REDParser.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="-0.6419492" vertical-offset="13343" max-vertical-offset="20800">
@@ -1659,10 +1576,44 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/red/com/xl/menu/REDMenu.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="1.1178782" vertical-offset="2631" max-vertical-offset="10840">
+          <caret line="185" column="83" selection-start-line="185" selection-start-column="47" selection-end-line="185" selection-end-column="47" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/red/com/xl/preferences/LocationPreferences.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="1.5241935" vertical-offset="4804" max-vertical-offset="6080">
+          <caret line="336" column="93" selection-start-line="336" selection-start-column="0" selection-end-line="336" selection-end-column="0" />
+          <folding>
+            <element signature="e#3367#3375#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/red/com/xl/main/REDApplication.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.6391129" vertical-offset="1903" max-vertical-offset="17860">
+          <caret line="157" column="29" selection-start-line="157" selection-start-column="29" selection-end-line="157" selection-end-column="29" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/red/com/xl/preferences/REDPreferences.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.51814514" vertical-offset="1103" max-vertical-offset="4640">
+          <caret line="87" column="0" selection-start-line="87" selection-start-column="0" selection-end-line="87" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/red/com/xl/datatypes/probes/Probe.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.77799606" vertical-offset="304" max-vertical-offset="1380">
-          <caret line="39" column="37" selection-start-line="39" selection-start-column="0" selection-end-line="39" selection-end-column="0" />
+        <state vertical-scroll-proportion="0.66797644" vertical-offset="0" max-vertical-offset="1380">
+          <caret line="17" column="38" selection-start-line="17" selection-start-column="29" selection-end-line="17" selection-end-column="29" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>

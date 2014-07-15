@@ -182,7 +182,6 @@ public class REDMenu extends JMenuBar implements ActionListener {
 
             List<String> recentPaths = LocationPreferences.getInstance()
                     .getRecentlyOpenedFiles();
-            System.out.println(recentPaths);
             for (String recentPath : recentPaths) {
                 System.out.println(recentPath);
                 File f = new File(recentPath);
