@@ -48,7 +48,6 @@ import java.util.zip.GZIPOutputStream;
  */
 public class REDDataWriter implements Runnable, Cancellable {
 
-    // THIS VALUE IS IMPORTANT!!!
     /**
      * The Constant DATA_VERSION.
      */
@@ -221,8 +220,7 @@ public class REDDataWriter implements Runnable, Cancellable {
             }
 
             if (probes != null) {
-                if (!printProbeSet(data.probeSet(), probes, dataSets,
-                        dataGroups, p)) {
+                if (!printProbeSet(data.probeSet(), probes, dataSets, p)) {
                     return; // They cancelled
                 }
             }
@@ -230,7 +228,7 @@ public class REDDataWriter implements Runnable, Cancellable {
             printVisibleDataStores(dataSets, dataGroups, p);
 
             if (probes != null) {
-                if (!printProbeLists(probes, p)) {
+                if (!printProbeLists(p)) {
                     return; // They cancelled
                 }
             }
@@ -480,7 +478,6 @@ public class REDDataWriter implements Runnable, Cancellable {
                     if (groupSets[j] == dataSets[d]) {
                         b.append("\t");
                         b.append(d);
-                        continue;
                     }
                 }
             }
@@ -525,22 +522,14 @@ public class REDDataWriter implements Runnable, Cancellable {
     /**
      * Prints the probe set.
      *
-     * @param probeSet   the probe set
-     * @param probes     the probes
-     * @param dataSets   the data sets
-     * @param dataGroups the data groups
-     * @param p          the p
+     * @param probeSet the probe set
+     * @param probes   the probes
+     * @param dataSets the data sets
+     * @param p        the p
      * @return false if cancelled, else true
      */
     private boolean printProbeSet(ProbeSet probeSet, Probe[] probes,
-                                  DataSet[] dataSets, DataGroup[] dataGroups, PrintStream p)
-            throws IOException {
-        // Put out the number of probes
-
-        String probeSetQuantitation = "";
-        if (probeSet.currentQuantitation() != null) {
-            probeSetQuantitation = probeSet.currentQuantitation();
-        }
+                                  DataSet[] dataSets, PrintStream p) throws IOException {
 
         // We need the saved string to be linear so we replace the line breaks
         // with ` (which we've replaced with ' in the
@@ -548,9 +537,7 @@ public class REDDataWriter implements Runnable, Cancellable {
 
         String comments = probeSet.comments().replaceAll("[\\r\\n]", "`");
 
-        p.println(ParsingUtils.PROBES + "\t" + probes.length + "\t"
-                + probeSet.justDescription() + "\t" + probeSetQuantitation
-                + "\t" + comments);
+        p.println(ParsingUtils.PROBES + "\t" + probes.length + "\t" + probeSet.justDescription() + "\t" + comments);
 
         // Next we print out the data
 
@@ -570,40 +557,13 @@ public class REDDataWriter implements Runnable, Cancellable {
                 }
             }
 
-            StringBuffer b = new StringBuffer();
-            if (probes[i].hasDefinedName()) {
-                b.append(probes[i].name());
-            } else {
-                b.append("null");
-            }
-            b.append("\t");
-            b.append(probes[i].getChr());
-            b.append("\t");
-            b.append(probes[i].toWrite());
-
-            for (int j = 0; j < dataSets.length; j++) {
-                b.append("\t");
-                if (!dataSets[j].hasValueForProbe(probes[i])) {
-                    // It's OK for some probes not to have any value - just skip
-                    // these.
-                    continue;
-                }
-                try {
-                    b.append(dataSets[j].getValueForProbe(probes[i]));
-                } catch (REDException e) {
-                    e.printStackTrace();
-                }
-
-            }
-            for (int j = 0; j < dataGroups.length; j++) {
-                b.append("\t");
-                try {
-                    b.append(dataGroups[j].getValueForProbe(probes[i]));
-                } catch (REDException e) {
-                    // This can happen if a group is made but never quantiated.
-                }
-            }
-            p.println(b.toString());
+            p.println(probes[i].getChr() + "\t" + probes[i].getStart() + "\t" + probes[i].getEditingBase());
+//            for (DataSet dataSet : dataSets) {
+//                SequenceRead[] sequenceReads = dataSet.getReadsForProbe(probes[i]);
+//                for (SequenceRead sequenceRead : sequenceReads) {
+//                    p.println(sequenceRead.toWrite());
+//                }
+//            }
         }
         return true;
     }
@@ -641,11 +601,9 @@ public class REDDataWriter implements Runnable, Cancellable {
     /**
      * Prints the probe lists.
      *
-     * @param probes the probes
-     * @param p      the p
+     * @param p the p
      */
-    private boolean printProbeLists(Probe[] probes, PrintStream p)
-            throws REDException, IOException {
+    private boolean printProbeLists(PrintStream p) throws REDException, IOException {
         // Now we print out the list of probe lists
 
 		/*
@@ -658,76 +616,33 @@ public class REDDataWriter implements Runnable, Cancellable {
 		 */
         ProbeList[] lists = data.probeSet().getAllProbeLists();
 
-        // The way we determine which probes are in which list is to pull
-        // out the ordered set of probes from the lists and then compare
-        // each of the full set of probes to the position we've reached in
-        // each list. We therefore need the full set of lists, and an
-        // array of ints to keep track of where we've got to in each of them.
-
-        Probe[][] orderedProbes = new Probe[lists.length][];
-        int[] orderedProbeIndices = new int[lists.length];
-
-        for (int l = 0; l < lists.length; l++) {
-            orderedProbes[l] = lists[l].getAllProbes();
-            orderedProbeIndices[l] = 0;
-        }
-
         // We start at the second list since the first list will always
         // be "All probes" which we'll sort out some other way.
 
         p.println(ParsingUtils.LISTS + "\t" + (lists.length - 1));
 
-        for (int i = 1; i < lists.length; i++) {
-            String listComments = lists[i].comments().replaceAll("[\\r\\n]",
-                    "`");
-            p.println(getListDepth(lists[i]) + "\t" + lists[i].name() + "\t"
-                    + lists[i].getValueName() + "\t" + lists[i].description()
-                    + "\t" + listComments);
-        }
+        for (ProbeList probeList : lists) {
+            String listComments = probeList.comments().replaceAll("[\\r\\n]", "`");
+            Probe[] currentListProbes = probeList.getAllProbes();
+            int probeLength = currentListProbes.length;
+            p.println(getListDepth(probeList) + "\t" + probeList.name() + "\t" + probeList.description()
+                    + "\t" + probeLength + "\t" + listComments);
 
-        // Put out the number of probes
-        p.println(ParsingUtils.PROBES + "\t" + probes.length);
-        // Now we print out the data for the probe lists
-
-        for (int i = 0; i < probes.length; i++) {
-
-            if (cancel) {
-                cancelled(p);
-                return false;
-            }
-            if (i % 1000 == 0) {
-                Enumeration<ProgressListener> e = listeners.elements();
-                while (e.hasMoreElements()) {
-                    e.nextElement().progressUpdated(
-                            "Written lists for " + i + " probes out of "
-                                    + probes.length, i, probes.length);
+            for (int j = 0; j < probeLength; j++) {
+                if (j % 1000 == 0) {
+                    if (cancel) {
+                        cancelled(p);
+                        return false;
+                    }
+                    Enumeration<ProgressListener> e = listeners.elements();
+                    while (e.hasMoreElements()) {
+                        e.nextElement().progressUpdated(
+                                "Written lists for " + j + " probes out of "
+                                        + probeLength, j, probeLength);
+                    }
                 }
-            }
-
-            StringBuffer b = new StringBuffer();
-            b.append(probes[i].name());
-
-            for (int j = 1; j < lists.length; j++) {
-                b.append("\t");
-
-                // If we've not reached the end of this list, and if this
-                // probe is the next one in this list then we print out the
-                // value it has associated with it.
-                if (orderedProbeIndices[j] < orderedProbes[j].length
-                        && orderedProbes[j][orderedProbeIndices[j]] == probes[i]) {
-                    b.append(lists[j].getValueForProbe(probes[i]));
-                    orderedProbeIndices[j]++;
-                }
-            }
-            p.println(b.toString());
-        }
-
-        // Check that we've written everything out for all of the probes we have
-        for (int i = 1; i < orderedProbes.length; i++) {
-            if (orderedProbeIndices[i] != orderedProbes[i].length) {
-                throw new REDException("Probe list " + i + " only reported "
-                        + orderedProbeIndices[i] + " out of "
-                        + orderedProbes[i].length + " probes");
+                p.println(currentListProbes[j].getChr() + "\t" + currentListProbes[j].getStart() + "\t" +
+                        currentListProbes[j].getEditingBase());
             }
         }
 
@@ -742,7 +657,6 @@ public class REDDataWriter implements Runnable, Cancellable {
     private void printDisplayPreferences(PrintStream p) {
         // Now write out some display preferences
         DisplayPreferences.getInstance().writeConfiguration(p);
-
     }
 
     /**
@@ -754,9 +668,9 @@ public class REDDataWriter implements Runnable, Cancellable {
     private int getListDepth(ProbeList p) {
         int depth = 0;
 
-        while (p.parent() != null) {
+        while (p.getParent() != null) {
             depth++;
-            p = p.parent();
+            p = p.getParent();
         }
         return depth;
     }

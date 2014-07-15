@@ -1,30 +1,11 @@
 package com.xl.menu;
 
-/**
- * Copyright 2012-13 Simon Andrews
- *
- *    This file is part of SeqMonk.
- *
- *    SeqMonk is free software; you can redistribute it and/or modify
- *    it under the terms of the GNU General Public License as published by
- *    the Free Software Foundation; either version 3 of the License, or
- *    (at your option) any later version.
- *
- *    SeqMonk is distributed in the hope that it will be useful,
- *    but WITHOUT ANY WARRANTY; without even the implied warranty of
- *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *    GNU General Public License for more details.
- *
- *    You should have received a copy of the GNU General Public License
- *    along with SeqMonk; if not, write to the Free Software
- *    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
- */
-
 import com.xl.datatypes.DataGroup;
 import com.xl.datatypes.DataSet;
 import com.xl.datatypes.DataStore;
 import com.xl.datatypes.probes.ProbeList;
 import com.xl.datatypes.probes.ProbeSet;
+import com.xl.utils.namemanager.MenuUtils;
 
 import javax.swing.*;
 import java.awt.*;
@@ -35,11 +16,6 @@ public class MainREDToolbar extends REDToolbar {
      * The jump to position button.
      */
     private JButton jumpToPositionButton;
-
-    /**
-     * The change annotation button.
-     */
-    private JButton changeAnnotationButton;
 
     /**
      * The find feature button.
@@ -70,30 +46,7 @@ public class MainREDToolbar extends REDToolbar {
         posButton.setActionCommand("scale_positive");
         posButton.setToolTipText("Positive Scale");
         posButton.addActionListener(menu);
-
         add(posButton);
-
-        addSeparator();
-
-        JButton dynamicColoursButton = new JButton(
-                new ImageIcon(
-                        ClassLoader
-                                .getSystemResource("resources/toolbar/dynamic_data_colours.png")));
-        dynamicColoursButton.setActionCommand("data_colour_dynamic");
-        dynamicColoursButton.setToolTipText("Dynamic Data Colours");
-        dynamicColoursButton.addActionListener(menu);
-
-        add(dynamicColoursButton);
-
-        JButton staticColoursButton = new JButton(
-                new ImageIcon(
-                        ClassLoader
-                                .getSystemResource("resources/toolbar/static_data_colours.png")));
-        staticColoursButton.setActionCommand("data_colour_fixed");
-        staticColoursButton.setToolTipText("Static Data Colours");
-        staticColoursButton.addActionListener(menu);
-
-        add(staticColoursButton);
 
         addSeparator();
 
@@ -103,7 +56,6 @@ public class MainREDToolbar extends REDToolbar {
         readsOnlyButton.setActionCommand("data_reads");
         readsOnlyButton.setToolTipText("Show only Reads");
         readsOnlyButton.addActionListener(menu);
-
         add(readsOnlyButton);
 
         JButton probesOnlyButton = new JButton(
@@ -112,7 +64,6 @@ public class MainREDToolbar extends REDToolbar {
         probesOnlyButton.setActionCommand("data_probes");
         probesOnlyButton.setToolTipText("Show only Probes");
         probesOnlyButton.addActionListener(menu);
-
         add(probesOnlyButton);
 
         JButton probesAndReadsButton = new JButton(
@@ -122,40 +73,7 @@ public class MainREDToolbar extends REDToolbar {
         probesAndReadsButton.setActionCommand("data_reads_probes");
         probesAndReadsButton.setToolTipText("Show Probes and Reads");
         probesAndReadsButton.addActionListener(menu);
-
         add(probesAndReadsButton);
-
-        addSeparator();
-
-        JButton lowDensityReadsButton = new JButton(
-                new ImageIcon(
-                        ClassLoader
-                                .getSystemResource("resources/toolbar/low_density_reads.png")));
-        lowDensityReadsButton.setActionCommand("read_density_low");
-        lowDensityReadsButton.setToolTipText("Low Density Read Display");
-        lowDensityReadsButton.addActionListener(menu);
-
-        add(lowDensityReadsButton);
-
-        JButton mediumDensityReadsButton = new JButton(
-                new ImageIcon(
-                        ClassLoader
-                                .getSystemResource("resources/toolbar/medium_density_reads.png")));
-        mediumDensityReadsButton.setActionCommand("read_density_medium");
-        mediumDensityReadsButton.setToolTipText("Medium Density Read Display");
-        mediumDensityReadsButton.addActionListener(menu);
-
-        add(mediumDensityReadsButton);
-
-        JButton highDensityReadsButton = new JButton(
-                new ImageIcon(
-                        ClassLoader
-                                .getSystemResource("resources/toolbar/high_density_reads.png")));
-        highDensityReadsButton.setActionCommand("read_density_high");
-        highDensityReadsButton.setToolTipText("High Density Read Display");
-        highDensityReadsButton.addActionListener(menu);
-
-        add(highDensityReadsButton);
 
         addSeparator();
 
@@ -176,29 +94,7 @@ public class MainREDToolbar extends REDToolbar {
         splitPackedReadsButton.setActionCommand("read_pack_separate");
         splitPackedReadsButton.setToolTipText("Split Packed Reads");
         splitPackedReadsButton.addActionListener(menu);
-
         add(splitPackedReadsButton);
-
-        addSeparator();
-
-        changeAnnotationButton = new JButton(
-                new ImageIcon(
-                        ClassLoader
-                                .getSystemResource("resources/toolbar/change_annotation.png")));
-        changeAnnotationButton.setActionCommand("view_annotation_tracks");
-        changeAnnotationButton.setToolTipText("Change Annotation Tracks");
-        changeAnnotationButton.addActionListener(menu);
-
-        add(changeAnnotationButton);
-
-        JButton changeDataButton = new JButton(
-                new ImageIcon(ClassLoader
-                        .getSystemResource("resources/toolbar/change_data.png")));
-        changeDataButton.setActionCommand("view_data_tracks");
-        changeDataButton.setToolTipText("Change Data Tracks");
-        changeDataButton.addActionListener(menu);
-
-        add(changeDataButton);
 
         addSeparator();
 
@@ -206,10 +102,9 @@ public class MainREDToolbar extends REDToolbar {
                 new ImageIcon(
                         ClassLoader
                                 .getSystemResource("resources/toolbar/change_data_zoom.png")));
-        changeDataZoomButton.setActionCommand("view_set_zoom");
+        changeDataZoomButton.setActionCommand(MenuUtils.SET_ZOOM_LEVEL);
         changeDataZoomButton.setToolTipText("Change Data Zoom Level");
         changeDataZoomButton.addActionListener(menu);
-
         add(changeDataZoomButton);
 
         addSeparator();
@@ -218,7 +113,7 @@ public class MainREDToolbar extends REDToolbar {
                 new ImageIcon(
                         ClassLoader
                                 .getSystemResource("resources/toolbar/find_feature.png")));
-        findFeatureButton.setActionCommand("find_feature");
+        findFeatureButton.setActionCommand(MenuUtils.FIND);
         findFeatureButton.setToolTipText("Find Feature");
         findFeatureButton.addActionListener(menu);
 
@@ -228,7 +123,7 @@ public class MainREDToolbar extends REDToolbar {
                 new ImageIcon(
                         ClassLoader
                                 .getSystemResource("resources/toolbar/jump_to_position.png")));
-        jumpToPositionButton.setActionCommand("goto_position");
+        jumpToPositionButton.setActionCommand(MenuUtils.GOTO_POSITION);
         jumpToPositionButton.setToolTipText("Go to Position");
         jumpToPositionButton.addActionListener(menu);
 
@@ -246,8 +141,6 @@ public class MainREDToolbar extends REDToolbar {
         // Enable the buttons relating only to the genome
         jumpToPositionButton.setEnabled(true);
         jumpToPositionButton.setFocusable(false);
-        changeAnnotationButton.setEnabled(true);
-        changeAnnotationButton.setFocusable(false);
         findFeatureButton.setEnabled(true);
         findFeatureButton.setFocusable(false);
     }

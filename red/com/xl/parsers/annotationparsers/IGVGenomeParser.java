@@ -74,21 +74,21 @@ public class IGVGenomeParser implements Runnable {
             cacheFailed = true;
         } else {
             String genomeId = genomeFile.getAbsolutePath();
-            System.out.println(this.getClass().getName() + ":" + genomeId);
+//            System.out.println(this.getClass().getName() + ":" + genomeId);
             for (File genomeCacheDirectory : genomeCacheDirectories) {
                 if (genomeCacheDirectory.isDirectory()) {
-                    System.out.println(this.getClass().getName() + ":" + genomeCacheDirectory.getName());
+//                    System.out.println(this.getClass().getName() + ":" + genomeCacheDirectory.getName());
                     File[] cacheCompleteFiles = genomeCacheDirectory.listFiles();
                     if (cacheCompleteFiles != null && cacheCompleteFiles.length != 0) {
-                        System.out.println(this.getClass().getName() + ":cacheCompleteFiles != null");
+//                        System.out.println(this.getClass().getName() + ":cacheCompleteFiles != null");
                         for (File cacheCompleteFile : cacheCompleteFiles) {
-                            System.out.println(this.getClass().getName() + ":" + cacheCompleteFile.getName());
+//                            System.out.println(this.getClass().getName() + ":" + cacheCompleteFile.getName());
                             if (cacheCompleteFile.getName().equals(SuffixUtils.CACHE_GENOME_COMPLETE)) {
                                 try {
                                     properties = new Properties();
                                     properties.load(new FileReader(cacheCompleteFile));
                                     String id = properties.getProperty(GenomeUtils.KEY_GENOME_ID);
-                                    System.out.println(this.getClass().getName() + ":" + id + "\t" + genomeId);
+//                                    System.out.println(this.getClass().getName() + ":" + id + "\t" + genomeId);
                                     if (genomeId.contains(id)) {
                                         displayNameInCacheFile = properties.getProperty(GenomeUtils.KEY_DISPLAY_NAME);
                                         String version = properties.getProperty(GenomeUtils.KEY_VERSION_NAME);
@@ -207,7 +207,6 @@ public class IGVGenomeParser implements Runnable {
             // Update the listeners
             String name = cacheFiles[i].getName();
             name = name.replaceAll("\\.genome.cache$", "");
-            System.out.println(name);
             if (ChromosomeUtils.isStandardChromosomeName(name)) {
                 Enumeration<ProgressListener> en = listeners.elements();
                 while (en.hasMoreElements()) {
@@ -393,7 +392,6 @@ public class IGVGenomeParser implements Runnable {
             throws IOException {
         ZipFile zipFile = new ZipFile(dotGenomeFile);
         ZipInputStream zipInputStream = new ZipInputStream(new FileInputStream(dotGenomeFile));
-        ;
         ZipEntry zipEntry;
         while ((zipEntry = zipInputStream.getNextEntry()) != null) {
             String zipEntryName = zipEntry.getName();

@@ -7,6 +7,7 @@ package com.xl.menu;
 import com.xl.dialog.*;
 import com.xl.dialog.gotodialog.GotoDialog;
 import com.xl.dialog.gotodialog.GotoWindowDialog;
+import com.xl.display.chromosomeviewer.ChromosomeDataTrack;
 import com.xl.help.HelpDialog;
 import com.xl.main.REDApplication;
 import com.xl.panel.ToolbarPanel;
@@ -22,6 +23,7 @@ import com.xl.utils.namemanager.MenuUtils;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.io.File;
 import java.util.List;
@@ -36,7 +38,7 @@ public class REDMenu extends JMenuBar implements ActionListener {
      */
     private REDApplication redApplication;
     private ToolbarPanel toolbarPanel;
-    private REDToolbar[] redToolbar;
+    private REDToolbar redToolbar;
 
     private JMenu fileMenu;
     private JMenuItem newProject;
@@ -53,9 +55,11 @@ public class REDMenu extends JMenuBar implements ActionListener {
     private JMenu editMenu;
 
     private JCheckBoxMenuItem showToolbar;
-
-    private JMenu showPanel;
-    private JCheckBoxMenuItem[] showPanels;
+    private JCheckBoxMenuItem showDirectoryPanel;
+    private JCheckBoxMenuItem showDataPanel;
+    private JCheckBoxMenuItem showChromosomePanel;
+    private JCheckBoxMenuItem showFeaturePanel;
+    private JCheckBoxMenuItem showStatusPanel;
 
     private JMenuItem setDataTracks;
     private JMenuItem find;
@@ -93,7 +97,7 @@ public class REDMenu extends JMenuBar implements ActionListener {
 
     private void initComponents() {
         toolbarPanel = new ToolbarPanel();
-        redToolbar = new REDToolbar[]{new MainREDToolbar(this),};
+        redToolbar = new MainREDToolbar(this);
 
         fileMenu = new JMenu();
         newProject = new JMenuItem();
@@ -108,10 +112,13 @@ public class REDMenu extends JMenuBar implements ActionListener {
         exportImage = new JMenuItem();
         exit = new JMenuItem();
         editMenu = new JMenu();
-        showToolbar = new JCheckBoxMenuItem(redToolbar[0].name(),
-                redToolbar[0].shown());
-        showPanels = new JCheckBoxMenuItem[4];
-        showPanel = new JMenu();
+        showToolbar = new JCheckBoxMenuItem(MenuUtils.SHOW_TOOLBAR, redToolbar.shown());
+        showDirectoryPanel = new JCheckBoxMenuItem(MenuUtils.SHOW_DIRECTORY_PANEL, true);
+        showChromosomePanel = new JCheckBoxMenuItem(MenuUtils.SHOW_CHROMOSOME_PANEL, true);
+        showFeaturePanel = new JCheckBoxMenuItem(MenuUtils.SHOW_FEATURE_PANEL, true);
+        showDataPanel = new JCheckBoxMenuItem(MenuUtils.SHOW_DATA_PANEL, true);
+        showStatusPanel = new JCheckBoxMenuItem(MenuUtils.SHOW_STATUS_PANEL, true);
+
         gotoMenuItem = new JMenu();
         gotoPosition = new JMenuItem();
         gotoWindow = new JMenuItem();
@@ -175,8 +182,10 @@ public class REDMenu extends JMenuBar implements ActionListener {
 
             List<String> recentPaths = LocationPreferences.getInstance()
                     .getRecentlyOpenedFiles();
-            for (int i = 0, len = recentPaths.size(); i < len; i++) {
-                File f = new File(recentPaths.get(i));
+            System.out.println(recentPaths);
+            for (String recentPath : recentPaths) {
+                System.out.println(recentPath);
+                File f = new File(recentPath);
                 if (f.exists()) {
                     JMenuItem menuItem2 = new JMenuItem(f.getName());
                     menuItem2.addActionListener(new FileOpener(redApplication,
@@ -191,24 +200,13 @@ public class REDMenu extends JMenuBar implements ActionListener {
         // ======== editMenu ========
         {
             editMenu.setText(MenuUtils.EDIT_MENU);
-            showToolbar.setActionCommand(MenuUtils.SHOW_TOOLBAR);
-            showToolbar.addActionListener(this);
-            showToolbar.setEnabled(false);
-            editMenu.add(showToolbar);
-            {
-                for (int i = 0; i < 4; i++) {
-                    showPanels[i] = new JCheckBoxMenuItem(
-                            MenuUtils.SHOW_PANELS[i], true);
-                    showPanels[i].setActionCommand(MenuUtils.SHOW_PANELS[i]);
-                    showPanels[i].addActionListener(this);
-                    showPanel.add(showPanels[i]);
-                }
-                showPanel.setText(MenuUtils.SHOW_PANEL);
-                showPanel.setActionCommand(MenuUtils.SHOW_PANEL);
-                showPanel.addActionListener(this);
-                editMenu.add(showPanel);
-                showPanel.setEnabled(false);
-            }
+
+            addJMenuItem(editMenu, showToolbar, MenuUtils.SHOW_TOOLBAR, -1, false);
+            addJMenuItem(editMenu, showDirectoryPanel, MenuUtils.SHOW_DIRECTORY_PANEL, -1, false);
+            addJMenuItem(editMenu, showChromosomePanel, MenuUtils.SHOW_CHROMOSOME_PANEL, -1, false);
+            addJMenuItem(editMenu, showFeaturePanel, MenuUtils.SHOW_FEATURE_PANEL, -1, false);
+            addJMenuItem(editMenu, showDataPanel, MenuUtils.SHOW_DATA_PANEL, -1, false);
+            addJMenuItem(editMenu, showStatusPanel, MenuUtils.SHOW_STATUS_PANEL, -1);
 
             editMenu.addSeparator();
             addJMenuItem(editMenu, setDataTracks, MenuUtils.SET_DATA_TRACKS,
@@ -222,7 +220,7 @@ public class REDMenu extends JMenuBar implements ActionListener {
 
         // ======== viewMenu ========
         {
-            viewMenu.setText("View");
+            viewMenu.setText(MenuUtils.VIEW_MENU);
             addJMenuItem(viewMenu, zoomIn, MenuUtils.ZOOM_IN, KeyEvent.VK_I);
             addJMenuItem(viewMenu, zoomOut, MenuUtils.ZOOM_OUT, KeyEvent.VK_O);
             addJMenuItem(viewMenu, setZoomLevel, MenuUtils.SET_ZOOM_LEVEL, -1);
@@ -292,16 +290,14 @@ public class REDMenu extends JMenuBar implements ActionListener {
      * @param mnemonic  The keyboard shortcuts. Call Java API when using the shortcut
      *                  letter.
      */
-    private void addJMenuItem(JMenu jMenu, JMenuItem jMenuItem, String text,
-                              int mnemonic) {
+    private void addJMenuItem(JMenu jMenu, JMenuItem jMenuItem, String text, int mnemonic) {
         if (text != null) {
             jMenuItem.setText(text);
             jMenuItem.setActionCommand(text);
         }
         if (mnemonic != -1) {
             jMenuItem.setMnemonic(mnemonic);
-            jMenuItem.setAccelerator(KeyStroke.getKeyStroke(mnemonic,
-                    ActionEvent.CTRL_MASK));
+            jMenuItem.setAccelerator(KeyStroke.getKeyStroke(mnemonic, InputEvent.CTRL_MASK));
         }
         jMenuItem.addActionListener(REDMenu.this);
         jMenu.add(jMenuItem);
@@ -326,7 +322,7 @@ public class REDMenu extends JMenuBar implements ActionListener {
         if (mnemonic != -1) {
             jMenuItem.setMnemonic(mnemonic);
             jMenuItem.setAccelerator(KeyStroke.getKeyStroke(mnemonic,
-                    ActionEvent.CTRL_MASK));
+                    InputEvent.CTRL_MASK));
         }
         jMenuItem.addActionListener(REDMenu.this);
         jMenu.add(jMenuItem);
@@ -349,7 +345,8 @@ public class REDMenu extends JMenuBar implements ActionListener {
             redApplication.importData(new BAMFileParser(redApplication
                     .dataCollection()));
         } else if (action.equals(MenuUtils.DNA)) {
-
+            redApplication.importData(new BAMFileParser(redApplication
+                    .dataCollection()));
         } else if (action.equals(MenuUtils.ANNOTATION)) {
             AnnotationParserRunner.RunAnnotationParser(redApplication,
                     new UCSCRefGeneParser(redApplication.dataCollection()
@@ -364,7 +361,7 @@ public class REDMenu extends JMenuBar implements ActionListener {
         // --------------------EditMenu--------------------
         else if (action.equals(MenuUtils.SHOW_TOOLBAR)) {
             toolbarPanel.setVisible(!toolbarPanel.isVisible());
-        } else if (action.equals(MenuUtils.SHOW_PANELS[0])) {
+        } else if (action.equals(MenuUtils.SHOW_DIRECTORY_PANEL)) {
             redApplication.dataViewer().setVisible(
                     !redApplication.dataViewer().isVisible());
             if (redApplication.genomeViewer().isVisible()) {
@@ -374,7 +371,7 @@ public class REDMenu extends JMenuBar implements ActionListener {
                     redApplication.topPane().setDividerLocation(0);
                 }
             }
-        } else if (action.equals(MenuUtils.SHOW_PANELS[1])) {
+        } else if (action.equals(MenuUtils.SHOW_CHROMOSOME_PANEL)) {
             redApplication.genomeViewer().setVisible(
                     !redApplication.genomeViewer().isVisible());
             if (redApplication.dataViewer().isVisible()) {
@@ -384,15 +381,22 @@ public class REDMenu extends JMenuBar implements ActionListener {
                     redApplication.topPane().setDividerLocation(0.99);
                 }
             }
-        } else if (action.equals(MenuUtils.SHOW_PANELS[2])) {
-            redApplication.chromosomeViewer().setVisible(
-                    !redApplication.chromosomeViewer().isVisible());
-            if (redApplication.chromosomeViewer().isVisible()) {
-                redApplication.mainPanel().setDividerLocation(0.5);
-            } else {
-                redApplication.mainPanel().setDividerLocation(0.99);
+        } else if (action.equals(MenuUtils.SHOW_FEATURE_PANEL)) {
+            redApplication.chromosomeViewer().getFeatureTrack().setVisible(!redApplication.chromosomeViewer()
+                    .getFeatureTrack().isVisible());
+        } else if (action.equals(MenuUtils.SHOW_DATA_PANEL)) {
+            Vector<ChromosomeDataTrack> dataTracks = redApplication.chromosomeViewer().getChromosomeDataTrack();
+            for (ChromosomeDataTrack cdt : dataTracks) {
+                cdt.setVisible(!cdt.isVisible());
             }
-        } else if (action.equals(MenuUtils.SHOW_PANELS[3])) {
+//            redApplication.chromosomeViewer().setVisible(
+//                    !redApplication.chromosomeViewer().isVisible());
+//            if (redApplication.chromosomeViewer().isVisible()) {
+//                redApplication.mainPanel().setDividerLocation(0.5);
+//            } else {
+//                redApplication.mainPanel().setDividerLocation(0.99);
+//            }
+        } else if (action.equals(MenuUtils.SHOW_STATUS_PANEL)) {
             redApplication.statusPanel().setVisible(
                     !redApplication.statusPanel().isVisible());
         } else if (action.equals(MenuUtils.SET_DATA_TRACKS)) {
@@ -468,6 +472,7 @@ public class REDMenu extends JMenuBar implements ActionListener {
         filterMenu.setEnabled(true);
         setDataTracks.setEnabled(true);
         reportsMenu.setEnabled(true);
+        showDataPanel.setEnabled(true);
     }
 
     /**
@@ -479,9 +484,16 @@ public class REDMenu extends JMenuBar implements ActionListener {
         viewMenu.setEnabled(true);
         saveProject.setEnabled(true);
         saveProjectAs.setEnabled(true);
+        exportImage.setEnabled(true);
         find.setEnabled(true);
         gotoMenuItem.setEnabled(true);
-        exportImage.setEnabled(true);
+        gotoPosition.setEnabled(true);
+        showToolbar.setEnabled(true);
+        showDirectoryPanel.setEnabled(true);
+        showChromosomePanel.setEnabled(true);
+        showFeaturePanel.setEnabled(true);
+        showStatusPanel.setEnabled(true);
+        redToolbar.genomeLoaded();
     }
 
     /**
@@ -498,7 +510,6 @@ public class REDMenu extends JMenuBar implements ActionListener {
         viewMenu.setEnabled(false);
         filterMenu.setEnabled(false);
         reportsMenu.setEnabled(false);
-
     }
 
     public JPanel toolbarPanel() {
@@ -508,10 +519,8 @@ public class REDMenu extends JMenuBar implements ActionListener {
     private void updateVisibleToolBars() {
         Vector<JToolBar> visibleToolBars = new Vector<JToolBar>();
 
-        for (int i = 0; i < redToolbar.length; i++) {
-            if (redToolbar[i].shown()) {
-                visibleToolBars.add(redToolbar[i]);
-            }
+        if (redToolbar.shown()) {
+            visibleToolBars.add(redToolbar);
         }
 
         toolbarPanel.setToolBars(visibleToolBars.toArray(new JToolBar[0]));

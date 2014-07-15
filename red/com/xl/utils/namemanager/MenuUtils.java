@@ -19,8 +19,11 @@ public class MenuUtils {
     /*Edit menu*/
     public static final String EDIT_MENU = "Edit";
     public static final String SHOW_TOOLBAR = "Show Toolbar";
-    public static final String SHOW_PANEL = "Show Panel";
-    public static final String[] SHOW_PANELS = {"Directory View", "Chromosome View", "Data Track View", "Reference Genome View"};
+    public static final String SHOW_DIRECTORY_PANEL = "Directory Panel";
+    public static final String SHOW_CHROMOSOME_PANEL = "Chromosome Panel";
+    public static final String SHOW_FEATURE_PANEL = "Feature Panel";
+    public static final String SHOW_DATA_PANEL = "Data Panel";
+    public static final String SHOW_STATUS_PANEL = "Status Panel";
     public static final String SET_DATA_TRACKS = "Set Data Tracks...";
     public static final String FIND = "Find...";
     public static final String PREFERENCES = "Preferences...";

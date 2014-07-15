@@ -609,14 +609,8 @@ public class REDParser implements Runnable, ProgressListener {
                             Enumeration<ProgressListener> en2 = listeners
                                     .elements();
                             while (en2.hasMoreElements()) {
-                                en2.nextElement()
-                                        .progressUpdated(
-                                                "Reading data for "
-                                                        + dataSets[i].name(),
-                                                i
-                                                        * 10
-                                                        + (readsRead / (1 + (readCount / 10))),
-                                                n * 10);
+                                en2.nextElement().progressUpdated("Reading data for " + dataSets[i].name(),
+                                        i * 10 + (readsRead / (1 + (readCount / 10))), n * 10);
                             }
                         }
 
@@ -752,12 +746,6 @@ public class REDParser implements Runnable, ProgressListener {
         ProbeSet probeSet = new ProbeSet(description, n);
 
         if (sections.length > 3) {
-            if (sections[3].length() > 0) {
-                probeSet.setCurrentQuantitation(sections[3]);
-            }
-        }
-
-        if (sections.length > 4) {
             probeSet.setComments(sections[4].replaceAll("`", "\n"));
         }
 
@@ -766,20 +754,6 @@ public class REDParser implements Runnable, ProgressListener {
         // lists as we get to them.
         application.dataCollection().setProbeSet(probeSet);
 
-        int positionOffset;
-
-        // We used to store chr start and end
-        if (thisDataVersion < 8) {
-            positionOffset = 4;
-        }
-        // We now store chr and packed position (to give start end and strand)
-        else {
-            positionOffset = 3;
-
-        }
-
-        int expectedSectionLength = 3 + dataSets.length + dataGroups.length;
-
         String line;
         for (int i = 0; i < n; i++) {
             line = br.readLine();
@@ -787,32 +761,6 @@ public class REDParser implements Runnable, ProgressListener {
                 throw new REDException("Ran out of probe data at line " + i
                         + " (expected " + n + " probes)");
             }
-
-            // Since the probes section can have blank trailing sections we need
-            // to not trim these, hence the -1 limit.
-            sections = line.split("\\t", -1);
-
-            if (i == 0) {
-                /*
-                 * Older versions of this format put down data for just
-				 * datasets. Newer versions include data for datagroups as well.
-				 * We need to figure out which one we're looking at
-				 */
-                if (sections.length == positionOffset + dataSets.length) {
-                    expectedSectionLength = positionOffset + dataSets.length;
-                } else if (sections.length == positionOffset + dataSets.length
-                        + dataGroups.length) {
-                    expectedSectionLength = positionOffset + dataSets.length
-                            + dataGroups.length;
-                }
-            }
-
-            if (sections.length != expectedSectionLength) {
-                throw new REDException("Expected " + expectedSectionLength
-                        + " sections in data file for " + sections[0]
-                        + " but got " + sections.length);
-            }
-
             if (i % 10000 == 0) {
                 Enumeration<ProgressListener> e = listeners.elements();
                 while (e.hasMoreElements()) {
@@ -820,68 +768,26 @@ public class REDParser implements Runnable, ProgressListener {
                             "Processed data for " + i + " probes", i, n);
                 }
             }
-            String c = sections[1];
-
-            // Sanity check
-            if (c == null) {
+            sections = line.split("\\t");
+            if (sections.length != 3) {
+                throw new REDException("Line " + i + "does not contain three sections. We need chr/position/editing " +
+                        "base to create the Probe now.");
+            }
+            String chr = sections[0];
+            if (chr == null) {
                 throw new REDException("Couldn't find a chromosome called "
                         + sections[1]);
             }
-
-            int start = Integer.parseInt(sections[2]);
-            int end = Integer.parseInt(sections[3]);
-            Probe p = new Probe(c, start, end);
-            if (!sections[0].equals("null")) {
-                p.setName(sections[0]);
-            }
-
-            probes[i] = p;
-            probeSet.addProbe(probes[i], null);
-
-			/*
-             * Our probe data lines have all of the dataset values first,
-			 * followed by the datagroup values.
-			 */
-
-            for (int j = positionOffset; j < sections.length; j++) {
-
-				/*
-                 * It's possible that some datasets won't have been quantitated
-				 * whilst others have. Rather than putting a 0 in for them we
-				 * can skip them altogether saving memory and not introducing
-				 * false data.
-				 * 
-				 * In theory this should only be true for datasets as groups
-				 * should always be quantitated. We might want to move the skip
-				 * code into the dataset insert section.
-				 */
-
-                if (sections[j].length() == 0)
-                    continue;
-
-                if ((j - positionOffset) >= dataSets.length) {
-                    dataGroups[j - (positionOffset + dataSets.length)]
-                            .setValueForProbe(p, Float.parseFloat(sections[j]));
-                } else {
-                    dataSets[j - positionOffset].setValueForProbe(p,
-                            Float.parseFloat(sections[j]));
-                }
-            }
+            Probe p = new Probe(chr, Integer.parseInt(sections[1]), sections[2].toCharArray()[0]);
+            probeSet.addProbe(p);
         }
         application.dataCollection().activeProbeListChanged(probeSet);
 
-        // This rename doesn't actually change the name. We put this in because
-        // the All Probes group is drawn in the data view before probes have
-        // been
-        // added to it. This means that it's name isn't updated when the probes
-        // have
-        // been added and it appears labelled with 0 probes. This doesn't happen
-        // if
-        // there are any probe lists under all probes as they cause it to be
-        // refreshed,
-        // but if you only have the probe set then you need this to make the
-        // display show
-        // the correct information.
+        // This rename doesn't actually change the name. We put this in because the All Probes group is drawn in the
+        // data view before probes have been added to it. This means that it's name isn't updated when the probes
+        // have been added and it appears labelled with 0 probes. This doesn't happen if there are any probe lists
+        // under all probes as they cause it to be refreshed, but if you only have the probe set then you need this
+        // to make the display show the correct information.
         probeSet.setName("All Probes");
 
     }
@@ -971,85 +877,49 @@ public class REDParser implements Runnable, ProgressListener {
                 throw new REDException("Ran out of probe data at line " + i
                         + " (expected " + n + " probes)");
             }
-            String[] listSections = line.split("\\t", -1);
+            String[] listSections = line.split("\\t");
             // The fields should be linkage, name, value name, description
             //
 
-            // Older versions of the format didn't include a description or
-            // linkage so
-            // we allow for that not being present.
-            if (thisDataVersion < 5) {
-                lists[i] = new ProbeList(application.dataCollection()
-                        .probeSet(), listSections[0], "", listSections[1]);
-                if (listSections.length > 2) {
-                    lists[i].setDescription(listSections[2]);
-                } else {
-                    lists[i].setDescription("No description");
-                }
-            } else {
-                lists[i] = new ProbeList(
-                        linkage[Integer.parseInt(listSections[0]) - 1],
-                        listSections[1], listSections[3], listSections[2]);
-                if (listSections.length > 4) {
-                    lists[i].setComments(listSections[4].replaceAll("`", "\n"));
-                }
-                linkage[Integer.parseInt(listSections[0])] = lists[i];
+            lists[i] = new ProbeList(
+                    linkage[Integer.parseInt(listSections[0]) - 1],
+                    listSections[1], listSections[2]);
+            int currentListProbeLength = Integer.parseInt(sections[3]);
+            if (listSections.length > 4) {
+                lists[i].setComments(listSections[4].replaceAll("`", "\n"));
             }
-        }
-
-        // Next we reach the probe list data. These comes as a long list of
-        // values
-        // the first of which is the probe name, then either a numerical value
-        // if
-        // the probe is contained in that list, or a blank if it isn't.
-        String line = br.readLine();
-        if (line == null) {
-            throw new REDException("Couldn't find probe line for list data");
-        }
-        sections = line.split("\\t");
-        if (sections.length != 2) {
-            throw new REDException("Probe line didn't contain 2 sections");
-        }
-        if (!sections[0].equals("Probes")) {
-            throw new REDException(
-                    "Couldn't find expected probe lists probe line");
-        }
-
-        n = Integer.parseInt(sections[1]);
-
-        for (int i = 0; i < n; i++) {
-            sections = br.readLine().split("\\t", -1);
-            if (sections.length != lists.length + 1) {
-                throw new REDException("Expected " + (lists.length + 1)
-                        + " sections in probe list section of data file for "
-                        + sections[0] + " but got " + sections.length);
-            }
-
-            if (i % 1000 == 0) {
-                Enumeration<ProgressListener> e = listeners.elements();
-                while (e.hasMoreElements()) {
-                    e.nextElement().progressUpdated(
-                            "Processed list data for " + i + " probes", i, n);
-                }
-            }
-
-            Probe p = probes[i];
-
-            if (p == null) {
-                continue;
-            }
-
-            for (int j = 0; j < lists.length; j++) {
-                if (sections[j + 1].length() > 0) {
-                    if (sections[j + 1].equals("NaN")) {
-                        lists[j].addProbe(p, null);
-                    } else {
-                        lists[j].addProbe(p,
-                                new Float(Float.parseFloat(sections[j + 1])));
+            linkage[Integer.parseInt(listSections[0])] = lists[i];
+            // Next we reach the probe list data. These comes as a long list of values the first of which is the probe
+            // name, then either a numerical value if the probe is contained in that list, or a blank if it isn't.
+            for (int j = 0; j < currentListProbeLength; j++) {
+                if (j % 1000 == 0) {
+                    Enumeration<ProgressListener> e = listeners.elements();
+                    while (e.hasMoreElements()) {
+                        e.nextElement().progressUpdated(
+                                "Processed list data for " + i + " probes", i, n);
                     }
                 }
+                line = br.readLine();
+                if (line == null) {
+                    throw new REDException("Couldn't find probe line for list data");
+                }
+                sections = line.split("\\t");
+                if (sections.length != 3) {
+                    throw new REDException("Line " + i + "does not contain three sections. We need chr/position/editing " +
+                            "base to create the new Probe.");
+                }
+                String chr = sections[0];
+                if (chr == null) {
+                    throw new REDException("Couldn't find a chromosome called "
+                            + sections[1]);
+                }
+                Probe p = new Probe(chr, Integer.parseInt(sections[1]), sections[2].toCharArray()[0]);
+                lists[i].addProbe(p);
+
             }
         }
+
+
     }
 
     /**

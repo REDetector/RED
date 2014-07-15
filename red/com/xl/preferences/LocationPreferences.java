@@ -350,6 +350,7 @@ public class LocationPreferences {
         recentlyOpenedFiles.clear();
         for (int i = 0; i < recentlyOpenedFilesNumber; i++) {
             recentlyOpenedFiles.add(properties.getProperty(RECENTLY_OPENED_FILES + "_" + i));
+            System.out.println(properties.getProperty(RECENTLY_OPENED_FILES + "_" + i));
         }
     }
 

@@ -85,8 +85,8 @@ public class REDPreferences {
             preferencesFile = new File(locationPreferences.getProjectSaveLocation() + File.separator + "red_prefs.txt");
             if (preferencesFile.exists()) {
                 /** Loading redPreferences from file... */
+                System.out.println("loadPreferences();");
                 loadPreferences();
-//			System.out.println("loadPreferences();");
             } else {
                 savePreferences();
             }

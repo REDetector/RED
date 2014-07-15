@@ -128,7 +128,7 @@ public class ChromosomeViewer extends JPanel implements DataChangeListener,
      */
     private void setChromosome(Chromosome chromosome) {
         System.out.println(this.getClass().getName()
-                + ":setChromosome(Chromosome chromosome)");
+                + ":setChr(Chromosome chromosome)");
         if (chromosome == null)
             throw new IllegalArgumentException("Chromosome can't be null");
         if (chromosome != this.chromosome) {
@@ -165,19 +165,19 @@ public class ChromosomeViewer extends JPanel implements DataChangeListener,
         Enumeration<ChromosomeDataTrack> e = dataTracks.elements();
 
         while (e.hasMoreElements()) {
-            // float[] minMax = e.nextElement().getMinMaxProbeValues();
-            // //
-            // System.err.println("Looking at track with min="+minMax[0]+" max="+minMax[1]);
-            // if (firstTrack) {
-            // minValue = minMax[0];
-            // maxValue = minMax[1];
-            // firstTrack = false;
-            // } else {
-            // if (minMax[0] < minValue)
-            // minValue = minMax[0];
-            // if (minMax[1] > maxValue)
-            // maxValue = minMax[1];
-            // }
+//            float[] minMax = e.nextElement().getMinMaxProbeValues();
+//            //
+//            System.err.println("Looking at track with min="+minMax[0]+" max="+minMax[1]);
+//            if (firstTrack) {
+//            minValue = minMax[0];
+//            maxValue = minMax[1];
+//            firstTrack = false;
+//            } else {
+//            if (minMax[0] < minValue)
+//            minValue = minMax[0];
+//            if (minMax[1] > maxValue)
+//            maxValue = minMax[1];
+//            }
         }
 
         // TODO: This won't change the radio buttons on the main
@@ -245,7 +245,7 @@ public class ChromosomeViewer extends JPanel implements DataChangeListener,
         dataTracks.removeAllElements();
         for (int i = 0; i < dataStores.length; i++) {
             ChromosomeDataTrack csdt = new ChromosomeDataTrack(
-                    this, dataStores[i]);
+                    this, application.dataCollection(), dataStores[i]);
             dataTracks.add(csdt);
         }
 
@@ -476,6 +476,10 @@ public class ChromosomeViewer extends JPanel implements DataChangeListener,
      */
     public ChromosomeFeatureTrack getFeatureTrack() {
         return featureTrack;
+    }
+
+    public Vector<ChromosomeDataTrack> getChromosomeDataTrack() {
+        return dataTracks;
     }
 
     /**

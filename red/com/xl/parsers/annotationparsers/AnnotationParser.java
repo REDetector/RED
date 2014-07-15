@@ -14,7 +14,7 @@ import java.util.Vector;
 
 /**
  * The Class AnnotationParser provides the core methods which must be
- * implemented by a class wanting to be able to import features into a SeqMonk
+ * implemented by a class wanting to be able to import features into a RED
  * genome.
  */
 public abstract class AnnotationParser implements Cancellable, Runnable {
@@ -84,7 +84,7 @@ public abstract class AnnotationParser implements Cancellable, Runnable {
      *
      * @return the genome
      */
-    protected Genome genome() {
+    protected Genome getGenome() {
         return genome;
     }
 

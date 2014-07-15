@@ -38,6 +38,7 @@ import com.xl.parsers.dataparsers.DataParser;
 import com.xl.parsers.dataparsers.REDParser;
 import com.xl.preferences.DisplayPreferences;
 import com.xl.preferences.LocationPreferences;
+import com.xl.preferences.REDPreferences;
 import com.xl.utils.filefilters.FileFilterExt;
 import net.xl.genomes.GenomeDownloader;
 
@@ -153,6 +154,8 @@ public class REDApplication extends JFrame implements ProgressListener,
         setLocationRelativeTo(null);
         setExtendedState(getExtendedState() | MAXIMIZED_BOTH);
 
+        //We need to initiate the preferences first.
+        REDPreferences.getInstance();
         menu = new REDMenu(this);
         setJMenuBar(menu);
 
@@ -898,8 +901,9 @@ public class REDApplication extends JFrame implements ProgressListener,
             addNewDataSets((DataSet[]) result);
             changesWereMade();
         } else if (command.equals("fasta_loaded")) {
-            System.out.println("fasta_loaded");
             chromosomeViewer.setEnableFastaSequence(true);
+            JOptionPane.showMessageDialog(this, "The fasta file has been loaded. Please to zoom out to make it visible" +
+                    "...", "Load fasta file completed", JOptionPane.INFORMATION_MESSAGE);
             changesWereMade();
         } else if (command.equals("data_written")) {
             // Since we've just saved we can reset the changes flag

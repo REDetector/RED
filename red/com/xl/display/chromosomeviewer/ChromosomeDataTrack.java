@@ -1,6 +1,8 @@
 package com.xl.display.chromosomeviewer;
 
+import com.xl.datatypes.DataCollection;
 import com.xl.datatypes.DataStore;
+import com.xl.datatypes.probes.Probe;
 import com.xl.datatypes.sequence.SequenceRead;
 import com.xl.interfaces.HiCDataStore;
 import com.xl.preferences.DisplayPreferences;
@@ -25,7 +27,7 @@ import java.util.List;
 public class ChromosomeDataTrack extends JPanel {
 
     // private static final int MAX_HEIGHT = 500;
-
+    private DataCollection collection = null;
     /**
      * The viewer.
      */
@@ -38,6 +40,8 @@ public class ChromosomeDataTrack extends JPanel {
      * The reads.
      */
     private SequenceRead[] reads = null;
+
+    private Probe[] probes;
     /**
      * The width.
      */
@@ -59,6 +63,8 @@ public class ChromosomeDataTrack extends JPanel {
      * The drawn reads.
      */
     private Vector<DrawnRead> drawnReads = new Vector<DrawnRead>();
+
+    private Vector<Probe> drawnProbes = new Vector<Probe>();
     /**
      * The active read.
      */
@@ -72,7 +78,10 @@ public class ChromosomeDataTrack extends JPanel {
      * The height of each read
      */
     private int readHeight = 10;
+
     private int[] readsYIndex = null;
+
+    private Probe activeProbe = null;
 
     /**
      * Instantiates a new chromosome data track.
@@ -80,9 +89,10 @@ public class ChromosomeDataTrack extends JPanel {
      * @param viewer the viewer
      * @param data   the data
      */
-    public ChromosomeDataTrack(ChromosomeViewer viewer, DataStore data) {
+    public ChromosomeDataTrack(ChromosomeViewer viewer, DataCollection collection, DataStore data) {
         this.viewer = viewer;
         this.data = data;
+        this.collection = collection;
         updateReads();
         // System.out.println("Chr"+viewer.chromosome().name()+" has "+probes.length+" probes on it");
         SequenceListner listner = new SequenceListner();
@@ -96,9 +106,15 @@ public class ChromosomeDataTrack extends JPanel {
      * chromosome.
      */
     public void updateReads() {
+        String currentChromosome = DisplayPreferences.getInstance().getCurrentChromosome().getName();
         System.out.println(this.getClass().getName() + ":updateReads()\t");
-        reads = data.getReadsForChromosome(DisplayPreferences.getInstance()
-                .getCurrentChromosome().getName());
+        if (collection.probeSet() != null) {
+            probes = collection.probeSet().getActiveList().getProbesForChromosome(currentChromosome);
+        } else {
+            probes = new Probe[0];
+        }
+        Arrays.sort(probes);
+        reads = data.getReadsForChromosome(currentChromosome);
         readsYIndex = new int[reads.length];
         Arrays.fill(readsYIndex, -1);
         processSequence();
@@ -125,7 +141,7 @@ public class ChromosomeDataTrack extends JPanel {
         if (reads != null && reads.length != 0) {
             readPixel = bpToPixel(reads[0].length() + viewerCurrentStart);
         } else {
-            System.err.println(this.getClass().getName() + ": Can't get the reads of this chromosome.");
+//            System.err.println(this.getClass().getName() + ": Can't get the reads of this chromosome.");
             return;
         }
         if (readPixel == 0) {
@@ -437,6 +453,72 @@ public class ChromosomeDataTrack extends JPanel {
             this.top = top;
             this.bottom = bottom;
             this.read = read;
+        }
+
+        /**
+         * Checks if is in feature.
+         *
+         * @param x the x
+         * @param y the y
+         * @return true, if is in feature
+         */
+        public boolean isInFeature(int x, int y) {
+            return x >= left && x <= right && y >= bottom && y <= top;
+        }
+    }
+
+    /**
+     * The Class DrawnProbe.
+     */
+    private class DrawnProbe {
+
+        /**
+         * The left.
+         */
+        public int left;
+
+        /**
+         * The right.
+         */
+        public int right;
+
+        /**
+         * The top.
+         */
+        public int top;
+
+        /**
+         * The bottom.
+         */
+        public int bottom;
+
+        /**
+         * The probe.
+         */
+        public Probe probe;
+
+        /**
+         * The value.
+         */
+        public double value;
+
+        /**
+         * Instantiates a new drawn probe.
+         *
+         * @param left   the left
+         * @param right  the right
+         * @param bottom the bottom
+         * @param top    the top
+         * @param probe  the probe
+         * @param value  the value
+         */
+        public DrawnProbe(int left, int right, int bottom, int top, Probe probe, double value) {
+            this.left = left;
+            this.right = right;
+            this.top = top;
+            this.bottom = bottom;
+            this.probe = probe;
+            this.value = value;
         }
 
         /**

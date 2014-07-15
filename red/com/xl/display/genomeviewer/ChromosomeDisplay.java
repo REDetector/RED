@@ -134,8 +134,7 @@ public class ChromosomeDisplay extends JPanel implements DataChangeListener {
         // If we have a quantitated active store and some probes then we'll do a
         // full quantitative view
 
-        if (activeStore != null && activeStore.isQuantitated()
-                && probes != null) {
+        if (activeStore != null && probes != null) {
 
             g.setColor(ColourScheme.DATA_BACKGROUND_ODD);
             g.fillRoundRect(xOffset, yOffset,
@@ -264,16 +263,7 @@ public class ChromosomeDisplay extends JPanel implements DataChangeListener {
             wholeXEnd = wholeXStart + 2;
         }
 
-        double value;
-        if (!activeStore.hasValueForProbe(p))
-            return;
-
-        try {
-            value = activeStore.getValueForProbe(p);
-        } catch (REDException e) {
-            // Should have been caught by now, but better safe than sorry
-            return;
-        }
+        double value = 0;
 
         // Restrict the range we cover...
         if (value > maxValue)
