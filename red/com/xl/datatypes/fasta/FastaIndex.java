@@ -70,7 +70,7 @@ public class FastaIndex {
             boolean isHttpPath = ParsingUtils.isHttpPath(indexFile);
             if (isHttpPath) {
                 String indexName = FileUtils.getFileNameFromURL(indexFile);
-                System.out.println(this.getClass().getName() + ":indexName:" + indexName);
+//                System.out.println(this.getClass().getName() + ":indexName:" + indexName);
                 String indexPath = LocationPreferences.getInstance().getFastaDirectory()
                         + File.separator
                         + GenomeDescriptor.getInstance().getDisplayName();

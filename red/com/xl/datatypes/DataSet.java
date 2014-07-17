@@ -1,8 +1,8 @@
 package com.xl.datatypes;
 
 import com.xl.datatypes.probes.Probe;
-import com.xl.datatypes.sequence.Location;
 import com.xl.datatypes.sequence.SequenceRead;
+import com.xl.dialog.CrashReporter;
 import com.xl.exception.REDException;
 import com.xl.main.REDApplication;
 import com.xl.preferences.LocationPreferences;
@@ -67,7 +67,7 @@ public class DataSet extends DataStore implements Runnable {
      */
     protected ThreadSafeLongCounter totalReadLength = new ThreadSafeLongCounter();
     private Hashtable<String, ChromosomeDataStore> readData = new Hashtable<String, ChromosomeDataStore>();
-    private List<SequenceRead> sequenceReads = null;
+
     /**
      * The original file name - can't be changed by the user
      */
@@ -99,11 +99,8 @@ public class DataSet extends DataStore implements Runnable {
      * The reads last loaded from the cache
      */
     private SequenceRead[] lastCachedReads = null;
-    /**
-     * The last index at which a read was found
-     */
-    private int lastIndex = 0;
-    private Location lastProbeLocation = null;
+
+    private HashMap<Probe, ReadIndexOfProbe> probeMap = new HashMap<Probe, ReadIndexOfProbe>();
 
     /**
      * Instantiates a new data set.
@@ -214,11 +211,11 @@ public class DataSet extends DataStore implements Runnable {
      * Adds more data to this set.
      *
      * @param chr         The chromosome to which data will be added
-     * @param start
-     * @param strand
-     * @param readBases   The data to add
-     * @param qualities
-     * @param skipSorting
+     * @param start       The start location of this read
+     * @param strand      The strand
+     * @param readBases   The whole read bases
+     * @param qualities   The quality of each base
+     * @param skipSorting If the read need sorting
      * @throws REDException if this DataSet has been finalised.
      */
     public void addData(String chr, int start, Strand strand, byte[] readBases,
@@ -236,89 +233,6 @@ public class DataSet extends DataStore implements Runnable {
         return fileName;
     }
 
-    /**
-     * A quick check to see if any data overlaps with a probe
-     *
-     * @param p the probe to check
-     * @return true, if at leas one read overlaps with this probe
-     */
-    public boolean containsReadForProbe(Probe p) {
-
-        if (!isFinalised)
-            finalise();
-
-        SequenceRead[] allReads = getReadsForChromosome(p.getChr());
-
-        if (allReads.length == 0)
-            return false;
-
-        int startPos;
-
-        // Use the cached position if we're on the same chromosome
-        // and this probe position is higher than the last one we
-        // fetched.
-
-        if (lastCachedChromosome != null
-                && p.getChr() == lastCachedChromosome
-                && (lastProbeLocation == null || SequenceReadUtils.compare(p,
-                lastProbeLocation) >= 0)) {
-            startPos = lastIndex;
-            // System.out.println("Using cached start pos "+lastIndex);
-        }
-
-        // If we're on the same chromosome then we'll simply backtrack until
-        // we're far
-        // enough back that we can't have missed even the longest read in the
-        // set.
-        else if (lastCachedChromosome != null
-                && p.getChr() == lastCachedChromosome) {
-
-            // System.out.println("Last chr="+lastCachedChromosome+" this chr="+p.chromosome()+" lastProbeLocation="+lastProbeLocation+" diff="+SequenceRead.compare(p.packedPosition(),
-            // lastProbeLocation));
-
-            int longestRead = getMaxReadLength();
-
-            for (; lastIndex > 0; lastIndex--) {
-                if (p.getStart() - allReads[lastIndex].getStart() > longestRead) {
-                    break;
-                }
-            }
-
-            // System.out.println("Starting from index "+lastIndex+" which starts at "+SequenceRead.start(allReads[lastIndex])+" for "+p.start()+" when max length is "+longestRead);
-
-            startPos = lastIndex;
-
-        }
-
-        // If we can't cache then start from the beginning. It's not worth
-        // the hassle of trying to guess starting positions
-        else {
-            startPos = 0;
-            lastIndex = 0;
-            // System.out.println("Starting from the beginning");
-            // System.out.println("Last chr="+lastCachedChromosome+" this chr="+p.chromosome()+" lastProbeLocation="+lastProbeLocation+" diff="+SequenceRead.compare(p.packedPosition(),
-            // lastProbeLocation));
-        }
-
-        lastProbeLocation = p;
-
-        // We now go forward to see what we can find
-
-        for (int i = startPos; i < allReads.length; i++) {
-            // Reads come in order, so we can stop when we've seen enough.
-            if (allReads[i].getStart() > p.getEnd()) {
-                return false;
-            }
-
-            if (SequenceReadUtils.overlaps(allReads[i], p)) {
-                // They overlap.
-                lastIndex = i;
-                return true;
-            }
-        }
-
-        return false;
-    }
 
     /*
      * (non-Javadoc)
@@ -327,91 +241,41 @@ public class DataSet extends DataStore implements Runnable {
      * uk.ac.babraham.SeqMonk.DataTypes.DataStore#getReadsForProbe(uk.ac.babraham
      * .SeqMonk.DataTypes.Probes.Probe)
      */
+    @Override
     public SequenceRead[] getReadsForProbe(Probe p) {
-
         if (!isFinalised)
             finalise();
+
 
         SequenceRead[] allReads = getReadsForChromosome(p.getChr());
 
         if (allReads.length == 0)
             return new SequenceRead[0];
 
-        int startPos;
-
-        // Use the cached position if we're on the same chromosome
-        // and this probe position is higher than the last one we
-        // fetched.
-
-        if (lastCachedChromosome != null
-                && p.getChr() == lastCachedChromosome
-                && (lastProbeLocation == null || SequenceReadUtils.compare(p,
-                lastProbeLocation) >= 0)) {
-            startPos = lastIndex;
-            // System.out.println("Using cached start pos "+lastIndex);
-        }
-
-        // If we're on the same chromosome then we'll simply backtrack until
-        // we're far
-        // enough back that we can't have missed even the longest read in the
-        // set.
-        else if (lastCachedChromosome != null
-                && p.getChr() == lastCachedChromosome) {
-
-            // System.out.println("Last chr="+lastCachedChromosome+" this chr="+p.chromosome()+" lastProbeLocation="+lastProbeLocation+" diff="+SequenceRead.compare(p.packedPosition(),
-            // lastProbeLocation));
-
-            int longestRead = getMaxReadLength();
-
-            for (; lastIndex > 0; lastIndex--) {
-                if (p.getStart() - allReads[lastIndex].getStart() > longestRead) {
+        int startIndex = -1;
+        int endIndex = -1;
+        if (probeMap.containsKey(p)) {
+            ReadIndexOfProbe readIndexOfProbe = probeMap.get(p);
+            startIndex = readIndexOfProbe.getStartIndex();
+            endIndex = readIndexOfProbe.getEndIndex();
+        } else {
+            for (int i = 0, len = allReads.length; i < len; i++) {
+                if (SequenceReadUtils.overlaps(allReads[i], p)) {
+                    startIndex = i;
                     break;
                 }
             }
-
-            // System.out.println("Starting from index "+lastIndex+" which starts at "+SequenceRead.start(allReads[lastIndex])+" for "+p.start()+" when max length is "+longestRead);
-
-            startPos = lastIndex;
-
-        }
-
-        // If we're on a different chromosome then start from the very beginning
-        else {
-            startPos = 0;
-            lastIndex = 0;
-            // System.out.println("Starting from the beginning");
-        }
-
-        lastProbeLocation = p;
-
-        // We now go forward to see what we can find
-
-        boolean cacheSet = false;
-
-        for (int i = startPos; i < allReads.length; i++) {
-            // Reads come in order, so we can stop when we've seen enough.
-            if (allReads[i].getStart() > p.getEnd()) {
-                break;
-            }
-
-            if (SequenceReadUtils.overlaps(allReads[i], p)) {
-                // They overlap.
-
-                // If this is the first hit we've seen for this probe
-                // then update the cache
-                if (!cacheSet) {
-                    lastIndex = i;
-                    cacheSet = true;
+            for (int len = allReads.length, i = len; i > 0; i--) {
+                if (SequenceReadUtils.overlaps(allReads[i], p)) {
+                    endIndex = i;
+                    break;
                 }
-                sequenceReads.add(allReads[i]);
             }
+            probeMap.put(p, new ReadIndexOfProbe(p, startIndex, endIndex));
         }
-
-        SequenceRead[] returnReads = (SequenceRead[]) sequenceReads.toArray();
-
-        // With the new way of tracking we shouldn't ever need to sort these.
-        // SequenceRead.sort(returnReads);
-        return returnReads;
+        SequenceRead[] seq = new SequenceRead[endIndex - startIndex];
+        System.arraycopy(allReads, startIndex, seq, 0, endIndex - startIndex);
+        return seq;
     }
 
     /*
@@ -434,8 +298,6 @@ public class DataSet extends DataStore implements Runnable {
                 || lastCachedChromosome.equals(c);
         if (needToUpdate) {
             lastCachedChromosome = c;
-            lastProbeLocation = null;
-            lastIndex = 0;
         }
         if (readData.containsKey(c)) {
 
@@ -572,7 +434,7 @@ public class DataSet extends DataStore implements Runnable {
      * The Class ChromosomeDataStore.
      */
     private class ChromosomeDataStore implements Runnable {
-
+        private List<SequenceRead> sequenceReads = null;
         /**
          * The temp file.
          */
@@ -681,7 +543,7 @@ public class DataSet extends DataStore implements Runnable {
                 oos.writeObject(sequenceReads);
                 oos.close();
             } catch (IOException ioe) {
-//                new CrashReporter(ioe);
+                new CrashReporter(ioe);
                 ioe.printStackTrace();
             }
 
@@ -691,4 +553,28 @@ public class DataSet extends DataStore implements Runnable {
 
     }
 
+    private class ReadIndexOfProbe {
+        private Probe probe;
+        private int startIndex = -1;
+        private int endIndex = -1;
+
+        public ReadIndexOfProbe(Probe probe, int startIndex, int endIndex) {
+            this.probe = probe;
+            this.startIndex = startIndex;
+            this.endIndex = endIndex;
+        }
+
+        public int getStartIndex() {
+            return startIndex;
+        }
+
+        public Probe getProbe() {
+            return probe;
+        }
+
+        public int getEndIndex() {
+            return endIndex;
+        }
+
+    }
 }

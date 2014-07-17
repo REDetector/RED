@@ -53,9 +53,9 @@ public class SequenceReadUtils {
 
     public static int compare(Location o1, Location o2) {
         if (o1.getStart() != o2.getStart())
-            return (int) (o1.getStart() - o2.getStart());
+            return o1.getStart() - o2.getStart();
         else if (o1.getEnd() != o2.getEnd())
-            return (int) (o1.getEnd() - o2.getEnd());
+            return o1.getEnd() - o2.getEnd();
         else
             return 0;
     }

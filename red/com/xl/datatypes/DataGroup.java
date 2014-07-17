@@ -129,13 +129,6 @@ public class DataGroup extends DataStore {
         return count;
     }
 
-    public boolean isQuantitated() {
-        if (dataSets.length == 0) return false;
-
-        return super.isQuantitated();
-    }
-
-
     /* (non-Javadoc)
      * @see uk.ac.babraham.SeqMonk.DataTypes.DataStore#getReadsForChromsome(uk.ac.babraham.SeqMonk.DataTypes.Genome.Chromosome)
      */

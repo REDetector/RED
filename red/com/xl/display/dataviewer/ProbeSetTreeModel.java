@@ -172,8 +172,8 @@ public class ProbeSetTreeModel implements TreeModel, ProbeSetChangeListener, Dat
      * @see uk.ac.babraham.SeqMonk.DataTypes.Probes.ProbeSetChangeListener#probeListAdded(uk.ac.babraham.SeqMonk.DataTypes.Probes.ProbeList)
      */
     public void probeListAdded(ProbeList l) {
-        Object[] pathToRoot = getPathToRoot(l.parent());
-        TreeModelEvent me = new TreeModelEvent(l, pathToRoot, new int[]{getIndexOfChild(l.parent(), l)}, new ProbeList[]{l});
+        Object[] pathToRoot = getPathToRoot(l.getParent());
+        TreeModelEvent me = new TreeModelEvent(l, pathToRoot, new int[]{getIndexOfChild(l.getParent(), l)}, new ProbeList[]{l});
 
         Enumeration<TreeModelListener> e = listeners.elements();
         while (e.hasMoreElements()) {
@@ -187,9 +187,9 @@ public class ProbeSetTreeModel implements TreeModel, ProbeSetChangeListener, Dat
     public void probeListRemoved(ProbeList l) {
         TreeModelEvent me;
         if (l instanceof ProbeSet) {
-            me = new TreeModelEvent(l, getPathToRoot(l.parent()), new int[]{0}, new ProbeList[]{l});
+            me = new TreeModelEvent(l, getPathToRoot(l.getParent()), new int[]{0}, new ProbeList[]{l});
         } else {
-            me = new TreeModelEvent(l, getPathToRoot(l.parent()), new int[]{getIndexOfChild(l.parent(), l)}, new ProbeList[]{l});
+            me = new TreeModelEvent(l, getPathToRoot(l.getParent()), new int[]{getIndexOfChild(l.getParent(), l)}, new ProbeList[]{l});
         }
         Enumeration<TreeModelListener> e = listeners.elements();
         while (e.hasMoreElements()) {
@@ -290,8 +290,8 @@ public class ProbeSetTreeModel implements TreeModel, ProbeSetChangeListener, Dat
         if (l != null) {
             nodes.add(l);
 
-            while (l.parent() != null) {
-                l = l.parent();
+            while (l.getParent() != null) {
+                l = l.getParent();
                 nodes.addFirst(l);
             }
         }

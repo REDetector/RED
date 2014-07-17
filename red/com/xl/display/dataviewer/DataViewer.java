@@ -13,7 +13,6 @@ import com.xl.dialog.CrashReporter;
 import com.xl.dialog.DataStorePropertiesDialog;
 import com.xl.dialog.ProbeListCommentEditDialog;
 import com.xl.display.HistogramPlot.ProbeLengthHistogramPlot;
-import com.xl.display.HistogramPlot.ProbeValueHistogramPlot;
 import com.xl.display.HistogramPlot.ReadLengthHistogramPlot;
 import com.xl.exception.REDException;
 import com.xl.main.REDApplication;
@@ -204,7 +203,7 @@ public class DataViewer extends JPanel implements MouseListener, TreeSelectionLi
      * @return The new name provided by the user.  Null if the user cancelled or didn't change the name.
      */
     public String getNewName(String initialName) {
-        String name = null;
+        String name;
         while (true) {
             name = (String) JOptionPane.showInputDialog(this, "Enter new name", "Rename", JOptionPane.QUESTION_MESSAGE, null, null, initialName);
             if (name == null)
@@ -250,14 +249,6 @@ public class DataViewer extends JPanel implements MouseListener, TreeSelectionLi
             readLenHistogram.setActionCommand("readlen_histogram");
             readLenHistogram.addActionListener(this);
             add(readLenHistogram);
-
-            JMenuItem probeValHistogram = new JMenuItem("Show Probe Value Histogram");
-            probeValHistogram.setActionCommand("probeval_histogram");
-            probeValHistogram.addActionListener(this);
-            if (!d.isQuantitated()) {
-                probeValHistogram.setEnabled(false);
-            }
-            add(probeValHistogram);
 
             JMenuItem rename = new JMenuItem("Rename");
             rename.setActionCommand("rename");
@@ -337,14 +328,6 @@ public class DataViewer extends JPanel implements MouseListener, TreeSelectionLi
             readLenHistogram.addActionListener(this);
             add(readLenHistogram);
 
-            JMenuItem probeValHistogram = new JMenuItem("Show Probe Value Histogram");
-            probeValHistogram.setActionCommand("probeval_histogram");
-            probeValHistogram.addActionListener(this);
-            if (!d.isQuantitated()) {
-                probeValHistogram.setEnabled(false);
-            }
-            add(probeValHistogram);
-
             JMenuItem rename = new JMenuItem("Rename");
             rename.setActionCommand("rename");
             rename.addActionListener(this);
@@ -371,12 +354,6 @@ public class DataViewer extends JPanel implements MouseListener, TreeSelectionLi
                 new ReadLengthHistogramPlot(d);
             } else if (ae.getActionCommand().equals("hiclen_histogram")) {
 //				new HiCLengthHistogramPlot(d, null);
-            } else if (ae.getActionCommand().equals("probeval_histogram")) {
-                try {
-                    new ProbeValueHistogramPlot(d, collection.probeSet().getActiveList());
-                } catch (REDException e) {
-                    new CrashReporter(e);
-                }
             } else if (ae.getActionCommand().equals("display_track")) {
                 if (((JCheckBoxMenuItem) ae.getSource()).getState()) {
                     application.addToDrawnDataStores(new DataStore[]{d});

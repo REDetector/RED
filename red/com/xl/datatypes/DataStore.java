@@ -3,7 +3,6 @@ package com.xl.datatypes;
 import com.xl.datatypes.probes.Probe;
 import com.xl.datatypes.probes.ProbeSet;
 import com.xl.datatypes.sequence.SequenceRead;
-import com.xl.exception.REDException;
 import com.xl.utils.Strand;
 
 /**
@@ -140,63 +139,10 @@ public abstract class DataStore implements Comparable<DataStore> {
     }
 
     /**
-     * Checks if is quantitated.
-     *
-     * @return true, if is quantitated
-     */
-    public boolean isQuantitated() {
-        return probeData != null;
-    }
-
-    /**
      * Reset all probe values.
      */
     public void resetAllProbeValues() {
         probeData = null;
-    }
-
-    /**
-     * Sets the value for probe.
-     *
-     * @param p the p
-     * @param f the f
-     */
-    public void setValueForProbe(Probe p, float f) {
-        if (probeData == null) {
-            probeData = new float[probeDataSize];
-        }
-        probeData[p.getIndex()] = f;
-    }
-
-    /**
-     * Checks for value for probe.
-     *
-     * @param p the p
-     * @return true, if successful
-     */
-    public boolean hasValueForProbe(Probe p) {
-        if (probeData != null && probeData.length > p.getIndex()) {
-            return true;
-        }
-        return false;
-    }
-
-    /**
-     * Gets the value for probe.
-     *
-     * @param p the p
-     * @return the value for probe
-     * @throws REDException the red exception
-     */
-    public float getValueForProbe(Probe p) throws REDException {
-        if (probeData == null) {
-            throw new REDException("No quantitation for probe " + p + " in " + name);
-        }
-        if (p.getIndex() >= probeData.length) {
-            throw new REDException("Probe data index out of range");
-        } else {
-            return probeData[p.getIndex()];
-        }
     }
 
     /**

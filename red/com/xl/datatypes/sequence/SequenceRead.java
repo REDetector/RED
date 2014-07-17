@@ -5,7 +5,7 @@ import com.xl.utils.Strand;
 import java.util.Arrays;
 
 /**
- * The Class SequenceReadWithChromosome is used in places where both the read
+ * The Class SequenceRead is used in places where both the read
  * and chromsome need to passed together. Sequence Reads do not store their
  * chromosome by default to save memory
  */
@@ -33,7 +33,7 @@ public class SequenceRead implements Location {
 
     public SequenceRead(String chr, int start, int end) {
         this(chr, start, null, null, null);
-        this.length = end - start;
+        this.length = end - start + 1;
     }
 
     /**

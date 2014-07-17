@@ -31,7 +31,6 @@ public abstract class REDToolbar extends JToolBar implements DataChangeListener 
     private REDMenu menu;
     private boolean shown = false;
 
-
     public REDToolbar(REDMenu menu) {
         this.menu = menu;
         setFocusable(false);

@@ -86,7 +86,6 @@ public class REDPreferences {
             if (preferencesFile.exists()) {
                 /** Loading redPreferences from file... */
                 loadPreferences();
-//			System.out.println("loadPreferences();");
             } else {
                 savePreferences();
             }
