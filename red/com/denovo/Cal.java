@@ -20,7 +20,7 @@ public class Cal {
 			RCode code = new RCode();
 
 			code.addDoubleMatrix("mydata", data);
-			// code.addRCode("result <- chisq.test(mydata)");
+			// code.addRCode("result <- chisq.test(mydata)");;
 			code.addRCode("result <- fisher.test(mydata)");
 			// code.addRCode("mylist <- list(pval = result$p.value, df=result$parameter)");
 			code.addRCode("mylist <- list(pval = result$p.value)");
