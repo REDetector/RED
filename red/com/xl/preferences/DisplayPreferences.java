@@ -32,17 +32,7 @@ public class DisplayPreferences {
     public static final int COLOUR_TYPE_INDEXED = 12;
     public static final int COLOUR_TYPE_GRADIENT = 11;
     private int currentColourType = COLOUR_TYPE_GRADIENT;
-    /**
-     * The set of constants for the read density *
-     */
-    /*
-     * Some of these values are carried over from an older implementation hence
-	 * the somewhat odd numbering
-	 */
-    public static final int READ_DENSITY_LOW = 6;
-    private int currentReadDensity = READ_DENSITY_LOW;
-    public static final int READ_DENSITY_MEDIUM = 7;
-    public static final int READ_DENSITY_HIGH = 8;
+
     /**
      * The set of constants for the display mode *
      */
@@ -50,46 +40,28 @@ public class DisplayPreferences {
      * Some of these values are carried over from an older implementation hence
 	 * the somewhat odd numbering
 	 */
-    public static final int DISPLAY_MODE_READS_AND_QUANTITATION = 1;
+    public static final int DISPLAY_MODE_READS_AND_PROBES = 1;
     public static final int DISPLAY_MODE_READS_ONLY = 2;
+    public static final int DISPLAY_MODE_PROBES_ONLY = 3;
     private int currentDisplayMode = DISPLAY_MODE_READS_ONLY;
-    public static final int DISPLAY_MODE_QUANTITATION_ONLY = 3;
+
     /**
      * The options for which gradient to use *
      */
     public static final int GRADIENT_HOT_COLD = 2001;
-    private int currentGradientValue = GRADIENT_HOT_COLD;
     public static final int GRADIENT_RED_GREEN = 2002;
     public static final int GRADIENT_GREYSCALE = 2003;
     public static final int GRADIENT_MAGENTA_GREEN = 2004;
     public static final int GRADIENT_RED_WHITE = 2005;
+    private int currentGradientValue = GRADIENT_HOT_COLD;
     /**
      * The options for the type of graph drawn *
      */
     public static final int GRAPH_TYPE_BAR = 3001;
-    private int currentGraphType = GRAPH_TYPE_BAR;
     public static final int GRAPH_TYPE_LINE = 3002;
     public static final int GRAPH_TYPE_POINT = 3003;
-    /**
-     * The options for the scale used *
-     */
-    /*
-     * Some of these values are carried over from an older implementation hence
-	 * the somewhat odd numbering
-	 */
-    public static final int SCALE_TYPE_POSITIVE = 4;
-    public static final int SCALE_TYPE_POSITIVE_AND_NEGATIVE = 5;
-    private int currentScaleType = SCALE_TYPE_POSITIVE_AND_NEGATIVE;
-    /**
-     * The options for the read display *
-     */
-    /*
-	 * Some of these values are carried over from an older implementation hence
-	 * the somewhat odd numbering
-	 */
-    public static final int READ_DISPLAY_COMBINED = 9;
-    public static final int READ_DISPLAY_SEPARATED = 10;
-    private int currentReadDisplay = READ_DISPLAY_SEPARATED;
+    private int currentGraphType = GRAPH_TYPE_BAR;
+
     /**
      * The single instance of this class *
      */
@@ -127,9 +99,6 @@ public class DisplayPreferences {
         currentGradient = new HotColdColourGradient();
         currentGradientValue = GRADIENT_HOT_COLD;
         currentGraphType = GRAPH_TYPE_BAR;
-        currentReadDensity = READ_DENSITY_LOW;
-        currentReadDisplay = READ_DISPLAY_COMBINED;
-        currentScaleType = SCALE_TYPE_POSITIVE_AND_NEGATIVE;
     }
 
     /* We allow views to listen for changes */
@@ -175,8 +144,8 @@ public class DisplayPreferences {
     }
 
     public void setDisplayMode(int displayMode) {
-        if (equalsAny(new int[]{DISPLAY_MODE_QUANTITATION_ONLY,
-                        DISPLAY_MODE_READS_AND_QUANTITATION, DISPLAY_MODE_READS_ONLY},
+        if (equalsAny(new int[]{DISPLAY_MODE_PROBES_ONLY,
+                        DISPLAY_MODE_READS_AND_PROBES, DISPLAY_MODE_READS_ONLY},
                 displayMode)) {
             currentDisplayMode = displayMode;
             optionsChanged();
@@ -211,39 +180,6 @@ public class DisplayPreferences {
         } else {
             throw new IllegalArgumentException("Value " + colourType
                     + " is not a valid colour type");
-        }
-    }
-
-    /* The read density */
-    public int getReadDensity() {
-        return currentReadDensity;
-    }
-
-    public void setReadDensity(int readDensity) {
-        if (equalsAny(new int[]{READ_DENSITY_LOW, READ_DENSITY_MEDIUM,
-                READ_DENSITY_HIGH}, readDensity)) {
-            currentReadDensity = readDensity;
-            optionsChanged();
-        } else {
-            throw new IllegalArgumentException("Value " + readDensity
-                    + " is not a valid read density");
-        }
-    }
-
-    /* The read display */
-    public int getReadDisplay() {
-        return currentReadDisplay;
-    }
-
-    public void setReadDisplay(int readDisplay) {
-        if (equalsAny(
-                new int[]{READ_DISPLAY_COMBINED, READ_DISPLAY_SEPARATED},
-                readDisplay)) {
-            currentReadDisplay = readDisplay;
-            optionsChanged();
-        } else {
-            throw new IllegalArgumentException("Value " + readDisplay
-                    + " is not a valid read display");
         }
     }
 
@@ -338,22 +274,6 @@ public class DisplayPreferences {
         }
     }
 
-    /* The scale type */
-    public int getScaleType() {
-        return currentScaleType;
-    }
-
-    public void setScaleType(int scaleType) {
-        if (equalsAny(new int[]{SCALE_TYPE_POSITIVE,
-                SCALE_TYPE_POSITIVE_AND_NEGATIVE}, scaleType)) {
-            currentScaleType = scaleType;
-            optionsChanged();
-        } else {
-            throw new IllegalArgumentException("Value " + scaleType
-                    + " is not a valid scale type");
-        }
-    }
-
     public void writeConfiguration(PrintStream p) {
         // Make sure this number at the end equates to the number of
         // configuration lines to be written
@@ -361,13 +281,7 @@ public class DisplayPreferences {
 
         p.println("DataZoom\t" + getMaxDataValue());
 
-        p.println("ScaleMode\t" + getScaleType());
-
         p.println("DisplayMode\t" + getDisplayMode());
-
-        p.println("ReadDensity\t" + getReadDensity());
-
-        p.println("SplitMode\t" + getReadDisplay());
 
         p.println("QuantitationColour\t" + getColourType());
 
@@ -380,8 +294,8 @@ public class DisplayPreferences {
     }
 
     private boolean equalsAny(int[] valid, int test) {
-        for (int i = 0; i < valid.length; i++) {
-            if (test == valid[i])
+        for (int vali : valid) {
+            if (test == vali)
                 return true;
         }
         return false;

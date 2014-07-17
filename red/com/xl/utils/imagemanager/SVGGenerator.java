@@ -19,8 +19,6 @@
  */
 package com.xl.utils.imagemanager;
 
-import com.xl.utils.MessageUtils;
-
 import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -71,10 +69,8 @@ public class SVGGenerator {
     private SVGGenerator(PrintWriter pr, Component c) {
 
         this.pr = pr;
-
         cWidth = c.getWidth();
         cHeight = c.getHeight();
-        MessageUtils.showInfo(SVGGenerator.class, cWidth + "\t" + cHeight);
         // Some methods would be a pain to reimplement ourselves and
         // aren't used directly by us (eg providing font metrics).  We
         // therefore create a graphics object from a BufferedImage and
@@ -93,7 +89,6 @@ public class SVGGenerator {
         c.paint(new SVGGraphics());
 
         pr.print("</svg>\n");
-
     }
 
     /**
@@ -101,7 +96,7 @@ public class SVGGenerator {
      * of a component.  The returned string contains valid SVG
      *
      * @param c The component to convert
-     * @return An SVG representation of the component
+     *          An SVG representation of the component
      */
     public static void writeSVG(PrintWriter pr, Component c) {
 
@@ -317,7 +312,7 @@ public class SVGGenerator {
             x = correctX(x);
             y = correctY(y);
 
-            if (string.indexOf("&") >= 0) {
+            if (string.contains("&")) {
                 string = "<![CDATA[" + string.replaceAll("]]>", "]]>]]><![CDATA[") + "]]>";
             } else {
                 string = string.replaceAll(">", "&gt;");
@@ -525,14 +520,13 @@ public class SVGGenerator {
          * @see java.awt.Graphics#drawImage(java.awt.Image, int, int, java.awt.image.ImageObserver)
          */
         public boolean drawImage(Image img, int x, int y, ImageObserver obs) {
-            System.out.println("Height=" + img.getHeight(obs) + " Width=" + img.getWidth(obs) + "\t" + g.drawImage(img, x, y, obs));
             return g.drawImage(img, x, y, obs);
         }
 
         /* (non-Javadoc)
          * @see java.awt.Graphics#drawImage(java.awt.Image, int, int, java.awt.Color, java.awt.image.ImageObserver)
          */
-        public boolean drawImage(Image arg0, int arg1, int arg2, Color arg3, ImageObserver arg4) {
+        public boolean drawImage(Image img, int x, int y, Color color, ImageObserver obs) {
             System.out.println("Draw image 2");
             return true;
         }

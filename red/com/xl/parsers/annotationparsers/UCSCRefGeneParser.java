@@ -159,7 +159,6 @@ public class UCSCRefGeneParser extends AnnotationParser {
             currentAnnotation.finalise();
             annotationSets.add(currentAnnotation);
         }
-        System.out.println(this.getClass().getName() + ":parseAnnotation() end");
         br.close();
         progressComplete("annotation_loaded", annotationSets);
         return annotationSets.toArray(new AnnotationSet[0]);

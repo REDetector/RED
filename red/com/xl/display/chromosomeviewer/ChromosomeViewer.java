@@ -67,8 +67,7 @@ public class ChromosomeViewer extends JPanel implements DataChangeListener,
     private ChromosomeFeatureTrack featureTrack = null;
     private Vector<ChromosomeDataTrack> dataTracks = new Vector<ChromosomeDataTrack>();
     private JPanel featurePanel;
-    // this broke SVG export
-    private JLabel titleLabel; // Tried using a TextField to get Copy/Paste, but
+    private JLabel titleLabel; // Tried using a TextField to get Copy/Paste, but this broke SVG export
     private int selectionStart = 0;
     private int selectionEnd = 0;
     private boolean makingSelection = false;
@@ -183,21 +182,12 @@ public class ChromosomeViewer extends JPanel implements DataChangeListener,
         // TODO: This won't change the radio buttons on the main
         // menu. I can't immediately see a nice way to do this.
 
-        if (minValue < 0) {
-            if (0 - minValue > maxValue)
-                maxValue = 0 - minValue;
-            DisplayPreferences.getInstance().setScaleType(
-                    DisplayPreferences.SCALE_TYPE_POSITIVE_AND_NEGATIVE);
-        } else {
-            DisplayPreferences.getInstance().setScaleType(
-                    DisplayPreferences.SCALE_TYPE_POSITIVE);
-        }
 
         // After auto scaling we should also check that the quantitated data
         // is visible
         if (DisplayPreferences.getInstance().getDisplayMode() == DisplayPreferences.DISPLAY_MODE_READS_ONLY) {
             DisplayPreferences.getInstance().setDisplayMode(
-                    DisplayPreferences.DISPLAY_MODE_READS_AND_QUANTITATION);
+                    DisplayPreferences.DISPLAY_MODE_READS_AND_PROBES);
         }
 
         // Our data zoom limit (imposed by the slider!) is 2**20 so

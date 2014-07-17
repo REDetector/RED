@@ -47,6 +47,7 @@ import javax.swing.filechooser.FileFilter;
 import java.awt.*;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.Vector;
 
@@ -381,10 +382,7 @@ public class REDApplication extends JFrame implements ProgressListener,
      * @return Is this dataStore currently visible?
      */
     public boolean dataStoreIsDrawn(DataStore d) {
-        if (drawnDataStores.contains(d)) {
-            return true;
-        }
-        return false;
+        return drawnDataStores.contains(d);
     }
 
     public DataViewer dataViewer() {
@@ -410,7 +408,7 @@ public class REDApplication extends JFrame implements ProgressListener,
                     .showOptionDialog(
                             this,
                             "You have made changes which were not saved.  Do you want to save before exiting?",
-                            "Save before exit?", 0,
+                            "Save before exit?", JOptionPane.OK_CANCEL_OPTION,
                             JOptionPane.QUESTION_MESSAGE, null, new String[]{
                                     "Save and Exit", "Exit without Saving",
                                     "Cancel"}, "Save");
@@ -442,12 +440,12 @@ public class REDApplication extends JFrame implements ProgressListener,
      * @param displayName Assembly name
      */
     public void downloadGenome(String id, String displayName) {
-        GenomeDownloader genomeDownload = null;
-        ProgressDialog progressDialog = null;
+        GenomeDownloader genomeDownload;
+        ProgressDialog progressDialog;
         try {
             genomeDownload = new GenomeDownloader();
             genomeDownload.addProgressListener(this);
-            progressDialog = new ProgressDialog(this, "Downloading genome...");
+            progressDialog = new ProgressDialog(this, "Downloading genome: " + displayName);
             genomeDownload.addProgressListener(progressDialog);
             genomeDownload.downloadGenome(id, displayName, true);
             progressDialog.requestFocus();
@@ -581,10 +579,9 @@ public class REDApplication extends JFrame implements ProgressListener,
 
         if (changesWereMade) {
             int answer = JOptionPane
-                    .showOptionDialog(
-                            this,
+                    .showOptionDialog(this,
                             "You have made changes which were not saved.  Do you want to save before exiting?",
-                            "Save before loading new data?", 0,
+                            "Save before loading new data?", JOptionPane.OK_CANCEL_OPTION,
                             JOptionPane.QUESTION_MESSAGE, null, new String[]{
                                     "Save before Loading",
                                     "Load without Saving", "Cancel"}, "Save");
@@ -709,7 +706,7 @@ public class REDApplication extends JFrame implements ProgressListener,
         if (file.exists()) {
             int answer = JOptionPane.showOptionDialog(this, file.getName()
                             + " exists.  Do you want to overwrite the existing file?",
-                    "Overwrite file?", 0, JOptionPane.QUESTION_MESSAGE, null,
+                    "Overwrite file?", JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null,
                     new String[]{"Overwrite and Save", "Cancel"},
                     "Overwrite and Save");
             if (answer > 0) {
@@ -740,9 +737,7 @@ public class REDApplication extends JFrame implements ProgressListener,
         changesWereMade();
 
         drawnDataStores.removeAllElements();
-        for (int i = 0; i < d.length; i++) {
-            drawnDataStores.add(d[i]);
-        }
+        drawnDataStores.addAll(Arrays.asList(d));
         chromosomeViewer.tracksUpdated();
     }
 
@@ -859,11 +854,8 @@ public class REDApplication extends JFrame implements ProgressListener,
     public void annotationFeaturesRenamed(AnnotationSet annotationSet,
                                           String newName) {
         // TODO Auto-generated method stub
-        // We have to treat this the same as if a set had been removed in that
-        // any
-        // of the existing feature tracks could be affected. We assume that they
-        // want to
-        // put the name
+        // We have to treat this the same as if a set had been removed in that any of the existing feature tracks
+        // could be affected. We assume that they want to put the name
 
         changesWereMade();
     }
@@ -902,7 +894,7 @@ public class REDApplication extends JFrame implements ProgressListener,
             changesWereMade();
         } else if (command.equals("fasta_loaded")) {
             chromosomeViewer.setEnableFastaSequence(true);
-            JOptionPane.showMessageDialog(this, "The fasta file has been loaded. Please to zoom out to make it visible" +
+            JOptionPane.showMessageDialog(this, "The fasta file has been loaded. Please zoom out to make it visible" +
                     "...", "Load fasta file completed", JOptionPane.INFORMATION_MESSAGE);
             changesWereMade();
         } else if (command.equals("data_written")) {

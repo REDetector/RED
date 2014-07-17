@@ -62,8 +62,6 @@ public class ChromosomeDisplay extends JPanel implements DataChangeListener {
 
     private DataStore activeStore = null;
 
-    private boolean showNegative = false;
-
     private double minValue;
     private double maxValue;
 
@@ -155,7 +153,6 @@ public class ChromosomeDisplay extends JPanel implements DataChangeListener {
 
             // Draw as many probes as we have space for
 
-            showNegative = DisplayPreferences.getInstance().getScaleType() == DisplayPreferences.SCALE_TYPE_POSITIVE_AND_NEGATIVE;
 
             Color fixedColour = null;
 
@@ -174,25 +171,8 @@ public class ChromosomeDisplay extends JPanel implements DataChangeListener {
             }
 
             maxValue = DisplayPreferences.getInstance().getMaxDataValue();
-            if (showNegative) {
-                minValue = 0 - maxValue;
-            } else {
-                minValue = 0;
-            }
 
-            // If we're showing negative values put a line in the middle to show
-            // the origin
-            if (showNegative) {
-                g.setColor(Color.LIGHT_GRAY);
-                g.drawLine(
-                        xOffset,
-                        getHeight() / 2,
-                        xOffset + scaleX(width, chromosome.getLength(), maxLen),
-                        getHeight() / 2);
-            }
-
-            // Now go through all the probes figuring out whether they
-            // need to be displayed
+            // Now go through all the probes figuring out whether they need to be displayed
 
             // Reset the values used to optimise drawing
             lastProbeXEnd = 0;
@@ -313,25 +293,11 @@ public class ChromosomeDisplay extends JPanel implements DataChangeListener {
 		 * then we draw from the middle of the track up or down
 		 */
 
-        int yValue;
-        if (showNegative) {
-            if (value > 0) {
-                yBoxEnd = getHeight() / 2;
-                yBoxStart = yOffset
-                        + ((effectiveHeight / 2) - ((int) (((double) effectiveHeight / 2) * (value / maxValue))));
-                yValue = yBoxStart;
-            } else {
-                yBoxStart = getHeight() / 2;
-                yBoxEnd = (getHeight() - yOffset)
-                        - ((int) (((double) effectiveHeight / 2) * ((minValue - value) / minValue)));
-                yValue = yBoxEnd;
-            }
-        } else {
-            yBoxStart = (getHeight() - yOffset)
-                    - ((int) (((double) effectiveHeight) * (value / maxValue)));
-            yValue = yBoxStart;
-            yBoxEnd = effectiveHeight + yOffset;
-        }
+
+        yBoxStart = (getHeight() - yOffset)
+                - ((int) (((double) effectiveHeight) * (value / maxValue)));
+        int yValue = yBoxStart;
+        yBoxEnd = effectiveHeight + yOffset;
 
         switch (DisplayPreferences.getInstance().getGraphType()) {
 

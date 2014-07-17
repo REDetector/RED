@@ -11,6 +11,7 @@ public class MenuUtils {
     public static final String IMPORT_DATA = "Import Data";
     public static final String RNA = "RNA(cDNA)...";
     public static final String DNA = "DNA(gDNA)...";
+    public static final String FASTA = "Fasta...";
     public static final String ANNOTATION = "Annotation...";
     public static final String LOAD_GENOME = "Load Genome...";
     public static final String EXPORT_IMAGE = "Export Image...";
@@ -20,6 +21,7 @@ public class MenuUtils {
     public static final String EDIT_MENU = "Edit";
     public static final String SHOW_TOOLBAR = "Show Toolbar";
     public static final String SHOW_DIRECTORY_PANEL = "Directory Panel";
+    public static final String SHOW_GENOME_PANEL = "Genome Panel";
     public static final String SHOW_CHROMOSOME_PANEL = "Chromosome Panel";
     public static final String SHOW_FEATURE_PANEL = "Feature Panel";
     public static final String SHOW_DATA_PANEL = "Data Panel";

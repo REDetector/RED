@@ -93,7 +93,7 @@ public class GenomeDownloader implements Runnable {
         try {
 
             // System.out.println("Downloading "+prefs.getGenomeDownloadLocation()+species+"/"+assembly+".zip");
-            URL url = new URL(LocationPreferences.getInstance().getGenomeDownloadLists());
+            URL url = new URL(LocationPreferences.getInstance().getGenomeDownloadLists() + id + ".genome");
             URLConnection connection = url.openConnection();
             connection.setUseCaches(allowCaching);
 
@@ -104,9 +104,9 @@ public class GenomeDownloader implements Runnable {
 
             InputStream is = connection.getInputStream();
             DataInputStream d = new DataInputStream(new BufferedInputStream(is));
-            File outFile = new File(LocationPreferences.getInstance().getGenomeDirectory() + File.separator + displayName);
+            File outFile = new File(LocationPreferences.getInstance().getGenomeDirectory());
             File dotGenomeFile = new File(outFile.getAbsolutePath()
-                    + File.separator + id + ".getGenome");
+                    + File.separator + id + ".genome");
             if (outFile.exists()) {
                 if (dotGenomeFile.exists() && dotGenomeFile.length() == size) {
                     ProgressListener[] en = listeners.toArray(new ProgressListener[0]);

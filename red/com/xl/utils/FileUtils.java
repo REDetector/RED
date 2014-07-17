@@ -9,6 +9,8 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class FileUtils {
@@ -161,4 +163,25 @@ public class FileUtils {
         }
         return flag;
     }
+
+    private static List<File> fileList = new ArrayList<File>();
+
+    public static List<File> researchfile(String fileName, File directory) {
+        if (directory.isDirectory()) {
+            File[] filearry = directory.listFiles();
+            if (filearry != null) {
+                for (File f : filearry) {
+                    if (f.isDirectory()) {
+                        researchfile(fileName, f);
+                    } else {
+                        if (f.getAbsolutePath().contains(fileName)) {
+                            fileList.add(f);
+                        }
+                    }
+                }
+            }
+        }
+        return fileList;
+    }
+
 }

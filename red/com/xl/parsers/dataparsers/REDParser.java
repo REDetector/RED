@@ -54,7 +54,6 @@ public class REDParser implements Runnable, ProgressListener {
     private DataGroup[] dataGroups;
     private boolean genomeLoaded = false;
     private Exception exceptionReceived = null;
-    private Probe[] probes;
     private int thisDataVersion = -1;
 
     /**
@@ -179,13 +178,7 @@ public class REDParser implements Runnable, ProgressListener {
                     }
 
                     // Add any annotation sets we've parsed at this point
-                    application
-                            .dataCollection()
-                            .genome()
-                            .getAnnotationCollection()
-                            .addAnnotationSets(
-                                    annotationSets
-                                            .toArray(new AnnotationSet[0]));
+                    application.dataCollection().genome().getAnnotationCollection().addAnnotationSets(annotationSets.toArray(new AnnotationSet[0]));
 
                     parseDisplayPreferences(sections);
                 } else {
@@ -735,8 +728,6 @@ public class REDParser implements Runnable, ProgressListener {
 
         int n = Integer.parseInt(sections[1]);
 
-        probes = new Probe[n];
-
         String description = "No generator description available";
 
         if (sections.length > 2) {
@@ -750,8 +741,7 @@ public class REDParser implements Runnable, ProgressListener {
         }
 
         // We need to save the probeset to the dataset at this point so we can
-        // add the probe
-        // lists as we get to them.
+        // add the probe lists as we get to them.
         application.dataCollection().setProbeSet(probeSet);
 
         String line;
@@ -948,21 +938,12 @@ public class REDParser implements Runnable, ProgressListener {
             if (prefs[0].equals("DataZoom")) {
                 DisplayPreferences.getInstance().setMaxDataValue(
                         Double.parseDouble(prefs[1]));
-            } else if (prefs[0].equals("ScaleMode")) {
-                DisplayPreferences.getInstance().setScaleType(
-                        Integer.parseInt(prefs[1]));
             } else if (prefs[0].equals("DisplayMode")) {
                 DisplayPreferences.getInstance().setDisplayMode(
                         Integer.parseInt(prefs[1]));
             } else if (prefs[0].equals("CurrentView")) {
                 DisplayPreferences.getInstance().setLocation(prefs[1],
                         Integer.parseInt(prefs[2]), Integer.parseInt(prefs[3]));
-            } else if (prefs[0].equals("ReadDensity")) {
-                DisplayPreferences.getInstance().setReadDensity(
-                        Integer.parseInt(prefs[1]));
-            } else if (prefs[0].equals("SplitMode")) {
-                DisplayPreferences.getInstance().setReadDisplay(
-                        Integer.parseInt(prefs[1]));
             } else if (prefs[0].equals("QuantitationColour")) {
                 DisplayPreferences.getInstance().setColourType(
                         Integer.parseInt(prefs[1]));

@@ -68,52 +68,46 @@ public class IGVGenomeParser implements Runnable {
     public void run() {
         // TODO Auto-generated method stub
         File cacheDirectory = new File(LocationPreferences.getInstance().getCacheDirectory());
-        File[] genomeCacheDirectories = cacheDirectory.listFiles();
         Properties properties = null;
-        if (genomeCacheDirectories == null || genomeCacheDirectories.length == 0) {
-            cacheFailed = true;
-        } else {
-            String genomeId = genomeFile.getAbsolutePath();
-//            System.out.println(this.getClass().getName() + ":" + genomeId);
-            for (File genomeCacheDirectory : genomeCacheDirectories) {
-                if (genomeCacheDirectory.isDirectory()) {
-//                    System.out.println(this.getClass().getName() + ":" + genomeCacheDirectory.getName());
-                    File[] cacheCompleteFiles = genomeCacheDirectory.listFiles();
-                    if (cacheCompleteFiles != null && cacheCompleteFiles.length != 0) {
-//                        System.out.println(this.getClass().getName() + ":cacheCompleteFiles != null");
-                        for (File cacheCompleteFile : cacheCompleteFiles) {
-//                            System.out.println(this.getClass().getName() + ":" + cacheCompleteFile.getName());
-                            if (cacheCompleteFile.getName().equals(SuffixUtils.CACHE_GENOME_COMPLETE)) {
-                                try {
-                                    properties = new Properties();
-                                    properties.load(new FileReader(cacheCompleteFile));
-                                    String id = properties.getProperty(GenomeUtils.KEY_GENOME_ID);
-//                                    System.out.println(this.getClass().getName() + ":" + id + "\t" + genomeId);
-                                    if (genomeId.contains(id)) {
-                                        displayNameInCacheFile = properties.getProperty(GenomeUtils.KEY_DISPLAY_NAME);
-                                        String version = properties.getProperty(GenomeUtils.KEY_VERSION_NAME);
-                                        if (!REDApplication.VERSION.equals(version)) {
-                                            System.err.println("Version mismatch between cache version ('" + version + "') " +
-                                                    "and current version ('" + REDApplication.VERSION + "') - reparsing");
-                                            cacheFailed = true;
-                                            if (!cacheCompleteFile.delete()) {
-                                                System.err.println("Can not delete 'cache.complete' file. Please delete it individually...");
-                                                return;
-                                            }
-                                        }
-                                    }
-                                } catch (IOException e) {
-                                    cacheFailed = true;
-                                    e.printStackTrace();
-                                }
+        List<File> cacheCompleteFiles = FileUtils.researchfile(SuffixUtils.CACHE_GENOME_COMPLETE, cacheDirectory);
+        String id = genomeFile.getAbsolutePath();
+        boolean foundCacheFile = false;
+        if (cacheCompleteFiles.size() != 0) {
+            for (File cacheCompleteFile : cacheCompleteFiles) {
+                try {
+                    properties = new Properties();
+                    properties.load(new FileReader(cacheCompleteFile));
+                    String idInCacheFile = properties.getProperty(GenomeUtils.KEY_GENOME_ID);
+                    if (id.contains(idInCacheFile)) {
+                        foundCacheFile = true;
+                        displayNameInCacheFile = properties.getProperty(GenomeUtils.KEY_DISPLAY_NAME);
+                        String version = properties.getProperty(GenomeUtils.KEY_VERSION_NAME);
+                        if (!REDApplication.VERSION.equals(version)) {
+                            System.err.println("Version mismatch between cache version ('" + version + "') " +
+                                    "and current version ('" + REDApplication.VERSION + "') - reparsing");
+                            cacheFailed = true;
+                            if (!cacheCompleteFile.delete()) {
+                                System.err.println("Can not delete 'cache.complete' file. Please delete it individually...");
+                                return;
                             }
+                        } else {
+                            cacheFailed = false;
+                            break;
                         }
-                    } else {
-                        cacheFailed = true;
                     }
+                } catch (IOException e) {
+                    cacheFailed = true;
+                    e.printStackTrace();
                 }
             }
+            if (!foundCacheFile) {
+                cacheFailed = true;
+            }
+        } else {
+            cacheFailed = true;
         }
+
+
         try {
             if (cacheFailed) {
                 MessageUtils.showInfo(this.getClass().getName() + ":parseNewGenome();");
@@ -130,6 +124,7 @@ public class IGVGenomeParser implements Runnable {
 
             }
         } catch (IOException e) {
+            progressCancelled();
             e.printStackTrace();
         }
     }
@@ -153,7 +148,7 @@ public class IGVGenomeParser implements Runnable {
                 File cytobandFile = new File(LocationPreferences.getInstance().getOthersDirectory() + File
                         .separator + displayName + File.separator + genomeDescriptor.getCytoBandFileName());
                 BufferedReader br = new BufferedReader(new FileReader(cytobandFile));
-                cytobandMap = CytoBandFileParser.loadData(br);
+                cytobandMap = CytoBandFileParser.loadData(br, genomeDescriptor);
             }
             if (sequenceLocation == null) {
                 sequence = null;
@@ -185,22 +180,15 @@ public class IGVGenomeParser implements Runnable {
         // First we need to get the list of chromosomes and set those
         // up before we go on to add the actual feature sets.
         File chrListFile = new File(cacheDir.getAbsoluteFile() + File.separator + "chr_list.txt");
-        try {
-            BufferedReader br = ParsingUtils.openBufferedReader(chrListFile);
-
-            String line;
-            while ((line = br.readLine()) != null) {
-                String[] chrLen = line.split("\\t");
-                if (ChromosomeUtils.isStandardChromosomeName(chrLen[0])) {
-                    Chromosome c = new Chromosome(chrLen[0], Integer.parseInt(chrLen[1]));
-                    genome.addChromosome(c);
-                }
+        BufferedReader br = ParsingUtils.openBufferedReader(chrListFile);
+        String line;
+        while ((line = br.readLine()) != null) {
+            String[] chrLen = line.split("\\t");
+            if (ChromosomeUtils.isStandardChromosomeName(chrLen[0])) {
+                Chromosome c = new Chromosome(chrLen[0], Integer.parseInt(chrLen[1]));
+                genome.addChromosome(c);
             }
-        } catch (Exception e) {
-//            new CrashReporter(e);
-            e.printStackTrace();
         }
-
         CoreAnnotationSet coreAnnotation = new CoreAnnotationSet(genome);
         File[] cacheFiles = cacheDir.listFiles(new FileFilterImpl(SuffixUtils.SUFFIX_CACHE_GENOME));
         for (int i = 0; i < cacheFiles.length; i++) {
@@ -227,18 +215,7 @@ public class IGVGenomeParser implements Runnable {
         String[] fastaFileNames = genomeDescriptor.getFastaFileNames();
         LinkedHashMap<String, List<Cytoband>> cytobandMap = null;
         if (cytobandReader != null && genomeDescriptor.hasCytobands()) {
-            String cytobandDirectory = LocationPreferences.getInstance().getOthersDirectory() + File.separator + displayName;
-            if (FileUtils.createDirectory(cytobandDirectory)) {
-                FileWriter fw = new FileWriter(cytobandDirectory + File.separator + genomeDescriptor.getCytoBandFileName());
-                BufferedWriter bw = new BufferedWriter(fw);
-                String line;
-                while ((line = cytobandReader.readLine()) != null) {
-                    bw.write(line + "\r\n");
-                }
-                bw.close();
-                fw.close();
-            }
-            cytobandMap = CytoBandFileParser.loadData(cytobandReader);
+            cytobandMap = CytoBandFileParser.loadData(cytobandReader, genomeDescriptor);
         }
         String sequenceLocation = genomeDescriptor.getSequenceLocation();
         Sequence sequence;
