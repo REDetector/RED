@@ -68,10 +68,10 @@ public class DisplayPreferences {
     private static DisplayPreferences instance = new DisplayPreferences();
     private Vector<DisplayPreferencesListener> listeners = new Vector<DisplayPreferencesListener>();
     private ColourGradient currentGradient = new HotColdColourGradient();
-    /**
-     * The Data zoom level *
-     */
-    private double maxDataValue = 1;
+//    /**
+//     * The Data zoom level *
+//     */
+//    private int maxDataValue = 1;
 
     /**
      * The currently visible chromosome *
@@ -124,19 +124,15 @@ public class DisplayPreferences {
         }
     }
 
-    /* The max data value */
-    public double getMaxDataValue() {
-        return maxDataValue;
-    }
-
-    public void setMaxDataValue(double value) {
-        if (value < 1)
-            value = 1;
-        if (value > Math.pow(2, 20))
-            value = Math.pow(2, 20);
-        maxDataValue = value;
-        optionsChanged();
-    }
+//    /* The max data value */
+//    public int getMaxDataValue() {
+//        return maxDataValue;
+//    }
+//
+//    public void setMaxDataValue(int value) {
+//        maxDataValue = value;
+//        optionsChanged();
+//    }
 
     /* The display mode */
     public int getDisplayMode() {
@@ -163,8 +159,12 @@ public class DisplayPreferences {
         return currentEndLocation;
     }
 
+    public int getCurrentMidPoint() {
+        return (currentEndLocation + currentStartLocation) / 2;
+    }
+
     public int getCurrentLength() {
-        return currentEndLocation - currentStartLocation;
+        return currentEndLocation - currentStartLocation + 1;
     }
 
     /* The colour type */
@@ -187,6 +187,7 @@ public class DisplayPreferences {
         this.currentStartLocation = start;
         this.currentEndLocation = end;
         GotoDialog.addRecentLocation(currentChromosome.getName(), start, end);
+//        maxDataValue = currentEndLocation - currentStartLocation;
         optionsChanged();
     }
 
@@ -210,9 +211,7 @@ public class DisplayPreferences {
         currentChromosome = c;
         // Set the location to be a 1Mbp chunk in the middle if we can
         if (currentChromosome != null && (currentStartLocation == 0 || currentEndLocation == 0)) {
-            this.currentStartLocation = currentChromosome.getLength() / 16 * 7;
-            this.currentEndLocation = currentChromosome.getLength() / 16 * 9;
-            optionsChanged();
+            setLocation(currentChromosome.getLength() / 16 * 7, currentChromosome.getLength() / 16 * 9);
         }
     }
 
@@ -279,7 +278,7 @@ public class DisplayPreferences {
         // configuration lines to be written
         p.println(ParsingUtils.DISPLAY_PREFERENCES + "\t9");
 
-        p.println("DataZoom\t" + getMaxDataValue());
+//        p.println("DataZoom\t" + getMaxDataValue());
 
         p.println("DisplayMode\t" + getDisplayMode());
 

@@ -45,6 +45,7 @@ public class REDMenu extends JMenuBar implements ActionListener {
     private JMenuItem openProject;
     private JMenuItem saveProject;
     private JMenuItem saveProjectAs;
+    private JMenuItem connectToMySQL;
     private JMenu importData;
     private JMenuItem rna;
     private JMenuItem dna;
@@ -118,6 +119,7 @@ public class REDMenu extends JMenuBar implements ActionListener {
         saveProject = new JMenuItem();
         saveProjectAs = new JMenuItem();
         importData = new JMenu();
+        connectToMySQL = new JMenuItem();
         rna = new JMenuItem();
         dna = new JMenuItem();
         fasta = new JMenuItem();
@@ -175,6 +177,7 @@ public class REDMenu extends JMenuBar implements ActionListener {
             fileMenu.addSeparator();
             // ======== importData ========
             {
+                addJMenuItem(fileMenu, connectToMySQL, MenuUtils.CONNECT_TO_MYSQL, KeyEvent.VK_C, true);
                 importData.setText(MenuUtils.IMPORT_DATA);
                 addJMenuItem(importData, fasta, MenuUtils.FASTA, -1, true);
                 addJMenuItem(importData, rna, MenuUtils.RNA, -1, true);
@@ -337,6 +340,8 @@ public class REDMenu extends JMenuBar implements ActionListener {
             redApplication.saveProject();
         } else if (action.equals(MenuUtils.SAVE_PROJECT_AS)) {
             redApplication.saveProjectAs();
+        } else if (action.equals(MenuUtils.CONNECT_TO_MYSQL)) {
+            new UserPasswordDialog(redApplication);
         } else if (action.equals(MenuUtils.FASTA)) {
             redApplication.importData(new FastaFileParser(redApplication.dataCollection()));
         } else if (action.equals(MenuUtils.RNA)) {

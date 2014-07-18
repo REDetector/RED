@@ -8,6 +8,7 @@ public class MenuUtils {
     public static final String OPEN_PROJECT = "Open Project...";
     public static final String SAVE_PROJECT = "Save Project";
     public static final String SAVE_PROJECT_AS = "Save Project As...";
+    public static final String CONNECT_TO_MYSQL = "Conncet to MySQL...";
     public static final String IMPORT_DATA = "Import Data";
     public static final String RNA = "RNA(cDNA)...";
     public static final String DNA = "DNA(gDNA)...";

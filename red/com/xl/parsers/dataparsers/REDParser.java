@@ -936,8 +936,8 @@ public class REDParser implements Runnable, ProgressListener {
             prefs = br.readLine().split("\\t");
 
             if (prefs[0].equals("DataZoom")) {
-                DisplayPreferences.getInstance().setMaxDataValue(
-                        Double.parseDouble(prefs[1]));
+//                DisplayPreferences.getInstance().se(
+//                        Integer.parseInt(prefs[1]));
             } else if (prefs[0].equals("DisplayMode")) {
                 DisplayPreferences.getInstance().setDisplayMode(
                         Integer.parseInt(prefs[1]));

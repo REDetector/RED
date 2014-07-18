@@ -2,11 +2,11 @@
 <classpath>
 	<classpathentry kind="src" path="red"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry exported="true" kind="lib" path="D:/JAVA WS/REDetector/lib/epsgraphics-1.2.jar"/>
-	<classpathentry exported="true" kind="lib" path="D:/JAVA WS/REDetector/lib/igv.jar"/>
-	<classpathentry exported="true" kind="lib" path="D:/JAVA WS/REDetector/lib/mysql-connector-java-5.1.26-bin.jar"/>
-	<classpathentry exported="true" kind="lib" path="D:/JAVA WS/REDetector/lib/picard-1.86.0.jar"/>
-	<classpathentry exported="true" kind="lib" path="D:/JAVA WS/REDetector/lib/sam-1.104.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/epsgraphics-1.2.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/igv.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/mysql-connector-java-5.1.26-bin.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/picard-1.86.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/sam-1.104.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/JRI.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/REngine.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/RserveEngine.jar"/>

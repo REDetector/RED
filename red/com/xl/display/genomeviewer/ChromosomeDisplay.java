@@ -170,7 +170,7 @@ public class ChromosomeDisplay extends JPanel implements DataChangeListener {
                     fixedColour = Color.DARK_GRAY;
             }
 
-            maxValue = DisplayPreferences.getInstance().getMaxDataValue();
+            maxValue = DisplayPreferences.getInstance().getCurrentMidPoint();
 
             // Now go through all the probes figuring out whether they need to be displayed
 
@@ -178,8 +178,8 @@ public class ChromosomeDisplay extends JPanel implements DataChangeListener {
             lastProbeXEnd = 0;
             lastProbeValue = 0;
 
-            for (int i = 0; i < probes.length; i++) {
-                drawProbe(probes[i], g, width, maxLen, yOffset, xOffset,
+            for (Probe probe : probes) {
+                drawProbe(probe, g, width, maxLen, yOffset, xOffset,
                         height, fixedColour);
             }
 

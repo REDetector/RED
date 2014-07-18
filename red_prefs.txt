@@ -1,18 +1,18 @@
 #RED Preferences. DO NOT edit it individually.
-#Tue Jul 15 17:13:03 CST 2014
-ProjectDirectory=D\:\\JAVA WS\\REDetector
-Fasta=D\:\\JAVA WS\\REDetector\\Data\\Fasta
+#Thu Jul 17 15:41:08 CST 2014
+ProjectDirectory=E\:\\Workspace\\REDetector
+Fasta=E\:\\Workspace\\REDetector\\Data\\Fasta
 RecentlyOpenedFilesNumber=0
 CrashEmail=
-Annotation=D\:\\JAVA WS\\REDetector\\Data\\Annotation
-Temp=D\:\\JAVA WS\\REDetector\\Data\\Temp
+Annotation=E\:\\Workspace\\REDetector\\Data\\Annotation
+Temp=E\:\\Workspace\\REDetector\\Data\\Temp
 CompressOutput=false
-Others=D\:\\JAVA WS\\REDetector\\Data\\Others
-ProjectDataDirectory=D\:\\JAVA WS\\REDetector\\Data
+Others=E\:\\Workspace\\REDetector\\Data\\Others
+ProjectDataDirectory=E\:\\Workspace\\REDetector\\Data
 GenomeDownload=http\://igv.broadinstitute.org/genomes/
 Proxy=,0
 CheckForUpdate=true
-Cache=D\:\\JAVA WS\\REDetector\\Data\\Cache
-DNA=D\:\\JAVA WS\\REDetector\\Data\\DNA
-RNA=D\:\\JAVA WS\\REDetector\\Data\\RNA
-Genome=D\:\\JAVA WS\\REDetector\\Data\\Genome
+Cache=E\:\\Workspace\\REDetector\\Data\\Cache
+DNA=E\:\\Workspace\\REDetector\\Data\\DNA
+RNA=E\:\\Workspace\\REDetector\\Data\\RNA
+Genome=E\:\\Workspace\\REDetector\\Data\\Genome
