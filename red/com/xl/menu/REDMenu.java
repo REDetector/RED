@@ -410,7 +410,7 @@ public class REDMenu extends JMenuBar implements ActionListener {
         } else if (action.equals(MenuUtils.ZOOM_OUT)) {
             redApplication.chromosomeViewer().zoomOut();
         } else if (action.equals(MenuUtils.SET_ZOOM_LEVEL)) {
-            new DataZoomSelector(redApplication);
+            new DataZoomSelector(redApplication, "Dialog");
         } else if (action.equals(MenuUtils.MOVE_LEFT)) {
             redApplication.chromosomeViewer().moveLeft();
         } else if (action.equals(MenuUtils.MOVE_RIGHT)) {
@@ -465,7 +465,6 @@ public class REDMenu extends JMenuBar implements ActionListener {
      * Data loaded.
      */
     public void dataLoaded() {
-        genomeLoadedMenu();
         viewMenu.setEnabled(true);
         filterMenu.setEnabled(true);
         setDataTracks.setEnabled(true);
@@ -500,12 +499,10 @@ public class REDMenu extends JMenuBar implements ActionListener {
      * a new dataset is loaded.
      */
     public void resetMenus() {
-
         saveProject.setEnabled(false);
         saveProjectAs.setEnabled(false);
         importData.setEnabled(false);
         exportImage.setEnabled(false);
-
         viewMenu.setEnabled(false);
         filterMenu.setEnabled(false);
         reportsMenu.setEnabled(false);

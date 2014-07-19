@@ -20,6 +20,7 @@
 
 package com.xl.dialog;
 
+import com.xl.datatypes.genome.Chromosome;
 import com.xl.main.REDApplication;
 import com.xl.preferences.DisplayPreferences;
 
@@ -39,78 +40,91 @@ public class DataZoomSelector extends JDialog implements ActionListener,
         ChangeListener {
 
     private REDApplication application;
-    //    private int currentMaxZoom;
+    private Chromosome currentChromosome;
+    private String action;
     private int currentChromosomeLength;
     private int currentViewLength;
     private JSlider slider;
-    private Hashtable<Integer, JLabel> labels = null;
 
     /**
      * Instantiates a new data zoom selector.
      *
      * @param application
      */
-    public DataZoomSelector(REDApplication application) {
+    public DataZoomSelector(REDApplication application, String action) {
         super(application, "Set Data Zoom");
         this.application = application;
-
-//        currentMaxZoom = DisplayPreferences.getInstance()
-//                .getMaxDataValue();
+        this.action = action;
+        currentChromosome = DisplayPreferences.getInstance().getCurrentChromosome();
         currentChromosomeLength = DisplayPreferences.getInstance().getCurrentChromosome().getLength();
         currentViewLength = DisplayPreferences.getInstance().getCurrentLength();
-
-        // We use custom labels since we want 200 positions on the
-        // slider but the labels to run from 2-20 in increments of 2
-        if (labels == null) {
-            labels = new Hashtable<Integer, JLabel>();
-
-            for (int i = 0; i <= 20; i++) {
-                if (i % 2 == 0) {
-                    labels.put(currentChromosomeLength / 20 * i, new JLabel("" + i));
-                } else {
-                    labels.put(currentChromosomeLength / 20 * i, new JLabel(""));
-                }
+        getContentPane().setLayout(new BorderLayout());
+        Hashtable<Integer, Component> labelTable = new Hashtable<Integer, Component>();
+        for (int i = 0; i <= 20; i++) {
+            if (i % 2 == 0) {
+                labelTable.put(currentChromosomeLength / 20 * i, new JLabel("" + i));
+            } else {
+                labelTable.put(currentChromosomeLength / 20 * i, new JLabel(""));
             }
         }
-
-
-        getContentPane().setLayout(new BorderLayout());
-
-        // The slider actually ends up as an exponential scale (to the power of 2).
-        // We allow 200 increments on the slider but only go up to 2**20 hence
-        // dividing by 10 to get the actual power to raise to.
-        slider = new JSlider(1, currentChromosomeLength, currentViewLength);
+        slider = new JSlider(0, currentChromosomeLength, currentViewLength);
+        slider.setPaintTicks(true);
+        slider.setSnapToTicks(false);
+        slider.setLabelTable(labelTable);
+        slider.setPaintLabels(true);
         slider.setOrientation(JSlider.HORIZONTAL);
         slider.addChangeListener(this);
-        slider.setLabelTable(labels);
         slider.setMajorTickSpacing(currentChromosomeLength / 20);
-
-        // This looks a bit pants, but we need it in to work around a bug in
-        // the windows 7 LAF where the slider is tiny if labels are not drawn.
-        slider.setPaintTicks(true);
-
-        slider.setSnapToTicks(false);
-        slider.setPaintTrack(true);
-        Hashtable<Integer, Component> labelTable = new Hashtable<Integer, Component>();
-
-        for (int i = 0; i <= 20; i++) {
-            labelTable.put(currentChromosomeLength / 20 * i, new JLabel("" + i));
-        }
-        slider.setLabelTable(labelTable);
-
-        slider.setPaintLabels(true);
         getContentPane().add(slider, BorderLayout.CENTER);
 
-        JButton closeButton = new JButton("Close");
-        getRootPane().setDefaultButton(closeButton);
-        closeButton.addActionListener(this);
+        if ("Dialog".equals(action)) {
+            JButton closeButton = new JButton("Close");
+            getRootPane().setDefaultButton(closeButton);
+            closeButton.addActionListener(this);
+            getContentPane().add(closeButton, BorderLayout.SOUTH);
+            setSize(300, 100);
+            setLocationRelativeTo(application);
+            setVisible(true);
+        }
+    }
 
-        getContentPane().add(closeButton, BorderLayout.SOUTH);
-
-        setSize(300, 100);
-        setLocationRelativeTo(application);
-        setVisible(true);
-
+    public void setJSlider() {
+        currentChromosome = DisplayPreferences.getInstance().getCurrentChromosome();
+        currentChromosomeLength = DisplayPreferences.getInstance().getCurrentChromosome().getLength();
+        currentViewLength = DisplayPreferences.getInstance().getCurrentLength();
+        getContentPane().setLayout(new BorderLayout());
+        Hashtable<Integer, Component> labelTable = new Hashtable<Integer, Component>();
+        for (int i = 0; i <= 20; i++) {
+            if (i % 2 == 0) {
+                labelTable.put(currentChromosomeLength / 20 * i, new JLabel("" + i));
+            } else {
+                labelTable.put(currentChromosomeLength / 20 * i, new JLabel(""));
+            }
+        }
+        if (slider == null) {
+            slider = new JSlider(0, currentChromosomeLength, currentViewLength);
+            getContentPane().add(slider, BorderLayout.CENTER);
+        } else {
+            getContentPane().remove(slider);
+            slider = new JSlider(0, currentChromosomeLength, currentViewLength);
+            getContentPane().add(slider, BorderLayout.CENTER);
+        }
+        slider.setPaintTicks(true);
+        slider.setSnapToTicks(false);
+        slider.setLabelTable(labelTable);
+        slider.setPaintLabels(true);
+        slider.setOrientation(JSlider.HORIZONTAL);
+        slider.addChangeListener(this);
+        slider.setMajorTickSpacing(currentChromosomeLength / 20);
+        if ("Dialog".equals(action)) {
+            JButton closeButton = new JButton("Close");
+            getRootPane().setDefaultButton(closeButton);
+            closeButton.addActionListener(this);
+            getContentPane().add(closeButton, BorderLayout.SOUTH);
+            setSize(300, 100);
+            setLocationRelativeTo(application);
+            setVisible(true);
+        }
     }
 
     /*
@@ -132,11 +146,15 @@ public class DataZoomSelector extends JDialog implements ActionListener,
      * )
      */
     public void stateChanged(ChangeEvent ce) {
+        if (currentChromosome != DisplayPreferences.getInstance().getCurrentChromosome()) {
+            setJSlider();
+            return;
+        }
+
         int currentMidPoint = DisplayPreferences.getInstance().getCurrentMidPoint();
         currentViewLength = slider.getValue();
         int start = DisplayPreferences.getInstance().getCurrentStartLocation();
         int end = DisplayPreferences.getInstance().getCurrentEndLocation();
-        System.out.println(currentMidPoint + "\t" + currentViewLength + "\t" + start + "\t" + end);
         if (start < 20) {
             DisplayPreferences.getInstance().setLocation(0, currentMidPoint + currentViewLength / 2);
         } else if (end > currentChromosomeLength - 20) {

@@ -360,6 +360,7 @@ public class REDApplication extends JFrame implements ProgressListener,
      * the program.
      */
     private void changesWereMade() {
+        System.out.println(this.getClass().getName() + ":changesWereMade()");
         changesWereMade = true;
         if (!getTitle().endsWith("*")) {
             setTitle(getTitle() + "*");

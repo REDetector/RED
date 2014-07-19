@@ -10,4 +10,6 @@ public class SuffixUtils {
     public static final String CACHE_FASTA_COMPLETE = "fasta.complete";
     public static final String SUFFIX_CACHE_GENOME = "genome.cache";
     public static final String SUFFIX_CACHE_FASTA = "fasta.cache";
+    public static final String SUFFIX_COMPLETE_FILE = ".complete";
+
 }

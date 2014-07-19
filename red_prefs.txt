@@ -1,8 +1,8 @@
 #RED Preferences. DO NOT edit it individually.
-#Thu Jul 17 15:41:08 CST 2014
+#Sat Jul 19 21:37:40 CST 2014
 ProjectDirectory=E\:\\Workspace\\REDetector
 Fasta=E\:\\Workspace\\REDetector\\Data\\Fasta
-RecentlyOpenedFilesNumber=0
+RecentlyOpenedFilesNumber=1
 CrashEmail=
 Annotation=E\:\\Workspace\\REDetector\\Data\\Annotation
 Temp=E\:\\Workspace\\REDetector\\Data\\Temp
@@ -11,7 +11,8 @@ Others=E\:\\Workspace\\REDetector\\Data\\Others
 ProjectDataDirectory=E\:\\Workspace\\REDetector\\Data
 GenomeDownload=http\://igv.broadinstitute.org/genomes/
 Proxy=,0
-CheckForUpdate=true
+CheckForUpdate=false
+RecentlyOpenedFiles_0=E\:\\Workspace\\REDetector\\test.red
 Cache=E\:\\Workspace\\REDetector\\Data\\Cache
 DNA=E\:\\Workspace\\REDetector\\Data\\DNA
 RNA=E\:\\Workspace\\REDetector\\Data\\RNA

@@ -68,10 +68,6 @@ public class DisplayPreferences {
     private static DisplayPreferences instance = new DisplayPreferences();
     private Vector<DisplayPreferencesListener> listeners = new Vector<DisplayPreferencesListener>();
     private ColourGradient currentGradient = new HotColdColourGradient();
-//    /**
-//     * The Data zoom level *
-//     */
-//    private int maxDataValue = 1;
 
     /**
      * The currently visible chromosome *
@@ -123,16 +119,6 @@ public class DisplayPreferences {
             en.nextElement().displayPreferencesUpdated(this);
         }
     }
-
-//    /* The max data value */
-//    public int getMaxDataValue() {
-//        return maxDataValue;
-//    }
-//
-//    public void setMaxDataValue(int value) {
-//        maxDataValue = value;
-//        optionsChanged();
-//    }
 
     /* The display mode */
     public int getDisplayMode() {
@@ -187,7 +173,6 @@ public class DisplayPreferences {
         this.currentStartLocation = start;
         this.currentEndLocation = end;
         GotoDialog.addRecentLocation(currentChromosome.getName(), start, end);
-//        maxDataValue = currentEndLocation - currentStartLocation;
         optionsChanged();
     }
 
@@ -277,8 +262,6 @@ public class DisplayPreferences {
         // Make sure this number at the end equates to the number of
         // configuration lines to be written
         p.println(ParsingUtils.DISPLAY_PREFERENCES + "\t9");
-
-//        p.println("DataZoom\t" + getMaxDataValue());
 
         p.println("DisplayMode\t" + getDisplayMode());
 

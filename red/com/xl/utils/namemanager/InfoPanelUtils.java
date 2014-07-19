@@ -13,7 +13,7 @@ public class InfoPanelUtils {
 
     public static final String PROGRAM_UPDATE_CHECK = "Checking if a program update is available...";
 
-    public static final String GENOMES_UPDATE_CHECK = "Checking if getGenome updates are available...";
+    public static final String GENOMES_UPDATE_CHECK = "Checking if genome updates are available...";
 
     public static final String CACHE_DIRECTORY_CONFIGURE = "Please configure a cache directory to allow RED to run.";
 

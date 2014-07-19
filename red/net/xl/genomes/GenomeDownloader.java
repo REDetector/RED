@@ -111,7 +111,7 @@ public class GenomeDownloader implements Runnable {
                 if (dotGenomeFile.exists() && dotGenomeFile.length() == size) {
                     ProgressListener[] en = listeners.toArray(new ProgressListener[0]);
                     for (int i = en.length - 1; i >= 0; i--) {
-                        en[i].progressComplete("genome_downloaded", null);
+                        en[i].progressComplete("load_genome", null);
                     }
                     return;
                     // throw new

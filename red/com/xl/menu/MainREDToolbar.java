@@ -5,6 +5,8 @@ import com.xl.datatypes.DataSet;
 import com.xl.datatypes.DataStore;
 import com.xl.datatypes.probes.ProbeList;
 import com.xl.datatypes.probes.ProbeSet;
+import com.xl.dialog.DataZoomSelector;
+import com.xl.main.REDApplication;
 import com.xl.utils.namemanager.MenuUtils;
 
 import javax.swing.*;
@@ -139,10 +141,12 @@ public class MainREDToolbar extends REDToolbar {
      */
     public void genomeLoaded() {
         // Enable the buttons relating only to the genome
+        System.out.println(this.getClass().getName() + ":genomeLoaded()");
         jumpToPositionButton.setEnabled(true);
         jumpToPositionButton.setFocusable(false);
         findFeatureButton.setEnabled(true);
         findFeatureButton.setFocusable(false);
+        add(new DataZoomSelector(REDApplication.getInstance(), null).getContentPane());
     }
 
     public boolean showByDefault() {

@@ -124,19 +124,19 @@ public class REDParser implements Runnable, ProgressListener {
                 } else if (sections[0].equals(ParsingUtils.SAMPLES)) {
                     if (!genomeLoaded) {
                         throw new REDException(
-                                "No getGenome definition found before data");
+                                "No genome definition found before data");
                     }
                     parseSamples(sections);
                 } else if (sections[0].equals(ParsingUtils.ANNOTATION)) {
                     if (!genomeLoaded) {
                         throw new REDException(
-                                "No getGenome definition found before data");
+                                "No genome definition found before data");
                     }
                     annotationSets.add(parseAnnotation(sections));
                 } else if (sections[0].equals(ParsingUtils.DATA_GROUPS)) {
                     if (!genomeLoaded) {
                         throw new REDException(
-                                "No getGenome definition found before data");
+                                "No genome definition found before data");
                     }
                     try {
                         parseGroups(sections);
@@ -154,13 +154,13 @@ public class REDParser implements Runnable, ProgressListener {
                 } else if (sections[0].equals(ParsingUtils.PROBES)) {
                     if (!genomeLoaded) {
                         throw new REDException(
-                                "No getGenome definition found before data");
+                                "No genome definition found before data");
                     }
                     parseProbes(sections);
                 } else if (sections[0].equals(ParsingUtils.LISTS)) {
                     if (!genomeLoaded) {
                         throw new REDException(
-                                "No getGenome definition found before data");
+                                "No genome definition found before data");
                     }
                     parseLists(sections);
                 } else if (sections[0].equals(ParsingUtils.GENOME_INFORMATION_START)) {
@@ -168,13 +168,13 @@ public class REDParser implements Runnable, ProgressListener {
                 } else if (sections[0].equals(ParsingUtils.VISIBLE_STORES)) {
                     if (!genomeLoaded) {
                         throw new REDException(
-                                "No getGenome definition found before data");
+                                "No genome definition found before data");
                     }
                     parseVisibleStores(sections);
                 } else if (sections[0].equals(ParsingUtils.DISPLAY_PREFERENCES)) {
                     if (!genomeLoaded) {
                         throw new REDException(
-                                "No getGenome definition found before data");
+                                "No genome definition found before data");
                     }
 
                     // Add any annotation sets we've parsed at this point
@@ -191,6 +191,7 @@ public class REDParser implements Runnable, ProgressListener {
             if (br != null) {
                 br.close();
             }
+            application.resetChangesWereMade();
 
         } catch (Exception ex) {
             Enumeration<ProgressListener> e = listeners.elements();
@@ -298,14 +299,14 @@ public class REDParser implements Runnable, ProgressListener {
         }
         File f;
         f = new File(LocationPreferences.getInstance().getGenomeDirectory()
-                + File.separator + GenomeDescriptor.getInstance().getDisplayName() + File.separator + GenomeDescriptor.getInstance().getGenomeId() + ".getGenome");
+                + File.separator + GenomeDescriptor.getInstance().getGenomeId() + ".genome");
         System.out.println(this.getClass().getName() + ":" + f.getAbsolutePath());
         if (!f.exists()) {
             // The user doesn't have this genome - yet...
             GenomeDownloader d = new GenomeDownloader();
             d.addProgressListener(this);
             ProgressDialog progressDialog = new ProgressDialog(application,
-                    "Downloading getGenome...");
+                    "Downloading genome...");
             d.addProgressListener(progressDialog);
             d.downloadGenome(GenomeDescriptor.getInstance().getGenomeId(), GenomeDescriptor.getInstance().getDisplayName(), true);
             progressDialog.requestFocus();
@@ -935,10 +936,7 @@ public class REDParser implements Runnable, ProgressListener {
         for (int i = 0; i < linesToParse; i++) {
             prefs = br.readLine().split("\\t");
 
-            if (prefs[0].equals("DataZoom")) {
-//                DisplayPreferences.getInstance().se(
-//                        Integer.parseInt(prefs[1]));
-            } else if (prefs[0].equals("DisplayMode")) {
+            if (prefs[0].equals("DisplayMode")) {
                 DisplayPreferences.getInstance().setDisplayMode(
                         Integer.parseInt(prefs[1]));
             } else if (prefs[0].equals("CurrentView")) {

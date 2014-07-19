@@ -69,11 +69,11 @@ public class IGVGenomeParser implements Runnable {
         // TODO Auto-generated method stub
         File cacheDirectory = new File(LocationPreferences.getInstance().getCacheDirectory());
         Properties properties = null;
-        List<File> cacheCompleteFiles = FileUtils.researchfile(SuffixUtils.CACHE_GENOME_COMPLETE, cacheDirectory);
+        List<File> genomeCacheCompleteFiles = FileUtils.researchfile(SuffixUtils.CACHE_GENOME_COMPLETE, cacheDirectory);
         String id = genomeFile.getAbsolutePath();
         boolean foundCacheFile = false;
-        if (cacheCompleteFiles.size() != 0) {
-            for (File cacheCompleteFile : cacheCompleteFiles) {
+        if (genomeCacheCompleteFiles.size() != 0) {
+            for (File cacheCompleteFile : genomeCacheCompleteFiles) {
                 try {
                     properties = new Properties();
                     properties.load(new FileReader(cacheCompleteFile));
@@ -106,8 +106,6 @@ public class IGVGenomeParser implements Runnable {
         } else {
             cacheFailed = true;
         }
-
-
         try {
             if (cacheFailed) {
                 MessageUtils.showInfo(this.getClass().getName() + ":parseNewGenome();");
@@ -126,6 +124,21 @@ public class IGVGenomeParser implements Runnable {
         } catch (IOException e) {
             progressCancelled();
             e.printStackTrace();
+        }
+
+        List<File> fastaCacheCompleteFiles = FileUtils.researchfile(SuffixUtils.CACHE_FASTA_COMPLETE, cacheDirectory);
+        for (File fastaCacheCompleteFile : fastaCacheCompleteFiles) {
+            properties = new Properties();
+            try {
+                properties.load(new FileReader(fastaCacheCompleteFile));
+                String version = properties.getProperty(GenomeUtils.KEY_VERSION_NAME);
+                if (REDApplication.VERSION.equals(version)) {
+                    REDApplication.getInstance().chromosomeViewer().setEnableFastaSequence(true);
+                    break;
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 

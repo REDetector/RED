@@ -56,7 +56,6 @@ public class ChromosomeFeatureTrack extends JPanel {
 
     private int yLableHeight = 0;
 
-
     private int exonHeight = 20;
     private int cdsHeight = exonHeight / 2;
     private int txYPosition;

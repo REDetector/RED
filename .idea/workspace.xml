@@ -9,28 +9,27 @@
     <list id="84c5056e-4735-415e-9374-ef14f745da71" name="Default" comment="Add the color of base. Namely," />
     <list default="true" id="7bfbcd82-43d2-4bb3-bf21-1f16164d2c5a" name="Rejected commit: Default" comment="Fix some bugs.">
       <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/red/com/denovo/DatabaseManager.java" />
-      <change type="DELETED" beforePath="E:\Workspace\REDetector\.gitignore" afterPath="" />
-      <change type="DELETED" beforePath="E:\Workspace\REDetector\Data\Genome\Human hg19\hg19.getGenome" afterPath="" />
       <change type="DELETED" beforePath="E:\Workspace\REDetector\red\com\denovo\Dbcon.java" afterPath="" />
       <change type="DELETED" beforePath="E:\Workspace\REDetector\red\com\denovo\FileUtils.java" afterPath="" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.classpath" afterPath="$PROJECT_DIR$/.classpath" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/com/xl/display/genomeviewer/ChromosomeDisplay.java" afterPath="$PROJECT_DIR$/red/com/xl/display/genomeviewer/ChromosomeDisplay.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/com/xl/display/chromosomeviewer/ChromosomeFeatureTrack.java" afterPath="$PROJECT_DIR$/red/com/xl/display/chromosomeviewer/ChromosomeFeatureTrack.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/com/xl/display/chromosomeviewer/ChromosomeViewer.java" afterPath="$PROJECT_DIR$/red/com/xl/display/chromosomeviewer/ChromosomeViewer.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/com/denovo/Connect.java" afterPath="$PROJECT_DIR$/red/com/denovo/Connect.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/com/xl/dialog/DataZoomSelector.java" afterPath="$PROJECT_DIR$/red/com/xl/dialog/DataZoomSelector.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/com/test/Dbcon.java" afterPath="$PROJECT_DIR$/red/com/test/Dbcon.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/com/xl/preferences/DisplayPreferences.java" afterPath="$PROJECT_DIR$/red/com/xl/preferences/DisplayPreferences.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/com/xl/utils/namemanager/MenuUtils.java" afterPath="$PROJECT_DIR$/red/com/xl/utils/namemanager/MenuUtils.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/net/xl/genomes/GenomeDownloader.java" afterPath="$PROJECT_DIR$/red/net/xl/genomes/GenomeDownloader.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/com/xl/parsers/annotationparsers/IGVGenomeParser.java" afterPath="$PROJECT_DIR$/red/com/xl/parsers/annotationparsers/IGVGenomeParser.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/com/xl/utils/namemanager/InfoPanelUtils.java" afterPath="$PROJECT_DIR$/red/com/xl/utils/namemanager/InfoPanelUtils.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/com/xl/menu/MainREDToolbar.java" afterPath="$PROJECT_DIR$/red/com/xl/menu/MainREDToolbar.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/com/denovo/PValue.java" afterPath="$PROJECT_DIR$/red/com/denovo/PValue.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/com/test/PValue.java" afterPath="$PROJECT_DIR$/red/com/test/PValue.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/com/xl/main/REDApplication.java" afterPath="$PROJECT_DIR$/red/com/xl/main/REDApplication.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/com/xl/menu/REDMenu.java" afterPath="$PROJECT_DIR$/red/com/xl/menu/REDMenu.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/com/xl/parsers/dataparsers/REDParser.java" afterPath="$PROJECT_DIR$/red/com/xl/parsers/dataparsers/REDParser.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/REDetector.iml" afterPath="$PROJECT_DIR$/REDetector.iml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/com/denovo/Repeatedmask.java" afterPath="$PROJECT_DIR$/red/com/denovo/Repeatedmask.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/com/denovo/Snpf.java" afterPath="$PROJECT_DIR$/red/com/denovo/Snpf.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/com/xl/utils/namemanager/SuffixUtils.java" afterPath="$PROJECT_DIR$/red/com/xl/utils/namemanager/SuffixUtils.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/com/denovo/VcfInput.java" afterPath="$PROJECT_DIR$/red/com/denovo/VcfInput.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/libraries/lib.xml" afterPath="$PROJECT_DIR$/.idea/libraries/lib.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red_prefs.txt" afterPath="$PROJECT_DIR$/red_prefs.txt" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MOVED" beforePath="E:\Workspace\REDetector\red\com\denovo\Basicf.java" afterPath="$PROJECT_DIR$/red/com/denovo/BasicFilter.java" />
@@ -103,73 +102,71 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="DisplayPreferences.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/red/com/xl/preferences/DisplayPreferences.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="4845" max-vertical-offset="5740">
-              <caret line="280" column="8" selection-start-line="280" selection-start-column="0" selection-end-line="280" selection-end-column="0" />
-              <folding>
-                <element signature="e#2429#2457#0" expanded="true" />
-                <element signature="e#3001#3002#0" expanded="true" />
-                <element signature="e#3032#3033#0" expanded="true" />
-                <element signature="e#5102#5103#0" expanded="true" />
-                <element signature="e#5143#5144#0" expanded="true" />
-                <element signature="e#5180#5181#0" expanded="true" />
-                <element signature="e#5250#5251#0" expanded="true" />
-                <element signature="e#5287#5288#0" expanded="true" />
-                <element signature="e#5353#5354#0" expanded="true" />
-                <element signature="e#6600#6601#0" expanded="true" />
-                <element signature="e#6640#6641#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="ChromosomeDisplay.java" pinned="false" current="true" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/red/com/xl/display/genomeviewer/ChromosomeDisplay.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.4288499" vertical-offset="0" max-vertical-offset="10300">
-              <caret line="32" column="43" selection-start-line="32" selection-start-column="7" selection-end-line="32" selection-end-column="7" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="DataZoomSelector.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/red/com/xl/dialog/DataZoomSelector.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="1785" max-vertical-offset="2680">
-              <caret line="150" column="55" selection-start-line="150" selection-start-column="55" selection-end-line="150" selection-end-column="55" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="GenomeViewer.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/red/com/xl/display/genomeviewer/GenomeViewer.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="3850" max-vertical-offset="4400">
-              <caret line="211" column="64" selection-start-line="211" selection-start-column="53" selection-end-line="211" selection-end-column="53" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="ChromosomeViewer.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/red/com/xl/display/chromosomeviewer/ChromosomeViewer.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="3404" max-vertical-offset="10040">
-              <caret line="138" column="45" selection-start-line="138" selection-start-column="9" selection-end-line="138" selection-end-column="9" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="REDParser.java" pinned="false" current="false" current-in-tab="false">
+      <file leaf-file-name="REDParser.java" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/red/com/xl/parsers/dataparsers/REDParser.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="17934" max-vertical-offset="20420">
-              <caret line="938" column="17" selection-start-line="938" selection-start-column="17" selection-end-line="939" selection-end-column="54" />
+            <state vertical-scroll-proportion="0.17221135" vertical-offset="0" max-vertical-offset="22418">
+              <caret line="33" column="77" selection-start-line="33" selection-start-column="3" selection-end-line="33" selection-end-column="3" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="DataSet.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/red/com/xl/datatypes/DataSet.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0" vertical-offset="1289" max-vertical-offset="11140">
+              <caret line="23" column="13" selection-start-line="23" selection-start-column="13" selection-end-line="23" selection-end-column="13" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="DataGroup.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/red/com/xl/datatypes/DataGroup.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0" vertical-offset="29" max-vertical-offset="4380">
+              <caret line="31" column="13" selection-start-line="31" selection-start-column="13" selection-end-line="31" selection-end-column="13" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="DataStore.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/red/com/xl/datatypes/DataStore.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0" vertical-offset="780" max-vertical-offset="3300">
+              <caret line="157" column="30" selection-start-line="157" selection-start-column="30" selection-end-line="157" selection-end-column="30" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="REDMenu.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/red/com/xl/menu/REDMenu.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0" vertical-offset="7660" max-vertical-offset="11858">
+              <caret line="501" column="0" selection-start-line="501" selection-start-column="0" selection-end-line="501" selection-end-column="0" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="GenomeDownloader.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/red/net/xl/genomes/GenomeDownloader.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0" vertical-offset="1456" max-vertical-offset="2674">
+              <caret line="104" column="0" selection-start-line="104" selection-start-column="0" selection-end-line="104" selection-end-column="0" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="InfoPanelUtils.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/red/com/xl/utils/namemanager/InfoPanelUtils.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0" vertical-offset="210" max-vertical-offset="700">
+              <caret line="15" column="68" selection-start-line="15" selection-start-column="68" selection-end-line="15" selection-end-column="68" />
               <folding />
             </state>
           </provider>
@@ -178,14 +175,44 @@
       <file leaf-file-name="REDApplication.java" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/red/com/xl/main/REDApplication.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="4401" max-vertical-offset="17720">
-              <caret line="284" column="43" selection-start-line="284" selection-start-column="43" selection-end-line="284" selection-end-column="43" />
+            <state vertical-scroll-proportion="0.0" vertical-offset="12919" max-vertical-offset="19734">
+              <caret line="650" column="16" selection-start-line="650" selection-start-column="16" selection-end-line="650" selection-end-column="16" />
               <folding>
-                <element signature="e#15280#15281#0" expanded="true" />
-                <element signature="e#15344#15345#0" expanded="true" />
-                <element signature="e#15386#15387#0" expanded="true" />
-                <element signature="e#15421#15422#0" expanded="true" />
+                <element signature="e#11432#11433#0" expanded="true" />
+                <element signature="e#11473#11474#0" expanded="true" />
+                <element signature="e#11880#11881#0" expanded="true" />
+                <element signature="e#11919#11920#0" expanded="true" />
+                <element signature="e#12787#12788#0" expanded="true" />
+                <element signature="e#12820#12821#0" expanded="true" />
+                <element signature="e#15356#15357#0" expanded="true" />
+                <element signature="e#15420#15421#0" expanded="true" />
+                <element signature="e#15462#15463#0" expanded="true" />
+                <element signature="e#15497#15498#0" expanded="true" />
+                <element signature="e#24456#24457#0" expanded="true" />
+                <element signature="e#24497#24498#0" expanded="true" />
+                <element signature="e#25020#25021#0" expanded="true" />
+                <element signature="e#25060#25061#0" expanded="true" />
               </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="ChromosomeFeatureTrack.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/red/com/xl/display/chromosomeviewer/ChromosomeFeatureTrack.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0" vertical-offset="5614" max-vertical-offset="6958">
+              <caret line="401" column="0" selection-start-line="401" selection-start-column="0" selection-end-line="401" selection-end-column="0" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="GenomeSelector.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/red/com/xl/dialog/GenomeSelector.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0" vertical-offset="896" max-vertical-offset="3738">
+              <caret line="64" column="43" selection-start-line="64" selection-start-column="43" selection-end-line="64" selection-end-column="43" />
+              <folding />
             </state>
           </provider>
         </entry>
@@ -209,12 +236,6 @@
   <component name="IdeDocumentHistory">
     <option name="changedFiles">
       <list>
-        <option value="$PROJECT_DIR$/red/com/xl/utils/SequenceReadUtils.java" />
-        <option value="$PROJECT_DIR$/red/com/xl/datatypes/DataSet.java" />
-        <option value="$PROJECT_DIR$/red/com/xl/datatypes/DataStore.java" />
-        <option value="$PROJECT_DIR$/red/com/xl/display/dataviewer/ProbeSetTreeModel.java" />
-        <option value="$PROJECT_DIR$/red/com/xl/datatypes/DataGroup.java" />
-        <option value="$PROJECT_DIR$/red/com/xl/datatypes/DataCollection.java" />
         <option value="$PROJECT_DIR$/red/com/xl/datatypes/probes/ProbeSet.java" />
         <option value="$PROJECT_DIR$/red/com/xl/datatypes/probes/ProbeList.java" />
         <option value="$PROJECT_DIR$/red/com/xl/datawriters/REDDataWriter.java" />
@@ -224,19 +245,15 @@
         <option value="$PROJECT_DIR$/red/com/xl/preferences/LocationPreferences.java" />
         <option value="$PROJECT_DIR$/red/net/xl/genomes/DownloadableGenomeSet.java" />
         <option value="$PROJECT_DIR$/red/com/xl/dialog/GenomeDownloadSelector.java" />
-        <option value="$PROJECT_DIR$/red/net/xl/genomes/GenomeDownloader.java" />
         <option value="$PROJECT_DIR$/red/com/xl/dialog/GenomeSelector.java" />
         <option value="$PROJECT_DIR$/red/com/xl/datatypes/sequence/IGVSequence.java" />
         <option value="$PROJECT_DIR$/red/com/xl/datatypes/genome/Genome.java" />
         <option value="$PROJECT_DIR$/red/com/xl/parsers/annotationparsers/UCSCRefGeneParser.java" />
         <option value="$PROJECT_DIR$/red/com/xl/parsers/annotationparsers/CytoBandFileParser.java" />
         <option value="$PROJECT_DIR$/red/com/xl/utils/FileUtils.java" />
-        <option value="$PROJECT_DIR$/red/com/xl/parsers/annotationparsers/IGVGenomeParser.java" />
-        <option value="$PROJECT_DIR$/red/com/xl/main/REDApplication.java" />
         <option value="$PROJECT_DIR$/red/com/xl/utils/imagemanager/SVGGenerator.java" />
         <option value="$PROJECT_DIR$/red/com/xl/dialog/UserPasswordDialog.java" />
         <option value="$PROJECT_DIR$/red/com/xl/utils/namemanager/MenuUtils.java" />
-        <option value="$PROJECT_DIR$/red/com/xl/menu/REDMenu.java" />
         <option value="$PROJECT_DIR$/red/com/denovo/Cal.java" />
         <option value="$PROJECT_DIR$/red/com/test/PValue.java" />
         <option value="$PROJECT_DIR$/.classpath" />
@@ -248,7 +265,6 @@
         <option value="$PROJECT_DIR$/red/com/denovo/Comphrehensivef.java" />
         <option value="$PROJECT_DIR$/red/com/denovo/BasicFilter.java" />
         <option value="$PROJECT_DIR$/red/com/test/Dbcon.java" />
-        <option value="$PROJECT_DIR$/red/com/xl/display/chromosomeviewer/ChromosomeFeatureTrack.java" />
         <option value="$PROJECT_DIR$/red/com/denovo/ComphrehensiveFilter.java" />
         <option value="$PROJECT_DIR$/red/com/denovo/PValue.java" />
         <option value="$PROJECT_DIR$/red/com/denovo/Connect.java" />
@@ -256,10 +272,21 @@
         <option value="$PROJECT_DIR$/red/com/denovo/VcfInput.java" />
         <option value="$PROJECT_DIR$/red/com/denovo/Snpf.java" />
         <option value="$PROJECT_DIR$/red/com/xl/display/chromosomeviewer/ChromosomeViewer.java" />
-        <option value="$PROJECT_DIR$/red/com/xl/preferences/DisplayPreferences.java" />
-        <option value="$PROJECT_DIR$/red/com/xl/dialog/DataZoomSelector.java" />
-        <option value="$PROJECT_DIR$/red/com/xl/parsers/dataparsers/REDParser.java" />
         <option value="$PROJECT_DIR$/red/com/xl/display/genomeviewer/ChromosomeDisplay.java" />
+        <option value="$PROJECT_DIR$/red/com/xl/preferences/DisplayPreferences.java" />
+        <option value="$PROJECT_DIR$/red/com/xl/menu/DataZoom.java" />
+        <option value="$PROJECT_DIR$/red/com/xl/dialog/gotodialog/AbstractDataZoom.java" />
+        <option value="$PROJECT_DIR$/red/com/xl/dialog/DataZoomSelector.java" />
+        <option value="$PROJECT_DIR$/red/com/xl/datatypes/annotation/AnnotationCollection.java" />
+        <option value="$PROJECT_DIR$/red/com/xl/utils/namemanager/SuffixUtils.java" />
+        <option value="$PROJECT_DIR$/red/com/xl/parsers/annotationparsers/IGVGenomeParser.java" />
+        <option value="$PROJECT_DIR$/red/com/xl/display/chromosomeviewer/ChromosomeFeatureTrack.java" />
+        <option value="$PROJECT_DIR$/red/com/xl/menu/MainREDToolbar.java" />
+        <option value="$PROJECT_DIR$/red/net/xl/genomes/GenomeDownloader.java" />
+        <option value="$PROJECT_DIR$/red/com/xl/utils/namemanager/InfoPanelUtils.java" />
+        <option value="$PROJECT_DIR$/red/com/xl/menu/REDMenu.java" />
+        <option value="$PROJECT_DIR$/red/com/xl/main/REDApplication.java" />
+        <option value="$PROJECT_DIR$/red/com/xl/parsers/dataparsers/REDParser.java" />
       </list>
     </option>
   </component>
@@ -404,7 +431,67 @@
               <option name="myItemType" value="com.android.tools.idea.gradle.projectView.AndroidPsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="preferences" />
+              <option name="myItemId" value="parsers" />
+              <option name="myItemType" value="com.android.tools.idea.gradle.projectView.AndroidPsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="dataparsers" />
+              <option name="myItemType" value="com.android.tools.idea.gradle.projectView.AndroidPsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="REDetector" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="REDetector" />
+              <option name="myItemType" value="com.android.tools.idea.gradle.projectView.AndroidPsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="red" />
+              <option name="myItemType" value="com.android.tools.idea.gradle.projectView.AndroidPsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="com" />
+              <option name="myItemType" value="com.android.tools.idea.gradle.projectView.AndroidPsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="xl" />
+              <option name="myItemType" value="com.android.tools.idea.gradle.projectView.AndroidPsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="parsers" />
+              <option name="myItemType" value="com.android.tools.idea.gradle.projectView.AndroidPsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="annotationparsers" />
+              <option name="myItemType" value="com.android.tools.idea.gradle.projectView.AndroidPsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="REDetector" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="REDetector" />
+              <option name="myItemType" value="com.android.tools.idea.gradle.projectView.AndroidPsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="red" />
+              <option name="myItemType" value="com.android.tools.idea.gradle.projectView.AndroidPsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="com" />
+              <option name="myItemType" value="com.android.tools.idea.gradle.projectView.AndroidPsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="xl" />
+              <option name="myItemType" value="com.android.tools.idea.gradle.projectView.AndroidPsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="menu" />
               <option name="myItemType" value="com.android.tools.idea.gradle.projectView.AndroidPsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -482,11 +569,7 @@
               <option name="myItemType" value="com.android.tools.idea.gradle.projectView.AndroidPsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="display" />
-              <option name="myItemType" value="com.android.tools.idea.gradle.projectView.AndroidPsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="chromosomeviewer" />
+              <option name="myItemId" value="datatypes" />
               <option name="myItemType" value="com.android.tools.idea.gradle.projectView.AndroidPsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -512,7 +595,11 @@
               <option name="myItemType" value="com.android.tools.idea.gradle.projectView.AndroidPsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="dialog" />
+              <option name="myItemId" value="datatypes" />
+              <option name="myItemType" value="com.android.tools.idea.gradle.projectView.AndroidPsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="probes" />
               <option name="myItemType" value="com.android.tools.idea.gradle.projectView.AndroidPsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -563,7 +650,7 @@
   <component name="PropertiesComponent">
     <property name="GoToFile.includeJavaFiles" value="false" />
     <property name="options.splitter.main.proportions" value="0.3" />
-    <property name="options.lastSelected" value="project.propDebugger" />
+    <property name="options.lastSelected" value="reference.settingsdialog.IDE.editor.colors.Font" />
     <property name="MemberChooser.sorted" value="false" />
     <property name="recentsLimit" value="5" />
     <property name="MemberChooser.copyJavadoc" value="false" />
@@ -576,7 +663,7 @@
     <property name="options.splitter.details.proportions" value="0.2" />
     <property name="OverrideImplement.combined" value="true" />
     <property name="OverrideImplement.overriding.sorted" value="false" />
-    <property name="project.structure.last.edited" value="Global Libraries" />
+    <property name="project.structure.last.edited" value="Modules" />
     <property name="project.structure.proportion" value="0.15" />
     <property name="project.structure.side.proportion" value="0.2" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$/lib/sam-1.104.jar!/" />
@@ -1009,7 +1096,11 @@
       <created>1405568151102</created>
       <updated>1405568151102</updated>
     </task>
-    <option name="localTasksCounter" value="61" />
+    <task id="LOCAL-00061" summary="Make the zoom function available...">
+      <created>1405670595984</created>
+      <updated>1405670595984</updated>
+    </task>
+    <option name="localTasksCounter" value="62" />
     <servers />
   </component>
   <component name="TodoView" selected-index="0">
@@ -1034,14 +1125,13 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1456" height="886" extended-state="6" />
-    <editor active="true" />
+    <editor active="false" />
     <layout>
       <window_info id="Palette&#9;" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3271523" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Designer" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.317817" sideWeight="0.5" order="11" side_tool="false" content_ui="tabs" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.37218544" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33774835" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.22165605" sideWeight="0.5" order="8" side_tool="true" content_ui="tabs" />
@@ -1049,17 +1139,18 @@
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.2" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
       <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25033113" sideWeight="0.5" order="12" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3271523" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
-      <window_info id="Structure" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.12034384" sideWeight="0.75994515" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Structure" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.17406876" sideWeight="0.75994515" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3295129" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Application Servers" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.19340974" sideWeight="0.75994515" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.19340974" sideWeight="0.75994515" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.23311259" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" x="22" y="345" width="1396" height="180" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="JetGradle" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
-      <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.37086093" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
+      <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
     </layout>
   </component>
   <component name="Vcs.Log.UiProperties">
@@ -1079,7 +1170,6 @@
     <option name="myTodoPanelSettings">
       <TodoPanelSettings />
     </option>
-    <MESSAGE value="Change the method in PositionFormat and add the unit type." />
     <MESSAGE value="Add the snapshot of EPS format from 'ExportImage' menu." />
     <MESSAGE value="Import fasta file and divide the fasta file into several small fasta files by chromosome names." />
     <MESSAGE value="Fix some bugs to support svg format output." />
@@ -1104,7 +1194,8 @@
     <MESSAGE value="Something has been done to fix the zoom function since I change the way of zooming." />
     <MESSAGE value="Add user and password dialog to enable user to connect to MySQL." />
     <MESSAGE value="Fix some bugs." />
-    <option name="LAST_COMMIT_MESSAGE" value="Fix some bugs." />
+    <MESSAGE value="Make the zoom function available..." />
+    <option name="LAST_COMMIT_MESSAGE" value="Make the zoom function available..." />
     <option name="OPTIMIZE_IMPORTS_BEFORE_PROJECT_COMMIT" value="true" />
     <option name="REFORMAT_BEFORE_PROJECT_COMMIT" value="true" />
   </component>
@@ -1142,150 +1233,10 @@
     <option name="FILTER_TARGETS" value="false" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/red/net/xl/genomes/GenomeLists.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="115" max-vertical-offset="720">
-          <caret line="27" column="43" selection-start-line="27" selection-start-column="18" selection-end-line="27" selection-end-column="43" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/red/com/xl/parsers/annotationparsers/IGVGenomeParser.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="540" max-vertical-offset="8460">
-          <caret line="52" column="76" selection-start-line="52" selection-start-column="6" selection-end-line="52" selection-end-column="6" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/red/net/xl/genomes/GenomeDownloader.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="1740" max-vertical-offset="3280">
-          <caret line="109" column="43" selection-start-line="109" selection-start-column="35" selection-end-line="109" selection-end-column="35" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/red/com/xl/datatypes/genome/Genome.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="4860">
-          <caret line="62" column="55" selection-start-line="62" selection-start-column="17" selection-end-line="62" selection-end-column="17" />
-          <folding>
-            <element signature="e#871#891#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar://C:/Program Files/Java/jdk1.7.0_21/src.zip!/java/awt/Graphics.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-4.717349" vertical-offset="7980" max-vertical-offset="24460">
-          <caret line="307" column="50" selection-start-line="307" selection-start-column="7" selection-end-line="307" selection-end-column="7" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/red/com/xl/utils/FileUtils.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="3065" max-vertical-offset="3680">
-          <caret line="175" column="0" selection-start-line="175" selection-start-column="0" selection-end-line="175" selection-end-column="0" />
-          <folding>
-            <element signature="e#4196#4202#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/.idea/artifacts/REDetector.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="447">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar://C:/Program Files/Java/jdk1.7.0_21/src.zip!/java/security/AccessController.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="8471" max-vertical-offset="10820">
-          <caret line="458" column="8" selection-start-line="458" selection-start-column="8" selection-end-line="458" selection-end-column="8" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar://C:/Program Files/Java/jdk1.7.0_21/jre/lib/rt.jar!/sun/launcher/LauncherHelper.class">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="1096" max-vertical-offset="2220">
-          <caret line="63" column="37" selection-start-line="63" selection-start-column="37" selection-end-line="63" selection-end-column="37" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar://C:/Program Files/Java/jdk1.7.0_21/src.zip!/java/lang/Object.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="111" max-vertical-offset="10620">
-          <caret line="36" column="0" selection-start-line="36" selection-start-column="0" selection-end-line="36" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar://C:/Program Files/Java/jdk1.7.0_21/src.zip!/java/lang/Throwable.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="5571" max-vertical-offset="20680">
-          <caret line="312" column="0" selection-start-line="312" selection-start-column="0" selection-end-line="312" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar://C:/Program Files/Java/jdk1.7.0_21/src.zip!/java/lang/Exception.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="1311" max-vertical-offset="1980">
-          <caret line="102" column="0" selection-start-line="102" selection-start-column="0" selection-end-line="102" selection-end-column="0" />
-          <folding>
-            <element signature="e#3173#3174#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar://C:/Program Files/Java/jdk1.7.0_21/src.zip!/java/security/PrivilegedActionException.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="731" max-vertical-offset="1680">
-          <caret line="67" column="0" selection-start-line="67" selection-start-column="0" selection-end-line="67" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar://C:/Program Files/Java/jdk1.7.0_21/src.zip!/java/lang/ClassLoader.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="7076" max-vertical-offset="42480">
-          <caret line="425" column="0" selection-start-line="425" selection-start-column="0" selection-end-line="425" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar://C:/Program Files/Java/jdk1.7.0_21/jre/lib/rt.jar!/sun/misc/PerfCounter.class">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="771" max-vertical-offset="1400">
-          <caret line="47" column="39" selection-start-line="47" selection-start-column="39" selection-end-line="47" selection-end-column="39" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/.idea/compiler.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="60" max-vertical-offset="640">
-          <caret line="3" column="0" selection-start-line="3" selection-start-column="0" selection-end-line="3" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar://C:/Program Files/Java/jdk1.7.0_21/src.zip!/java/net/URLClassLoader.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.46418732" vertical-offset="5903" max-vertical-offset="14340">
-          <caret line="365" column="0" selection-start-line="365" selection-start-column="0" selection-end-line="365" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/red/com/xl/utils/imagemanager/SVGGenerator.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.14897579" vertical-offset="0" max-vertical-offset="12320">
           <caret line="27" column="64" selection-start-line="27" selection-start-column="0" selection-end-line="27" selection-end-column="0" />
-          <folding>
-            <element signature="e#16126#16127#0" expanded="false" />
-            <element signature="e#16184#16185#0" expanded="false" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -1293,7 +1244,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="300" max-vertical-offset="1380">
           <caret line="18" column="42" selection-start-line="18" selection-start-column="0" selection-end-line="18" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1301,15 +1251,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.33272728" vertical-offset="477" max-vertical-offset="4100">
           <caret line="64" column="13" selection-start-line="64" selection-start-column="13" selection-end-line="64" selection-end-column="13" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/red/com/xl/dialog/GenomeSelector.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="2561" max-vertical-offset="4960">
-          <caret line="159" column="58" selection-start-line="159" selection-start-column="57" selection-end-line="159" selection-end-column="57" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1317,7 +1258,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="726">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1325,9 +1265,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="2380">
           <caret line="28" column="10" selection-start-line="28" selection-start-column="0" selection-end-line="28" selection-end-column="0" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -1335,7 +1272,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="6280">
           <caret line="30" column="45" selection-start-line="30" selection-start-column="39" selection-end-line="30" selection-end-column="39" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1343,7 +1279,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.7407407" vertical-offset="0" max-vertical-offset="30140">
           <caret line="19" column="6" selection-start-line="19" selection-start-column="6" selection-end-line="19" selection-end-column="6" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1351,7 +1286,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="526">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1359,7 +1293,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="526">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1367,7 +1300,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.4" vertical-offset="0" max-vertical-offset="550">
           <caret line="11" column="87" selection-start-line="11" selection-start-column="76" selection-end-line="11" selection-end-column="76" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1375,10 +1307,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="1900">
           <caret line="24" column="26" selection-start-line="24" selection-start-column="4" selection-end-line="24" selection-end-column="4" />
-          <folding>
-            <element signature="e#448#449#0" expanded="false" />
-            <element signature="e#464#465#0" expanded="false" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -1386,7 +1314,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="1480">
           <caret line="12" column="63" selection-start-line="12" selection-start-column="52" selection-end-line="12" selection-end-column="52" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1394,7 +1321,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.33333334" vertical-offset="635" max-vertical-offset="20920">
           <caret line="64" column="14" selection-start-line="64" selection-start-column="14" selection-end-line="64" selection-end-column="14" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1402,9 +1328,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="940">
           <caret line="6" column="13" selection-start-line="6" selection-start-column="13" selection-end-line="6" selection-end-column="13" />
-          <folding>
-            <element signature="imports" expanded="false" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -1412,10 +1335,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="2000">
           <caret line="74" column="61" selection-start-line="74" selection-start-column="30" selection-end-line="74" selection-end-column="30" />
-          <folding>
-            <element signature="imports" expanded="false" />
-            <element signature="e#2570#2578#0" expanded="false" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -1423,7 +1342,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.4225352" vertical-offset="0" max-vertical-offset="1480">
           <caret line="16" column="37" selection-start-line="16" selection-start-column="37" selection-end-line="16" selection-end-column="37" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1431,7 +1349,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="35" max-vertical-offset="2600">
           <caret line="14" column="12" selection-start-line="14" selection-start-column="10" selection-end-line="14" selection-end-column="12" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1439,9 +1356,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="2180" max-vertical-offset="2680">
           <caret line="126" column="7" selection-start-line="13" selection-start-column="4" selection-end-line="126" selection-end-column="7" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -1449,7 +1363,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="2920">
           <caret line="121" column="76" selection-start-line="121" selection-start-column="76" selection-end-line="121" selection-end-column="76" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1457,7 +1370,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="1300">
           <caret line="8" column="50" selection-start-line="8" selection-start-column="44" selection-end-line="8" selection-end-column="44" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1465,9 +1377,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="2600" max-vertical-offset="3280">
           <caret line="145" column="20" selection-start-line="15" selection-start-column="2" selection-end-line="156" selection-end-column="5" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -1475,9 +1384,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.68715084" vertical-offset="3531" max-vertical-offset="4220">
           <caret line="195" column="20" selection-start-line="195" selection-start-column="20" selection-end-line="195" selection-end-column="20" />
-          <folding>
-            <element signature="imports" expanded="false" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -1485,9 +1391,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.96834266" vertical-offset="2700" max-vertical-offset="3380">
           <caret line="161" column="5" selection-start-line="15" selection-start-column="2" selection-end-line="161" selection-end-column="5" />
-          <folding>
-            <element signature="imports" expanded="false" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -1495,46 +1398,68 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.48417133" vertical-offset="5900" max-vertical-offset="6440">
           <caret line="308" column="7" selection-start-line="19" selection-start-column="5" selection-end-line="308" selection-end-column="7" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/red/com/xl/display/genomeviewer/ChromosomeDisplay.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.31189084" vertical-offset="0" max-vertical-offset="10300">
+          <caret line="29" column="30" selection-start-line="29" selection-start-column="0" selection-end-line="29" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://C:/Program Files/Java/jdk1.7.0_21/src.zip!/javax/swing/JDialog.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="34.65887" vertical-offset="1320" max-vertical-offset="24520">
+          <caret line="1016" column="21" selection-start-line="1016" selection-start-column="21" selection-end-line="1016" selection-end-column="21" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/red/com/xl/dialog/DataZoomSelector.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="3.1178708" vertical-offset="0" max-vertical-offset="3020">
+          <caret line="110" column="56" selection-start-line="110" selection-start-column="9" selection-end-line="110" selection-end-column="9" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/red/com/xl/preferences/DisplayPreferences.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="2.053232" vertical-offset="2700" max-vertical-offset="5420">
+          <caret line="206" column="92" selection-start-line="206" selection-start-column="0" selection-end-line="206" selection-end-column="0" />
           <folding>
-            <element signature="imports" expanded="false" />
+            <element signature="e#2429#2457#0" expanded="false" />
+            <element signature="e#2914#2915#0" expanded="false" />
+            <element signature="e#2945#2946#0" expanded="false" />
+            <element signature="e#4789#4790#0" expanded="false" />
+            <element signature="e#4830#4831#0" expanded="false" />
+            <element signature="e#4869#4870#0" expanded="false" />
+            <element signature="e#4939#4940#0" expanded="false" />
+            <element signature="e#4976#4977#0" expanded="false" />
+            <element signature="e#5044#5045#0" expanded="false" />
+            <element signature="e#6223#6224#0" expanded="false" />
+            <element signature="e#6263#6264#0" expanded="false" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/red/com/xl/main/REDApplication.java">
+    <entry file="file://$PROJECT_DIR$/red/com/xl/menu/REDToolbar.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="4401" max-vertical-offset="17720">
-          <caret line="284" column="43" selection-start-line="284" selection-start-column="43" selection-end-line="284" selection-end-column="43" />
-          <folding>
-            <element signature="e#15280#15281#0" expanded="true" />
-            <element signature="e#15344#15345#0" expanded="true" />
-            <element signature="e#15386#15387#0" expanded="true" />
-            <element signature="e#15421#15422#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/red/com/xl/display/chromosomeviewer/ChromosomeFeatureTrack.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.33333334" vertical-offset="1429" max-vertical-offset="9500">
-          <caret line="95" column="16" selection-start-line="95" selection-start-column="16" selection-end-line="95" selection-end-column="16" />
-          <folding />
+        <state vertical-scroll-proportion="0.92395437" vertical-offset="194" max-vertical-offset="1320">
+          <caret line="37" column="45" selection-start-line="37" selection-start-column="5" selection-end-line="37" selection-end-column="5" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/red/com/xl/display/chromosomeviewer/ChromosomeViewer.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="3404" max-vertical-offset="10040">
-          <caret line="138" column="45" selection-start-line="138" selection-start-column="9" selection-end-line="138" selection-end-column="9" />
-          <folding />
+        <state vertical-scroll-proportion="0.0" vertical-offset="5729" max-vertical-offset="10080">
+          <caret line="315" column="32" selection-start-line="315" selection-start-column="19" selection-end-line="315" selection-end-column="40" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/red/com/xl/menu/REDMenu.java">
+    <entry file="file://$PROJECT_DIR$/red/com/xl/display/chromosomeviewer/ChromosomeDataTrack.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.21863118" vertical-offset="8105" max-vertical-offset="10840">
-          <caret line="436" column="73" selection-start-line="436" selection-start-column="60" selection-end-line="436" selection-end-column="60" />
-          <folding />
+        <state vertical-scroll-proportion="0.0" vertical-offset="9" max-vertical-offset="10340">
+          <caret line="26" column="13" selection-start-line="26" selection-start-column="13" selection-end-line="26" selection-end-column="13" />
         </state>
       </provider>
     </entry>
@@ -1542,50 +1467,168 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="3850" max-vertical-offset="4400">
           <caret line="211" column="64" selection-start-line="211" selection-start-column="53" selection-end-line="211" selection-end-column="53" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/red/com/xl/utils/namemanager/SuffixUtils.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="420">
+          <caret line="12" column="51" selection-start-line="12" selection-start-column="31" selection-end-line="12" selection-end-column="51" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/red/com/xl/utils/FileUtils.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.5228137" vertical-offset="3085" max-vertical-offset="3700">
+          <caret line="176" column="56" selection-start-line="176" selection-start-column="48" selection-end-line="176" selection-end-column="56" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/red/com/xl/parsers/annotationparsers/IGVGenomeParser.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="1927" max-vertical-offset="8720">
+          <caret line="135" column="0" selection-start-line="135" selection-start-column="0" selection-end-line="135" selection-end-column="0" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/red/com/xl/preferences/DisplayPreferences.java">
+    <entry file="file://$PROJECT_DIR$/red/com/xl/menu/MainREDToolbar.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="4845" max-vertical-offset="5740">
-          <caret line="280" column="8" selection-start-line="280" selection-start-column="0" selection-end-line="280" selection-end-column="0" />
+        <state vertical-scroll-proportion="0.0" vertical-offset="2223" max-vertical-offset="4176">
+          <caret line="143" column="72" selection-start-line="143" selection-start-column="72" selection-end-line="143" selection-end-column="72" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/red/com/xl/datatypes/annotation/AnnotationCollection.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="1178" max-vertical-offset="3762">
+          <caret line="94" column="31" selection-start-line="94" selection-start-column="31" selection-end-line="94" selection-end-column="31" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/red/com/xl/datatypes/annotation/AnnotationSet.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="2942" max-vertical-offset="8478">
+          <caret line="196" column="18" selection-start-line="196" selection-start-column="18" selection-end-line="196" selection-end-column="18" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/red/com/xl/datatypes/genome/Genome.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="2326" max-vertical-offset="4374">
+          <caret line="152" column="18" selection-start-line="152" selection-start-column="18" selection-end-line="152" selection-end-column="18" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/red/com/xl/datatypes/genome/GenomeDescriptor.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="1228" max-vertical-offset="3024">
+          <caret line="86" column="18" selection-start-line="86" selection-start-column="18" selection-end-line="86" selection-end-column="18" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/red/com/xl/datawriters/REDDataWriter.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="1718" max-vertical-offset="11538">
+          <caret line="143" column="72" selection-start-line="143" selection-start-column="72" selection-end-line="143" selection-end-column="72" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/red/com/xl/dialog/GenomeSelector.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="710" max-vertical-offset="4464">
+          <caret line="64" column="43" selection-start-line="64" selection-start-column="43" selection-end-line="64" selection-end-column="43" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/red/com/xl/utils/namemanager/InfoPanelUtils.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="134" max-vertical-offset="900">
+          <caret line="15" column="68" selection-start-line="15" selection-start-column="68" selection-end-line="15" selection-end-column="68" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/red/com/xl/display/chromosomeviewer/ChromosomeFeatureTrack.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="6471" max-vertical-offset="8532">
+          <caret line="401" column="0" selection-start-line="401" selection-start-column="0" selection-end-line="401" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/red/net/xl/genomes/GenomeDownloader.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="903" max-vertical-offset="2296">
+          <caret line="104" column="0" selection-start-line="104" selection-start-column="0" selection-end-line="104" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/red/com/xl/datatypes/DataSet.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="1289" max-vertical-offset="11140">
+          <caret line="23" column="13" selection-start-line="23" selection-start-column="13" selection-end-line="23" selection-end-column="13" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/red/com/xl/datatypes/DataGroup.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="29" max-vertical-offset="4380">
+          <caret line="31" column="13" selection-start-line="31" selection-start-column="13" selection-end-line="31" selection-end-column="13" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/red/com/xl/datatypes/DataStore.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="780" max-vertical-offset="3300">
+          <caret line="157" column="30" selection-start-line="157" selection-start-column="30" selection-end-line="157" selection-end-column="30" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/red/com/xl/menu/REDMenu.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="7660" max-vertical-offset="11858">
+          <caret line="501" column="0" selection-start-line="501" selection-start-column="0" selection-end-line="501" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/red/com/xl/main/REDApplication.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="12919" max-vertical-offset="19734">
+          <caret line="650" column="16" selection-start-line="650" selection-start-column="16" selection-end-line="650" selection-end-column="16" />
           <folding>
-            <element signature="e#2429#2457#0" expanded="true" />
-            <element signature="e#3001#3002#0" expanded="true" />
-            <element signature="e#3032#3033#0" expanded="true" />
-            <element signature="e#5102#5103#0" expanded="true" />
-            <element signature="e#5143#5144#0" expanded="true" />
-            <element signature="e#5180#5181#0" expanded="true" />
-            <element signature="e#5250#5251#0" expanded="true" />
-            <element signature="e#5287#5288#0" expanded="true" />
-            <element signature="e#5353#5354#0" expanded="true" />
-            <element signature="e#6600#6601#0" expanded="true" />
-            <element signature="e#6640#6641#0" expanded="true" />
+            <element signature="e#11432#11433#0" expanded="true" />
+            <element signature="e#11473#11474#0" expanded="true" />
+            <element signature="e#11880#11881#0" expanded="true" />
+            <element signature="e#11919#11920#0" expanded="true" />
+            <element signature="e#12787#12788#0" expanded="true" />
+            <element signature="e#12820#12821#0" expanded="true" />
+            <element signature="e#15356#15357#0" expanded="true" />
+            <element signature="e#15420#15421#0" expanded="true" />
+            <element signature="e#15462#15463#0" expanded="true" />
+            <element signature="e#15497#15498#0" expanded="true" />
+            <element signature="e#24456#24457#0" expanded="true" />
+            <element signature="e#24497#24498#0" expanded="true" />
+            <element signature="e#25020#25021#0" expanded="true" />
+            <element signature="e#25060#25061#0" expanded="true" />
           </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/red/com/xl/dialog/DataZoomSelector.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="1785" max-vertical-offset="2680">
-          <caret line="150" column="55" selection-start-line="150" selection-start-column="55" selection-end-line="150" selection-end-column="55" />
-          <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/red/com/xl/parsers/dataparsers/REDParser.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="17934" max-vertical-offset="20420">
-          <caret line="938" column="17" selection-start-line="938" selection-start-column="17" selection-end-line="939" selection-end-column="54" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/red/com/xl/display/genomeviewer/ChromosomeDisplay.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.4288499" vertical-offset="0" max-vertical-offset="10300">
-          <caret line="32" column="43" selection-start-line="32" selection-start-column="7" selection-end-line="32" selection-end-column="7" />
+        <state vertical-scroll-proportion="0.17221135" vertical-offset="0" max-vertical-offset="22418">
+          <caret line="33" column="77" selection-start-line="33" selection-start-column="3" selection-end-line="33" selection-end-column="3" />
           <folding />
         </state>
       </provider>
@@ -1661,7 +1704,6 @@
             <option name="proportions">
               <list>
                 <option value="0.2" />
-                <option value="0.6" />
               </list>
             </option>
           </splitter-proportions>
