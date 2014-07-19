@@ -67,21 +67,13 @@ public class ChromosomeViewer extends JPanel implements DataChangeListener,
     private ChromosomeFeatureTrack featureTrack = null;
     private Vector<ChromosomeDataTrack> dataTracks = new Vector<ChromosomeDataTrack>();
     private JPanel featurePanel;
-    // this broke SVG export
-    private JLabel titleLabel; // Tried using a TextField to get Copy/Paste, but
+    private JLabel titleLabel; // Tried using a TextField to get Copy/Paste, but this broke SVG export
     private int selectionStart = 0;
     private int selectionEnd = 0;
     private boolean makingSelection = false;
     private int currentStart = 1;
     private int currentEnd = 1;
 
-    public boolean isEnableFastaSequence() {
-        return enableFastaSequence;
-    }
-
-    public void setEnableFastaSequence(boolean enableFastaSequence) {
-        this.enableFastaSequence = enableFastaSequence;
-    }
 
     private boolean enableFastaSequence = false;
 
@@ -145,75 +137,7 @@ public class ChromosomeViewer extends JPanel implements DataChangeListener,
                     .getAnnotationCollection().getFastaForChr(chromosome);
             featureTrack.updateFeatureAndSequence(features, raf);
         }
-    }
-
-    /**
-     * Automatically adjusts the Data Zoom level and scale type to match the
-     * data stores which are currently visible.
-     */
-    public void autoScale() {
-
-        // If there are no data tracks visible then don't do anything
-        if (dataTracks.size() == 0)
-            return;
-
-        float maxValue = 0;
-        float minValue = 0;
-
-        // boolean firstTrack = true;
-
-        Enumeration<ChromosomeDataTrack> e = dataTracks.elements();
-
-        while (e.hasMoreElements()) {
-//            float[] minMax = e.nextElement().getMinMaxProbeValues();
-//            //
-//            System.err.println("Looking at track with min="+minMax[0]+" max="+minMax[1]);
-//            if (firstTrack) {
-//            minValue = minMax[0];
-//            maxValue = minMax[1];
-//            firstTrack = false;
-//            } else {
-//            if (minMax[0] < minValue)
-//            minValue = minMax[0];
-//            if (minMax[1] > maxValue)
-//            maxValue = minMax[1];
-//            }
-        }
-
-        // TODO: This won't change the radio buttons on the main
-        // menu. I can't immediately see a nice way to do this.
-
-        if (minValue < 0) {
-            if (0 - minValue > maxValue)
-                maxValue = 0 - minValue;
-            DisplayPreferences.getInstance().setScaleType(
-                    DisplayPreferences.SCALE_TYPE_POSITIVE_AND_NEGATIVE);
-        } else {
-            DisplayPreferences.getInstance().setScaleType(
-                    DisplayPreferences.SCALE_TYPE_POSITIVE);
-        }
-
-        // After auto scaling we should also check that the quantitated data
-        // is visible
-        if (DisplayPreferences.getInstance().getDisplayMode() == DisplayPreferences.DISPLAY_MODE_READS_ONLY) {
-            DisplayPreferences.getInstance().setDisplayMode(
-                    DisplayPreferences.DISPLAY_MODE_READS_AND_QUANTITATION);
-        }
-
-        // Our data zoom limit (imposed by the slider!) is 2**20 so
-        // don't exceed that.
-        if (maxValue > Math.pow(2, 20)) {
-            maxValue = (float) Math.pow(2, 20);
-        }
-
-        // Because our data zoom slider operates on a log scale we don't
-        // want to set this value to 0 under any circumstances.
-        if (maxValue < 0) {
-            maxValue = 1;
-        }
-
-        DisplayPreferences.getInstance().setMaxDataValue(maxValue);
-
+        DisplayPreferences.getInstance().setChromosome(chromosome);
     }
 
     /**
@@ -335,6 +259,9 @@ public class ChromosomeViewer extends JPanel implements DataChangeListener,
         int newEnd = newStart + (currentWidth * 2);
         if (newEnd > chromosome.getLength())
             newEnd = chromosome.getLength();
+
+        currentStart = newStart;
+        currentEnd = newEnd;
         DisplayPreferences.getInstance().setLocation(newStart, newEnd);
     }
 
@@ -351,6 +278,8 @@ public class ChromosomeViewer extends JPanel implements DataChangeListener,
 
         // TODO: Set limits on this.
         DisplayPreferences.getInstance().setLocation(newStart, newEnd);
+        currentStart = newStart;
+        currentEnd = newEnd;
     }
 
     /**
@@ -364,6 +293,9 @@ public class ChromosomeViewer extends JPanel implements DataChangeListener,
             interval = currentStart - 1;
         DisplayPreferences.getInstance().setLocation(currentStart - interval,
                 currentEnd - interval);
+        currentStart -= interval;
+        currentEnd -= interval;
+
     }
 
     /**
@@ -377,6 +309,16 @@ public class ChromosomeViewer extends JPanel implements DataChangeListener,
             interval = chromosome.getLength() - currentEnd;
         DisplayPreferences.getInstance().setLocation(currentStart + interval,
                 currentEnd + interval);
+        currentStart += interval;
+        currentEnd += interval;
+    }
+
+    public boolean isEnableFastaSequence() {
+        return enableFastaSequence;
+    }
+
+    public void setEnableFastaSequence(boolean enableFastaSequence) {
+        this.enableFastaSequence = enableFastaSequence;
     }
 
     /**

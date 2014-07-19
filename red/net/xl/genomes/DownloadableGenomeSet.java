@@ -21,7 +21,7 @@ public class DownloadableGenomeSet {
                 new InputStreamReader(genomeIndexURL.openStream()));
 //		seenIds = new Hashtable<String, GenomeId>();
 
-        String indexLine = null;
+        String indexLine;
         while ((indexLine = genomeIndexReader.readLine()) != null) {
             String[] sections = indexLine.split("\\t");
             if (sections[0].startsWith("<")) {
@@ -31,23 +31,7 @@ public class DownloadableGenomeSet {
                         "Genome list file is corrupt.  Expected 3 sections on line '"
                                 + indexLine + "' but got " + sections.length);
             }
-//			if (!seenIds.containsKey(sections[0])) {
-//				GenomeId newId = new GenomeId(sections[0]);
-//				genomeIds.add(newId);
-//				seenIds.put(sections[0], newId);
-//			}
             new GenomeLists(sections[0], sections[1], sections[2]);
-//			System.out.println(sections[0]+" "+sections[1]+" "+sections[2]);
-
-            // long epoch = Long.parseLong(sections[3]);
-            // Date date = new Date(epoch*1000); // Network date is in seconds.
-            // Local date is in milliseconds.
-
-            // System.out.println("For assembly "+sections[1]+" epoch was "+epoch+" and date was "+date);
-
-//			new GenomeDisplayName(seenIds.get(sections[0]), sections[2]);
-
-            // System.out.println("Found organism "+sections[0]+" and assembly "+sections[1]);
         }
     }
 

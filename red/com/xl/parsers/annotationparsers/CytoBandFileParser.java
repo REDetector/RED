@@ -1,9 +1,11 @@
 package com.xl.parsers.annotationparsers;
 
 import com.xl.datatypes.annotation.Cytoband;
+import com.xl.datatypes.genome.GenomeDescriptor;
+import com.xl.preferences.LocationPreferences;
+import com.xl.utils.FileUtils;
 
-import java.io.BufferedReader;
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -20,16 +22,32 @@ public class CytoBandFileParser {
     /**
      * Method description
      *
-     * @param reader
-     * @return
+     * @param reader           The buffer reader
+     * @param genomeDescriptor The genome descriptor
+     * @return A linked hash map of cytoband
      */
-    public static LinkedHashMap<String, List<Cytoband>> loadData(BufferedReader reader) {
-
+    public static LinkedHashMap<String, List<Cytoband>> loadData(BufferedReader reader,
+                                                                 GenomeDescriptor genomeDescriptor) {
         LinkedHashMap<String, List<Cytoband>> dataMap = new LinkedHashMap<String, List<Cytoband>>();
         try {
-
+            String cytobandDirectory = LocationPreferences.getInstance().getOthersDirectory() + File.separator +
+                    genomeDescriptor.getDisplayName();
+            File cytobandFile = new File(cytobandDirectory + File.separator + genomeDescriptor.getCytoBandFileName());
+            boolean cytobandHasCached = false;
+            FileWriter fw = null;
+            BufferedWriter bw = null;
+            if (cytobandFile.exists()) {
+                cytobandHasCached = true;
+            } else {
+                FileUtils.createDirectory(cytobandDirectory);
+                fw = new FileWriter(cytobandFile);
+                bw = new BufferedWriter(fw);
+            }
             String nextLine;
             while ((nextLine = reader.readLine()) != null && (nextLine.trim().length() > 0)) {
+                if (!cytobandHasCached) {
+                    bw.write(nextLine + "\r\n");
+                }
                 String[] data = nextLine.split("\t");
                 String chr = data[0].trim();
                 List<Cytoband> cytobands = dataMap.get(chr);
@@ -41,7 +59,11 @@ public class CytoBandFileParser {
                 parseData(data, cytoData);
                 cytobands.add(cytoData);
             }
-
+            if (!cytobandHasCached) {
+                bw.flush();
+                bw.close();
+                fw.close();
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }

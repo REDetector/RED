@@ -149,7 +149,7 @@ public class ChromosomeFeatureTrack extends JPanel {
                 }
             }
         }
-        if (endBp - startBp < getWidth() && fastaFile != null) {
+        if (viewer.isEnableFastaSequence() && endBp - startBp < getWidth() && fastaFile != null) {
             g.drawRoundRect(0, displayHeight - 10, displayWidth, 10, 3, 3);
             g.setFont(FontManager.defaultFont);
             drawSequence(getSequenceForChr(fastaFile, startBp, endBp), g);

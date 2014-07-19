@@ -178,11 +178,7 @@ public class GenomeSelector extends JDialog {
                 if (lastComponent instanceof GenomeNode) {
                     String path = ((GenomeNode) lastComponent).file()
                             .getAbsolutePath();
-                    System.out.println(this.getClass().getName() + "\t" + path);
-                    FileUtils.deleteDirectory(path.substring(0,
-                            path.lastIndexOf("\\")));
-                    System.out.println(this.getClass().getName() + "\t"
-                            + path.substring(0, path.lastIndexOf("\\")));
+                    FileUtils.deleteFile(path);
                 }
                 dispose();
                 new GenomeSelector(application);
@@ -259,7 +255,6 @@ public class GenomeSelector extends JDialog {
         public int compare(GenomeNode o1, GenomeNode o2) {
             String name1 = o1.f.getName();
             String name2 = o2.f.getName();
-            System.out.println(name1 + "\t" + name2);
             return ChromosomeNameComparator.getInstance().compare(name1, name2);
         }
     }

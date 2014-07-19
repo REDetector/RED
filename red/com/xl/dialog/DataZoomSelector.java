@@ -39,7 +39,9 @@ public class DataZoomSelector extends JDialog implements ActionListener,
         ChangeListener {
 
     private REDApplication application;
-    private double currentMaxZoom;
+    //    private int currentMaxZoom;
+    private int currentChromosomeLength;
+    private int currentViewLength;
     private JSlider slider;
     private Hashtable<Integer, JLabel> labels = null;
 
@@ -52,6 +54,11 @@ public class DataZoomSelector extends JDialog implements ActionListener,
         super(application, "Set Data Zoom");
         this.application = application;
 
+//        currentMaxZoom = DisplayPreferences.getInstance()
+//                .getMaxDataValue();
+        currentChromosomeLength = DisplayPreferences.getInstance().getCurrentChromosome().getLength();
+        currentViewLength = DisplayPreferences.getInstance().getCurrentLength();
+
         // We use custom labels since we want 200 positions on the
         // slider but the labels to run from 2-20 in increments of 2
         if (labels == null) {
@@ -59,36 +66,24 @@ public class DataZoomSelector extends JDialog implements ActionListener,
 
             for (int i = 0; i <= 20; i++) {
                 if (i % 2 == 0) {
-                    labels.put(i, new JLabel("" + i));
+                    labels.put(currentChromosomeLength / 20 * i, new JLabel("" + i));
                 } else {
-                    labels.put(i, new JLabel(""));
+                    labels.put(currentChromosomeLength / 20 * i, new JLabel(""));
                 }
             }
         }
 
-        currentMaxZoom = (int) DisplayPreferences.getInstance()
-                .getMaxDataValue();
-
-        // Set some limits in case we end up with an impossible range to
-        // consider
-        if (currentMaxZoom > Math.pow(2, 20))
-            currentMaxZoom = Math.pow(2, 20);
-        if (currentMaxZoom < 1)
-            currentMaxZoom = 1;
 
         getContentPane().setLayout(new BorderLayout());
 
-        // The slider actually ends up as an exponential scale (to the power of
-        // 2).
+        // The slider actually ends up as an exponential scale (to the power of 2).
         // We allow 200 increments on the slider but only go up to 2**20 hence
-        // dividing
-        // by 10 to get the actual power to raise to.
-        slider = new JSlider(0, 200,
-                (int) (10 * (Math.log(currentMaxZoom) / Math.log(2))));
-        slider.setOrientation(JSlider.VERTICAL);
+        // dividing by 10 to get the actual power to raise to.
+        slider = new JSlider(1, currentChromosomeLength, currentViewLength);
+        slider.setOrientation(JSlider.HORIZONTAL);
         slider.addChangeListener(this);
         slider.setLabelTable(labels);
-        slider.setMajorTickSpacing(10);
+        slider.setMajorTickSpacing(currentChromosomeLength / 20);
 
         // This looks a bit pants, but we need it in to work around a bug in
         // the windows 7 LAF where the slider is tiny if labels are not drawn.
@@ -98,8 +93,8 @@ public class DataZoomSelector extends JDialog implements ActionListener,
         slider.setPaintTrack(true);
         Hashtable<Integer, Component> labelTable = new Hashtable<Integer, Component>();
 
-        for (int i = 0; i <= 200; i += 20) {
-            labelTable.put(i, new JLabel("" + (i / 10)));
+        for (int i = 0; i <= 20; i++) {
+            labelTable.put(currentChromosomeLength / 20 * i, new JLabel("" + i));
         }
         slider.setLabelTable(labelTable);
 
@@ -112,7 +107,7 @@ public class DataZoomSelector extends JDialog implements ActionListener,
 
         getContentPane().add(closeButton, BorderLayout.SOUTH);
 
-        setSize(100, 250);
+        setSize(300, 100);
         setLocationRelativeTo(application);
         setVisible(true);
 
@@ -137,8 +132,24 @@ public class DataZoomSelector extends JDialog implements ActionListener,
      * )
      */
     public void stateChanged(ChangeEvent ce) {
-        currentMaxZoom = Math.pow(2, slider.getValue() / 10d);
-        DisplayPreferences.getInstance().setMaxDataValue(currentMaxZoom);
+        int currentMidPoint = DisplayPreferences.getInstance().getCurrentMidPoint();
+        currentViewLength = slider.getValue();
+        int start = DisplayPreferences.getInstance().getCurrentStartLocation();
+        int end = DisplayPreferences.getInstance().getCurrentEndLocation();
+        System.out.println(currentMidPoint + "\t" + currentViewLength + "\t" + start + "\t" + end);
+        if (start < 20) {
+            DisplayPreferences.getInstance().setLocation(0, currentMidPoint + currentViewLength / 2);
+        } else if (end > currentChromosomeLength - 20) {
+            DisplayPreferences.getInstance().setLocation(currentMidPoint - currentViewLength / 2,
+                    currentChromosomeLength);
+        } else if (start == 0 && end == currentChromosomeLength) {
+            DisplayPreferences.getInstance().setLocation(0,
+                    currentChromosomeLength);
+            slider.setValue(currentChromosomeLength);
+        } else {
+            DisplayPreferences.getInstance().setLocation(currentMidPoint - currentViewLength / 2,
+                    currentMidPoint + currentViewLength / 2);
+        }
         application.genomeViewer().repaint();
     }
 }
