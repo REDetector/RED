@@ -25,7 +25,7 @@ public class MainREDToolbar extends REDToolbar {
     private JButton findFeatureButton;
 
     /**
-     * Instantiates a new seq monk toolbar.
+     * Instantiates a new red toolbar.
      *
      * @param menu the menu
      */
