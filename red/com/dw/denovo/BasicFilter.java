@@ -117,4 +117,17 @@ public class BasicFilter {
 			e.printStackTrace();
 		}
 	}
+	
+	 public void distinctTable() {
+		 System.out.println("post start" + " " + df.format(new Date()));
+		
+		 databaseManager.executeSQL("create temporary table newtable select distinct * from "
+		 + basicTable);
+		 databaseManager.executeSQL("truncate table " + basicTable);
+		 databaseManager.executeSQL("insert into " + basicTable +
+		 " select * from  "+basicTable+"");
+		 databaseManager.deleteTable("newTable");
+		
+		 System.out.println("post end" + " " + df.format(new Date()));
+		 }
 }

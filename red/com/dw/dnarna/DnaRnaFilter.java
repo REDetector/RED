@@ -34,7 +34,7 @@ public class DnaRnaFilter {
 		this.refTable = refTable;
 	}
 
-	public boolean esdr() {
+	public boolean createDnaRnaTable() {
 		System.out.println("esdr start" + " " + df.format(new Date()));// new
 																		// Date()为获取当前系统时间
 
@@ -115,4 +115,17 @@ public class DnaRnaFilter {
 			e.printStackTrace();
 		}
 	}
+	
+	public void distinctTable() {
+		 System.out.println("post start" + " " + df.format(new Date()));
+		
+		 databaseManager.executeSQL("create temporary table newtable select distinct * from "
+		 + DnaRnaTable);
+		 databaseManager.executeSQL("truncate table " + DnaRnaTable);
+		 databaseManager.executeSQL("insert into " + DnaRnaTable +
+		 " select * from  "+DnaRnaTable+"");
+		 databaseManager.deleteTable("newTable");
+		
+		 System.out.println("post end" + " " + df.format(new Date()));
+		 }
 }

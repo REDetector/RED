@@ -103,12 +103,12 @@ public class RepeatFilter {
 																			// Date()Ϊ��ȡ��ǰϵͳʱ��
 
 		databaseManager.deleteTable(repeatTable);
-		databaseManager.createTable(repeatTable, "(chrome text,"
-				+ Utilities.getInstance().getS2() + ")");
+		databaseManager.createTable(repeatTable, "(chrome varchar(15),"
+				+ Utilities.getInstance().getS2() + "," + "index(chrome,pos))");
 
 		databaseManager.deleteTable("alutemp");
-		databaseManager.createTable("alutemp", "(chrome text,"
-				+ Utilities.getInstance().getS2() + ")");
+		databaseManager.createTable("alutemp", "(chrome varchar(15),"
+				+ Utilities.getInstance().getS2() + "," + "index(chrome,pos))");
 
 		System.out.println("esrepeat end" + " " + df.format(new Date()));
 	}
@@ -118,14 +118,14 @@ public class RepeatFilter {
 
 		databaseManager.executeSQL("insert into " + repeatTable
 				+ " select * from " + refTable
-				+ " where not exists (select *FROM " + referenceRepeat
+				+ " where not exists (select * FROM " + referenceRepeat
 				+ " where (" + refTable + ".chrome=" + referenceRepeat
 				+ ".chrome and " + refTable + ".pos>" + referenceRepeat
 				+ ".begin and " + refTable + ".pos<" + referenceRepeat
 				+ ".end)) ");
 
 		databaseManager.executeSQL("insert into alutemp select * from "
-				+ refTable + " where exists (select *FROM " + referenceRepeat
+				+ refTable + " where exists (select * FROM " + referenceRepeat
 				+ " where (" + refTable + ".chrome=" + referenceRepeat
 				+ ".chrome and " + refTable + ".pos>" + referenceRepeat
 				+ ".begin and " + refTable + ".pos<" + referenceRepeat
@@ -156,7 +156,8 @@ public class RepeatFilter {
 					break;
 				case 1:
 					ps = coordinate.get(i);
-					rs = databaseManager.query(referenceRepeat, "type",
+					System.out.println(chr+" "+ps);
+					rs = databaseManager.query(referenceRepeat, " type ",
 							"(chrome='" + chr + "' and begin<" + ps
 									+ " and end>" + ps + ")");
 					if (!rs.next()) {
@@ -165,7 +166,7 @@ public class RepeatFilter {
 								+ " where chrome='" + chr + "' and pos=" + ps
 								+ "");
 						count++;
-						System.out.println(i);
+						
 						if (count % 10000 == 0) {
 							databaseManager.commit();
 						}
@@ -196,4 +197,17 @@ public class RepeatFilter {
 			e.printStackTrace();
 		}
 	}
+	
+	public void distinctTable() {
+		 System.out.println("post start" + " " + df.format(new Date()));
+		
+		 databaseManager.executeSQL("create temporary table newtable select distinct * from "
+		 + repeatTable);
+		 databaseManager.executeSQL("truncate table " + repeatTable);
+		 databaseManager.executeSQL("insert into " + repeatTable +
+		 " select * from  "+repeatTable+"");
+		 databaseManager.deleteTable("newTable");
+		
+		 System.out.println("post end" + " " + df.format(new Date()));
+		 }
 }

@@ -121,5 +121,18 @@ public class ComphrehensiveFilter {
 		}
 
 	}
+	
+	public void distinctTable() {
+		 System.out.println("post start" + " " + df.format(new Date()));
+		
+		 databaseManager.executeSQL("create temporary table newtable select distinct * from "
+		 + ComphrehensiveTable);
+		 databaseManager.executeSQL("truncate table " + ComphrehensiveTable);
+		 databaseManager.executeSQL("insert into " + ComphrehensiveTable +
+		 " select * from  "+ComphrehensiveTable+"");
+		 databaseManager.deleteTable("newTable");
+		
+		 System.out.println("post end" + " " + df.format(new Date()));
+		 }
 
 }
