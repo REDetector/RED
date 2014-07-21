@@ -15,6 +15,9 @@ public class Utilities {
 	protected String line;
 	private StringBuffer s2 = new StringBuffer();
 	private StringBuffer s3 = new StringBuffer();
+	private StringBuffer dnaTable = new StringBuffer();
+	private StringBuffer dnaValue = new StringBuffer();
+	
 	public StringBuffer getS2() {
 		return s2;
 	}
@@ -22,6 +25,24 @@ public class Utilities {
 	public void setS2(StringBuffer s2) {
 		this.s2 = s2;
 	}
+	
+	public StringBuffer getdnaTable() {
+		return dnaTable;
+	}
+
+	public void setdnaTable(StringBuffer dnaTable) {
+		this.dnaTable = dnaTable;
+	}
+	
+	public StringBuffer getdnaValue() {
+		return dnaValue;
+	}
+
+	public void setdnaValue(StringBuffer dnaValue) {
+		this.dnaValue = dnaValue;
+	}
+	
+	
 	
 
 	public StringBuffer getS3() {
@@ -57,7 +78,8 @@ public class Utilities {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		BufferedReader rin = new BufferedReader(new InputStreamReader(inputStream));
+		BufferedReader rin = new BufferedReader(new InputStreamReader(
+				inputStream));
 		try {
 			while ((line = rin.readLine()) != null) {
 				String[] section=line.split("\\t");
