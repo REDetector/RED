@@ -1,5 +1,7 @@
 package com.dw.publicaffairs;
 
+import java.sql.SQLException;
+
 import com.dw.denovo.BasicFilter;
 import com.dw.denovo.ComphrehensiveFilter;
 import com.dw.denovo.DbsnpFilter;
@@ -31,7 +33,14 @@ public class Connect {
 
 		// TODO Auto-generated method stub
 		DatabaseManager manager = DatabaseManager.getInstance();
+		try{
 		manager.connectDatabase("localhost", "3306", "root", "root");
+		}catch(SQLException e){
+			e.printStackTrace();
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		manager.createStatement();
 		manager.setAutoCommit(true);
 
@@ -151,7 +160,7 @@ public class Connect {
 
 		 Utilities.getInstance().createCalTable(args[1]);
 		 df.establishRnaTable();
-		 df.RnaVcf(Integer.parseInt(args[8]));
+		 df.rnaVcf(Integer.parseInt(args[8]));
 		
 		 BasicFilter bf = new BasicFilter(manager, "rnaVcf", "specifictemp",
 		 "basictemp");
