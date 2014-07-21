@@ -124,6 +124,7 @@ public class DnaRnaVcf {
 			// timer for transaction
 			int ts_count = 0;
 			int depth = -1;
+			int gtype=-1;
 			try {
 				inputStream = new FileInputStream(rnaFile);
 			} catch (FileNotFoundException e) {
@@ -150,6 +151,9 @@ public class DnaRnaVcf {
 						if (line.split("\\t")[8].split(":")[i].equals("DP")) {
 							depth = i;
 						}
+						if (col[8].split(":")[i].equals("GT")) {
+							gtype = i;
+						}
 					}
 					count_r--;
 				}
@@ -157,6 +161,12 @@ public class DnaRnaVcf {
 				// '.' stands for undetected, so we discard it
 				// if ((depth>-1)&&col[num].split(":")[depth].equals("."))
 				// continue;
+				if (gtype > -1
+						&& ((col[num].split(":")[gtype].split("/")[0]
+								.equals(".")) || (col[num].split(":")[gtype]
+								.split("/")[1].equals(".")))) {
+					continue;
+				}
 				s1.append("'" + col[0] + "'");
 				for (int i = 1; i < 8; i++)
 					s1.append("," + "'" + col[i] + "'");
@@ -195,6 +205,7 @@ public class DnaRnaVcf {
 			// timer for transaction
 			int ts_count = 0;
 			int depth = -1;
+			int gtype=-1;
 			try {
 				inputStream = new FileInputStream(rnaFile);
 			} catch (FileNotFoundException e) {
@@ -221,6 +232,9 @@ public class DnaRnaVcf {
 						if (line.split("\\t")[8].split(":")[i].equals("DP")) {
 							depth = i;
 						}
+						if (col[8].split(":")[i].equals("GT")) {
+							gtype = i;
+						}
 					}
 					count_r--;
 				}
@@ -228,6 +242,12 @@ public class DnaRnaVcf {
 				// '.' stands for undetected, so we discard it
 				// if ((depth>-1)&&col[num].split(":")[depth].equals("."))
 				// continue;
+				if (gtype > -1
+						&& ((col[9].split(":")[gtype].split("/")[0]
+								.equals(".")) || (col[9].split(":")[gtype]
+								.split("/")[1].equals(".")))) {
+					continue;
+				}
 				s1.append("'" + col[0] + "'");
 				for (int i = 1; i < 8; i++)
 					s1.append("," + "'" + col[i] + "'");

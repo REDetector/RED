@@ -40,7 +40,7 @@ public class DbsnpFilter {
 
 		databaseManager.deleteTable(dbSnpTable);
 		databaseManager.createTable(dbSnpTable, "(chrome varchar(30),"
-				+ Utilities.getInstance().getS2() + ")");
+				+ Utilities.getInstance().getS2() + "," + "index(chrome,pos))");
 
 		System.out.println("establishsnp end" + " " + df.format(new Date()));
 		return true;
@@ -141,4 +141,16 @@ public class DbsnpFilter {
 	// databaseManager.commit();
 	// databaseManager.setAutoCommit(true);
 	// }
+	public void distinctTable() {
+		 System.out.println("post start" + " " + df.format(new Date()));
+		
+		 databaseManager.executeSQL("create temporary table newtable select distinct * from "
+		 + dbSnpTable);
+		 databaseManager.executeSQL("truncate table " + dbSnpTable);
+		 databaseManager.executeSQL("insert into " + dbSnpTable +
+		 " select * from  "+dbSnpTable+"");
+		 databaseManager.deleteTable("newTable");
+		
+		 System.out.println("post end" + " " + df.format(new Date()));
+		 }
 }

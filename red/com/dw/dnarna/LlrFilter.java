@@ -37,7 +37,7 @@ public class LlrFilter {
 		this.refTable = refTable;
 	}
 
-	public boolean esllr() {
+	public boolean createLlrTable() {
 		System.out.println("esllr start" + " " + df.format(new Date()));// new
 																		// Date()为获取当前系统时间
 
@@ -145,6 +145,7 @@ public class LlrFilter {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		
 	}
 	// public void post() {
 	// try {
@@ -169,6 +170,18 @@ public class LlrFilter {
 	// e.printStackTrace();
 	// }
 	// }
+	public void distinctTable() {
+		 System.out.println("post start" + " " + df.format(new Date()));
+		
+		 databaseManager.executeSQL("create temporary table newtable select distinct * from "
+		 + llrTable);
+		 databaseManager.executeSQL("truncate table " + llrTable);
+		 databaseManager.executeSQL("insert into " + llrTable +
+		 " select * from  "+llrTable+"");
+		 databaseManager.deleteTable("newTable");
+		
+		 System.out.println("post end" + " " + df.format(new Date()));
+		 }
 }
 
 // while (db.rs.next()) {
