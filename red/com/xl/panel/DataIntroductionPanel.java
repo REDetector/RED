@@ -88,10 +88,7 @@ public class DataIntroductionPanel extends JPanel {
             sb.append("<br><br>");
             sb.append("<b>Example</b>: dbsnp_138.hg19.vcf");
             sb.append("<br>");
-            sb.append("<b>From</b>: http://orione.crs4.it/library_common/downlo\n" +
-                    "ad_dataset_from_folder?library_id=c6107057926ff452\n" +
-                    "&show_deleted=False&cntrller=library&use_panels=Fa\n" +
-                    "lse&id=828af794cb1857d3");
+            sb.append("<b>From</b>: http://www.ncbi.nlm.nih.gov/SNP/");
             label.setText(sb.toString());
         } else if (LocationPreferences.DARNED_FILE.equals(dataType)) {
             sb.append("<p style=\"text-align:center\"><b>" + LocationPreferences.DARNED_FILE + "</b></p>");

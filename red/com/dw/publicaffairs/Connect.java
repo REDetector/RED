@@ -1,14 +1,11 @@
 package com.dw.publicaffairs;
 
-import com.dw.denovo.BasicFilter;
-import com.dw.denovo.ComphrehensiveFilter;
-import com.dw.denovo.DbsnpFilter;
-import com.dw.denovo.DenovoVcf;
-import com.dw.denovo.PValueFilter;
-import com.dw.denovo.RepeatFilter;
+import com.dw.denovo.*;
 import com.dw.dnarna.DnaRnaFilter;
 import com.dw.dnarna.DnaRnaVcf;
 import com.dw.dnarna.LlrFilter;
+
+import java.sql.SQLException;
 
 public class Connect {
 	/**
@@ -31,9 +28,15 @@ public class Connect {
 
 		// TODO Auto-generated method stub
 		DatabaseManager manager = DatabaseManager.getInstance();
-		manager.connectDatabase("localhost", "3306", "root", "root");
-		manager.createStatement();
-		manager.setAutoCommit(true);
+        try {
+            manager.connectDatabase("localhost", "3306", "root", "root");
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        manager.createStatement();
+        manager.setAutoCommit(true);
 
 //		boolean isDenovo = false;
 //		if (!isDenovo) {
@@ -151,9 +154,9 @@ public class Connect {
 
 		 Utilities.getInstance().createCalTable(args[1]);
 		 df.establishRnaTable();
-		 df.RnaVcf(Integer.parseInt(args[8]));
-		
-		 BasicFilter bf = new BasicFilter(manager, "rnaVcf", "specifictemp",
+             df.rnaVcf(Integer.parseInt(args[8]));
+
+             BasicFilter bf = new BasicFilter(manager, "rnaVcf", "specifictemp",
 		 "basictemp");
 		 bf.createSpecificTable();
 		 bf.specificf();
