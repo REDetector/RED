@@ -32,6 +32,7 @@ public class REDPreferences {
     public static final String CRASH_EMAIL = "CrashEmail";
     public static final String COMPRESS_OUTPUT = "CompressOutput";
     public static final String CHECK_FOR_UPDATE = "CheckForUpdate";
+    public static final String DATA_LOADED_TO_DATABASE = "DataLoaded";
 
     /**
      * The single instantiated instance of redPreferences
@@ -75,6 +76,9 @@ public class REDPreferences {
      * The email address we should attach to crash reports
      */
     private String crashEmail = "";
+
+
+    private boolean dataLoadedToDatabase = false;
 
     /**
      * Instantiates a redPreferences object. Only ever called once from inside this
@@ -258,4 +262,11 @@ public class REDPreferences {
         }
     }
 
+    public boolean isDataLoadedToDatabase() {
+        return dataLoadedToDatabase;
+    }
+
+    public void setDataLoadedToDatabase(boolean dataLoadedToDatabase) {
+        this.dataLoadedToDatabase = dataLoadedToDatabase;
+    }
 }

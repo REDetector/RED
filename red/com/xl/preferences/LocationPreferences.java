@@ -24,7 +24,12 @@ public class LocationPreferences {
     public static final String RECENTLY_OPENED_FILES = "RecentlyOpenedFiles";
     public static final String RECENTLY_OPENED_FILES_NUMBER = "RecentlyOpenedFilesNumber";
     public static final String DATA_DIRECTORY = "Data";
-
+    public static final String DNA_VCF_FILE = "DNA Vcf File";
+    public static final String RNA_VCF_FILE = "RNA Vcf File";
+    public static final String REPEAT_FILE = "Repeat File";
+    public static final String REF_SEQ_FILE = "RefSeq File";
+    public static final String DBSNP_FILE = "dbSNP File";
+    public static final String DARNED_FILE = "DARNED File";
 
     public static LocationPreferences locationPreferences = new LocationPreferences();
 

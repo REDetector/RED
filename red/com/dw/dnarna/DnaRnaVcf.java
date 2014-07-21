@@ -3,16 +3,13 @@ package com.dw.dnarna;
 /**
  * import vcf file
  */
-import java.io.BufferedReader;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
 import com.dw.publicaffairs.DatabaseManager;
 import com.dw.publicaffairs.Utilities;
+
+import java.io.*;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class DnaRnaVcf {
 	// establish database connection;
@@ -114,9 +111,9 @@ public class DnaRnaVcf {
 		return depth;
 	}
 
-	// table for RnaVcf X.length-9=time for circulation
-	public void RnaVcf(int num) {
-		System.out.println("rnavcf start" + " " + df.format(new Date()));// new
+    // table for rnaVcf X.length-9=time for circulation
+    public void rnaVcf(int num) {
+        System.out.println("rnavcf start" + " " + df.format(new Date()));// new
 																			// Date()为锟斤拷取锟斤拷前系统时锟斤�?
 		try {
 
@@ -165,7 +162,6 @@ public class DnaRnaVcf {
 					// System.out.println(temp[i]);
 					s1.append("," + "'" + temp[i] + "'");
 				}
-				// 锟斤拷菘锟斤拷锟捷诧拷锟诫，每锟叫诧拷锟斤拷
 				databaseManager.executeSQL("insert into " + rnaVcf + "("
 						+ Utilities.getInstance().getS3() + ") values(" + s1
 						+ ")");
@@ -183,12 +179,11 @@ public class DnaRnaVcf {
 		}
 
 		System.out.println("rnavcf end" + " " + df.format(new Date()));// new
-																		// Date()为锟斤拷取锟斤拷前系统时锟斤�?
 	}
 
-	public void RnaVcf() {
-		System.out.println("rnavcf start" + " " + df.format(new Date()));// new
-																			// Date()为锟斤拷取锟斤拷前系统时锟斤�?
+    public void rnaVcf() {
+        System.out.println("rnavcf start" + " " + df.format(new Date()));
+
 		try {
 
 			databaseManager.setAutoCommit(false);
@@ -236,7 +231,6 @@ public class DnaRnaVcf {
 					// System.out.println(temp[i]);
 					s1.append("," + "'" + temp[i] + "'");
 				}
-				// 锟斤拷菘锟斤拷锟捷诧拷锟诫，每锟叫诧拷锟斤拷
 				databaseManager.executeSQL("insert into " + rnaVcf + "("
 						+ Utilities.getInstance().getS3() + ") values(" + s1
 						+ ")");
@@ -254,13 +248,11 @@ public class DnaRnaVcf {
 		}
 
 		System.out.println("rnavcf end" + " " + df.format(new Date()));// new
-																		// Date()为锟斤拷取锟斤拷前系统时锟斤�?
 	}
 
 	// table for DnaVcf
 	public void dnaVcf(int num) {
 		System.out.println("dnavcf start" + " " + df.format(new Date()));// new
-																			// Date()为获取当前系统时�?
 		try {
 			databaseManager.setAutoCommit(false);
 			// timer for transaction
@@ -443,7 +435,6 @@ public class DnaRnaVcf {
 			e.printStackTrace();
 		}
 		System.out.println("dnavcf end" + " " + df.format(new Date()));// new
-																		// Date()为获取当前系统时�?
 	}
 
 }

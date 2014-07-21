@@ -1,11 +1,14 @@
 package com.xl.dialog;
 
+import com.dw.publicaffairs.DatabaseManager;
 import com.xl.main.REDApplication;
+import com.xl.preferences.REDPreferences;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.SQLException;
 
 /**
  * @author Jim Robinson
@@ -16,9 +19,11 @@ public class UserPasswordDialog extends JDialog implements ActionListener {
     private JTextField portField;
     private JTextField userField;
     private JPasswordField passwordField;
+    private REDApplication application;
 
     public UserPasswordDialog(REDApplication application) {
         super(application, "MySQL Server Login...");
+        this.application = application;
         setSize(500, 400);
         setModal(true);
         setLocationRelativeTo(application);
@@ -104,10 +109,52 @@ public class UserPasswordDialog extends JDialog implements ActionListener {
             String port = portField.getText();
             String user = userField.getText();
             String pwd = String.valueOf(passwordField.getPassword());
-            System.out.println(host + "\t" + port + "\t" + user + "\t" + String.valueOf(pwd));
+            ProgressDialog progressDialog = new ProgressDialog(this, "Connecting to database...");
+            try {
+                progressDialog.requestFocus();
+                if (DatabaseManager.getInstance().connectDatabase(host, port, user, pwd)) {
+                    if (!REDPreferences.getInstance().isDataLoadedToDatabase()) {
+                        if (application.dataCollection().genome().getAllChromosomes() == null) {
+                            JOptionPane.showMessageDialog(application, "<html>Connect Successfully. " +
+                                            "<br>You may start a new project before you input your data into database. " +
+                                            "<br>Click 'ok' to the next step.",
+                                    "Connect Successfully",
+                                    JOptionPane.INFORMATION_MESSAGE);
+                            setVisible(false);
+                            application.startNewProject();
+                        } else {
+                            JOptionPane.showMessageDialog(application, "<html>Connect Successfully. " +
+                                            "<br>You may import your data into database before detecting editing " +
+                                            "sites. <br>Click 'ok' to the next step.",
+                                    "Connect Successfully",
+                                    JOptionPane.INFORMATION_MESSAGE);
+                            setVisible(false);
+                            new DataInportDialog(application);
+                        }
+                    } else {
+                        JOptionPane.showMessageDialog(application, "<html>Connect Successfully. " +
+                                        "<br>You can detect editing sites using the filter in 'Filter' menu",
+                                "Connect Successfully",
+                                JOptionPane.INFORMATION_MESSAGE);
+                    }
+                    progressDialog.progressComplete("database_connected", DatabaseManager.getInstance());
+                    dispose();
+                }
+            } catch (ClassNotFoundException e1) {
+                new CrashReporter(e1);
+                progressDialog.progressCancelled();
+                e1.printStackTrace();
+            } catch (SQLException e1) {
+                JOptionPane.showMessageDialog(this, "Sorry, fail to connect to database. You may input one of wrong " +
+                                "database site, user name or password.", "Connected Failed",
+                        JOptionPane.ERROR_MESSAGE);
+                progressDialog.progressCancelled();
+                e1.printStackTrace();
+            }
         } else if (action.equals("cancel")) {
             setVisible(false);
             dispose();
         }
     }
+
 }
