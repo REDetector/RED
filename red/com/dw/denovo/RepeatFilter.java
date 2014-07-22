@@ -3,20 +3,17 @@ package com.dw.denovo;
 /**
  * we will filter out base in repeated area except for SINE/alu
  */
-import java.io.BufferedReader;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStreamReader;
+
+import com.dw.publicaffairs.DatabaseManager;
+import com.dw.publicaffairs.Utilities;
+
+import java.io.*;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-
-import com.dw.publicaffairs.DatabaseManager;
-import com.dw.publicaffairs.Utilities;
 
 public class RepeatFilter {
 	private DatabaseManager databaseManager;
@@ -32,7 +29,6 @@ public class RepeatFilter {
 	private String chr = null;
 	private String ps = null;
 
-	// �������ڸ�ʽ
 	SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
 	public RepeatFilter(DatabaseManager databaseManager, String repeatIn,
@@ -157,8 +153,8 @@ public class RepeatFilter {
 				case 1:
 					ps = coordinate.get(i);
 					System.out.println(chr+" "+ps);
-					rs = databaseManager.query(referenceRepeat, " type ",
-							"(chrome='" + chr + "' and begin<" + ps
+                    rs = databaseManager.query(referenceRepeat, "type",
+                            "(chrome='" + chr + "' and begin<" + ps
 									+ " and end>" + ps + ")");
 					if (!rs.next()) {
 						databaseManager.executeSQL("insert into " + repeatTable
