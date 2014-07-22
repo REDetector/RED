@@ -14,6 +14,7 @@ import com.dw.publicaffairs.Utilities;
 import com.xl.main.REDApplication;
 import com.xl.panel.DataIntroductionPanel;
 import com.xl.preferences.LocationPreferences;
+import com.xl.preferences.REDPreferences;
 
 import javax.swing.*;
 import java.awt.*;
@@ -215,8 +216,8 @@ public class DataInportDialog extends JDialog implements ActionListener {
                 bf.basicf(20, 6);
                 bf.distinctTable();
 
-                RepeatFilter rf = new
-                        RepeatFilter(manager, repeatFile.getText(), "repeattemp", "referencerepeat", "basictemp");
+                RepeatFilter rf = new RepeatFilter(manager, repeatFile.getText(), "repeattemp", "referencerepeat",
+                        "basictemp");
                 rf.loadrepeat();
                 rf.establishrepeat();
                 rf.rfilter();
@@ -299,8 +300,7 @@ public class DataInportDialog extends JDialog implements ActionListener {
 
             }
             manager.closeDatabase();
-
-
+            REDPreferences.getInstance().setDataLoadedToDatabase(true);
             setVisible(false);
             dispose();
         }

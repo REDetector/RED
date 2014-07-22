@@ -117,6 +117,7 @@ public class REDPreferences {
         setCrashEmail(properties.getProperty(CRASH_EMAIL));
         setCompressOutput(Boolean.getBoolean(properties.getProperty(COMPRESS_OUTPUT)));
         setCheckForUpdates(Boolean.getBoolean(properties.getProperty(CHECK_FOR_UPDATE)));
+        setDataLoadedToDatabase(Boolean.getBoolean(properties.getProperty(DATA_LOADED_TO_DATABASE)));
         String[] proxys = properties.getProperty(PROXY).split(",");
         if (proxys.length == 2) {
             setProxy(proxys[0], Integer.parseInt(proxys[1]));
@@ -140,6 +141,7 @@ public class REDPreferences {
         properties.setProperty(CRASH_EMAIL, crashEmail);
         properties.setProperty(COMPRESS_OUTPUT, Boolean.toString(compressOutput));
         properties.setProperty(CHECK_FOR_UPDATE, Boolean.toString(checkForUpdates));
+        properties.setProperty(DATA_LOADED_TO_DATABASE, Boolean.toString(dataLoadedToDatabase));
         locationPreferences.savePreferences(properties);
         properties.store(p, "RED Preferences. DO NOT edit it individually.");
         p.close();
