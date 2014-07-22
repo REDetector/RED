@@ -7,11 +7,15 @@ import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Vector;
 
 import com.dw.publicaffairs.DatabaseManager;
 import com.dw.publicaffairs.Utilities;
+import com.xl.datatypes.probes.Probe;
 
 public class DbsnpFilter {
 	private DatabaseManager databaseManager;
@@ -23,7 +27,7 @@ public class DbsnpFilter {
 	private String referencedbSnp = null;
 	private String refTable = null;
 	// File file = new File("D:/TDDOWNLOAD/data/dbsnp_138.hg19.vcf");
-	// 锟斤拷锟斤拷锟斤拷锟节革拷式
+	// 閿熸枻鎷烽敓鏂ゆ嫹閿熸枻鎷烽敓鑺傞潻鎷峰紡
 	SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
 	public DbsnpFilter(DatabaseManager databaseManager, String snpIn,
@@ -47,14 +51,33 @@ public class DbsnpFilter {
 
 	}
 
-	public boolean dbSnpinput() {
+	public boolean establishRefdbSnp() {
+		databaseManager
+				.createRefTable(referencedbSnp,
+						"(chrome varchar(25),begin int,end int,type varchar(40),index(chrome))");
+		ResultSet rs = databaseManager.query(referencedbSnp, "count(*)",
+				"1 limit 0,100");
+		int number = 0;
 		try {
-			System.out.println("dbsnp start" + " " + df.format(new Date()));// new
-																			// Date()为锟斤拷取锟斤拷前系统时锟斤�?
-
-			databaseManager.deleteTable(referencedbSnp);
-			databaseManager.createTable(referencedbSnp,
-					"(chrome varchar(15),pos varchar(30),index(chrome,pos))");
+			if (rs.next()) {
+				number = rs.getInt(1);
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		if (number > 0) {
+			return false;
+		} else {
+			return true;
+		}
+	}
+	
+	public boolean loadRefdbSnp() {
+		try {
+			System.out.println("loaddbsnp start" + " " + df.format(new Date()));// new
+																			// Date()涓洪敓鏂ゆ嫹鍙栭敓鏂ゆ嫹鍓嶇郴缁熸椂閿熸枻锟�
+			if(establishRefdbSnp()){
 			FileInputStream inputStream = new FileInputStream(snpIn);
 			BufferedReader rin = new BufferedReader(new InputStreamReader(
 					inputStream));
@@ -73,9 +96,10 @@ public class DbsnpFilter {
 							+ referencedbSnp
 							+ " fields terminated by '\t' lines terminated by '\n' IGNORE "
 							+ count + " LINES");
+			}
 
-			System.out.println("dbsnp end" + " " + df.format(new Date()));// new
-																			// Date()为锟斤拷取锟斤拷前系统时锟斤�?
+			System.out.println("loaddbsnp end" + " " + df.format(new Date()));// new
+																			// Date()涓洪敓鏂ゆ嫹鍙栭敓鏂ゆ嫹鍓嶇郴缁熸椂閿熸枻锟�
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -86,7 +110,7 @@ public class DbsnpFilter {
 
 	public void snpFilter() {
 		System.out.println("dbsnpf start" + " " + df.format(new Date()));// new
-																			// Date()为锟斤拷取锟斤拷前系统时锟斤�?
+																			// Date()涓洪敓鏂ゆ嫹鍙栭敓鏂ゆ嫹鍓嶇郴缁熸椂閿熸枻锟�
 
 		databaseManager.executeSQL("insert into " + dbSnpTable
 				+ " select * from " + refTable
@@ -96,15 +120,15 @@ public class DbsnpFilter {
 				+ ".pos))");
 
 		System.out.println("dbsnpf end" + " " + df.format(new Date()));// new
-																		// Date()为锟斤拷取锟斤拷前系统时锟斤�?
+																		// Date()涓洪敓鏂ゆ嫹鍙栭敓鏂ゆ嫹鍓嶇郴缁熸椂閿熸枻锟�
 	}
 	// public void snpF(){
 	// System.out.println("snpf start"+" "+df.format(new Date()));// new
-	// Date()为锟斤拷取锟斤拷前系统时锟斤�?
+	// Date()涓洪敓鏂ゆ嫹鍙栭敓鏂ゆ嫹鍓嶇郴缁熸椂閿熸枻锟�
 	// try {
 	//
 	// System.out.println("snpf end"+" "+df.format(new Date()));// new
-	// Date()为锟斤拷取锟斤拷前系统时锟斤�?
+	// Date()涓洪敓鏂ゆ嫹鍙栭敓鏂ゆ嫹鍓嶇郴缁熸椂閿熸枻锟�
 	// } catch (SQLException e) {
 	// // TODO Auto-generated catch block
 	// e.printStackTrace();
@@ -148,9 +172,53 @@ public class DbsnpFilter {
 		 + dbSnpTable);
 		 databaseManager.executeSQL("truncate table " + dbSnpTable);
 		 databaseManager.executeSQL("insert into " + dbSnpTable +
-		 " select * from  "+dbSnpTable+"");
+		 " select * from  newtable");
 		 databaseManager.deleteTable("newTable");
 		
 		 System.out.println("post end" + " " + df.format(new Date()));
 		 }
+	
+	public Vector<Probe> queryAllEditingSites(){
+		Vector<Probe> probeVector= new Vector<>();
+		ResultSet rs=databaseManager.query(dbSnpTable, " chrome, pos,alt "," 1 ");
+		try {
+			while(rs.next()){
+				Probe p=new Probe(rs.getString(1),rs.getInt(2),rs.getString(3).toCharArray()[0]);
+				probeVector.add(p);
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return probeVector;
+	}
+ 
+ public Probe queryEditingSite(String chrome,int pos){
+		ResultSet rs=databaseManager.query(dbSnpTable, " chrome, pos ,alt "," chrome="+chrome+" and pos='"+pos+"' ");
+		try {
+			while(rs.next()){
+				return new Probe(rs.getString(1),rs.getInt(2),rs.getString(3).toCharArray()[0]);
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return null;
+		}
+		return null;
+	}
+ 
+ public Vector<Probe> queryEditingSitesForChr(String chrome){
+		Vector<Probe> probeVector= new Vector<>();
+		ResultSet rs=databaseManager.query(dbSnpTable, " chrome, pos ,alt "," chrome="+chrome+" ");
+		try {
+			while(rs.next()){
+				Probe p=new Probe(rs.getString(1),rs.getInt(2),rs.getString(3).toCharArray()[0]);
+				probeVector.add(p);
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return probeVector;
+	}
 }

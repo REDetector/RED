@@ -9,9 +9,11 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Vector;
 
 import com.dw.publicaffairs.DatabaseManager;
 import com.dw.publicaffairs.Utilities;
+import com.xl.datatypes.probes.Probe;
 
 public class DnaRnaFilter {
 	private DatabaseManager databaseManager;
@@ -123,9 +125,53 @@ public class DnaRnaFilter {
 		 + DnaRnaTable);
 		 databaseManager.executeSQL("truncate table " + DnaRnaTable);
 		 databaseManager.executeSQL("insert into " + DnaRnaTable +
-		 " select * from  "+DnaRnaTable+"");
+		 " select * from  newtable");
 		 databaseManager.deleteTable("newTable");
 		
 		 System.out.println("post end" + " " + df.format(new Date()));
 		 }
+	
+	public Vector<Probe> queryAllEditingSites(){
+		Vector<Probe> probeVector= new Vector<>();
+		ResultSet rs=databaseManager.query(DnaRnaTable, " chrome, pos,alt "," 1 ");
+		try {
+			while(rs.next()){
+				Probe p=new Probe(rs.getString(1),rs.getInt(2),rs.getString(3).toCharArray()[0]);
+				probeVector.add(p);
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return probeVector;
+	}
+ 
+ public Probe queryEditingSite(String chrome,int pos){
+		ResultSet rs=databaseManager.query(DnaRnaTable, " chrome, pos ,alt "," chrome="+chrome+" and pos='"+pos+"' ");
+		try {
+			while(rs.next()){
+				return new Probe(rs.getString(1),rs.getInt(2),rs.getString(3).toCharArray()[0]);
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return null;
+		}
+		return null;
+	}
+ 
+ public Vector<Probe> queryEditingSitesForChr(String chrome){
+		Vector<Probe> probeVector= new Vector<>();
+		ResultSet rs=databaseManager.query(DnaRnaTable, " chrome, pos ,alt "," chrome="+chrome+" ");
+		try {
+			while(rs.next()){
+				Probe p=new Probe(rs.getString(1),rs.getInt(2),rs.getString(3).toCharArray()[0]);
+				probeVector.add(p);
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return probeVector;
+	}
 }

@@ -16,8 +16,10 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Vector;
 
 import com.dw.publicaffairs.DatabaseManager;
+import com.xl.datatypes.probes.Probe;
 
 public class PValueFilter {
 	private DatabaseManager databaseManager;
@@ -29,11 +31,11 @@ public class PValueFilter {
 	FileInputStream inputStream;
 	private String line = null;
 	private String[] col = new String[40];
-	// insert时使锟矫碉拷锟斤拷锟�?
+	// insert鏃朵娇閿熺煫纰夋嫹閿熸枻鎷烽敓锟�
 	private StringBuffer s1 = new StringBuffer();
 	private StringBuffer s2 = new StringBuffer();
-	// create table时使锟矫碉拷锟街凤拷
-	// insert 时锟斤拷使锟矫碉拷锟斤拷锟斤�?
+	// create table鏃朵娇閿熺煫纰夋嫹閿熻鍑ゆ嫹
+	// insert 鏃堕敓鏂ゆ嫹浣块敓鐭鎷烽敓鏂ゆ嫹閿熸枻锟�
 	private StringBuffer s3 = new StringBuffer();
 	private int count = 1;
 	private String chr;
@@ -50,7 +52,7 @@ public class PValueFilter {
 	private double ref_n = 0;
 	private double alt_n = 0;
 	private double pvalue = 0;
-	// 锟斤拷锟斤拷锟斤拷锟节革拷式
+	// 閿熸枻鎷烽敓鏂ゆ嫹閿熸枻鎷烽敓鑺傞潻鎷峰紡
 	SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
 	public PValueFilter(DatabaseManager databaseManager, String pIn,
@@ -61,11 +63,12 @@ public class PValueFilter {
 		this.refHg19 = refHg19;
 		this.dnSnpTable = dnSnpTable;
 	}
+	
 
-	public void loadHg19() {
+	public void loadRefHg19() {
 		try {
 			System.out.println("loadhg19 start" + " " + df.format(new Date()));// new
-
+			
 			int count_ts = 0;
 			inputStream = new FileInputStream(pIn);
 			BufferedReader rin = new BufferedReader(new InputStreamReader(
@@ -100,7 +103,7 @@ public class PValueFilter {
 					s1.append("'" + col[0] + "'");
 					for (int i = 1; i < 5; i++)
 						s1.append("," + "'" + col[i] + "'");
-					// 锟斤拷菘锟斤拷锟捷诧拷锟诫，每锟叫诧拷锟斤拷
+					// 閿熸枻鎷疯彉閿熸枻鎷烽敓鎹疯鎷烽敓璇紝姣忛敓鍙鎷烽敓鏂ゆ嫹
 					databaseManager.executeSQL("insert into " + refHg19 + "("
 							+ s3 + ") values(" + s1 + ")");
 					count_ts++;
@@ -117,7 +120,7 @@ public class PValueFilter {
 			s3.delete(0, s3.length());
 
 			System.out.println("loadhg19 end" + " " + df.format(new Date()));// new
-																				// Date()为锟斤拷取锟斤拷前系统时锟斤�?
+																				// Date()涓洪敓鏂ゆ嫹鍙栭敓鏂ゆ嫹鍓嶇郴缁熸椂閿熸枻锟�
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -223,14 +226,14 @@ public class PValueFilter {
 
 	public void P_V(String commandD) {
 		System.out.println("P_V start" + " " + df.format(new Date()));// new
-																		// Date()为锟斤拷取锟斤拷前系统时锟斤�?
+																		// Date()涓洪敓鏂ゆ嫹鍙栭敓鏂ゆ嫹鍓嶇郴缁熸椂閿熸枻锟�
 		estblishPvTable();
 		Exp_num();
 		DecimalFormat dF = new DecimalFormat("0.000 ");
 
 		for (int i = 0, len = fd_ref.size(); i < len; i++) {
-			System.out.println(fd_ref.get(i) + " " + coordinate.get(i) + " "
-					+ i);
+//			System.out.println(fd_ref.get(i) + " " + coordinate.get(i) + " "
+//					+ i);
 			ref_n = fd_ref.get(i);
 			alt_n = fd_alt.get(i);
 			chr = coordinate.get(2 * i);
@@ -243,16 +246,18 @@ public class PValueFilter {
 			// continue;
 			// }
 			calculate(ref_n, alt_n, known_ref, known_alt, commandD);
+			if(pvalue<0.05){
 			databaseManager.executeSQL("insert into " + pValueTable
 					+ "(chrome,pos,ref,alt,level,p_value) values('" + chr
 					+ "'," + ps + "," + (int) ref_n + "," + (int) alt_n + ","
 					+ dF.format(lev) + "," + pvalue + ")");
 			// System.out.println(chr+" "+ps+" "+(int)found_ref[i]+" "+(int)found_alt[i]+" "+dF.format(lev)+" "+pvalue);
 			s1.append(pvalue + "\t");
+			}
 		}
 
 		System.out.println("P_V end" + " " + df.format(new Date()));// new
-																	// Date()为锟斤拷取锟斤拷前系统时锟斤�?
+																	// Date()涓洪敓鏂ゆ嫹鍙栭敓鏂ゆ嫹鍓嶇郴缁熸椂閿熸枻锟�
 	}
 
 	public void fdr(String commandD) {
@@ -297,5 +302,51 @@ public class PValueFilter {
 			e.printStackTrace();
 		}
 	}
+	
+	public Vector<Probe> queryAllEditingSites(){
+		Vector<Probe> probeVector= new Vector<>();
+		ResultSet rs=databaseManager.query(pValueTable, " chrome, pos,alt "," 1 ");
+		try {
+			while(rs.next()){
+				Probe p=new Probe(rs.getString(1),rs.getInt(2),rs.getString(3).toCharArray()[0]);
+				probeVector.add(p);
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return probeVector;
+	}
+ 
+ public Probe queryEditingSite(String chrome,int pos){
+		ResultSet rs=databaseManager.query(pValueTable, " chrome, pos ,alt "," chrome="+chrome+" and pos='"+pos+"' ");
+		try {
+			while(rs.next()){
+				return new Probe(rs.getString(1),rs.getInt(2),rs.getString(3).toCharArray()[0]);
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return null;
+		}
+		return null;
+	}
+ 
+ public Vector<Probe> queryEditingSitesForChr(String chrome){
+		Vector<Probe> probeVector= new Vector<>();
+		ResultSet rs=databaseManager.query(pValueTable, " chrome, pos ,alt "," chrome="+chrome+" ");
+		try {
+			while(rs.next()){
+				Probe p=new Probe(rs.getString(1),rs.getInt(2),rs.getString(3).toCharArray()[0]);
+				probeVector.add(p);
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return probeVector;
+	}
+	
+	
 
 }

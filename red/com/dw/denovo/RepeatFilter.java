@@ -3,17 +3,22 @@ package com.dw.denovo;
 /**
  * we will filter out base in repeated area except for SINE/alu
  */
-
-import com.dw.publicaffairs.DatabaseManager;
-import com.dw.publicaffairs.Utilities;
-
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Vector;
+
+import com.dw.publicaffairs.DatabaseManager;
+import com.dw.publicaffairs.Utilities;
+import com.xl.datatypes.probes.Probe;
 
 public class RepeatFilter {
 	private DatabaseManager databaseManager;
@@ -29,6 +34,7 @@ public class RepeatFilter {
 	private String chr = null;
 	private String ps = null;
 
+	// �������ڸ�ʽ
 	SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
 	public RepeatFilter(DatabaseManager databaseManager, String repeatIn,
@@ -39,12 +45,35 @@ public class RepeatFilter {
 		this.referenceRepeat = referenceRepeat;
 		this.refTable = refTable;
 	}
-
+	
+	public boolean establishRefRepeat() {
+		databaseManager
+				.createRefTable(referenceRepeat,
+						"(chrome varchar(25),begin int,end int,type varchar(40),index(chrome))");
+		ResultSet rs = databaseManager.query(referenceRepeat, "count(*)",
+				"1 limit 0,100");
+		int number = 0;
+		try {
+			if (rs.next()) {
+				number = rs.getInt(1);
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		if (number > 0) {
+			return false;
+		} else {
+			return true;
+		}
+	}
+	
 	public void loadrepeat() {
 		try {
 			System.out
 					.println("loadrepeat start" + " " + df.format(new Date()));// new
-																				// Date()Ϊ��ȡ��ǰϵͳʱ��
+			if(establishRefRepeat())
+			{																	// Date()Ϊ��ȡ��ǰϵͳʱ��
 			int ts_count = 0;
 			try {
 				inputStream = new FileInputStream(repeatIn);
@@ -52,11 +81,6 @@ public class RepeatFilter {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			databaseManager.deleteTable(referenceRepeat);
-			// column index
-			databaseManager
-					.createTable(referenceRepeat,
-							"(chrome varchar(25),begin int,end int,type varchar(40),index(chrome))");
 			databaseManager.setAutoCommit(false);
 			BufferedReader rin = new BufferedReader(new InputStreamReader(
 					inputStream));
@@ -86,6 +110,7 @@ public class RepeatFilter {
 			}
 			databaseManager.commit();
 			databaseManager.setAutoCommit(true);
+			}
 			System.out.println("loadrepeat end" + " " + df.format(new Date()));// new
 																				// Date()Ϊ��ȡ��ǰϵͳʱ��
 		} catch (IOException e) {
@@ -152,9 +177,9 @@ public class RepeatFilter {
 					break;
 				case 1:
 					ps = coordinate.get(i);
-					System.out.println(chr+" "+ps);
-                    rs = databaseManager.query(referenceRepeat, "type",
-                            "(chrome='" + chr + "' and begin<" + ps
+//					System.out.println(chr+" "+ps);
+					rs = databaseManager.query(referenceRepeat, " type ",
+							"(chrome='" + chr + "' and begin<" + ps
 									+ " and end>" + ps + ")");
 					if (!rs.next()) {
 						databaseManager.executeSQL("insert into " + repeatTable
@@ -201,9 +226,53 @@ public class RepeatFilter {
 		 + repeatTable);
 		 databaseManager.executeSQL("truncate table " + repeatTable);
 		 databaseManager.executeSQL("insert into " + repeatTable +
-		 " select * from  "+repeatTable+"");
+		 " select * from  newtable");
 		 databaseManager.deleteTable("newTable");
 		
 		 System.out.println("post end" + " " + df.format(new Date()));
 		 }
+	
+	public Vector<Probe> queryqueryAllEditingSitesEditingSite(){
+		Vector<Probe> probeVector= new Vector<>();
+		ResultSet rs=databaseManager.query(repeatTable, " chrome, pos,alt "," 1 ");
+		try {
+			while(rs.next()){
+				Probe p=new Probe(rs.getString(1),rs.getInt(2),rs.getString(3).toCharArray()[0]);
+				probeVector.add(p);
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return probeVector;
+	}
+ 
+ public Probe queryEditingSite(String chrome,int pos){
+		ResultSet rs=databaseManager.query(repeatTable, " chrome, pos ,alt "," chrome="+chrome+" and pos='"+pos+"' ");
+		try {
+			while(rs.next()){
+				return new Probe(rs.getString(1),rs.getInt(2),rs.getString(3).toCharArray()[0]);
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return null;
+		}
+		return null;
+	}
+ 
+ public Vector<Probe> queryEditingSitesForChr(String chrome){
+		Vector<Probe> probeVector= new Vector<>();
+		ResultSet rs=databaseManager.query(repeatTable, " chrome, pos ,alt "," chrome="+chrome+" ");
+		try {
+			while(rs.next()){
+				Probe p=new Probe(rs.getString(1),rs.getInt(2),rs.getString(3).toCharArray()[0]);
+				probeVector.add(p);
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return probeVector;
+	}
 }

@@ -3,13 +3,16 @@ package com.dw.dnarna;
 /**
  * import vcf file
  */
+import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import com.dw.publicaffairs.DatabaseManager;
 import com.dw.publicaffairs.Utilities;
-
-import java.io.*;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
 public class DnaRnaVcf {
 	// establish database connection;
@@ -27,7 +30,7 @@ public class DnaRnaVcf {
 	// data of each column
 	private String[] col = new String[40];
 	private String[] temp = new String[10];
-	// insert时使用的数据
+	// insert鏃朵娇鐢ㄧ殑鏁版嵁
 	private StringBuffer s1 = new StringBuffer();
 	// count for each function
 	private int count_r = 1;
@@ -35,7 +38,7 @@ public class DnaRnaVcf {
 
 	private int ref = 0;
 	private int alt = 0;
-	// 设置日期格式
+	// 璁剧疆鏃ユ湡鏍煎紡
 	SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
 	// public RedInput()
@@ -111,10 +114,10 @@ public class DnaRnaVcf {
 		return depth;
 	}
 
-    // table for rnaVcf X.length-9=time for circulation
-    public void rnaVcf(int num) {
-        System.out.println("rnavcf start" + " " + df.format(new Date()));// new
-																			// Date()为锟斤拷取锟斤拷前系统时锟斤�?
+	// table for RnaVcf X.length-9=time for circulation
+	public void RnaVcf(int num) {
+		System.out.println("rnavcf start" + " " + df.format(new Date()));// new
+																			// Date()涓洪敓鏂ゆ嫹鍙栭敓鏂ゆ嫹鍓嶇郴缁熸椂閿熸枻锟�
 		try {
 
 			databaseManager.setAutoCommit(false);
@@ -172,6 +175,7 @@ public class DnaRnaVcf {
 					// System.out.println(temp[i]);
 					s1.append("," + "'" + temp[i] + "'");
 				}
+				// 閿熸枻鎷疯彉閿熸枻鎷烽敓鎹疯鎷烽敓璇紝姣忛敓鍙鎷烽敓鏂ゆ嫹
 				databaseManager.executeSQL("insert into " + rnaVcf + "("
 						+ Utilities.getInstance().getS3() + ") values(" + s1
 						+ ")");
@@ -189,11 +193,12 @@ public class DnaRnaVcf {
 		}
 
 		System.out.println("rnavcf end" + " " + df.format(new Date()));// new
+																		// Date()涓洪敓鏂ゆ嫹鍙栭敓鏂ゆ嫹鍓嶇郴缁熸椂閿熸枻锟�
 	}
 
-    public void rnaVcf() {
-        System.out.println("rnavcf start" + " " + df.format(new Date()));
-
+	public void rnaVcf() {
+		System.out.println("rnavcf start" + " " + df.format(new Date()));// new
+																			// Date()涓洪敓鏂ゆ嫹鍙栭敓鏂ゆ嫹鍓嶇郴缁熸椂閿熸枻锟�
 		try {
 
 			databaseManager.setAutoCommit(false);
@@ -251,6 +256,7 @@ public class DnaRnaVcf {
 					// System.out.println(temp[i]);
 					s1.append("," + "'" + temp[i] + "'");
 				}
+				// 閿熸枻鎷疯彉閿熸枻鎷烽敓鎹疯鎷烽敓璇紝姣忛敓鍙鎷烽敓鏂ゆ嫹
 				databaseManager.executeSQL("insert into " + rnaVcf + "("
 						+ Utilities.getInstance().getS3() + ") values(" + s1
 						+ ")");
@@ -268,11 +274,13 @@ public class DnaRnaVcf {
 		}
 
 		System.out.println("rnavcf end" + " " + df.format(new Date()));// new
+																		// Date()涓洪敓鏂ゆ嫹鍙栭敓鏂ゆ嫹鍓嶇郴缁熸椂閿熸枻锟�
 	}
 
 	// table for DnaVcf
 	public void dnaVcf(int num) {
 		System.out.println("dnavcf start" + " " + df.format(new Date()));// new
+																			// Date()涓鸿幏鍙栧綋鍓嶇郴缁熸椂锟�
 		try {
 			databaseManager.setAutoCommit(false);
 			// timer for transaction
@@ -288,11 +296,10 @@ public class DnaRnaVcf {
 			BufferedReader rin = new BufferedReader(new InputStreamReader(
 					inputStream));
 			while ((line = rin.readLine()) != null) {
-				if (line.startsWith("##"))
+				
+				if (line.startsWith("##")||line.startsWith("#"))
 					continue;
-				if (line.startsWith("#")) {
-					continue;
-				}
+
 				for (int i = 0; i < line.split("\\t").length; i++) {
 					col[i] = line.split("\\t")[i];
 				}
@@ -345,13 +352,16 @@ public class DnaRnaVcf {
 					// System.out.println(temp[i]);
 					s1.append("," + "'" + temp[i] + "'");
 				}
-				// 数据库数据插入，每行插入
+				// 鏁版嵁搴撴暟鎹彃鍏ワ紝姣忚鎻掑叆
 				databaseManager.executeSQL("insert into " + dnaVcf + "("
 						+ Utilities.getInstance().getS3() + ") values(" + s1
 						+ ")");
 				ts_count++;
 				if (ts_count % 20000 == 0)
+					{
 					databaseManager.commit();
+					}
+				
 				// clear insert data
 				s1.delete(0, s1.length());
 			}
@@ -362,13 +372,13 @@ public class DnaRnaVcf {
 			e.printStackTrace();
 		}
 		System.out.println("dnavcf end" + " " + df.format(new Date()));// new
-																		// Date()为获取当前系统时�?
+																		// Date()涓鸿幏鍙栧綋鍓嶇郴缁熸椂锟�
 	}
 
 	// table for DnaVcf
 	public void dnaVcf() {
 		System.out.println("dnavcf start" + " " + df.format(new Date()));// new
-																			// Date()为获取当前系统时�?
+																			// Date()涓鸿幏鍙栧綋鍓嶇郴缁熸椂锟�
 		try {
 			databaseManager.setAutoCommit(false);
 			// timer for transaction
@@ -438,7 +448,7 @@ public class DnaRnaVcf {
 					// System.out.println(temp[i]);
 					s1.append("," + "'" + temp[i] + "'");
 				}
-				// 数据库数据插入，每行插入
+				// 鏁版嵁搴撴暟鎹彃鍏ワ紝姣忚鎻掑叆
 				databaseManager.executeSQL("insert into " + dnaVcf + "("
 						+ Utilities.getInstance().getS3() + ") values(" + s1
 						+ ")");
@@ -455,6 +465,7 @@ public class DnaRnaVcf {
 			e.printStackTrace();
 		}
 		System.out.println("dnavcf end" + " " + df.format(new Date()));// new
+																		// Date()涓鸿幏鍙栧綋鍓嶇郴缁熸椂锟�
 	}
 
 }

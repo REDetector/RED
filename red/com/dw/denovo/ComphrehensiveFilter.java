@@ -12,9 +12,11 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Vector;
 
 import com.dw.publicaffairs.DatabaseManager;
 import com.dw.publicaffairs.Utilities;
+import com.xl.datatypes.probes.Probe;
 
 public class ComphrehensiveFilter {
 	private DatabaseManager databaseManager;
@@ -51,17 +53,36 @@ public class ComphrehensiveFilter {
 		return true;
 	}
 
+	public boolean establishRefCom() {
+		databaseManager
+				.createRefTable(referenceComphrehensive,
+						"(chrome varchar(25),begin int,end int,type varchar(40),index(chrome))");
+		ResultSet rs = databaseManager.query(referenceComphrehensive, "count(*)",
+				"1 limit 0,100");
+		int number = 0;
+		try {
+			if (rs.next()) {
+				number = rs.getInt(1);
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		if (number > 0) {
+			return false;
+		} else {
+			return true;
+		}
+	}
+	
 	public boolean loadcom() {
 		System.out.println("loadcom start" + " " + df.format(new Date()));
 
-		databaseManager.deleteTable(referenceComphrehensive);
-		databaseManager
-				.createTable(
-						referenceComphrehensive,
-						"(chrome varchar(30),ref varchar(30),type varchar(9),begin int,end int,unuse1 float(8,6),unuse2 varchar(5),unuse3 varchar(5),info varchar(100),index(chrome,type))");
+		if(establishRefCom()){
 		databaseManager.executeSQL("load data local infile '" + comIn
 				+ "' into table " + referenceComphrehensive
 				+ " fields terminated by '\t' lines terminated by '\n'");
+		}
 
 		System.out.println("loadcom end" + " " + df.format(new Date()));// new
 																		// Date()Ϊ��ȡ��ǰϵͳʱ��
@@ -129,10 +150,53 @@ public class ComphrehensiveFilter {
 		 + ComphrehensiveTable);
 		 databaseManager.executeSQL("truncate table " + ComphrehensiveTable);
 		 databaseManager.executeSQL("insert into " + ComphrehensiveTable +
-		 " select * from  "+ComphrehensiveTable+"");
+		 " select * from  newtable");
 		 databaseManager.deleteTable("newTable");
 		
 		 System.out.println("post end" + " " + df.format(new Date()));
 		 }
 
+	public Vector<Probe> queryAllEditingSites(){
+		Vector<Probe> probeVector= new Vector<>();
+		ResultSet rs=databaseManager.query(ComphrehensiveTable, " chrome, pos,alt "," 1 ");
+		try {
+			while(rs.next()){
+				Probe p=new Probe(rs.getString(1),rs.getInt(2),rs.getString(3).toCharArray()[0]);
+				probeVector.add(p);
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return probeVector;
+	}
+ 
+ public Probe queryEditingSite(String chrome,int pos){
+		ResultSet rs=databaseManager.query(ComphrehensiveTable, " chrome, pos ,alt "," chrome="+chrome+" and pos='"+pos+"' ");
+		try {
+			while(rs.next()){
+				return new Probe(rs.getString(1),rs.getInt(2),rs.getString(3).toCharArray()[0]);
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return null;
+		}
+		return null;
+	}
+ 
+ public Vector<Probe> queryEditingSitesForChr(String chrome){
+		Vector<Probe> probeVector= new Vector<>();
+		ResultSet rs=databaseManager.query(ComphrehensiveTable, " chrome, pos ,alt "," chrome="+chrome+" ");
+		try {
+			while(rs.next()){
+				Probe p=new Probe(rs.getString(1),rs.getInt(2),rs.getString(3).toCharArray()[0]);
+				probeVector.add(p);
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return probeVector;
+	}
 }

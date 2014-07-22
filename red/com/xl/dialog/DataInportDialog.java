@@ -213,7 +213,7 @@ public class DataInportDialog extends JDialog implements ActionListener {
                 bf.createSpecificTable();
                 bf.specificf();
                 // The first parameter means quality and the second means depth
-                bf.basicf(20, 6);
+                bf.basicFilter(20, 6);
                 bf.distinctTable();
 
                 RepeatFilter rf = new RepeatFilter(manager, repeatFile.getText(), "repeattemp", "referencerepeat",
@@ -234,7 +234,7 @@ public class DataInportDialog extends JDialog implements ActionListener {
                 DbsnpFilter sf = new
                         DbsnpFilter(manager, dbsnpFile.getText(), "snptemp", "refsnp", "comphrehensivetemp");
                 sf.establishsnp();
-                sf.dbSnpinput();
+                sf.loadRefdbSnp();
                 sf.snpFilter();
                 sf.distinctTable();
 
@@ -252,7 +252,7 @@ public class DataInportDialog extends JDialog implements ActionListener {
 
                 PValueFilter pv = new
                         PValueFilter(manager, darnedFile.getText(), "pvtemp", "refHg19", "llrtemp");
-                pv.loadHg19();
+                pv.loadRefHg19();
 //                pv.fdr(args[7]);
 
             } else {
@@ -268,7 +268,7 @@ public class DataInportDialog extends JDialog implements ActionListener {
                 bf.createSpecificTable();
                 bf.specificf();
                 // The first parameter means quality and the second means depth
-                bf.basicf(20, 6);
+                bf.basicFilter(20, 6);
                 bf.distinctTable();
 
                 RepeatFilter rf = new
@@ -289,13 +289,13 @@ public class DataInportDialog extends JDialog implements ActionListener {
                 DbsnpFilter sf = new
                         DbsnpFilter(manager, dbsnpFile.getText(), "snptemp", "refsnp", "comphrehensivetemp");
                 sf.establishsnp();
-                sf.dbSnpinput();
+                sf.loadRefdbSnp();
                 sf.snpFilter();
                 sf.distinctTable();
 
                 PValueFilter pv = new
                         PValueFilter(manager, darnedFile.getText(), "pvtemp", "refHg19", "snptemp");
-                pv.loadHg19();
+                pv.loadRefHg19();
 //                pv.fdr(args[6]);
 
             }

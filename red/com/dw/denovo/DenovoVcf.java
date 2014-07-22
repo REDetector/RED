@@ -3,13 +3,16 @@ package com.dw.denovo;
 /**
  * import vcf file
  */
+import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import com.dw.publicaffairs.DatabaseManager;
 import com.dw.publicaffairs.Utilities;
-
-import java.io.*;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
 public class DenovoVcf {
 	private DatabaseManager databaseManager;
@@ -77,8 +80,8 @@ public class DenovoVcf {
 				+ Utilities.getInstance().getS2() + ",index(chrome,pos))");
 	}
 
-    // table for rnaVcf X.length-9=time for circulation
-    public void rnaVcf(int num) {
+	// table for RnaVcf X.length-9=time for circulation
+	public void rnaVcf(int num) {
 		System.out.println("rnavcf start" + " " + df.format(new Date()));// new
 																			// Date()为锟斤拷取锟斤拷前系统时锟斤�?
 		try {
@@ -158,8 +161,8 @@ public class DenovoVcf {
 																		// Date()为锟斤拷取锟斤拷前系统时锟斤�?
 	}
 
-    // table for rnaVcf X.length-9=time for circulation
-    public void rnaVcf() {
+	// table for RnaVcf X.length-9=time for circulation
+	public void rnaVcf() {
 		System.out.println("rnavcf start" + " " + df.format(new Date()));// new
 																			// Date()为锟斤拷取锟斤拷前系统时锟斤�?
 		try {
