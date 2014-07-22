@@ -26,6 +26,7 @@ public class UserPasswordDialog extends JDialog implements ActionListener {
         this.application = application;
         setSize(500, 400);
         setModal(true);
+
         setLocationRelativeTo(application);
         getContentPane().setLayout(new GridLayout(4, 1));
 

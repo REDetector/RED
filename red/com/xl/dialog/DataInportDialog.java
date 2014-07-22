@@ -4,15 +4,16 @@ package com.xl.dialog;
  * Created by Administrator on 2014/6/25.
  */
 
-import com.dw.denovo.BasicFilter;
-import com.dw.denovo.RepeatFilter;
+import com.dw.denovo.*;
+import com.dw.dnarna.DnaRnaFilter;
 import com.dw.dnarna.DnaRnaVcf;
+import com.dw.dnarna.LlrFilter;
+import com.dw.publicaffairs.Clear;
 import com.dw.publicaffairs.DatabaseManager;
 import com.dw.publicaffairs.Utilities;
 import com.xl.main.REDApplication;
 import com.xl.panel.DataIntroductionPanel;
 import com.xl.preferences.LocationPreferences;
-import com.xl.preferences.REDPreferences;
 
 import javax.swing.*;
 import java.awt.*;
@@ -24,9 +25,6 @@ import java.io.File;
  * A Dialog to allow the viewing and editing of all SeqMonk preferences.
  */
 public class DataInportDialog extends JDialog implements ActionListener {
-
-    REDPreferences preferences = REDPreferences.getInstance();
-    LocationPreferences locationPreferences = LocationPreferences.getInstance();
 
     private JTextField rnaVcfFile;
 
@@ -160,7 +158,8 @@ public class DataInportDialog extends JDialog implements ActionListener {
         chooser.setDialogTitle("Select Directory");
         chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
         if (chooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
-            f.setText(chooser.getSelectedFile().getAbsolutePath());
+            f.setText(chooser.getSelectedFile().getAbsolutePath().replaceAll("\\\\", "/"));
+            System.out.println(f.getText());
         }
     }
 
@@ -189,26 +188,118 @@ public class DataInportDialog extends JDialog implements ActionListener {
             DatabaseManager manager = DatabaseManager.getInstance();
             manager.createStatement();
             manager.setAutoCommit(true);
-            manager.createDatabase("dnarna");
-            manager.useDatabase("dnarna");
-            Utilities.getInstance().createCalTable(rnaVcfFile.getText());
-            DnaRnaVcf dnaRnaVcf = new DnaRnaVcf(DatabaseManager.getInstance(), rnaVcfFile.getText(),
-                    dnaVcfFile.getText(), "rnavcf", "dnavcf");
-            dnaRnaVcf.establishRnaTable();
-            dnaRnaVcf.establishDnaTable();
-            dnaRnaVcf.rnaVcf();
-            dnaRnaVcf.dnaVcf();
 
-            BasicFilter bf = new BasicFilter(manager, "rnavcf", "specifictemp", "basictemp");
-            bf.createSpecificTable();
-            bf.specificf();
-            // The first parameter means quality and the second means depth
-            bf.basicf(20, 6);
-            RepeatFilter rf = new RepeatFilter(manager,
-                    repeatFile.getText(), "repeattemp",
-                    "referencerepeat", "basictemp");
-            rf.establishrepeat();
-            rf.rfilter();
+            boolean isDenovo = false;
+            if (!isDenovo) {
+                manager.createDatabase("dnarna");
+                manager.useDatabase("dnarna");
+
+                DnaRnaVcf df = new DnaRnaVcf(manager, rnaVcfFile.getText(), dnaVcfFile.getText(), "rnaVcf",
+                        "dnaVcf");
+                Utilities.getInstance().createCalTable(dnaVcfFile.getText());
+                df.establishDnaTable();
+                df.dnaVcf();
+
+                Clear cl = new Clear();
+                cl.clear(Utilities.getInstance().getS2(), Utilities.getInstance().getS3());
+
+                Utilities.getInstance().createCalTable(rnaVcfFile.getText());
+                df.establishRnaTable();
+                df.rnaVcf();
+
+                BasicFilter bf = new BasicFilter(manager, "rnaVcf", "specifictemp",
+                        "basictemp");
+                bf.createSpecificTable();
+                bf.specificf();
+                // The first parameter means quality and the second means depth
+                bf.basicf(20, 6);
+                bf.distinctTable();
+
+                RepeatFilter rf = new
+                        RepeatFilter(manager, repeatFile.getText(), "repeattemp", "referencerepeat", "basictemp");
+                rf.loadrepeat();
+                rf.establishrepeat();
+                rf.rfilter();
+                rf.distinctTable();
+
+                ComphrehensiveFilter cf = new
+                        ComphrehensiveFilter(manager, refSeqFile.getText(), "comphrehensivetemp", "refcomphrehensive",
+                        "repeattemp");
+                cf.establishCom();
+                cf.loadcom();
+                cf.comphrehensiveF(2);
+                cf.distinctTable();
+
+                DbsnpFilter sf = new
+                        DbsnpFilter(manager, dbsnpFile.getText(), "snptemp", "refsnp", "comphrehensivetemp");
+                sf.establishsnp();
+                sf.dbSnpinput();
+                sf.snpFilter();
+                sf.distinctTable();
+
+                DnaRnaFilter dr = new DnaRnaFilter(manager, "dnaVcf", "DnaRnatemp",
+                        "snptemp");
+                dr.createDnaRnaTable();
+                dr.dnarnaFilter();
+                dr.distinctTable();
+
+                LlrFilter lf = new LlrFilter(manager, "dnaVcf", "llrtemp",
+                        "DnaRnatemp");
+                lf.createLlrTable();
+                lf.llrtemp();
+                lf.distinctTable();
+
+                PValueFilter pv = new
+                        PValueFilter(manager, darnedFile.getText(), "pvtemp", "refHg19", "llrtemp");
+                pv.loadHg19();
+//                pv.fdr(args[7]);
+
+            } else {
+                manager.createDatabase("denovo");
+                manager.useDatabase("denovo");
+                Utilities.getInstance().createCalTable(rnaVcfFile.getText());
+
+                DenovoVcf df = new DenovoVcf(manager, rnaVcfFile.getText(), "rnaVcf");
+                df.rnaVcf();
+
+                BasicFilter bf = new BasicFilter(manager, "rnaVcf", "specifictemp",
+                        "basictemp");
+                bf.createSpecificTable();
+                bf.specificf();
+                // The first parameter means quality and the second means depth
+                bf.basicf(20, 6);
+                bf.distinctTable();
+
+                RepeatFilter rf = new
+                        RepeatFilter(manager, repeatFile.getText(), "repeattemp", "referencerepeat", "basictemp");
+                rf.loadrepeat();
+                rf.establishrepeat();
+                rf.rfilter();
+                rf.distinctTable();
+
+                ComphrehensiveFilter cf = new
+                        ComphrehensiveFilter(manager, refSeqFile.getText(), "comphrehensivetemp", "refcomphrehensive",
+                        "repeattemp");
+                cf.establishCom();
+                cf.loadcom();
+                cf.comphrehensiveF(2);
+                cf.distinctTable();
+
+                DbsnpFilter sf = new
+                        DbsnpFilter(manager, dbsnpFile.getText(), "snptemp", "refsnp", "comphrehensivetemp");
+                sf.establishsnp();
+                sf.dbSnpinput();
+                sf.snpFilter();
+                sf.distinctTable();
+
+                PValueFilter pv = new
+                        PValueFilter(manager, darnedFile.getText(), "pvtemp", "refHg19", "snptemp");
+                pv.loadHg19();
+//                pv.fdr(args[6]);
+
+            }
+            manager.closeDatabase();
+
 
             setVisible(false);
             dispose();
