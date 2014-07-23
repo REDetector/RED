@@ -7,8 +7,8 @@ import java.sql.SQLException;
 import java.util.Vector;
 
 public class Query {
-	public Vector<Probe> queryAllEditingSites( String tableName){
-		DatabaseManager databaseManager=DatabaseManager.getInstance();
+    public static Vector<Probe> queryAllEditingSites(String tableName) {
+        DatabaseManager databaseManager=DatabaseManager.getInstance();
         Vector<Probe> probeVector = new Vector<Probe>();
         ResultSet rs=databaseManager.query(tableName, " chrome, pos,alt "," 1 ");
 		try {
@@ -22,9 +22,9 @@ public class Query {
 		}
 		return probeVector;
 	}
-	
-	public Probe queryEditingSite(String tableName,String chrome,int pos){
-		DatabaseManager databaseManager=DatabaseManager.getInstance();
+
+    public static Probe queryEditingSite(String tableName, String chrome, int pos) {
+        DatabaseManager databaseManager=DatabaseManager.getInstance();
 
 		ResultSet rs=databaseManager.query(tableName, " chrome, pos ,alt "," chrome="+chrome+" and pos='"+pos+"' ");
 		try {
@@ -38,9 +38,9 @@ public class Query {
 		}
 		return null;
 	}
- 
- public Vector<Probe> queryEditingSitesForChr(String tableName,String chrome){
-		DatabaseManager databaseManager=DatabaseManager.getInstance();
+
+    public static Vector<Probe> queryEditingSitesForChr(String tableName, String chrome) {
+        DatabaseManager databaseManager=DatabaseManager.getInstance();
 
      Vector<Probe> probeVector = new Vector<Probe>();
      ResultSet rs=databaseManager.query(tableName, " chrome, pos ,alt "," chrome="+chrome+" ");

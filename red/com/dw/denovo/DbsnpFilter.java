@@ -28,12 +28,12 @@ public class DbsnpFilter {
     // File file = new File("D:/TDDOWNLOAD/data/dbsnp_138.hg19.vcf");
     SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
-    public DbsnpFilter(DatabaseManager databaseManager, String snpIn,
-                       String dbSnpTable, String referencedbSnp, String refTable) {
+    public DbsnpFilter(DatabaseManager databaseManager, String dbSnpPath,
+                       String dbSnpResultTable, String dbSnpTable, String refTable) {
         this.databaseManager = databaseManager;
-        this.snpIn = snpIn;
-        this.dbSnpTable = dbSnpTable;
-        this.referencedbSnp = referencedbSnp;
+        this.snpIn = dbSnpPath;
+        this.dbSnpTable = dbSnpResultTable;
+        this.referencedbSnp = dbSnpTable;
         this.refTable = refTable;
     }
 

@@ -10,6 +10,19 @@ import java.sql.*;
 
 public class DatabaseManager {
     private static final DatabaseManager DATABASE_MANAGER = new DatabaseManager();
+    public static final String NON_DENOVO_DATABASE_NAME = "nondenovo";
+    public static final String DENOVO_DATABASE_NAME = "denovo";
+    public static final String RNA_VCF_TABLE_NAME = "rnavcf";
+    public static final String DNA_VCF_TABLE_NAME = "dnavcf";
+    public static final String BASIC_FILTER_TABLE_NAME = "basicfilter";
+    public static final String SPECIFIC_FILTER_TABLE_NAME = "specificfilter";
+    public static final String COMPREHENSIVE_FILTER_TABLE_NAME = "comprehensivefilter";
+    public static final String REPEAT_FILTER_TABLE_NAME = "repeatfilter";
+    public static final String DBSNP_FILTER_TABLE_NAME = "dbsnpfilter";
+    public static final String PVALUE_FILTER_TABLE_NAME = "pvaluefilter";
+    public static final String LLR_FILTER_TABLE_NAME = "llrfilter";
+    public static final String DNA_RNA_FILTER_TABLE_NAME = "dnarnafilter";
+
     private Connection con = null;
     private Statement stmt = null;
 

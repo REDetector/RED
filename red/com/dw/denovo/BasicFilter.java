@@ -18,7 +18,7 @@ public class BasicFilter {
     private DatabaseManager databaseManager;
     private String chr = null;
     private String ps = null;
-    private String rnaVcf = null;
+    private String rnaVcfTable = null;
     private String basicTable = null;
     private String specificTable = null;
 
@@ -27,12 +27,11 @@ public class BasicFilter {
     private int alt_n = 0;
     private int count = 0;
 
-    public BasicFilter(DatabaseManager databaseManager, String rnaVcf,
-                       String specificTable, String basicTable) {
+    public BasicFilter(DatabaseManager databaseManager, String rnaVcfTable, String specificTable, String basicTable) {
         this.databaseManager = databaseManager;
-        this.rnaVcf = rnaVcf;
-        this.basicTable = basicTable;
+        this.rnaVcfTable = rnaVcfTable;
         this.specificTable = specificTable;
+        this.basicTable = basicTable;
     }
 
     public void createSpecificTable() {
@@ -46,7 +45,7 @@ public class BasicFilter {
 
         databaseManager.insertClause("insert into " + specificTable + "("
                 + Utilities.getInstance().getS3() + ")  select * from " + ""
-                + rnaVcf + " where " + "REF='A' AND ALT='G'");
+                + rnaVcfTable + " where " + "REF='A' AND ALT='G'");
 
         System.out.println("specific end" + " " + df.format(new Date()));
     }

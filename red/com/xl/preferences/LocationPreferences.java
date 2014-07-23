@@ -101,8 +101,6 @@ public class LocationPreferences {
     private String refSeqFile = "";
     private String dbSNPFile = "";
     private String darnedFile = "";
-
-
     private String rScriptPath = "";
 
     /**

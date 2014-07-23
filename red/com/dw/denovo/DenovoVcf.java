@@ -14,8 +14,8 @@ import java.util.Date;
 public class DenovoVcf {
     private DatabaseManager databaseManager;
 
-    private String rnaFile = null;
-    private String rnaVcf = null;
+    private String rnaVcfPath = null;
+    private String rnaVcfTable = null;
 
     FileInputStream inputStream;
     // SQL to be executed
@@ -31,16 +31,15 @@ public class DenovoVcf {
     SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
     // establish table structure for following tables
-    public DenovoVcf(DatabaseManager databaseManager, String rnaFile,
-                     String rnaVcf) {
+    public DenovoVcf(DatabaseManager databaseManager, String rnaVcfPath, String rnaVcfTable) {
         this.databaseManager = databaseManager;
-        this.rnaFile = rnaFile;
-        this.rnaVcf = rnaVcf;
+        this.rnaVcfPath = rnaVcfPath;
+        this.rnaVcfTable = rnaVcfTable;
     }
 
     // public int getdepth() {
     // try {
-    // inputStream = new FileInputStream(rnaFile);
+    // inputStream = new FileInputStream(rnaVcfPath);
     // } catch (FileNotFoundException e) {
     // // TODO Auto-generated catch block
     // e.printStackTrace();
@@ -70,8 +69,8 @@ public class DenovoVcf {
     // }
 
     public void establishRnaTable() {
-        databaseManager.deleteTable(rnaVcf);
-        databaseManager.createTable(rnaVcf, "(chrome varchar(15),"
+        databaseManager.deleteTable(rnaVcfTable);
+        databaseManager.createTable(rnaVcfTable, "(chrome varchar(15),"
                 + Utilities.getInstance().getS2() + ",index(chrome,pos))");
     }
 
@@ -86,7 +85,7 @@ public class DenovoVcf {
             int ts_count = 0;
             int gtype = -1;
             try {
-                inputStream = new FileInputStream(rnaFile);
+                inputStream = new FileInputStream(rnaVcfPath);
             } catch (FileNotFoundException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
@@ -135,7 +134,7 @@ public class DenovoVcf {
                     // System.out.println(temp[i]);
                     s1.append("," + "'" + temp[i] + "'");
                 }
-                databaseManager.executeSQL("insert into " + rnaVcf + "("
+                databaseManager.executeSQL("insert into " + rnaVcfTable + "("
                         + Utilities.getInstance().getS3() + ") values(" + s1
                         + ")");
                 ts_count++;
@@ -165,7 +164,7 @@ public class DenovoVcf {
             // timer for transaction
             int ts_count = 0;
             try {
-                inputStream = new FileInputStream(rnaFile);
+                inputStream = new FileInputStream(rnaVcfPath);
             } catch (FileNotFoundException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
@@ -205,7 +204,7 @@ public class DenovoVcf {
                     // System.out.println(temp[i]);
                     s1.append("," + "'" + temp[i] + "'");
                 }
-                databaseManager.executeSQL("insert into " + rnaVcf + "("
+                databaseManager.executeSQL("insert into " + rnaVcfTable + "("
                         + Utilities.getInstance().getS3() + ") values(" + s1
                         + ")");
                 ts_count++;

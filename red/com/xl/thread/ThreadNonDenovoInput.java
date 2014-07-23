@@ -32,12 +32,12 @@ public class ThreadNonDenovoInput implements Runnable {
         manager.createStatement();
         manager.setAutoCommit(true);
         progressUpdated("Creating non-denovo database...", 1, ALL_STEP);
-        manager.createDatabase("dnarna");
-        manager.useDatabase("dnarna");
+        manager.createDatabase(DatabaseManager.NON_DENOVO_DATABASE_NAME);
+        manager.useDatabase(DatabaseManager.NON_DENOVO_DATABASE_NAME);
 
 
         DnaRnaVcf df = new DnaRnaVcf(manager, locationPreferences.getRnaVcfFile(), locationPreferences.getDnaVcfFile()
-                , "rnaVcf", "dnaVcf");
+                , DatabaseManager.RNA_VCF_TABLE_NAME, DatabaseManager.DNA_VCF_TABLE_NAME);
         Utilities.getInstance().createCalTable(locationPreferences.getDnaVcfFile());
         progressUpdated("Creating DNA vcf table...", 2, ALL_STEP);
         df.establishDnaTable();
@@ -54,8 +54,8 @@ public class ThreadNonDenovoInput implements Runnable {
         df.rnaVcf();
 
         progressUpdated("Filtering sites based on quality and coverage...", 6, ALL_STEP);
-        BasicFilter bf = new BasicFilter(manager, "rnaVcf", "specifictemp",
-                "basictemp");
+        BasicFilter bf = new BasicFilter(manager, DatabaseManager.RNA_VCF_TABLE_NAME, DatabaseManager.SPECIFIC_FILTER_TABLE_NAME,
+                DatabaseManager.BASIC_FILTER_TABLE_NAME);
         bf.createSpecificTable();
         bf.specificf();
         bf.createBasicTable();
@@ -64,8 +64,8 @@ public class ThreadNonDenovoInput implements Runnable {
         bf.distinctTable();
 
 
-        RepeatFilter rf = new RepeatFilter(manager, locationPreferences.getRepeatFile(), "repeattemp",
-                "referencerepeat", "basictemp");
+        RepeatFilter rf = new RepeatFilter(manager, locationPreferences.getRepeatFile(), DatabaseManager.REPEAT_FILTER_TABLE_NAME,
+                "refrepeat", DatabaseManager.BASIC_FILTER_TABLE_NAME);
         progressUpdated("Importing repeatmasker data...", 7, ALL_STEP);
         rf.loadrepeat();
         rf.establishrepeat();
@@ -74,8 +74,8 @@ public class ThreadNonDenovoInput implements Runnable {
 
         progressUpdated("Importing RefSeq Genes data...", 8, ALL_STEP);
         ComphrehensiveFilter cf = new
-                ComphrehensiveFilter(manager, locationPreferences.getRefSeqFile(), "comphrehensivetemp", "refcomphrehensive",
-                "repeattemp");
+                ComphrehensiveFilter(manager, locationPreferences.getRefSeqFile(), DatabaseManager.COMPREHENSIVE_FILTER_TABLE_NAME,
+                "refcomprehensive", DatabaseManager.REPEAT_FILTER_TABLE_NAME);
         cf.loadcom();
         cf.establishCom();
         cf.comphrehensiveF(2);
@@ -83,7 +83,8 @@ public class ThreadNonDenovoInput implements Runnable {
 
         progressUpdated("Importing dbSNP data...", 9, ALL_STEP);
         DbsnpFilter sf = new
-                DbsnpFilter(manager, locationPreferences.getDbSNPFile(), "snptemp", "refsnp", "comphrehensivetemp");
+                DbsnpFilter(manager, locationPreferences.getDbSNPFile(), DatabaseManager.DBSNP_FILTER_TABLE_NAME, "refsnp",
+                DatabaseManager.COMPREHENSIVE_FILTER_TABLE_NAME);
         sf.establishsnp();
         sf.loadRefdbSnp();
         sf.snpFilter();
@@ -91,10 +92,12 @@ public class ThreadNonDenovoInput implements Runnable {
 
         progressUpdated("Importing DARNED data...", 10, ALL_STEP);
         PValueFilter pv = new
-                PValueFilter(manager, locationPreferences.getDarnedFile(), "pvtemp", "refHg19", "snptemp");
+                PValueFilter(manager, locationPreferences.getDarnedFile(), DatabaseManager.PVALUE_FILTER_TABLE_NAME,
+                "refdarned", DatabaseManager.DBSNP_FILTER_TABLE_NAME);
         pv.loadRefHg19();
-//      pv.fdr(args[6]);
-        manager.closeDatabase();
+        if (locationPreferences.getRScriptPath() != null && locationPreferences.getRScriptPath().length() != 0) {
+            pv.fdr(locationPreferences.getRScriptPath());
+        }
         REDPreferences.getInstance().setDataLoadedToDatabase(true);
         processingComplete();
     }

@@ -1,18 +1,11 @@
 package com.dw.publicaffairs;
 
-import java.sql.SQLException;
-import java.util.Vector;
-
-import com.dw.denovo.BasicFilter;
-import com.dw.denovo.ComphrehensiveFilter;
-import com.dw.denovo.DbsnpFilter;
-import com.dw.denovo.DenovoVcf;
-import com.dw.denovo.PValueFilter;
-import com.dw.denovo.RepeatFilter;
+import com.dw.denovo.*;
 import com.dw.dnarna.DnaRnaFilter;
 import com.dw.dnarna.DnaRnaVcf;
-import com.dw.dnarna.LlrFilter;
-import com.xl.datatypes.probes.Probe;
+import com.dw.dnarna.LLRFilter;
+
+import java.sql.SQLException;
 
 public class Connect {
 	/**
@@ -206,9 +199,9 @@ public class Connect {
 		 dr.createDnaRnaTable();
 		 dr.dnarnaFilter();
 		 dr.distinctTable();
-		
-		 LlrFilter lf = new LlrFilter(manager, "dnaVcf", "llrtemp",
-		 "DnaRnatemp");
+
+             LLRFilter lf = new LLRFilter(manager, "dnaVcf", "llrtemp",
+                     "DnaRnatemp");
 		 lf.createLlrTable();
 		 lf.llrtemp();
 		 lf.distinctTable();

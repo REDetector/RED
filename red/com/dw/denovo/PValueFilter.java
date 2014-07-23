@@ -21,10 +21,10 @@ import java.util.List;
 public class PValueFilter {
     private DatabaseManager databaseManager;
     // File file = new File("D:/TDDOWNLOAD/data/hg19.txt");
-    private String pIn = null;
-    private String pValueTable = null;
-    private String refHg19 = null;
-    private String dnSnpTable = null;
+    private String darnedPath = null;
+    private String darnedResultTable = null;
+    private String darnedTable = null;
+    private String refTable = null;
     FileInputStream inputStream;
     private String line = null;
     private String[] col = new String[40];
@@ -48,13 +48,13 @@ public class PValueFilter {
     private double pvalue = 0;
     SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
-    public PValueFilter(DatabaseManager databaseManager, String pIn,
-                        String pValueTable, String refHg19, String dnSnpTable) {
+    public PValueFilter(DatabaseManager databaseManager, String darnedPath,
+                        String darnedResultTable, String darnedTable, String refTable) {
         this.databaseManager = databaseManager;
-        this.pIn = pIn;
-        this.pValueTable = pValueTable;
-        this.refHg19 = refHg19;
-        this.dnSnpTable = dnSnpTable;
+        this.darnedPath = darnedPath;
+        this.darnedResultTable = darnedResultTable;
+        this.darnedTable = darnedTable;
+        this.refTable = refTable;
     }
 
 
@@ -63,7 +63,7 @@ public class PValueFilter {
             System.out.println("loadhg19 start" + " " + df.format(new Date()));// new
 
             int count_ts = 0;
-            inputStream = new FileInputStream(pIn);
+            inputStream = new FileInputStream(darnedPath);
             BufferedReader rin = new BufferedReader(new InputStreamReader(
                     inputStream));
             while ((line = rin.readLine()) != null) {
@@ -78,8 +78,8 @@ public class PValueFilter {
                     s3.append(line.split("\\t")[0]);
                     for (int i = 1; i < 5; i++)
                         s3.append("," + line.split("\\t")[i]);
-                    databaseManager.deleteTable(refHg19);
-                    databaseManager.createTable(refHg19, "(" + s2
+                    databaseManager.deleteTable(darnedTable);
+                    databaseManager.createTable(darnedTable, "(" + s2
                             + ",index(chrom,coordinate))");
                     continue;
                 }
@@ -96,7 +96,7 @@ public class PValueFilter {
                     s1.append("'" + col[0] + "'");
                     for (int i = 1; i < 5; i++)
                         s1.append("," + "'" + col[i] + "'");
-                    databaseManager.executeSQL("insert into " + refHg19 + "("
+                    databaseManager.executeSQL("insert into " + darnedTable + "("
                             + s3 + ") values(" + s1 + ")");
                     count_ts++;
                     if (count_ts % 20000 == 0)
@@ -125,7 +125,7 @@ public class PValueFilter {
     public void level(String chr, String ps) {
         try {
             ref_n = alt_n = 0;
-            ResultSet rs = databaseManager.query(dnSnpTable, "AD", "chrome='"
+            ResultSet rs = databaseManager.query(refTable, "AD", "chrome='"
                     + chr + "' and pos=" + ps + "");
 
             List<String> coordinate_level = new ArrayList<String>();
@@ -146,7 +146,7 @@ public class PValueFilter {
 
     public void Exp_num() {
         try {
-            ResultSet rs = databaseManager.query(dnSnpTable, "chrome,pos", "1");
+            ResultSet rs = databaseManager.query(refTable, "chrome,pos", "1");
 
             while (rs.next()) {
                 coordinate.add(rs.getString(1));
@@ -158,7 +158,7 @@ public class PValueFilter {
                 } else {
                     ps = coordinate.get(i);
                     level(chr, ps);
-                    rs = databaseManager.query(refHg19, "strand", "chrom='"
+                    rs = databaseManager.query(darnedTable, "strand", "chrom='"
                             + chr + "' and coordinate='" + ps + "'");
                     fd_alt.add(alt_n);
                     fd_ref.add(ref_n);
@@ -209,10 +209,10 @@ public class PValueFilter {
     }
 
     public void estblishPvTable() {
-        databaseManager.deleteTable(pValueTable);
+        databaseManager.deleteTable(darnedResultTable);
         databaseManager
                 .createTable(
-                        pValueTable,
+                        darnedResultTable,
                         "(chrome varchar(15),pos int,ref smallint,alt smallint,level varchar(10),p_value double,fdr double)");
     }
 
@@ -239,7 +239,7 @@ public class PValueFilter {
             // }
             calculate(ref_n, alt_n, known_ref, known_alt, commandD);
             if (pvalue < 0.05) {
-                databaseManager.executeSQL("insert into " + pValueTable
+                databaseManager.executeSQL("insert into " + darnedResultTable
                         + "(chrome,pos,ref,alt,level,p_value) values('" + chr
                         + "'," + ps + "," + (int) ref_n + "," + (int) alt_n + ","
                         + dF.format(lev) + "," + pvalue + ")");
@@ -282,7 +282,7 @@ public class PValueFilter {
                 chr = coordinate.get(i);
                 i++;
                 ps = coordinate.get(i);
-                databaseManager.executeSQL("update " + pValueTable
+                databaseManager.executeSQL("update " + darnedResultTable
                         + " set fdr=" + fdr + " where chrome='" + chr
                         + "' and pos=" + ps + " ");
             }

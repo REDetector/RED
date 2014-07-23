@@ -6,7 +6,6 @@ package com.dw.dnarna;
 
 import com.dw.publicaffairs.DatabaseManager;
 import com.dw.publicaffairs.Utilities;
-import com.xl.datatypes.probes.Probe;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -14,13 +13,12 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Vector;
 
-public class LlrFilter {
+public class LLRFilter {
     private DatabaseManager databaseManager;
 
-    private String dnaVcf = null;
-    private String llrTable = null;
+    private String dnaVcfTable = null;
+    private String llrResultTable = null;
     private String refTable = null;
     private String chr;
     private String ps;
@@ -30,19 +28,18 @@ public class LlrFilter {
     private int alt_n = 0;
     SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
-    public LlrFilter(DatabaseManager databaseManager, String dnaVcf,
-                     String llrTable, String refTable) {
+    public LLRFilter(DatabaseManager databaseManager, String dnaVcfTable, String llrResultTable, String refTable) {
         this.databaseManager = databaseManager;
-        this.dnaVcf = dnaVcf;
-        this.llrTable = llrTable;
+        this.dnaVcfTable = dnaVcfTable;
+        this.llrResultTable = llrResultTable;
         this.refTable = refTable;
     }
 
     public boolean createLlrTable() {
         System.out.println("esllr start" + " " + df.format(new Date()));
 
-        databaseManager.deleteTable(llrTable);
-        databaseManager.createTable(llrTable, "(chrome varchar(15),"
+        databaseManager.deleteTable(llrResultTable);
+        databaseManager.createTable(llrResultTable, "(chrome varchar(15),"
                 + Utilities.getInstance().getS2() + ")");
 
         System.out.println("esllr end" + " " + df.format(new Date()));
@@ -53,7 +50,7 @@ public class LlrFilter {
         try {
             System.out.println("llrtemp start" + " " + df.format(new Date()));
 
-            ResultSet rs = databaseManager.query(dnaVcf, "chrome",
+            ResultSet rs = databaseManager.query(dnaVcfTable, "chrome",
                     "1 limit 0,1");
             List<String> coordinate = new ArrayList<String>();
             databaseManager.setAutoCommit(false);
@@ -92,7 +89,7 @@ public class LlrFilter {
                         alt_n = Integer.parseInt(section[1]);
 
                         double q = 0;
-                        rs = databaseManager.query(dnaVcf, "qual", "chrome='" + chr
+                        rs = databaseManager.query(dnaVcfTable, "qual", "chrome='" + chr
                                 + "' and pos=" + ps + "");
                         while (rs.next()) {
                             q = rs.getDouble(1);
@@ -113,7 +110,7 @@ public class LlrFilter {
                                 if (bool) {
                                     chr = "chr" + chr;
                                     databaseManager.executeSQL("insert into "
-                                            + llrTable + " select * from "
+                                            + llrResultTable + " select * from "
                                             + refTable + " where chrome='" + chr
                                             + "' and pos=" + ps + "");
                                     count++;
@@ -122,7 +119,7 @@ public class LlrFilter {
                                     }
                                 } else {
                                     databaseManager.executeSQL("insert into "
-                                            + llrTable + " select * from "
+                                            + llrResultTable + " select * from "
                                             + refTable + " where chrome='" + chr
                                             + "' and pos=" + ps + "");
                                     count++;
@@ -171,97 +168,13 @@ public class LlrFilter {
         System.out.println("post start" + " " + df.format(new Date()));
 
         databaseManager.executeSQL("create temporary table newtable select distinct * from "
-                + llrTable);
-        databaseManager.executeSQL("truncate table " + llrTable);
-        databaseManager.executeSQL("insert into " + llrTable +
+                + llrResultTable);
+        databaseManager.executeSQL("truncate table " + llrResultTable);
+        databaseManager.executeSQL("insert into " + llrResultTable +
                 " select * from  newtable");
         databaseManager.deleteTable("newTable");
 
         System.out.println("post end" + " " + df.format(new Date()));
     }
 
-    public Vector<Probe> queryAllEditingSites() {
-        Vector<Probe> probeVector = new Vector<Probe>();
-        ResultSet rs = databaseManager.query(llrTable, " chrome, pos,alt ", " 1 ");
-        try {
-            while (rs.next()) {
-                Probe p = new Probe(rs.getString(1), rs.getInt(2), rs.getString(3).toCharArray()[0]);
-                probeVector.add(p);
-            }
-        } catch (SQLException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-        return probeVector;
-    }
-
-    public Probe queryEditingSite(String chrome, int pos) {
-        ResultSet rs = databaseManager.query(llrTable, " chrome, pos ,alt ", " chrome=" + chrome + " and pos='" + pos + "' ");
-        try {
-            while (rs.next()) {
-                return new Probe(rs.getString(1), rs.getInt(2), rs.getString(3).toCharArray()[0]);
-            }
-        } catch (SQLException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-            return null;
-        }
-        return null;
-    }
-
-    public Vector<Probe> queryEditingSitesForChr(String chrome) {
-        Vector<Probe> probeVector = new Vector<Probe>();
-        ResultSet rs = databaseManager.query(llrTable, " chrome, pos ,alt ", " chrome=" + chrome + " ");
-        try {
-            while (rs.next()) {
-                Probe p = new Probe(rs.getString(1), rs.getInt(2), rs.getString(3).toCharArray()[0]);
-                probeVector.add(p);
-            }
-        } catch (SQLException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-        return probeVector;
-    }
 }
-
-// while (db.rs.next()) {
-// s1.append(db.rs.getString(1) + "\t");
-// s2.append(db.rs.getInt(2) + "\t");
-// }
-// sql[0] = "select seq from sam where rname='" + s1.toString().split("\t")[0]+
-// "' and pos='" + s2.toString().split("\t")[0] + "' limit 0,1";
-// db.rs = db.stmt.executeQuery(sql[0]);
-// db.con.commit();
-// while (db.rs.next()) {
-// i = db.rs.getString(1).length();
-// }
-// //Find for alt,ref
-// for(int j=0;j<s1.toString().split("\t").length;j++){
-// chr=s1.toString().split("\t")[j];
-// ps=s2.toString().split("\t")[j];
-// // System.out.println(chr+" "+ps);
-// int q=0;
-// int alt = 0;
-// int ref = 0;
-// sql[0] = "select pos,seq,qual from sam where rname='"+ chr + "' and (pos>='"
-// + ps+ "' and pos<('" + ps + "'+'" + i + "'))";
-// //
-// db.rs = db.stmt.executeQuery(sql[0]);
-// db.con.commit();
-// while (db.rs.next()) {
-// int off =0;
-// // System.out.println(db.rs.getInt(1));
-// off = db.rs.getInt(1) - Integer.parseInt(ps);
-// if (db.rs.getString(2).charAt(off) == 'A') {
-// ref++;
-// refqual[ref] = db.rs.getString(3).charAt(off)-33;
-// q+=refqual[ref];
-// }
-// if (db.rs.getString(2).charAt(off) == 'G') {
-// alt++;
-// altqual[alt] = db.rs.getString(3).charAt(off)-33;
-// q+=altqual[alt];
-// }
-// // for(char n:altqual)
-// }

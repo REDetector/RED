@@ -6,7 +6,6 @@ package com.dw.dnarna;
 
 import com.dw.publicaffairs.DatabaseManager;
 import com.dw.publicaffairs.Utilities;
-import com.xl.datatypes.probes.Probe;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -14,34 +13,31 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Vector;
 
 public class DnaRnaFilter {
     private DatabaseManager databaseManager;
 
-    private String DnaRnaTable = null;
+    private String dnaRnaTable = null;
     private String refTable = null;
-    private String dnaVcf = null;
+    private String dnaVcfPath = null;
     private String chr = null;
     private String ps = null;
     private String chrom = null;
     private int count = 0;
     SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
-    public DnaRnaFilter(DatabaseManager databaseManager, String dnaVcf,
-                        String DnaRnaTable, String refTable) {
+    public DnaRnaFilter(DatabaseManager databaseManager, String dnaVcfPath, String dnaRnaTable, String refTable) {
         this.databaseManager = databaseManager;
-        this.dnaVcf = dnaVcf;
-        this.DnaRnaTable = DnaRnaTable;
+        this.dnaVcfPath = dnaVcfPath;
+        this.dnaRnaTable = dnaRnaTable;
         this.refTable = refTable;
     }
 
     public boolean createDnaRnaTable() {
         System.out.println("esdr start" + " " + df.format(new Date()));
 
-
-        databaseManager.deleteTable(DnaRnaTable);
-        databaseManager.createTable(DnaRnaTable, "(chrome varchar(15),"
+        databaseManager.deleteTable(dnaRnaTable);
+        databaseManager.createTable(dnaRnaTable, "(chrome varchar(15),"
                 + Utilities.getInstance().getS2() + ")");
 
         System.out.println("esdr end" + " " + df.format(new Date()));
@@ -53,7 +49,7 @@ public class DnaRnaFilter {
         try {
             System.out.println("df start" + " " + df.format(new Date()));
 
-            ResultSet rs = databaseManager.query(dnaVcf, "chrome",
+            ResultSet rs = databaseManager.query(dnaVcfPath, "chrome",
                     "1 limit 0,1");
             List<String> coordinate = new ArrayList<String>();
             databaseManager.setAutoCommit(false);
@@ -82,13 +78,13 @@ public class DnaRnaFilter {
                 } else {
                     ps = coordinate.get(i);
                     // The first six base will be filtered out
-                    rs = databaseManager.query(dnaVcf, "GT", "chrome='" + chr
+                    rs = databaseManager.query(dnaVcfPath, "GT", "chrome='" + chr
                             + "' and pos=" + ps + "");
                     while (rs.next()) {
                         if (bool) {
                             chr = "chr" + chr;
                             databaseManager.executeSQL("insert into "
-                                    + DnaRnaTable + " select * from "
+                                    + dnaRnaTable + " select * from "
                                     + refTable + " where chrome='" + chr
                                     + "' and pos=" + ps + "");
                             count++;
@@ -96,7 +92,7 @@ public class DnaRnaFilter {
                                 databaseManager.commit();
                         } else {
                             databaseManager.executeSQL("insert into "
-                                    + DnaRnaTable + " select * from "
+                                    + dnaRnaTable + " select * from "
                                     + refTable + " where chrome='" + chr
                                     + "' and pos=" + ps + "");
                             count++;
@@ -121,56 +117,13 @@ public class DnaRnaFilter {
         System.out.println("post start" + " " + df.format(new Date()));
 
         databaseManager.executeSQL("create temporary table newtable select distinct * from "
-                + DnaRnaTable);
-        databaseManager.executeSQL("truncate table " + DnaRnaTable);
-        databaseManager.executeSQL("insert into " + DnaRnaTable +
+                + dnaRnaTable);
+        databaseManager.executeSQL("truncate table " + dnaRnaTable);
+        databaseManager.executeSQL("insert into " + dnaRnaTable +
                 " select * from  newtable");
         databaseManager.deleteTable("newTable");
 
         System.out.println("post end" + " " + df.format(new Date()));
     }
 
-    public Vector<Probe> queryAllEditingSites() {
-        Vector<Probe> probeVector = new Vector<Probe>();
-        ResultSet rs = databaseManager.query(DnaRnaTable, " chrome, pos,alt ", " 1 ");
-        try {
-            while (rs.next()) {
-                Probe p = new Probe(rs.getString(1), rs.getInt(2), rs.getString(3).toCharArray()[0]);
-                probeVector.add(p);
-            }
-        } catch (SQLException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-        return probeVector;
-    }
-
-    public Probe queryEditingSite(String chrome, int pos) {
-        ResultSet rs = databaseManager.query(DnaRnaTable, " chrome, pos ,alt ", " chrome=" + chrome + " and pos='" + pos + "' ");
-        try {
-            while (rs.next()) {
-                return new Probe(rs.getString(1), rs.getInt(2), rs.getString(3).toCharArray()[0]);
-            }
-        } catch (SQLException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-            return null;
-        }
-        return null;
-    }
-
-    public Vector<Probe> queryEditingSitesForChr(String chrome) {
-        Vector<Probe> probeVector = new Vector<Probe>();
-        ResultSet rs = databaseManager.query(DnaRnaTable, " chrome, pos ,alt ", " chrome=" + chrome + " ");
-        try {
-            while (rs.next()) {
-                Probe p = new Probe(rs.getString(1), rs.getInt(2), rs.getString(3).toCharArray()[0]);
-                probeVector.add(p);
-            }
-        } catch (SQLException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-        return probeVector;
-    }
 }

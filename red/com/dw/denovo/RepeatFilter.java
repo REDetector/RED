@@ -19,8 +19,8 @@ public class RepeatFilter {
     private DatabaseManager databaseManager;
 
     private String repeatIn = null;
+    private String repeatResultTable = null;
     private String repeatTable = null;
-    private String referenceRepeat = null;
     private String refTable = null;
     FileInputStream inputStream;
     private String line = null;
@@ -31,20 +31,20 @@ public class RepeatFilter {
 
     SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
-    public RepeatFilter(DatabaseManager databaseManager, String repeatIn,
-                        String repeatTable, String referenceRepeat, String refTable) {
+    public RepeatFilter(DatabaseManager databaseManager, String repeatPath,
+                        String repeatResultTable, String repeatTable, String refTable) {
         this.databaseManager = databaseManager;
-        this.repeatIn = repeatIn;
+        this.repeatIn = repeatPath;
+        this.repeatResultTable = repeatResultTable;
         this.repeatTable = repeatTable;
-        this.referenceRepeat = referenceRepeat;
         this.refTable = refTable;
     }
 
     public boolean establishRefRepeat() {
         databaseManager
-                .createRefTable(referenceRepeat,
+                .createRefTable(repeatTable,
                         "(chrome varchar(15),begin int,end int,type varchar(40),index(chrome,begin,end))");
-        ResultSet rs = databaseManager.query(referenceRepeat, "count(*)",
+        ResultSet rs = databaseManager.query(repeatTable, "count(*)",
                 "1 limit 0,100");
         int number = 0;
         try {
@@ -90,7 +90,7 @@ public class RepeatFilter {
                         index = 0;
                         continue;
                     }
-                    databaseManager.executeSQL("insert into " + referenceRepeat
+                    databaseManager.executeSQL("insert into " + repeatTable
                             + "(chrome,begin,end,type) values('"
                             + line.split("\t")[index + 5] + "','"
                             + line.split("\t")[index + 6] + "','"
@@ -115,8 +115,8 @@ public class RepeatFilter {
     public void establishrepeat() {
         System.out.println("esrepeat start" + " " + df.format(new Date()));
 
-        databaseManager.deleteTable(repeatTable);
-        databaseManager.createTable(repeatTable, "(chrome varchar(15),"
+        databaseManager.deleteTable(repeatResultTable);
+        databaseManager.createTable(repeatResultTable, "(chrome varchar(15),"
                 + Utilities.getInstance().getS2() + "," + "index(chrome,pos))");
 
         databaseManager.deleteTable("alutemp");
@@ -129,23 +129,23 @@ public class RepeatFilter {
     public void repeatFilter() {
         System.out.println("rfliter start" + " " + df.format(new Date()));
 
-        databaseManager.executeSQL("insert into " + repeatTable
+        databaseManager.executeSQL("insert into " + repeatResultTable
                 + " select * from " + refTable
-                + " where not exists (select * FROM " + referenceRepeat + " where (" + referenceRepeat
-                + ".chrome= " + refTable + ".chrome and  " + referenceRepeat
-                + ".begin<" + refTable + ".pos and " + referenceRepeat
+                + " where not exists (select * FROM " + repeatTable + " where (" + repeatTable
+                + ".chrome= " + refTable + ".chrome and  " + repeatTable
+                + ".begin<" + refTable + ".pos and " + repeatTable
                 + ".end>" + refTable + ".pos)) ");
 
         System.out.println("esrepeat alu start " + " " + df.format(new Date()));
         databaseManager.executeSQL("insert into alutemp select * from "
                 + refTable + " where exists (select * FROM " + refTable
-                + " where (" + referenceRepeat
-                + ".chrome= " + refTable + ".chrome and  " + referenceRepeat
-                + ".begin<" + refTable + ".pos and " + referenceRepeat
-                + ".end>" + refTable + ".pos and " + referenceRepeat + ".type='SINE/Alu')) ");
+                + " where (" + repeatTable
+                + ".chrome= " + refTable + ".chrome and  " + repeatTable
+                + ".begin<" + refTable + ".pos and " + repeatTable
+                + ".end>" + refTable + ".pos and " + repeatTable + ".type='SINE/Alu')) ");
 
         System.out.println("esrepeat final start " + " " + df.format(new Date()));
-        databaseManager.executeSQL("insert into " + repeatTable
+        databaseManager.executeSQL("insert into " + repeatResultTable
                 + " select * from alutemp");
 
         System.out.println("rfilter end" + " " + df.format(new Date()));
@@ -171,11 +171,11 @@ public class RepeatFilter {
                     case 1:
                         ps = coordinate.get(i);
 //					System.out.println(chr+" "+ps);
-                        rs = databaseManager.query(referenceRepeat, " type ",
+                        rs = databaseManager.query(repeatTable, " type ",
                                 "(chrome='" + chr + "' and begin<" + ps
                                         + " and end>" + ps + ")");
                         if (!rs.next()) {
-                            databaseManager.executeSQL("insert into " + repeatTable
+                            databaseManager.executeSQL("insert into " + repeatResultTable
                                     + "  select * from " + refTable
                                     + " where chrome='" + chr + "' and pos=" + ps
                                     + "");
@@ -187,7 +187,7 @@ public class RepeatFilter {
                         }
                         // SINEalu is also what we need
                         else if (rs.next() && rs.getString(1) == "SINE/Alu") {
-                            databaseManager.executeSQL("insert into " + repeatTable
+                            databaseManager.executeSQL("insert into " + repeatResultTable
                                     + "  select * from " + refTable
                                     + " where chrome='" + chr + "' and pos=" + ps
                                     + "");
@@ -216,9 +216,9 @@ public class RepeatFilter {
         System.out.println("post start" + " " + df.format(new Date()));
 
         databaseManager.executeSQL("create temporary table newtable select distinct * from "
-                + repeatTable);
-        databaseManager.executeSQL("truncate table " + repeatTable);
-        databaseManager.executeSQL("insert into " + repeatTable +
+                + repeatResultTable);
+        databaseManager.executeSQL("truncate table " + repeatResultTable);
+        databaseManager.executeSQL("insert into " + repeatResultTable +
                 " select * from  newtable");
         databaseManager.deleteTable("newTable");
 
