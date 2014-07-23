@@ -26,7 +26,7 @@ public class DatabaseManager {
 		con = DriverManager.getConnection(connectionURL, user, password);
 		return con != null;
 	}
-
+	
 	public void setAutoCommit(boolean autoCommit) {
 		try {
 			con.setAutoCommit(autoCommit);
