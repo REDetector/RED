@@ -225,6 +225,7 @@ public class Connect {
 		 Utilities.getInstance().createCalTable(args[1]);
 		
 		 DenovoVcf df=new DenovoVcf(manager, args[1], "rnaVcf");
+		 df.establishRnaTable();
 		 df.rnaVcf(Integer.parseInt(args[7]));
 		
 		 BasicFilter bf = new BasicFilter(manager, "rnaVcf", "specifictemp",

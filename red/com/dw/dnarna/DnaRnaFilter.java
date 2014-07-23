@@ -41,7 +41,7 @@ public class DnaRnaFilter {
 																		// Date()为获取当前系统时间
 
 		databaseManager.deleteTable(DnaRnaTable);
-		databaseManager.createTable(DnaRnaTable, "(chrome varchar(30),"
+		databaseManager.createTable(DnaRnaTable, "(chrome varchar(15),"
 				+ Utilities.getInstance().getS2() + ")");
 
 		System.out.println("esdr end" + " " + df.format(new Date()));// new
