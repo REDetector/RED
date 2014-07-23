@@ -13,25 +13,15 @@
     <list id="7bfbcd82-43d2-4bb3-bf21-1f16164d2c5a" name="Rejected commit: Default" comment="Fix some bugs." />
     <list id="7653a5be-4308-4b8a-af47-b29b059d9163" name="Rejected commit: Rejected commit: Default" comment="Fix some bugs." />
     <list default="true" id="8c0b48af-f12c-459a-98ff-77421d212a83" name="Failed commit: Rejected commit: Default" comment="Add database information to preferences.">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/red/com/xl/thread/ThreadDenovoInput.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/red/com/xl/thread/ThreadNonDenovoInput.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/com/dw/denovo/BasicFilter.java" afterPath="$PROJECT_DIR$/red/com/dw/denovo/BasicFilter.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/com/dw/denovo/ComphrehensiveFilter.java" afterPath="$PROJECT_DIR$/red/com/dw/denovo/ComphrehensiveFilter.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/com/xl/dialog/DataInportDialog.java" afterPath="$PROJECT_DIR$/red/com/xl/dialog/DataInportDialog.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/com/dw/denovo/DbsnpFilter.java" afterPath="$PROJECT_DIR$/red/com/dw/denovo/DbsnpFilter.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/com/dw/denovo/DenovoVcf.java" afterPath="$PROJECT_DIR$/red/com/dw/denovo/DenovoVcf.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/com/dw/dnarna/DnaRnaFilter.java" afterPath="$PROJECT_DIR$/red/com/dw/dnarna/DnaRnaFilter.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/com/dw/dnarna/DnaRnaVcf.java" afterPath="$PROJECT_DIR$/red/com/dw/dnarna/DnaRnaVcf.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/com/dw/dnarna/LlrFilter.java" afterPath="$PROJECT_DIR$/red/com/dw/dnarna/LlrFilter.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/com/xl/preferences/LocationPreferences.java" afterPath="$PROJECT_DIR$/red/com/xl/preferences/LocationPreferences.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/com/xl/utils/namemanager/MenuUtils.java" afterPath="$PROJECT_DIR$/red/com/xl/utils/namemanager/MenuUtils.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/com/dw/denovo/PValueFilter.java" afterPath="$PROJECT_DIR$/red/com/dw/denovo/PValueFilter.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/com/xl/main/REDApplication.java" afterPath="$PROJECT_DIR$/red/com/xl/main/REDApplication.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/com/xl/menu/REDMenu.java" afterPath="$PROJECT_DIR$/red/com/xl/menu/REDMenu.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/com/xl/preferences/REDPreferences.java" afterPath="$PROJECT_DIR$/red/com/xl/preferences/REDPreferences.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/com/dw/publicaffairs/Query.java" afterPath="$PROJECT_DIR$/red/com/dw/publicaffairs/Query.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/com/dw/denovo/RepeatFilter.java" afterPath="$PROJECT_DIR$/red/com/dw/denovo/RepeatFilter.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/com/xl/dialog/UserPasswordDialog.java" afterPath="$PROJECT_DIR$/red/com/xl/dialog/UserPasswordDialog.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red_prefs.txt" afterPath="$PROJECT_DIR$/red_prefs.txt" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="REDetector.iws" />
@@ -91,8 +81,8 @@
         <option name="LOG_MESSAGE" value="" />
       </breakpoint>
     </breakpoint_any>
-    <breakpoint_rules converted="true" />
     <ui_properties converted="true" />
+    <breakpoint_rules converted="true" />
   </component>
   <component name="ExecutionTargetManager" SELECTED_TARGET="default_target" />
   <component name="FavoritesManager">
@@ -100,118 +90,117 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="DataInportDialog.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/red/com/xl/dialog/DataInportDialog.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="2962" max-vertical-offset="8976">
-              <caret line="204" column="52" selection-start-line="204" selection-start-column="52" selection-end-line="204" selection-end-column="52" />
-              <folding>
-                <element signature="imports" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
       <file leaf-file-name="PValueFilter.java" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/red/com/dw/denovo/PValueFilter.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="7546">
-              <caret line="5" column="80" selection-start-line="5" selection-start-column="0" selection-end-line="5" selection-end-column="0" />
+            <state vertical-scroll-proportion="0.0" vertical-offset="275" max-vertical-offset="6688">
+              <caret line="219" column="27" selection-start-line="219" selection-start-column="27" selection-end-line="219" selection-end-column="27" />
               <folding>
-                <element signature="e#9606#9613#0" expanded="true" />
-                <element signature="e#10480#10487#0" expanded="true" />
+                <element signature="imports" expanded="true" />
+                <element signature="e#1118#1126#0" expanded="true" />
+                <element signature="e#1174#1182#0" expanded="true" />
+                <element signature="e#1229#1237#0" expanded="true" />
+                <element signature="e#4986#4994#0" expanded="true" />
+                <element signature="e#9899#9906#0" expanded="true" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="UserPasswordDialog.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/red/com/xl/dialog/UserPasswordDialog.java">
+      <file leaf-file-name="RepeatFilter.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/red/com/dw/denovo/RepeatFilter.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="1254" max-vertical-offset="6028">
-              <caret line="83" column="28" selection-start-line="83" selection-start-column="28" selection-end-line="83" selection-end-column="28" />
+            <state vertical-scroll-proportion="0.0" vertical-offset="4486" max-vertical-offset="5148">
+              <caret line="227" column="0" selection-start-line="227" selection-start-column="0" selection-end-line="227" selection-end-column="0" />
+              <folding>
+                <element signature="imports" expanded="true" />
+                <element signature="e#6195#6203#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Connect.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/red/com/dw/publicaffairs/Connect.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0" vertical-offset="33" max-vertical-offset="5786">
+              <caret line="36" column="16" selection-start-line="36" selection-start-column="16" selection-end-line="36" selection-end-column="16" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="ThreadDenovoInput.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/red/com/xl/thread/ThreadDenovoInput.java">
+      <file leaf-file-name="Clear.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/red/com/dw/publicaffairs/Clear.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="652" max-vertical-offset="3916">
-              <caret line="36" column="23" selection-start-line="36" selection-start-column="8" selection-end-line="36" selection-end-column="23" />
-              <folding>
-                <element signature="imports" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="ThreadNonDenovoInput.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/red/com/xl/thread/ThreadNonDenovoInput.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="3546" max-vertical-offset="4048">
-              <caret line="184" column="54" selection-start-line="184" selection-start-column="39" selection-end-line="184" selection-end-column="54" />
+            <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="330">
+              <caret line="6" column="10" selection-start-line="6" selection-start-column="5" selection-end-line="6" selection-end-column="5" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="REDMenu.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/red/com/xl/menu/REDMenu.java">
+      <file leaf-file-name="DnaRnaVcf.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/red/com/dw/dnarna/DnaRnaVcf.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="6917" max-vertical-offset="12188">
-              <caret line="349" column="25" selection-start-line="349" selection-start-column="25" selection-end-line="349" selection-end-column="25" />
-              <folding>
-                <element signature="e#20552#20553#0" expanded="true" />
-                <element signature="e#20595#20596#0" expanded="true" />
-                <element signature="e#20630#20631#0" expanded="true" />
-                <element signature="e#20673#20674#0" expanded="true" />
-                <element signature="e#21848#21849#0" expanded="true" />
-                <element signature="e#21883#21884#0" expanded="true" />
-              </folding>
+            <state vertical-scroll-proportion="0.0" vertical-offset="858" max-vertical-offset="10120">
+              <caret line="49" column="23" selection-start-line="49" selection-start-column="8" selection-end-line="49" selection-end-column="8" />
+              <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="REDPreferences.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/red/com/xl/preferences/REDPreferences.java">
+      <file leaf-file-name="DatabaseManager.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/red/com/dw/publicaffairs/DatabaseManager.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="6160">
-              <caret line="38" column="62" selection-start-line="38" selection-start-column="62" selection-end-line="38" selection-end-column="62" />
-              <folding>
-                <element signature="e#3666#3667#0" expanded="true" />
-                <element signature="e#3703#3704#0" expanded="true" />
-              </folding>
+            <state vertical-scroll-proportion="0.0" vertical-offset="2134" max-vertical-offset="3256">
+              <caret line="114" column="0" selection-start-line="114" selection-start-column="0" selection-end-line="114" selection-end-column="0" />
+              <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="LocationPreferences.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/red/com/xl/preferences/LocationPreferences.java">
+      <file leaf-file-name="BasicFilter.java" pinned="false" current="true" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/red/com/dw/denovo/BasicFilter.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="330" max-vertical-offset="8118">
-              <caret line="33" column="65" selection-start-line="33" selection-start-column="63" selection-end-line="33" selection-end-column="63" />
-              <folding>
-                <element signature="e#4252#4253#0" expanded="true" />
-                <element signature="e#4294#4295#0" expanded="true" />
-                <element signature="e#11680#11681#0" expanded="true" />
-                <element signature="e#11714#11715#0" expanded="true" />
-                <element signature="e#11768#11769#0" expanded="true" />
-                <element signature="e#11814#11815#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="REDApplication.java" pinned="false" current="true" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/red/com/xl/main/REDApplication.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.5829384" vertical-offset="18872" max-vertical-offset="20548">
-              <caret line="899" column="53" selection-start-line="899" selection-start-column="34" selection-end-line="899" selection-end-column="34" />
+            <state vertical-scroll-proportion="0.36231884" vertical-offset="2528" max-vertical-offset="3080">
+              <caret line="124" column="35" selection-start-line="124" selection-start-column="30" selection-end-line="124" selection-end-column="30" />
               <folding>
                 <element signature="imports" expanded="true" />
+                <element signature="e#2875#2883#0" expanded="true" />
               </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="FileUtils.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/red/com/dw/publicaffairs/FileUtils.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="638">
+              <caret line="6" column="13" selection-start-line="6" selection-start-column="13" selection-end-line="6" selection-end-column="13" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Query.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/red/com/dw/publicaffairs/Query.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0" vertical-offset="660" max-vertical-offset="1342">
+              <caret line="44" column="51" selection-start-line="44" selection-start-column="51" selection-end-line="44" selection-end-column="51" />
+              <folding>
+                <element signature="e#341#348#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Utilities.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/red/com/dw/publicaffairs/Utilities.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0" vertical-offset="66" max-vertical-offset="2354">
+              <caret line="104" column="0" selection-start-line="104" selection-start-column="0" selection-end-line="104" selection-end-column="0" />
+              <folding />
             </state>
           </provider>
         </entry>
@@ -235,7 +224,6 @@
   <component name="IdeDocumentHistory">
     <option name="changedFiles">
       <list>
-        <option value="$PROJECT_DIR$/.idea/workspace.xml" />
         <option value="$PROJECT_DIR$/red/com/denovo/Dbcon.java" />
         <option value="$PROJECT_DIR$/red/com/denovo/DatabaseConnection.java" />
         <option value="$PROJECT_DIR$/red/com/denovo/Basicf.java" />
@@ -267,16 +255,8 @@
         <option value="$PROJECT_DIR$/red/com/dw/publicaffairs/Utilities.java" />
         <option value="$PROJECT_DIR$/red/com/dw/publicaffairs/Connect.java" />
         <option value="$PROJECT_DIR$/red/com/xl/panel/DataIntroductionPanel.java" />
-        <option value="$PROJECT_DIR$/red/com/dw/denovo/RepeatFilter.java" />
-        <option value="$PROJECT_DIR$/red/com/dw/denovo/DbsnpFilter.java" />
-        <option value="$PROJECT_DIR$/red/com/dw/denovo/ComphrehensiveFilter.java" />
-        <option value="$PROJECT_DIR$/red/com/dw/denovo/PValueFilter.java" />
-        <option value="$PROJECT_DIR$/red/com/dw/dnarna/LlrFilter.java" />
-        <option value="$PROJECT_DIR$/red/com/dw/dnarna/DnaRnaFilter.java" />
         <option value="$PROJECT_DIR$/red/com/dw/dnarna/DnaRnaVcf.java" />
         <option value="$PROJECT_DIR$/red/com/xl/thread/ThreadDataInput.java" />
-        <option value="$PROJECT_DIR$/red/com/dw/denovo/DenovoVcf.java" />
-        <option value="$PROJECT_DIR$/red/com/dw/denovo/BasicFilter.java" />
         <option value="$PROJECT_DIR$/red/com/xl/thread/ThreadDenovoInput.java" />
         <option value="$PROJECT_DIR$/red/com/xl/thread/ThreadNonDenovoInput.java" />
         <option value="$PROJECT_DIR$/red/com/xl/preferences/REDPreferences.java" />
@@ -286,6 +266,15 @@
         <option value="$PROJECT_DIR$/red/com/xl/menu/REDMenu.java" />
         <option value="$PROJECT_DIR$/red/com/xl/dialog/DataInportDialog.java" />
         <option value="$PROJECT_DIR$/red/com/xl/main/REDApplication.java" />
+        <option value="$PROJECT_DIR$/red/com/dw/dnarna/LlrFilter.java" />
+        <option value="$PROJECT_DIR$/red/com/dw/dnarna/DnaRnaFilter.java" />
+        <option value="$PROJECT_DIR$/red/com/dw/denovo/ComphrehensiveFilter.java" />
+        <option value="$PROJECT_DIR$/red/com/dw/denovo/BasicFilter.java" />
+        <option value="$PROJECT_DIR$/red/com/dw/denovo/DbsnpFilter.java" />
+        <option value="$PROJECT_DIR$/red/com/dw/denovo/DenovoVcf.java" />
+        <option value="$PROJECT_DIR$/red/com/dw/denovo/RepeatFilter.java" />
+        <option value="$PROJECT_DIR$/red/com/dw/denovo/PValueFilter.java" />
+        <option value="$PROJECT_DIR$/red/com/dw/publicaffairs/Query.java" />
       </list>
     </option>
   </component>
@@ -768,6 +757,19 @@
       <option name="PORT" value="5005" />
       <method />
     </configuration>
+    <configuration default="true" type="Applet" factoryName="Applet">
+      <module name="" />
+      <option name="MAIN_CLASS_NAME" />
+      <option name="HTML_FILE_NAME" />
+      <option name="HTML_USED" value="false" />
+      <option name="WIDTH" value="400" />
+      <option name="HEIGHT" value="300" />
+      <option name="POLICY_FILE" value="$APPLICATION_HOME_DIR$/bin/appletviewer.policy" />
+      <option name="VM_PARAMETERS" />
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
+      <option name="ALTERNATIVE_JRE_PATH" />
+      <method />
+    </configuration>
     <configuration default="true" type="TestNG" factoryName="TestNG">
       <module name="" />
       <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
@@ -793,19 +795,6 @@
       <envs />
       <properties />
       <listeners />
-      <method />
-    </configuration>
-    <configuration default="true" type="Applet" factoryName="Applet">
-      <module name="" />
-      <option name="MAIN_CLASS_NAME" />
-      <option name="HTML_FILE_NAME" />
-      <option name="HTML_USED" value="false" />
-      <option name="WIDTH" value="400" />
-      <option name="HEIGHT" value="300" />
-      <option name="POLICY_FILE" value="$APPLICATION_HOME_DIR$/bin/appletviewer.policy" />
-      <option name="VM_PARAMETERS" />
-      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
-      <option name="ALTERNATIVE_JRE_PATH" />
       <method />
     </configuration>
     <configuration default="true" type="Application" factoryName="Application">
@@ -1211,23 +1200,23 @@
       <window_info id="Designer" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.317817" sideWeight="0.5" order="11" side_tool="false" content_ui="tabs" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.394702" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33774835" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.21825397" sideWeight="0.5" order="8" side_tool="true" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="1" side_tool="true" content_ui="tabs" />
-      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.2" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25033113" sideWeight="0.5" order="12" side_tool="false" content_ui="tabs" />
+      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.19973545" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3271523" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.13538682" sideWeight="0.75994515" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3295129" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Application Servers" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.19340974" sideWeight="0.75994515" order="0" side_tool="false" content_ui="combo" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.35364237" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" x="22" y="345" width="1396" height="180" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.35347044" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" x="22" y="345" width="1396" height="180" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="JetGradle" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.394702" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25033113" sideWeight="0.5" order="12" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
     </layout>
@@ -1312,27 +1301,6 @@
     <option name="FILTER_TARGETS" value="false" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/red/com/xl/display/chromosomeviewer/ChromosomeViewer.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="5729" max-vertical-offset="10080">
-          <caret line="315" column="32" selection-start-line="315" selection-start-column="19" selection-end-line="315" selection-end-column="40" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/red/com/xl/display/chromosomeviewer/ChromosomeDataTrack.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="9" max-vertical-offset="10340">
-          <caret line="26" column="13" selection-start-line="26" selection-start-column="13" selection-end-line="26" selection-end-column="13" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/red/com/xl/display/genomeviewer/GenomeViewer.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="3850" max-vertical-offset="4400">
-          <caret line="211" column="64" selection-start-line="211" selection-start-column="53" selection-end-line="211" selection-end-column="53" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/red/com/xl/utils/FileUtils.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.5228137" vertical-offset="3085" max-vertical-offset="3700">
@@ -1459,67 +1427,11 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/red/com/dw/publicaffairs/DatabaseManager.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.59891105" vertical-offset="2134" max-vertical-offset="3256">
-          <caret line="114" column="0" selection-start-line="114" selection-start-column="0" selection-end-line="114" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/red/com/dw/publicaffairs/Connect.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="1.3085502" vertical-offset="0" max-vertical-offset="5786">
-          <caret line="36" column="16" selection-start-line="36" selection-start-column="16" selection-end-line="36" selection-end-column="16" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/red/com/dw/denovo/RepeatFilter.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="4377" max-vertical-offset="5918">
-          <caret line="267" column="48" selection-start-line="267" selection-start-column="29" selection-end-line="267" selection-end-column="29" />
-          <folding>
-            <element signature="e#7246#7253#0" expanded="true" />
-            <element signature="e#8120#8127#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/red/com/dw/denovo/DbsnpFilter.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="4092" max-vertical-offset="4686">
-          <caret line="205" column="51" selection-start-line="205" selection-start-column="51" selection-end-line="205" selection-end-column="51" />
-          <folding>
-            <element signature="e#5339#5346#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/red/com/dw/dnarna/DnaRnaVcf.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="1229" max-vertical-offset="10164">
-          <caret line="49" column="23" selection-start-line="49" selection-start-column="8" selection-end-line="49" selection-end-column="8" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/red/com/xl/panel/DataIntroductionPanel.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.9665971" vertical-offset="1187" max-vertical-offset="2002">
           <caret line="96" column="44" selection-start-line="96" selection-start-column="30" selection-end-line="96" selection-end-column="30" />
           <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/red/com/dw/dnarna/DnaRnaFilter.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="2552" max-vertical-offset="3806">
-          <caret line="37" column="45" selection-start-line="37" selection-start-column="0" selection-end-line="37" selection-end-column="0" />
-          <folding>
-            <element signature="e#3948#3955#0" expanded="true" />
-            <element signature="e#4822#4829#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -1539,54 +1451,6 @@
         <state vertical-scroll-proportion="0.55450237" vertical-offset="8" max-vertical-offset="1694">
           <caret line="29" column="24" selection-start-line="29" selection-start-column="17" selection-end-line="29" selection-end-column="33" />
           <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/red/com/dw/dnarna/LlrFilter.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="4481" max-vertical-offset="6094">
-          <caret line="217" column="51" selection-start-line="217" selection-start-column="51" selection-end-line="217" selection-end-column="51" />
-          <folding>
-            <element signature="imports" expanded="true" />
-            <element signature="e#5509#5516#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/red/com/dw/denovo/ComphrehensiveFilter.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="3495" max-vertical-offset="4356">
-          <caret line="188" column="51" selection-start-line="188" selection-start-column="51" selection-end-line="188" selection-end-column="51" />
-          <folding>
-            <element signature="e#4717#4724#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/red/com/dw/publicaffairs/Clear.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.20496894" vertical-offset="0" max-vertical-offset="644">
-          <caret line="6" column="10" selection-start-line="6" selection-start-column="5" selection-end-line="6" selection-end-column="5" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/red/com/dw/denovo/DenovoVcf.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="2404" max-vertical-offset="4906">
-          <caret line="132" column="42" selection-start-line="132" selection-start-column="42" selection-end-line="132" selection-end-column="42" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/red/com/dw/denovo/BasicFilter.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="1830" max-vertical-offset="3850">
-          <caret line="98" column="25" selection-start-line="98" selection-start-column="20" selection-end-line="98" selection-end-column="25" />
-          <folding>
-            <element signature="e#4425#4432#0" expanded="true" />
-            <element signature="e#5326#5333#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -1646,26 +1510,11 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/red/com/dw/publicaffairs/Utilities.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.25287357" vertical-offset="1716" max-vertical-offset="2354">
-          <caret line="104" column="0" selection-start-line="104" selection-start-column="0" selection-end-line="104" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/red/com/xl/preferences/LocationPreferences.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="330" max-vertical-offset="8118">
           <caret line="33" column="65" selection-start-line="33" selection-start-column="63" selection-end-line="33" selection-end-column="63" />
-          <folding>
-            <element signature="e#4252#4253#0" expanded="true" />
-            <element signature="e#4294#4295#0" expanded="true" />
-            <element signature="e#11680#11681#0" expanded="true" />
-            <element signature="e#11714#11715#0" expanded="true" />
-            <element signature="e#11768#11769#0" expanded="true" />
-            <element signature="e#11814#11815#0" expanded="true" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -1673,10 +1522,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="198" max-vertical-offset="6160">
           <caret line="38" column="62" selection-start-line="38" selection-start-column="62" selection-end-line="38" selection-end-column="62" />
-          <folding>
-            <element signature="e#3666#3667#0" expanded="true" />
-            <element signature="e#3703#3704#0" expanded="true" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -1684,9 +1530,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="256" max-vertical-offset="3916">
           <caret line="36" column="23" selection-start-line="36" selection-start-column="8" selection-end-line="36" selection-end-column="23" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -1694,14 +1538,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="6917" max-vertical-offset="12188">
           <caret line="349" column="25" selection-start-line="349" selection-start-column="25" selection-end-line="349" selection-end-column="25" />
-          <folding>
-            <element signature="e#20552#20553#0" expanded="true" />
-            <element signature="e#20595#20596#0" expanded="true" />
-            <element signature="e#20630#20631#0" expanded="true" />
-            <element signature="e#20673#20674#0" expanded="true" />
-            <element signature="e#21848#21849#0" expanded="true" />
-            <element signature="e#21883#21884#0" expanded="true" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -1709,20 +1546,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="2962" max-vertical-offset="8976">
           <caret line="204" column="52" selection-start-line="204" selection-start-column="52" selection-end-line="204" selection-end-column="52" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/red/com/dw/denovo/PValueFilter.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="7546">
-          <caret line="5" column="80" selection-start-line="5" selection-start-column="0" selection-end-line="5" selection-end-column="0" />
-          <folding>
-            <element signature="e#9606#9613#0" expanded="true" />
-            <element signature="e#10480#10487#0" expanded="true" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -1734,12 +1558,168 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/bin/com/xl/main/REDApplication.class">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-4.9183674" vertical-offset="2651" max-vertical-offset="3190">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/red/com/xl/main/REDApplication.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.5829384" vertical-offset="18872" max-vertical-offset="20548">
-          <caret line="899" column="53" selection-start-line="899" selection-start-column="34" selection-end-line="899" selection-end-column="34" />
+        <state vertical-scroll-proportion="0.0" vertical-offset="18953" max-vertical-offset="20548">
+          <caret line="909" column="74" selection-start-line="909" selection-start-column="0" selection-end-line="909" selection-end-column="0" />
           <folding>
             <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/red/com/dw/dnarna/LlrFilter.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="3781" max-vertical-offset="5984">
+          <caret line="212" column="52" selection-start-line="212" selection-start-column="52" selection-end-line="212" selection-end-column="52" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="e#1739#1747#0" expanded="true" />
+            <element signature="e#7128#7135#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/red/com/dw/dnarna/DnaRnaFilter.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="2896" max-vertical-offset="3762">
+          <caret line="161" column="51" selection-start-line="161" selection-start-column="51" selection-end-line="161" selection-end-column="51" />
+          <folding>
+            <element signature="e#3805#3812#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/red/com/dw/denovo/ComphrehensiveFilter.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="2959" max-vertical-offset="3608">
+          <caret line="157" column="0" selection-start-line="157" selection-start-column="0" selection-end-line="157" selection-end-column="0" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="e#3270#3278#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/red/com/dw/denovo/DbsnpFilter.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="2409" max-vertical-offset="3938">
+          <caret line="120" column="0" selection-start-line="120" selection-start-column="0" selection-end-line="120" selection-end-column="0" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/red/com/dw/denovo/DenovoVcf.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="1846" max-vertical-offset="5104">
+          <caret line="224" column="18" selection-start-line="224" selection-start-column="5" selection-end-line="224" selection-end-column="5" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/red/com/dw/denovo/PValueFilter.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="275" max-vertical-offset="6688">
+          <caret line="219" column="27" selection-start-line="219" selection-start-column="27" selection-end-line="219" selection-end-column="27" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="e#1118#1126#0" expanded="true" />
+            <element signature="e#1174#1182#0" expanded="true" />
+            <element signature="e#1229#1237#0" expanded="true" />
+            <element signature="e#4986#4994#0" expanded="true" />
+            <element signature="e#9899#9906#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/red/com/dw/denovo/RepeatFilter.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="4486" max-vertical-offset="5148">
+          <caret line="227" column="0" selection-start-line="227" selection-start-column="0" selection-end-line="227" selection-end-column="0" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="e#6195#6203#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/red/com/dw/dnarna/DnaRnaVcf.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="1229" max-vertical-offset="10164">
+          <caret line="49" column="23" selection-start-line="49" selection-start-column="8" selection-end-line="49" selection-end-column="8" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/red/com/dw/publicaffairs/Clear.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="330">
+          <caret line="6" column="10" selection-start-line="6" selection-start-column="5" selection-end-line="6" selection-end-column="5" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/red/com/dw/publicaffairs/Connect.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="33" max-vertical-offset="5786">
+          <caret line="36" column="16" selection-start-line="36" selection-start-column="16" selection-end-line="36" selection-end-column="16" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/red/com/dw/publicaffairs/DatabaseManager.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="2134" max-vertical-offset="3256">
+          <caret line="114" column="0" selection-start-line="114" selection-start-column="0" selection-end-line="114" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/red/com/dw/publicaffairs/FileUtils.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="638">
+          <caret line="6" column="13" selection-start-line="6" selection-start-column="13" selection-end-line="6" selection-end-column="13" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/red/com/dw/publicaffairs/Query.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="660" max-vertical-offset="1342">
+          <caret line="44" column="51" selection-start-line="44" selection-start-column="51" selection-end-line="44" selection-end-column="51" />
+          <folding>
+            <element signature="e#341#348#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/red/com/dw/publicaffairs/Utilities.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="66" max-vertical-offset="2354">
+          <caret line="104" column="0" selection-start-line="104" selection-start-column="0" selection-end-line="104" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/red/com/dw/denovo/BasicFilter.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.36231884" vertical-offset="2528" max-vertical-offset="3080">
+          <caret line="124" column="35" selection-start-line="124" selection-start-column="30" selection-end-line="124" selection-end-column="30" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="e#2875#2883#0" expanded="true" />
           </folding>
         </state>
       </provider>
