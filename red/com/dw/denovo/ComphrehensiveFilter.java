@@ -55,10 +55,11 @@ public class ComphrehensiveFilter {
 
 	public boolean establishRefCom() {
 		databaseManager
-				.createRefTable(referenceComphrehensive,
-						"(chrome varchar(25),begin int,end int,type varchar(40),index(chrome))");
-		ResultSet rs = databaseManager.query(referenceComphrehensive, "count(*)",
-				"1 limit 0,100");
+				.createTable(
+						referenceComphrehensive,
+						"(chrome varchar(30),ref varchar(30),type varchar(9),begin int,end int,unuse1 float(8,6),unuse2 varchar(5),unuse3 varchar(5),info varchar(100),index(chrome,type))");
+		ResultSet rs = databaseManager.query(referenceComphrehensive,
+				"count(*)", "1 limit 0,100");
 		int number = 0;
 		try {
 			if (rs.next()) {

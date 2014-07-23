@@ -52,9 +52,8 @@ public class DbsnpFilter {
 	}
 
 	public boolean establishRefdbSnp() {
-		databaseManager
-				.createRefTable(referencedbSnp,
-						"(chrome varchar(25),begin int,end int,type varchar(40),index(chrome))");
+		databaseManager.createTable(referencedbSnp,
+				"(chrome varchar(15),pos varchar(30),index(chrome,pos))");
 		ResultSet rs = databaseManager.query(referencedbSnp, "count(*)",
 				"1 limit 0,100");
 		int number = 0;
