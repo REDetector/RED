@@ -49,7 +49,7 @@ public class RepeatFilter {
 	public boolean establishRefRepeat() {
 		databaseManager
 				.createRefTable(referenceRepeat,
-						"(chrome varchar(25),begin int,end int,type varchar(40),index(chrome))");
+						"(chrome varchar(15),begin int,end int,type varchar(40),index(chrome,begin,end))");
 		ResultSet rs = databaseManager.query(referenceRepeat, "count(*)",
 				"1 limit 0,100");
 		int number = 0;
@@ -139,19 +139,20 @@ public class RepeatFilter {
 
 		databaseManager.executeSQL("insert into " + repeatTable
 				+ " select * from " + refTable
-				+ " where not exists (select * FROM " + referenceRepeat
-				+ " where (" + refTable + ".chrome=" + referenceRepeat
-				+ ".chrome and " + refTable + ".pos>" + referenceRepeat
-				+ ".begin and " + refTable + ".pos<" + referenceRepeat
-				+ ".end)) ");
+				+ " where not exists (select * FROM " + referenceRepeat+ " where (" + referenceRepeat
+				+ ".chrome= " + refTable + ".chrome and  " + referenceRepeat
+				+ ".begin<" + refTable + ".pos and " + referenceRepeat
+				+ ".end>" + refTable + ".pos)) ");
 
+		System.out.println("esrepeat alu start " + " " + df.format(new Date()));
 		databaseManager.executeSQL("insert into alutemp select * from "
-				+ refTable + " where exists (select * FROM " + referenceRepeat
-				+ " where (" + refTable + ".chrome=" + referenceRepeat
-				+ ".chrome and " + refTable + ".pos>" + referenceRepeat
-				+ ".begin and " + refTable + ".pos<" + referenceRepeat
-				+ ".end and " + referenceRepeat + ".type='SINE/Alu')) ");
+				+ refTable + " where exists (select * FROM " + refTable
+				+ " where (" + referenceRepeat
+				+ ".chrome= " + refTable + ".chrome and  " + referenceRepeat
+				+ ".begin<" + refTable + ".pos and " + referenceRepeat
+				+ ".end>" + refTable + ".pos and " + referenceRepeat + ".type='SINE/Alu')) ");
 
+		System.out.println("esrepeat final start " + " " + df.format(new Date()));
 		databaseManager.executeSQL("insert into " + repeatTable
 				+ " select * from alutemp");
 

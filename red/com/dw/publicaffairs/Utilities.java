@@ -86,7 +86,7 @@ public class Utilities {
 				if (line.startsWith("##"))
 					continue;
 				if (line.startsWith("#")) {
-					s2.append(section[1] + " " + "bigint");
+					s2.append(section[1] + " " + "int");
 					s2.append("," + section[2] + " " + "varchar(30)");
 					s2.append("," + section[3] + " " + "varchar(3)");
 					s2.append("," + section[4] + " " + "varchar(5)");

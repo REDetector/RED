@@ -43,7 +43,7 @@ public class DbsnpFilter {
 		System.out.println("establishsnp start" + " " + df.format(new Date()));
 
 		databaseManager.deleteTable(dbSnpTable);
-		databaseManager.createTable(dbSnpTable, "(chrome varchar(30),"
+		databaseManager.createTable(dbSnpTable, "(chrome varchar(15),"
 				+ Utilities.getInstance().getS2() + "," + "index(chrome,pos))");
 
 		System.out.println("establishsnp end" + " " + df.format(new Date()));
@@ -52,9 +52,8 @@ public class DbsnpFilter {
 	}
 
 	public boolean establishRefdbSnp() {
-		databaseManager
-				.createRefTable(referencedbSnp,
-						"(chrome varchar(25),begin int,end int,type varchar(40),index(chrome))");
+		databaseManager.createTable(referencedbSnp,
+				"(chrome varchar(15),pos int,index(chrome,pos))");
 		ResultSet rs = databaseManager.query(referencedbSnp, "count(*)",
 				"1 limit 0,100");
 		int number = 0;
@@ -114,10 +113,8 @@ public class DbsnpFilter {
 
 		databaseManager.executeSQL("insert into " + dbSnpTable
 				+ " select * from " + refTable
-				+ " where not exists (select *FROM " + referencedbSnp
-				+ " where (" + refTable + ".chrome=" + referencedbSnp
-				+ ".chrome and " + refTable + ".pos=" + referencedbSnp
-				+ ".pos))");
+				+ " where not exists (select chrome from " + referencedbSnp
+				+ " where (" + referencedbSnp+ ".chrome=" + refTable + ".chrome and " + referencedbSnp+ ".pos=" + refTable + ".pos))");
 
 		System.out.println("dbsnpf end" + " " + df.format(new Date()));// new
 																		// Date()涓洪敓鏂ゆ嫹鍙栭敓鏂ゆ嫹鍓嶇郴缁熸椂閿熸枻锟�

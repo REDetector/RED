@@ -39,7 +39,7 @@ public class BasicFilter {
 
 	public void createSpecificTable() {
 		databaseManager.deleteTable(specificTable);
-		databaseManager.createTable(specificTable, "(chrome varchar(30),"
+		databaseManager.createTable(specificTable, "(chrome varchar(15),"
 				+ Utilities.getInstance().getS2() + "," + "index(chrome,pos))");
 	}
 
@@ -68,7 +68,7 @@ public class BasicFilter {
 	
 	public void createBasicTable() {
 		databaseManager.deleteTable(basicTable);
-		databaseManager.createTable(basicTable, "(chrome varchar(30),"
+		databaseManager.createTable(basicTable, "(chrome varchar(15),"
 				+ Utilities.getInstance().getS2() + "," + "index(chrome,pos))");
 	}
 

@@ -76,8 +76,8 @@ public class PValueFilter {
 			while ((line = rin.readLine()) != null) {
 				StringBuffer s1 = new StringBuffer();
 				if (count > 0) {
-					s2.append(line.split("\\t")[0] + " " + "varchar(9)");
-					s2.append("," + line.split("\\t")[1] + " " + "bigint");
+					s2.append(line.split("\\t")[0] + " " + "varchar(15)");
+					s2.append("," + line.split("\\t")[1] + " " + "int");
 					s2.append("," + line.split("\\t")[2] + " " + "varchar(5)");
 					s2.append("," + line.split("\\t")[3] + " " + "varchar(5)");
 					s2.append("," + line.split("\\t")[4] + " " + "varchar(5)");

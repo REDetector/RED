@@ -44,7 +44,7 @@ public class LlrFilter {
 																		// Date()为获取当前系统时间
 
 		databaseManager.deleteTable(llrTable);
-		databaseManager.createTable(llrTable, "(chrome text,"
+		databaseManager.createTable(llrTable, "(chrome varchar(15),"
 				+ Utilities.getInstance().getS2() + ")");
 
 		System.out.println("esllr end" + " " + df.format(new Date()));// new
