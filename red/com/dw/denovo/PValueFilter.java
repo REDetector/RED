@@ -31,11 +31,8 @@ public class PValueFilter {
 	FileInputStream inputStream;
 	private String line = null;
 	private String[] col = new String[40];
-	// insert鏃朵娇閿熺煫纰夋嫹閿熸枻鎷烽敓锟�
 	private StringBuffer s1 = new StringBuffer();
 	private StringBuffer s2 = new StringBuffer();
-	// create table鏃朵娇閿熺煫纰夋嫹閿熻鍑ゆ嫹
-	// insert 鏃堕敓鏂ゆ嫹浣块敓鐭鎷烽敓鏂ゆ嫹閿熸枻锟�
 	private StringBuffer s3 = new StringBuffer();
 	private int count = 1;
 	private String chr;
@@ -52,7 +49,6 @@ public class PValueFilter {
 	private double ref_n = 0;
 	private double alt_n = 0;
 	private double pvalue = 0;
-	// 閿熸枻鎷烽敓鏂ゆ嫹閿熸枻鎷烽敓鑺傞潻鎷峰紡
 	SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
 	public PValueFilter(DatabaseManager databaseManager, String pIn,
@@ -103,7 +99,6 @@ public class PValueFilter {
 					s1.append("'" + col[0] + "'");
 					for (int i = 1; i < 5; i++)
 						s1.append("," + "'" + col[i] + "'");
-					// 閿熸枻鎷疯彉閿熸枻鎷烽敓鎹疯鎷烽敓璇紝姣忛敓鍙鎷烽敓鏂ゆ嫹
 					databaseManager.executeSQL("insert into " + refHg19 + "("
 							+ s3 + ") values(" + s1 + ")");
 					count_ts++;
@@ -119,8 +114,8 @@ public class PValueFilter {
 			s2.delete(0, s2.length());
 			s3.delete(0, s3.length());
 
-			System.out.println("loadhg19 end" + " " + df.format(new Date()));// new
-																				// Date()涓洪敓鏂ゆ嫹鍙栭敓鏂ゆ嫹鍓嶇郴缁熸椂閿熸枻锟�
+			System.out.println("loadhg19 end" + " " + df.format(new Date()));
+																				
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -225,8 +220,8 @@ public class PValueFilter {
 	}
 
 	public void P_V(String commandD) {
-		System.out.println("P_V start" + " " + df.format(new Date()));// new
-																		// Date()涓洪敓鏂ゆ嫹鍙栭敓鏂ゆ嫹鍓嶇郴缁熸椂閿熸枻锟�
+		System.out.println("P_V start" + " " + df.format(new Date()));
+																		
 		estblishPvTable();
 		Exp_num();
 		DecimalFormat dF = new DecimalFormat("0.000 ");
@@ -256,8 +251,8 @@ public class PValueFilter {
 			}
 		}
 
-		System.out.println("P_V end" + " " + df.format(new Date()));// new
-																	// Date()涓洪敓鏂ゆ嫹鍙栭敓鏂ゆ嫹鍓嶇郴缁熸椂閿熸枻锟�
+		System.out.println("P_V end" + " " + df.format(new Date()));
+																
 	}
 
 	public void fdr(String commandD) {

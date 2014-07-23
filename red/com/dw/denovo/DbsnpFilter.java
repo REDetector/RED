@@ -27,7 +27,6 @@ public class DbsnpFilter {
 	private String referencedbSnp = null;
 	private String refTable = null;
 	// File file = new File("D:/TDDOWNLOAD/data/dbsnp_138.hg19.vcf");
-	// 閿熸枻鎷烽敓鏂ゆ嫹閿熸枻鎷烽敓鑺傞潻鎷峰紡
 	SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
 	public DbsnpFilter(DatabaseManager databaseManager, String snpIn,
@@ -74,8 +73,8 @@ public class DbsnpFilter {
 	
 	public boolean loadRefdbSnp() {
 		try {
-			System.out.println("loaddbsnp start" + " " + df.format(new Date()));// new
-																			// Date()涓洪敓鏂ゆ嫹鍙栭敓鏂ゆ嫹鍓嶇郴缁熸椂閿熸枻锟�
+			System.out.println("loaddbsnp start" + " " + df.format(new Date()));
+																			
 			if(establishRefdbSnp()){
 			FileInputStream inputStream = new FileInputStream(snpIn);
 			BufferedReader rin = new BufferedReader(new InputStreamReader(
@@ -97,8 +96,8 @@ public class DbsnpFilter {
 							+ count + " LINES");
 			}
 
-			System.out.println("loaddbsnp end" + " " + df.format(new Date()));// new
-																			// Date()涓洪敓鏂ゆ嫹鍙栭敓鏂ゆ嫹鍓嶇郴缁熸椂閿熸枻锟�
+			System.out.println("loaddbsnp end" + " " + df.format(new Date()));
+																			
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -108,16 +107,14 @@ public class DbsnpFilter {
 	}
 
 	public void snpFilter() {
-		System.out.println("dbsnpf start" + " " + df.format(new Date()));// new
-																			// Date()涓洪敓鏂ゆ嫹鍙栭敓鏂ゆ嫹鍓嶇郴缁熸椂閿熸枻锟�
+		System.out.println("dbsnpf start" + " " + df.format(new Date()));
 
 		databaseManager.executeSQL("insert into " + dbSnpTable
 				+ " select * from " + refTable
 				+ " where not exists (select chrome from " + referencedbSnp
 				+ " where (" + referencedbSnp+ ".chrome=" + refTable + ".chrome and " + referencedbSnp+ ".pos=" + refTable + ".pos))");
 
-		System.out.println("dbsnpf end" + " " + df.format(new Date()));// new
-																		// Date()涓洪敓鏂ゆ嫹鍙栭敓鏂ゆ嫹鍓嶇郴缁熸椂閿熸枻锟�
+		System.out.println("dbsnpf end" + " " + df.format(new Date()));
 	}
 	// public void snpF(){
 	// System.out.println("snpf start"+" "+df.format(new Date()));// new

@@ -28,7 +28,6 @@ public class LlrFilter {
 	private int count = 0;
 	private int ref_n = 0;
 	private int alt_n = 0;
-	// 设置日期格式
 	SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
 	public LlrFilter(DatabaseManager databaseManager, String dnaVcf,
@@ -40,22 +39,19 @@ public class LlrFilter {
 	}
 
 	public boolean createLlrTable() {
-		System.out.println("esllr start" + " " + df.format(new Date()));// new
-																		// Date()为获取当前系统时间
+		System.out.println("esllr start" + " " + df.format(new Date()));
 
 		databaseManager.deleteTable(llrTable);
 		databaseManager.createTable(llrTable, "(chrome varchar(15),"
 				+ Utilities.getInstance().getS2() + ")");
 
-		System.out.println("esllr end" + " " + df.format(new Date()));// new
-																		// Date()为获取当前系统时间
+		System.out.println("esllr end" + " " + df.format(new Date()));
 		return true;
 	}
 
 	public void llrtemp() {
 		try {
-			System.out.println("llrtemp start" + " " + df.format(new Date()));// new
-																				// Date()为获取当前系统时间
+			System.out.println("llrtemp start" + " " + df.format(new Date()));
 
 			ResultSet rs = databaseManager.query(dnaVcf, "chrome",
 					"1 limit 0,1");
@@ -141,8 +137,8 @@ public class LlrFilter {
 			}
 			databaseManager.commit();
 			databaseManager.setAutoCommit(true);
-			System.out.println("llrtemp end" + " " + df.format(new Date()));// new
-																			// Date()为获取当前系统时间
+			System.out.println("llrtemp end" + " " + df.format(new Date()));
+			
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -152,7 +148,6 @@ public class LlrFilter {
 	// public void post() {
 	// try {
 	// System.out.println("post start"+" "+df.format(new Date()));// new
-	// Date()为获取当前系统时间
 	// db.usedb();
 	// sql[0] =
 	// "create   temporary   table  newtable  select   distinct   *   from  llrtemp";
@@ -166,7 +161,6 @@ public class LlrFilter {
 	// db.result = db.stmt.executeUpdate(sql[0]);
 	// db.con.commit();
 	// System.out.println("post end"+" "+df.format(new Date()));// new
-	// Date()为获取当前系统时间
 	// } catch (SQLException e) {
 	// // TODO Auto-generated catch block
 	// e.printStackTrace();

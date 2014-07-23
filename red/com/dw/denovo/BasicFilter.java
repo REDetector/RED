@@ -74,8 +74,7 @@ public class BasicFilter {
 
 	public void basicFilter(double quality, int depth) {
 		try {
-			System.out.println("bfilter start" + " " + df.format(new Date()));// new
-																				// Date()Ϊ��ȡ��ǰϵͳʱ��
+			System.out.println("bfilter start" + " " + df.format(new Date()));
 			ResultSet rs = databaseManager.query(specificTable,
 					"chrome,pos,AD", "1");
 			List<String> coordinate = new ArrayList<String>();

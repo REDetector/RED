@@ -28,11 +28,9 @@ public class DenovoVcf {
 	private String[] col = new String[40];
 	private String[] temp = new String[10];
 	private StringBuffer s1 = new StringBuffer();
-	// insert时使锟矫碉拷锟斤拷锟�? StringBuffer s1 = new StringBuffer();
 	// count for each function
 	private int count_r = 1;
 	private int depth = -1;
-	// 锟斤拷锟斤拷锟斤拷锟节革拷式
 	SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
 	// establish table structure for following tables
@@ -82,8 +80,8 @@ public class DenovoVcf {
 
 	// table for RnaVcf X.length-9=time for circulation
 	public void rnaVcf(int num) {
-		System.out.println("rnavcf start" + " " + df.format(new Date()));// new
-																			// Date()为锟斤拷取锟斤拷前系统时锟斤�?
+		System.out.println("rnavcf start" + " " + df.format(new Date()));
+																			
 		try {
 
 			databaseManager.setAutoCommit(false);
@@ -140,7 +138,6 @@ public class DenovoVcf {
 					// System.out.println(temp[i]);
 					s1.append("," + "'" + temp[i] + "'");
 				}
-				// 锟斤拷菘锟斤拷锟捷诧拷锟诫，每锟叫诧拷锟斤拷
 				databaseManager.executeSQL("insert into " + rnaVcf + "("
 						+ Utilities.getInstance().getS3() + ") values(" + s1
 						+ ")");
@@ -157,14 +154,14 @@ public class DenovoVcf {
 			e.printStackTrace();
 		}
 
-		System.out.println("rnavcf end" + " " + df.format(new Date()));// new
-																		// Date()为锟斤拷取锟斤拷前系统时锟斤�?
+		System.out.println("rnavcf end" + " " + df.format(new Date()));
+																		
 	}
 
 	// table for RnaVcf X.length-9=time for circulation
 	public void rnaVcf() {
-		System.out.println("rnavcf start" + " " + df.format(new Date()));// new
-																			// Date()为锟斤拷取锟斤拷前系统时锟斤�?
+		System.out.println("rnavcf start" + " " + df.format(new Date()));
+																		
 		try {
 
 			databaseManager.setAutoCommit(false);
@@ -211,7 +208,6 @@ public class DenovoVcf {
 					// System.out.println(temp[i]);
 					s1.append("," + "'" + temp[i] + "'");
 				}
-				// 锟斤拷菘锟斤拷锟捷诧拷锟诫，每锟叫诧拷锟斤拷
 				databaseManager.executeSQL("insert into " + rnaVcf + "("
 						+ Utilities.getInstance().getS3() + ") values(" + s1
 						+ ")");
@@ -228,7 +224,6 @@ public class DenovoVcf {
 			e.printStackTrace();
 		}
 
-		System.out.println("rnavcf end" + " " + df.format(new Date()));// new
-																		// Date()为锟斤拷取锟斤拷前系统时锟斤�?
+		System.out.println("rnavcf end" + " " + df.format(new Date()));
 	}
 }

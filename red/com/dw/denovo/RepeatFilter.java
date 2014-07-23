@@ -34,7 +34,6 @@ public class RepeatFilter {
 	private String chr = null;
 	private String ps = null;
 
-	// �������ڸ�ʽ
 	SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
 	public RepeatFilter(DatabaseManager databaseManager, String repeatIn,
@@ -71,9 +70,9 @@ public class RepeatFilter {
 	public void loadrepeat() {
 		try {
 			System.out
-					.println("loadrepeat start" + " " + df.format(new Date()));// new
+					.println("loadrepeat start" + " " + df.format(new Date()));
 			if(establishRefRepeat())
-			{																	// Date()Ϊ��ȡ��ǰϵͳʱ��
+			{																	
 			int ts_count = 0;
 			try {
 				inputStream = new FileInputStream(repeatIn);
@@ -111,8 +110,8 @@ public class RepeatFilter {
 			databaseManager.commit();
 			databaseManager.setAutoCommit(true);
 			}
-			System.out.println("loadrepeat end" + " " + df.format(new Date()));// new
-																				// Date()Ϊ��ȡ��ǰϵͳʱ��
+			System.out.println("loadrepeat end" + " " + df.format(new Date()));
+																				
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -120,9 +119,8 @@ public class RepeatFilter {
 	}
 
 	public void establishrepeat() {
-		System.out.println("esrepeat start" + " " + df.format(new Date()));// new
-																			// Date()Ϊ��ȡ��ǰϵͳʱ��
-
+		System.out.println("esrepeat start" + " " + df.format(new Date()));
+																		
 		databaseManager.deleteTable(repeatTable);
 		databaseManager.createTable(repeatTable, "(chrome varchar(15),"
 				+ Utilities.getInstance().getS2() + "," + "index(chrome,pos))");

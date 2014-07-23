@@ -25,7 +25,6 @@ public class DnaRnaFilter {
 	private String ps = null;
 	private String chrom = null;
 	private int count = 0;
-	// 设置日期格式
 	SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
 	public DnaRnaFilter(DatabaseManager databaseManager, String dnaVcf,
@@ -37,22 +36,21 @@ public class DnaRnaFilter {
 	}
 
 	public boolean createDnaRnaTable() {
-		System.out.println("esdr start" + " " + df.format(new Date()));// new
-																		// Date()为获取当前系统时间
+		System.out.println("esdr start" + " " + df.format(new Date()));
+																		
 
 		databaseManager.deleteTable(DnaRnaTable);
 		databaseManager.createTable(DnaRnaTable, "(chrome varchar(15),"
 				+ Utilities.getInstance().getS2() + ")");
 
-		System.out.println("esdr end" + " " + df.format(new Date()));// new
-																		// Date()为获取当前系统时间
+		System.out.println("esdr end" + " " + df.format(new Date()));
+																		
 		return true;
 	}
 
 	public void dnarnaFilter() {
 		try {
-			System.out.println("df start" + " " + df.format(new Date()));// new
-																			// Date()为获取当前系统时间
+			System.out.println("df start" + " " + df.format(new Date()));
 
 			ResultSet rs = databaseManager.query(dnaVcf, "chrome",
 					"1 limit 0,1");
@@ -110,8 +108,8 @@ public class DnaRnaFilter {
 			}
 			databaseManager.setAutoCommit(true);
 
-			System.out.println("df end" + " " + df.format(new Date()));// new
-																		// Date()为获取当前系统时间
+			System.out.println("df end" + " " + df.format(new Date()));
+																		
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

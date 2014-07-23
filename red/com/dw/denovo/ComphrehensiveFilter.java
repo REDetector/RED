@@ -85,16 +85,16 @@ public class ComphrehensiveFilter {
 				+ " fields terminated by '\t' lines terminated by '\n'");
 		}
 
-		System.out.println("loadcom end" + " " + df.format(new Date()));// new
-																		// Date()Ϊ��ȡ��ǰϵͳʱ��
+		System.out.println("loadcom end" + " " + df.format(new Date()));
+		
 		return true;
 
 	}
 
 	public boolean comphrehensiveF(int edge) {
 		try {
-			System.out.println("comf start" + " " + df.format(new Date()));// new
-																			// Date()Ϊ��ȡ��ǰϵͳʱ��
+			System.out.println("comf start" + " " + df.format(new Date()));
+																			
 			ResultSet rs = databaseManager.query(refTable, "chrome,pos", "1");
 
 			List<String> coordinate = new ArrayList<String>();
@@ -133,8 +133,8 @@ public class ComphrehensiveFilter {
 			databaseManager.commit();
 			databaseManager.setAutoCommit(true);
 
-			System.out.println("comf end" + " " + df.format(new Date()));// new
-																			// Date()Ϊ��ȡ��ǰϵͳʱ��
+			System.out.println("comf end" + " " + df.format(new Date()));
+																			
 			return true;
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block

@@ -30,7 +30,6 @@ public class DnaRnaVcf {
 	// data of each column
 	private String[] col = new String[40];
 	private String[] temp = new String[10];
-	// insert鏃朵娇鐢ㄧ殑鏁版嵁
 	private StringBuffer s1 = new StringBuffer();
 	// count for each function
 	private int count_r = 1;
@@ -38,7 +37,6 @@ public class DnaRnaVcf {
 
 	private int ref = 0;
 	private int alt = 0;
-	// 璁剧疆鏃ユ湡鏍煎紡
 	SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
 	// public RedInput()
@@ -116,8 +114,8 @@ public class DnaRnaVcf {
 
 	// table for RnaVcf X.length-9=time for circulation
 	public void RnaVcf(int num) {
-		System.out.println("rnavcf start" + " " + df.format(new Date()));// new
-																			// Date()涓洪敓鏂ゆ嫹鍙栭敓鏂ゆ嫹鍓嶇郴缁熸椂閿熸枻锟�
+		System.out.println("rnavcf start" + " " + df.format(new Date()));
+																		
 		try {
 
 			databaseManager.setAutoCommit(false);
@@ -175,7 +173,6 @@ public class DnaRnaVcf {
 					// System.out.println(temp[i]);
 					s1.append("," + "'" + temp[i] + "'");
 				}
-				// 閿熸枻鎷疯彉閿熸枻鎷烽敓鎹疯鎷烽敓璇紝姣忛敓鍙鎷烽敓鏂ゆ嫹
 				databaseManager.executeSQL("insert into " + rnaVcf + "("
 						+ Utilities.getInstance().getS3() + ") values(" + s1
 						+ ")");
@@ -192,15 +189,14 @@ public class DnaRnaVcf {
 			e.printStackTrace();
 		}
 
-		System.out.println("rnavcf end" + " " + df.format(new Date()));// new
-																		// Date()涓洪敓鏂ゆ嫹鍙栭敓鏂ゆ嫹鍓嶇郴缁熸椂閿熸枻锟�
+		System.out.println("rnavcf end" + " " + df.format(new Date()));
+																	
 	}
 
 	public void rnaVcf() {
-		System.out.println("rnavcf start" + " " + df.format(new Date()));// new
-																			// Date()涓洪敓鏂ゆ嫹鍙栭敓鏂ゆ嫹鍓嶇郴缁熸椂閿熸枻锟�
+		System.out.println("rnavcf start" + " " + df.format(new Date()));
+																			
 		try {
-
 			databaseManager.setAutoCommit(false);
 			// timer for transaction
 			int ts_count = 0;
@@ -256,7 +252,6 @@ public class DnaRnaVcf {
 					// System.out.println(temp[i]);
 					s1.append("," + "'" + temp[i] + "'");
 				}
-				// 閿熸枻鎷疯彉閿熸枻鎷烽敓鎹疯鎷烽敓璇紝姣忛敓鍙鎷烽敓鏂ゆ嫹
 				databaseManager.executeSQL("insert into " + rnaVcf + "("
 						+ Utilities.getInstance().getS3() + ") values(" + s1
 						+ ")");
@@ -273,14 +268,14 @@ public class DnaRnaVcf {
 			e.printStackTrace();
 		}
 
-		System.out.println("rnavcf end" + " " + df.format(new Date()));// new
-																		// Date()涓洪敓鏂ゆ嫹鍙栭敓鏂ゆ嫹鍓嶇郴缁熸椂閿熸枻锟�
+		System.out.println("rnavcf end" + " " + df.format(new Date()));
+																		
 	}
 
 	// table for DnaVcf
 	public void dnaVcf(int num) {
-		System.out.println("dnavcf start" + " " + df.format(new Date()));// new
-																			// Date()涓鸿幏鍙栧綋鍓嶇郴缁熸椂锟�
+		System.out.println("dnavcf start" + " " + df.format(new Date()));
+		
 		try {
 			databaseManager.setAutoCommit(false);
 			// timer for transaction
@@ -352,7 +347,6 @@ public class DnaRnaVcf {
 					// System.out.println(temp[i]);
 					s1.append("," + "'" + temp[i] + "'");
 				}
-				// 鏁版嵁搴撴暟鎹彃鍏ワ紝姣忚鎻掑叆
 				databaseManager.executeSQL("insert into " + dnaVcf + "("
 						+ Utilities.getInstance().getS3() + ") values(" + s1
 						+ ")");
@@ -371,14 +365,14 @@ public class DnaRnaVcf {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		System.out.println("dnavcf end" + " " + df.format(new Date()));// new
-																		// Date()涓鸿幏鍙栧綋鍓嶇郴缁熸椂锟�
+		System.out.println("dnavcf end" + " " + df.format(new Date()));
+		
 	}
 
 	// table for DnaVcf
 	public void dnaVcf() {
-		System.out.println("dnavcf start" + " " + df.format(new Date()));// new
-																			// Date()涓鸿幏鍙栧綋鍓嶇郴缁熸椂锟�
+		System.out.println("dnavcf start" + " " + df.format(new Date()));
+		
 		try {
 			databaseManager.setAutoCommit(false);
 			// timer for transaction
@@ -448,7 +442,6 @@ public class DnaRnaVcf {
 					// System.out.println(temp[i]);
 					s1.append("," + "'" + temp[i] + "'");
 				}
-				// 鏁版嵁搴撴暟鎹彃鍏ワ紝姣忚鎻掑叆
 				databaseManager.executeSQL("insert into " + dnaVcf + "("
 						+ Utilities.getInstance().getS3() + ") values(" + s1
 						+ ")");
@@ -464,8 +457,7 @@ public class DnaRnaVcf {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		System.out.println("dnavcf end" + " " + df.format(new Date()));// new
-																		// Date()涓鸿幏鍙栧綋鍓嶇郴缁熸椂锟�
+		System.out.println("dnavcf end" + " " + df.format(new Date()));
 	}
 
 }
