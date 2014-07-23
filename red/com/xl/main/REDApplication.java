@@ -893,6 +893,12 @@ public class REDApplication extends JFrame implements ProgressListener,
         } else if (command.equals("datasets_loaded")) {
             addNewDataSets((DataSet[]) result);
             changesWereMade();
+        } else if (command.equals("database_connected")) {
+            menu.databaseConnected();
+            changesWereMade();
+        } else if (command.equals("database_loaded")) {
+            menu.databaseLoaded();
+            changesWereMade();
         } else if (command.equals("fasta_loaded")) {
             chromosomeViewer.setEnableFastaSequence(true);
             JOptionPane.showMessageDialog(this, "The fasta file has been loaded. Please zoom out to make it visible" +

@@ -1,19 +1,30 @@
 #RED Preferences. DO NOT edit it individually.
-#Sat Jul 19 21:37:40 CST 2014
-ProjectDirectory=E\:\\Workspace\\REDetector
-Fasta=E\:\\Workspace\\REDetector\\Data\\Fasta
-RecentlyOpenedFilesNumber=1
-CrashEmail=
-Annotation=E\:\\Workspace\\REDetector\\Data\\Annotation
-Temp=E\:\\Workspace\\REDetector\\Data\\Temp
-CompressOutput=false
-Others=E\:\\Workspace\\REDetector\\Data\\Others
-ProjectDataDirectory=E\:\\Workspace\\REDetector\\Data
-GenomeDownload=http\://igv.broadinstitute.org/genomes/
+#Wed Jul 23 15:10:28 CST 2014
 Proxy=,0
-CheckForUpdate=false
+RefSeq\ File=D\:/Downloads/Documents/genes.gtf
+CompressOutput=false
+Password=root
+Temp=E\:\\Workspace\\REDetector\\Data\\Temp
 RecentlyOpenedFiles_0=E\:\\Workspace\\REDetector\\test.red
-Cache=E\:\\Workspace\\REDetector\\Data\\Cache
-DNA=E\:\\Workspace\\REDetector\\Data\\DNA
-RNA=E\:\\Workspace\\REDetector\\Data\\RNA
 Genome=E\:\\Workspace\\REDetector\\Data\\Genome
+User=root
+DataLoaded=true
+RNA\ Vcf\ File=D\:/Downloads/Documents/BJ22.RNA.chr8.snvs.vcf
+CheckForUpdate=false
+CrashEmail=
+RecentlyOpenedFilesNumber=1
+dbSNP\ File=D\:/Downloads/Documents/dbsnp_138.hg19.vcf
+DARNED\ File=D\:/Downloads/Documents/hg19.txt
+RNA=E\:\\Workspace\\REDetector\\Data\\RNA
+ProjectDataDirectory=E\:\\Workspace\\REDetector\\Data
+ProjectDirectory=E\:\\Workspace\\REDetector
+GenomeDownload=http\://igv.broadinstitute.org/genomes/
+Port=3306
+Annotation=E\:\\Workspace\\REDetector\\Data\\Annotation
+Fasta=E\:\\Workspace\\REDetector\\Data\\Fasta
+DNA=E\:\\Workspace\\REDetector\\Data\\DNA
+Cache=E\:\\Workspace\\REDetector\\Data\\Cache
+Host=127.0.0.1
+Others=E\:\\Workspace\\REDetector\\Data\\Others
+Repeat\ File=D\:/Downloads/Documents/hg19.fa.out
+DNA\ Vcf\ File=D\:/Downloads/Documents/BJ22.DNA.chr8.snvs.vcf

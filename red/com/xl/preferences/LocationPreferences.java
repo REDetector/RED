@@ -30,6 +30,8 @@ public class LocationPreferences {
     public static final String REF_SEQ_FILE = "RefSeq File";
     public static final String DBSNP_FILE = "dbSNP File";
     public static final String DARNED_FILE = "DARNED File";
+    public static final String RSCRIPT_PATH = "RScriptPath";
+    public static final String CYTOBAND_FILE = "Cytoband File";
 
     public static LocationPreferences locationPreferences = new LocationPreferences();
 
@@ -93,6 +95,16 @@ public class LocationPreferences {
     private String projectSaveLocation = projectDirectory;
 
 
+    private String dnaVcfFile = "";
+    private String rnaVcfFile = "";
+    private String repeatFile = "";
+    private String refSeqFile = "";
+    private String dbSNPFile = "";
+    private String darnedFile = "";
+
+
+    private String rScriptPath = "";
+
     /**
      * The recently opened files list
      */
@@ -140,8 +152,6 @@ public class LocationPreferences {
         setOthersDirectory(directories.get(OTHERS_DIRECTORY));
         setTempDirectory(directories.get(TEMP_DIRECTORY));
         setCacheDirectory(directories.get(CACHE_DIRECTORY));
-
-
     }
 
     /**
@@ -316,6 +326,62 @@ public class LocationPreferences {
         this.genomeDownloadLists = genomeDownloadLists;
     }
 
+    public String getDarnedFile() {
+        return darnedFile;
+    }
+
+    public void setDarnedFile(String darnedFile) {
+        this.darnedFile = darnedFile;
+    }
+
+    public String getRnaVcfFile() {
+        return rnaVcfFile;
+    }
+
+    public void setRnaVcfFile(String rnaVcfFile) {
+        this.rnaVcfFile = rnaVcfFile;
+    }
+
+    public String getRepeatFile() {
+        return repeatFile;
+    }
+
+    public void setRepeatFile(String repeatFile) {
+        this.repeatFile = repeatFile;
+    }
+
+    public String getRefSeqFile() {
+        return refSeqFile;
+    }
+
+    public void setRefSeqFile(String refSeqFile) {
+        this.refSeqFile = refSeqFile;
+    }
+
+    public String getDbSNPFile() {
+        return dbSNPFile;
+    }
+
+    public void setDbSNPFile(String dbSNPFile) {
+        this.dbSNPFile = dbSNPFile;
+    }
+
+    public String getDnaVcfFile() {
+        return dnaVcfFile;
+    }
+
+    public void setDnaVcfFile(String dnaVcfFile) {
+        this.dnaVcfFile = dnaVcfFile;
+    }
+
+    public String getRScriptPath() {
+        return rScriptPath;
+    }
+
+    public void setRScriptPath(String rScriptPath) {
+        this.rScriptPath = rScriptPath;
+    }
+
     /**
      * Save preferences.
      *
@@ -333,6 +399,14 @@ public class LocationPreferences {
         properties.setProperty(OTHERS_DIRECTORY, othersDirectory);
         properties.setProperty(GENOME_DOWNLOAD_LISTS, genomeDownloadLists);
         properties.setProperty(CACHE_DIRECTORY, cacheDirectory);
+        properties.setProperty(RNA_VCF_FILE, rnaVcfFile);
+        properties.setProperty(DNA_VCF_FILE, dnaVcfFile);
+        properties.setProperty(REPEAT_FILE, repeatFile);
+        properties.setProperty(REF_SEQ_FILE, refSeqFile);
+        properties.setProperty(DBSNP_FILE, dbSNPFile);
+        properties.setProperty(DARNED_FILE, darnedFile);
+        properties.setProperty(RSCRIPT_PATH, rScriptPath);
+        properties.setProperty(CYTOBAND_FILE, cytobandFile);
         // Save the recently opened file list
         properties.setProperty(RECENTLY_OPENED_FILES_NUMBER, recentlyOpenedFiles.size() + "");
         for (int i = 0, len = recentlyOpenedFiles.size(); i < len; i++) {
@@ -351,6 +425,14 @@ public class LocationPreferences {
         setOthersDirectory(properties.getProperty(OTHERS_DIRECTORY));
         setGenomeDownloadLists(properties.getProperty(GENOME_DOWNLOAD_LISTS));
         setCacheDirectory(properties.getProperty(CACHE_DIRECTORY));
+        setRnaVcfFile(properties.getProperty(RNA_VCF_FILE));
+        setDnaVcfFile(properties.getProperty(DNA_VCF_FILE));
+        setRepeatFile(properties.getProperty(REPEAT_FILE));
+        setRefSeqFile(properties.getProperty(REF_SEQ_FILE));
+        setDbSNPFile(properties.getProperty(DBSNP_FILE));
+        setDarnedFile(properties.getProperty(DARNED_FILE));
+        setRScriptPath(properties.getProperty(RSCRIPT_PATH));
+        setCytobandFile(properties.getProperty(CYTOBAND_FILE));
         int recentlyOpenedFilesNumber = Integer.parseInt(properties.getProperty(RECENTLY_OPENED_FILES_NUMBER));
         recentlyOpenedFiles.clear();
         for (int i = 0; i < recentlyOpenedFilesNumber; i++) {

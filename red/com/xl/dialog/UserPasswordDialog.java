@@ -1,6 +1,7 @@
 package com.xl.dialog;
 
 import com.dw.publicaffairs.DatabaseManager;
+import com.xl.interfaces.ProgressListener;
 import com.xl.main.REDApplication;
 import com.xl.preferences.REDPreferences;
 
@@ -9,24 +10,31 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Iterator;
 
 /**
  * @author Jim Robinson
  */
 public class UserPasswordDialog extends JDialog implements ActionListener {
-
+    protected final ArrayList<ProgressListener> listeners;
     private JTextField hostField;
     private JTextField portField;
     private JTextField userField;
     private JPasswordField passwordField;
     private REDApplication application;
+    private REDPreferences preferences = REDPreferences.getInstance();
 
     public UserPasswordDialog(REDApplication application) {
         super(application, "MySQL Server Login...");
+        listeners = new ArrayList<ProgressListener>();
         this.application = application;
         setSize(500, 400);
         setModal(true);
-
+        String host = preferences.getDatabaseHost();
+        String port = preferences.getDatabasePort();
+        String user = preferences.getDatabaseUser();
+        String password = preferences.getDatabasePassword();
         setLocationRelativeTo(application);
         getContentPane().setLayout(new GridLayout(4, 1));
 
@@ -49,7 +57,11 @@ public class UserPasswordDialog extends JDialog implements ActionListener {
         hostPanel.add(new JLabel("    Host:    "), c);
         c.gridx = 1;
         c.weightx = 0.8;
-        hostField = new JTextField();
+        if (host != null) {
+            hostField = new JTextField(host);
+        } else {
+            hostField = new JTextField("127.0.0.1");
+        }
         hostPanel.add(hostField, c);
         c.gridy++;
         c.gridx = 0;
@@ -59,7 +71,11 @@ public class UserPasswordDialog extends JDialog implements ActionListener {
         hostPanel.add(new JLabel("    Port:    "), c);
         c.gridx = 1;
         c.weightx = 0.8;
-        portField = new JTextField();
+        if (port != null) {
+            portField = new JTextField(port);
+        } else {
+            portField = new JTextField("3306");
+        }
         hostPanel.add(portField, c);
         add(hostPanel);
 
@@ -74,7 +90,11 @@ public class UserPasswordDialog extends JDialog implements ActionListener {
         infoPanel.add(new JLabel("    User:    "), c);
         c.gridx = 1;
         c.weightx = 0.8;
-        userField = new JTextField();
+        if (user != null) {
+            userField = new JTextField(user);
+        } else {
+            userField = new JTextField("root");
+        }
         infoPanel.add(userField, c);
         c.gridy++;
         c.gridx = 0;
@@ -84,7 +104,11 @@ public class UserPasswordDialog extends JDialog implements ActionListener {
         infoPanel.add(new JLabel("    Password:"), c);
         c.gridx = 1;
         c.weightx = 0.8;
-        passwordField = new JPasswordField();
+        if (password != null) {
+            passwordField = new JPasswordField(password);
+        } else {
+            passwordField = new JPasswordField();
+        }
         infoPanel.add(passwordField, c);
         add(infoPanel);
 
@@ -98,7 +122,6 @@ public class UserPasswordDialog extends JDialog implements ActionListener {
         cancelButton.addActionListener(this);
         confirmPanel.add(cancelButton);
         add(confirmPanel);
-
         setVisible(true);
     }
 
@@ -110,12 +133,17 @@ public class UserPasswordDialog extends JDialog implements ActionListener {
             String port = portField.getText();
             String user = userField.getText();
             String pwd = String.valueOf(passwordField.getPassword());
-            ProgressDialog progressDialog = new ProgressDialog(this, "Connecting to database...");
+            preferences.setDatabaseHost(host);
+            preferences.setDatabasePort(port);
+            preferences.setDatabaseUser(user);
+            preferences.setDatabasePassword(pwd);
             try {
-                progressDialog.requestFocus();
                 if (DatabaseManager.getInstance().connectDatabase(host, port, user, pwd)) {
+                    for (int i = 0; i < 1000; i++) {
+                        progressUpdated("Connecting to database...", i, 1000);
+                    }
                     if (!REDPreferences.getInstance().isDataLoadedToDatabase()) {
-                        if (application.dataCollection().genome().getAllChromosomes() == null) {
+                        if (application.dataCollection() == null) {
                             JOptionPane.showMessageDialog(application, "<html>Connect Successfully. " +
                                             "<br>You may start a new project before you input your data into database. " +
                                             "<br>Click 'ok' to the next step.",
@@ -138,18 +166,23 @@ public class UserPasswordDialog extends JDialog implements ActionListener {
                                 "Connect Successfully",
                                 JOptionPane.INFORMATION_MESSAGE);
                     }
-                    progressDialog.progressComplete("database_connected", DatabaseManager.getInstance());
+                    progressUpdated("Connecting Sucessfully!", 999, 1000);
+                    Thread.sleep(2000);
+                    processingComplete();
                     dispose();
                 }
             } catch (ClassNotFoundException e1) {
                 new CrashReporter(e1);
-                progressDialog.progressCancelled();
+                progressCancelled();
                 e1.printStackTrace();
             } catch (SQLException e1) {
                 JOptionPane.showMessageDialog(this, "Sorry, fail to connect to database. You may input one of wrong " +
                                 "database site, user name or password.", "Connected Failed",
                         JOptionPane.ERROR_MESSAGE);
-                progressDialog.progressCancelled();
+                progressCancelled();
+                e1.printStackTrace();
+            } catch (InterruptedException e1) {
+                progressCancelled();
                 e1.printStackTrace();
             }
         } else if (action.equals("cancel")) {
@@ -158,4 +191,90 @@ public class UserPasswordDialog extends JDialog implements ActionListener {
         }
     }
 
+    /**
+     * Adds a progress listener.
+     *
+     * @param l The listener to add
+     */
+    public void addProgressListener(ProgressListener l) {
+        if (l == null) {
+            throw new NullPointerException("DataParserListener can't be null");
+        }
+
+        if (!listeners.contains(l)) {
+            listeners.add(l);
+        }
+    }
+
+    /**
+     * Removes a progress listener.
+     *
+     * @param l The listener to remove
+     */
+    public void removeProgressListener(ProgressListener l) {
+        if (l != null && listeners.contains(l)) {
+            listeners.remove(l);
+        }
+    }
+
+    /**
+     * Alerts all listeners to a progress update
+     *
+     * @param message The message to send
+     * @param current The current level of progress
+     * @param max     The level of progress at completion
+     */
+    protected void progressUpdated(String message, int current, int max) {
+        Iterator<ProgressListener> i = listeners.iterator();
+        for (; i.hasNext(); ) {
+            i.next().progressUpdated(message, current, max);
+        }
+    }
+
+    /**
+     * Alerts all listeners that an exception was received. The
+     * parser is not expected to continue after issuing this call.
+     *
+     * @param e The exception
+     */
+    protected void progressExceptionReceived(Exception e) {
+        Iterator<ProgressListener> i = listeners.iterator();
+        for (; i.hasNext(); ) {
+            i.next().progressExceptionReceived(e);
+        }
+    }
+
+    /**
+     * Alerts all listeners that a warning was received.  The parser
+     * is expected to continue after issuing this call.
+     *
+     * @param e The warning exception received
+     */
+    protected void progressWarningReceived(Exception e) {
+        Iterator<ProgressListener> i = listeners.iterator();
+        for (; i.hasNext(); ) {
+            i.next().progressWarningReceived(e);
+        }
+    }
+
+    /**
+     * Alerts all listeners that the user cancelled this import.
+     */
+    protected void progressCancelled() {
+        Iterator<ProgressListener> i = listeners.iterator();
+        for (; i.hasNext(); ) {
+            i.next().progressCancelled();
+        }
+    }
+
+    /**
+     * Tells all listeners that the parser has finished parsing the data
+     * The list of dataSets should be the same length as the original file list.
+     */
+    protected void processingComplete() {
+        Iterator<ProgressListener> i = listeners.iterator();
+        for (; i.hasNext(); ) {
+            i.next().progressComplete("database_connected", null);
+        }
+    }
 }

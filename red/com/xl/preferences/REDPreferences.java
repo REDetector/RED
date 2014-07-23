@@ -33,6 +33,10 @@ public class REDPreferences {
     public static final String COMPRESS_OUTPUT = "CompressOutput";
     public static final String CHECK_FOR_UPDATE = "CheckForUpdate";
     public static final String DATA_LOADED_TO_DATABASE = "DataLoaded";
+    public static final String DATABASE_HOST = "Host";
+    public static final String DATABASE_PORT = "Port";
+    public static final String DATABASE_USER = "User";
+    public static final String DATABASE_PASSWORD = "Password";
 
     /**
      * The single instantiated instance of redPreferences
@@ -80,6 +84,13 @@ public class REDPreferences {
 
     private boolean dataLoadedToDatabase = false;
 
+
+    private String databaseHost = "";
+    private String databasePort = "";
+    private String databaseUser = "";
+    private String databasePassword = "";
+
+
     /**
      * Instantiates a redPreferences object. Only ever called once from inside this
      * class. External access is via the getInstnace() method.
@@ -118,6 +129,10 @@ public class REDPreferences {
         setCompressOutput(Boolean.getBoolean(properties.getProperty(COMPRESS_OUTPUT)));
         setCheckForUpdates(Boolean.getBoolean(properties.getProperty(CHECK_FOR_UPDATE)));
         setDataLoadedToDatabase(Boolean.getBoolean(properties.getProperty(DATA_LOADED_TO_DATABASE)));
+        setDatabaseHost(properties.getProperty(DATABASE_HOST));
+        setDatabasePort(properties.getProperty(DATABASE_PORT));
+        setDatabaseUser(properties.getProperty(DATABASE_USER));
+        setDatabasePassword(properties.getProperty(DATABASE_PASSWORD));
         String[] proxys = properties.getProperty(PROXY).split(",");
         if (proxys.length == 2) {
             setProxy(proxys[0], Integer.parseInt(proxys[1]));
@@ -142,6 +157,10 @@ public class REDPreferences {
         properties.setProperty(COMPRESS_OUTPUT, Boolean.toString(compressOutput));
         properties.setProperty(CHECK_FOR_UPDATE, Boolean.toString(checkForUpdates));
         properties.setProperty(DATA_LOADED_TO_DATABASE, Boolean.toString(dataLoadedToDatabase));
+        properties.setProperty(DATABASE_HOST, databaseHost);
+        properties.setProperty(DATABASE_PORT, databasePort);
+        properties.setProperty(DATABASE_USER, databaseUser);
+        properties.setProperty(DATABASE_PASSWORD, databasePassword);
         locationPreferences.savePreferences(properties);
         properties.store(p, "RED Preferences. DO NOT edit it individually.");
         p.close();
@@ -270,5 +289,37 @@ public class REDPreferences {
 
     public void setDataLoadedToDatabase(boolean dataLoadedToDatabase) {
         this.dataLoadedToDatabase = dataLoadedToDatabase;
+    }
+
+    public String getDatabaseHost() {
+        return databaseHost;
+    }
+
+    public void setDatabaseHost(String databaseHost) {
+        this.databaseHost = databaseHost;
+    }
+
+    public String getDatabasePort() {
+        return databasePort;
+    }
+
+    public void setDatabasePort(String databasePort) {
+        this.databasePort = databasePort;
+    }
+
+    public String getDatabaseUser() {
+        return databaseUser;
+    }
+
+    public void setDatabaseUser(String databaseUser) {
+        this.databaseUser = databaseUser;
+    }
+
+    public String getDatabasePassword() {
+        return databasePassword;
+    }
+
+    public void setDatabasePassword(String databasePassword) {
+        this.databasePassword = databasePassword;
     }
 }

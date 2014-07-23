@@ -4,17 +4,11 @@ package com.xl.dialog;
  * Created by Administrator on 2014/6/25.
  */
 
-import com.dw.denovo.*;
-import com.dw.dnarna.DnaRnaFilter;
-import com.dw.dnarna.DnaRnaVcf;
-import com.dw.dnarna.LlrFilter;
-import com.dw.publicaffairs.Clear;
-import com.dw.publicaffairs.DatabaseManager;
-import com.dw.publicaffairs.Utilities;
 import com.xl.main.REDApplication;
 import com.xl.panel.DataIntroductionPanel;
 import com.xl.preferences.LocationPreferences;
-import com.xl.preferences.REDPreferences;
+import com.xl.thread.ThreadDenovoInput;
+import com.xl.thread.ThreadNonDenovoInput;
 
 import javax.swing.*;
 import java.awt.*;
@@ -26,18 +20,36 @@ import java.io.File;
  * A Dialog to allow the viewing and editing of all SeqMonk preferences.
  */
 public class DataInportDialog extends JDialog implements ActionListener {
+    private final int NON_DENOVO_INDEX = 0;
+    private final int DENOVO_INDEX = 1;
+    private LocationPreferences preferences = LocationPreferences.getInstance();
+    private JTextField rScriptPath;
 
-    private JTextField rnaVcfFile;
+    private JTextField rnaVcfFileField;
 
-    private JTextField dnaVcfFile;
+    private JTextField dnaVcfFileField;
 
-    private JTextField repeatFile;
+    private JTextField repeatFileField;
 
-    private JTextField refSeqFile;
+    private JTextField refSeqFileField;
 
-    private JTextField dbsnpFile;
+    private JTextField dbSNPFileField;
 
-    private JTextField darnedFile;
+    private JTextField denovoRScriptPath;
+
+    private JTextField darnedFileField;
+
+    private JTextField denovoRnaVcfFileField;
+
+    private JTextField denovoRepeatFileField;
+
+    private JTextField denovoRefSeqFileField;
+
+    private JTextField denovoDbSNPFileField;
+
+    private JTextField denovoDarnedFileField;
+
+    private JTabbedPane tabs = new JTabbedPane();
 
     private void addItem(GridBagConstraints c, JPanel filePanel, JLabel jLable, JTextField jTextField, JButton jButton) {
         c.gridx = 0;
@@ -61,74 +73,213 @@ public class DataInportDialog extends JDialog implements ActionListener {
         setSize(600, 300);
         setLocationRelativeTo(REDApplication.getInstance());
         setModal(true);
+        String rScripPath = preferences.getRScriptPath();
+        String rnaVcfFile = preferences.getRnaVcfFile();
+        String dnaVcfFile = preferences.getDnaVcfFile();
+        String repeatFile = preferences.getRepeatFile();
+        String refSeqFile = preferences.getRefSeqFile();
+        String dbSNPFile = preferences.getDbSNPFile();
+        String darnedFile = preferences.getDarnedFile();
 
-        JPanel filePanel = new JPanel();
-        filePanel.setBorder(BorderFactory.createEmptyBorder(4, 4, 4, 4));
-        filePanel.setLayout(new GridBagLayout());
+        JPanel nonDenovoPanel = new JPanel();
+        nonDenovoPanel.setBorder(BorderFactory.createEmptyBorder(4, 4, 4, 4));
+        nonDenovoPanel.setLayout(new GridBagLayout());
 
         GridBagConstraints c = new GridBagConstraints();
         c.gridy = 0;
+        JLabel rSciptLable = new JLabel(LocationPreferences.RSCRIPT_PATH);
+        rScriptPath = new JTextField();
+        if (rScripPath != null) {
+            rScriptPath.setText(rScripPath);
+        } else {
+            rScriptPath.setText("");
+        }
+        rScriptPath.setEditable(false);
+        JButton rScriptButton = new JButton("Browse");
+        rScriptButton.setActionCommand(LocationPreferences.RSCRIPT_PATH);
+        rScriptButton.addActionListener(this);
+        addItem(c, nonDenovoPanel, rSciptLable, rScriptPath, rScriptButton);
+
+        c.gridy++;
         JLabel rnaVcfLable = new JLabel(LocationPreferences.RNA_VCF_FILE);
-        rnaVcfFile = new JTextField();
-        rnaVcfFile.setText("");
-        rnaVcfFile.setEditable(false);
+        rnaVcfFileField = new JTextField();
+        if (rnaVcfFile != null) {
+            rnaVcfFileField.setText(rnaVcfFile);
+        } else {
+            rnaVcfFileField.setText("");
+        }
+        rnaVcfFileField.setEditable(false);
         JButton rnaVcfButton = new JButton("Browse");
         rnaVcfButton.setActionCommand(LocationPreferences.RNA_VCF_FILE);
         rnaVcfButton.addActionListener(this);
-        addItem(c, filePanel, rnaVcfLable, rnaVcfFile, rnaVcfButton);
+        addItem(c, nonDenovoPanel, rnaVcfLable, rnaVcfFileField, rnaVcfButton);
 
         c.gridy++;
         JLabel dnaVcfLable = new JLabel(LocationPreferences.DNA_VCF_FILE);
-        dnaVcfFile = new JTextField();
-        dnaVcfFile.setText("");
-        dnaVcfFile.setEditable(false);
+        dnaVcfFileField = new JTextField();
+        if (dnaVcfFile != null) {
+            dnaVcfFileField.setText(dnaVcfFile);
+        } else {
+            dnaVcfFileField.setText("");
+        }
+        dnaVcfFileField.setEditable(false);
         JButton dnaVcfButton = new JButton("Browse");
         dnaVcfButton.setActionCommand(LocationPreferences.DNA_VCF_FILE);
         dnaVcfButton.addActionListener(this);
-        addItem(c, filePanel, dnaVcfLable, dnaVcfFile, dnaVcfButton);
+        addItem(c, nonDenovoPanel, dnaVcfLable, dnaVcfFileField, dnaVcfButton);
 
         c.gridy++;
         JLabel repeatLable = new JLabel(LocationPreferences.REPEAT_FILE);
-        repeatFile = new JTextField();
-        repeatFile.setText("");
-        repeatFile.setEditable(false);
+        repeatFileField = new JTextField();
+        if (repeatFile != null) {
+            repeatFileField.setText(repeatFile);
+        } else {
+            repeatFileField.setText("");
+        }
+        repeatFileField.setEditable(false);
         JButton repeatButton = new JButton("Browse");
         repeatButton.setActionCommand(LocationPreferences.REPEAT_FILE);
         repeatButton.addActionListener(this);
-        addItem(c, filePanel, repeatLable, repeatFile, repeatButton);
+        addItem(c, nonDenovoPanel, repeatLable, repeatFileField, repeatButton);
 
         c.gridy++;
         JLabel refSeqLabel = new JLabel(LocationPreferences.REF_SEQ_FILE);
-        refSeqFile = new JTextField();
-        refSeqFile.setText("");
-        refSeqFile.setEditable(false);
+        refSeqFileField = new JTextField();
+        if (refSeqFile != null) {
+            refSeqFileField.setText(refSeqFile);
+        } else {
+            refSeqFileField.setText("");
+        }
+        refSeqFileField.setEditable(false);
         JButton refSeqButton = new JButton("Browse");
         refSeqButton.setActionCommand(LocationPreferences.REF_SEQ_FILE);
         refSeqButton.addActionListener(this);
-        addItem(c, filePanel, refSeqLabel, refSeqFile, refSeqButton);
+        addItem(c, nonDenovoPanel, refSeqLabel, refSeqFileField, refSeqButton);
 
         c.gridy++;
         JLabel dbsnpLabel = new JLabel(LocationPreferences.DBSNP_FILE);
-        dbsnpFile = new JTextField();
-        dbsnpFile.setText("");
-        dbsnpFile.setEditable(false);
-        JButton dnaButton = new JButton("Browse");
-        dnaButton.setActionCommand(LocationPreferences.DBSNP_FILE);
-        dnaButton.addActionListener(this);
-        addItem(c, filePanel, dbsnpLabel, dbsnpFile, dnaButton);
+        dbSNPFileField = new JTextField();
+        if (dbSNPFile != null) {
+            dbSNPFileField.setText(dbSNPFile);
+        } else {
+            dbSNPFileField.setText("");
+        }
+        dbSNPFileField.setEditable(false);
+        JButton dbSNPButton = new JButton("Browse");
+        dbSNPButton.setActionCommand(LocationPreferences.DBSNP_FILE);
+        dbSNPButton.addActionListener(this);
+        addItem(c, nonDenovoPanel, dbsnpLabel, dbSNPFileField, dbSNPButton);
 
         c.gridy++;
         JLabel darnedLabel = new JLabel(LocationPreferences.DARNED_FILE);
-        darnedFile = new JTextField();
-        darnedFile.setText("");
-        darnedFile.setEditable(false);
+        darnedFileField = new JTextField();
+        if (darnedFile != null) {
+            darnedFileField.setText(darnedFile);
+        } else {
+            darnedFileField.setText("");
+        }
+        darnedFileField.setEditable(false);
         JButton darnedButton = new JButton("Browse");
         darnedButton.setActionCommand(LocationPreferences.DARNED_FILE);
         darnedButton.addActionListener(this);
-        addItem(c, filePanel, darnedLabel, darnedFile, darnedButton);
+        addItem(c, nonDenovoPanel, darnedLabel, darnedFileField, darnedButton);
+        tabs.addTab("Non-Denovo", nonDenovoPanel);
+
+
+        JPanel denovoPanel = new JPanel();
+        denovoPanel.setBorder(BorderFactory.createEmptyBorder(4, 4, 4, 4));
+        denovoPanel.setLayout(new GridBagLayout());
+
+        c = new GridBagConstraints();
+        c.gridy = 0;
+        JLabel denovoRSciptLable = new JLabel(LocationPreferences.RSCRIPT_PATH);
+        denovoRScriptPath = new JTextField();
+        if (rScripPath != null) {
+            denovoRScriptPath.setText(rScripPath);
+        } else {
+            denovoRScriptPath.setText("");
+        }
+        denovoRScriptPath.setEditable(false);
+        JButton denovoRScriptButton = new JButton("Browse");
+        denovoRScriptButton.setActionCommand(LocationPreferences.RSCRIPT_PATH);
+        denovoRScriptButton.addActionListener(this);
+        addItem(c, denovoPanel, denovoRSciptLable, denovoRScriptPath, denovoRScriptButton);
+
+        c.gridy++;
+        JLabel denovoRnaVcfLable = new JLabel(LocationPreferences.RNA_VCF_FILE);
+        denovoRnaVcfFileField = new JTextField();
+        denovoRnaVcfFileField.setText(preferences.getRnaVcfFile());
+        if (rnaVcfFile != null) {
+            denovoRnaVcfFileField.setText(rnaVcfFile);
+        } else {
+            denovoRnaVcfFileField.setText("");
+        }
+        denovoRnaVcfFileField.setEditable(false);
+        JButton devonoRnaVcfButton = new JButton("Browse");
+        devonoRnaVcfButton.setActionCommand(LocationPreferences.RNA_VCF_FILE);
+        devonoRnaVcfButton.addActionListener(this);
+        addItem(c, denovoPanel, denovoRnaVcfLable, denovoRnaVcfFileField, devonoRnaVcfButton);
+
+        c.gridy++;
+        JLabel denovoRepeatLable = new JLabel(LocationPreferences.REPEAT_FILE);
+        denovoRepeatFileField = new JTextField();
+        if (repeatFile != null) {
+            denovoRepeatFileField.setText(repeatFile);
+        } else {
+            denovoRepeatFileField.setText("");
+        }
+        denovoRepeatFileField.setEditable(false);
+        JButton denovoRepeatButton = new JButton("Browse");
+        denovoRepeatButton.setActionCommand(LocationPreferences.REPEAT_FILE);
+        denovoRepeatButton.addActionListener(this);
+        addItem(c, denovoPanel, denovoRepeatLable, denovoRepeatFileField, denovoRepeatButton);
+
+        c.gridy++;
+        JLabel denovoRefSeqLabel = new JLabel(LocationPreferences.REF_SEQ_FILE);
+        denovoRefSeqFileField = new JTextField();
+        if (refSeqFile != null) {
+            denovoRefSeqFileField.setText(refSeqFile);
+        } else {
+            denovoRefSeqFileField.setText("");
+        }
+        denovoRefSeqFileField.setEditable(false);
+        JButton denovoRefSeqButton = new JButton("Browse");
+        denovoRefSeqButton.setActionCommand(LocationPreferences.REF_SEQ_FILE);
+        denovoRefSeqButton.addActionListener(this);
+        addItem(c, denovoPanel, denovoRefSeqLabel, denovoRefSeqFileField, denovoRefSeqButton);
+
+        c.gridy++;
+        JLabel denovoDbSNPLabel = new JLabel(LocationPreferences.DBSNP_FILE);
+        denovoDbSNPFileField = new JTextField();
+        if (dbSNPFile != null) {
+            denovoDbSNPFileField.setText(dbSNPFile);
+        } else {
+            denovoDbSNPFileField.setText("");
+        }
+        denovoDbSNPFileField.setEditable(false);
+        JButton denovoDbSNPButton = new JButton("Browse");
+        denovoDbSNPButton.setActionCommand(LocationPreferences.DBSNP_FILE);
+        denovoDbSNPButton.addActionListener(this);
+        addItem(c, denovoPanel, denovoDbSNPLabel, denovoDbSNPFileField, denovoDbSNPButton);
+
+        c.gridy++;
+        JLabel denovoDarnedLabel = new JLabel(LocationPreferences.DARNED_FILE);
+        denovoDarnedFileField = new JTextField();
+        if (darnedFile != null) {
+            denovoDarnedFileField.setText(darnedFile);
+        } else {
+            denovoDarnedFileField.setText("");
+        }
+        denovoDarnedFileField.setEditable(false);
+        JButton denovoDarnedButton = new JButton("Browse");
+        denovoDarnedButton.setActionCommand(LocationPreferences.DARNED_FILE);
+        denovoDarnedButton.addActionListener(this);
+        addItem(c, denovoPanel, denovoDarnedLabel, denovoDarnedFileField, denovoDarnedButton);
+
+        tabs.addTab("Denovo", denovoPanel);
 
         getContentPane().setLayout(new BorderLayout());
-        getContentPane().add(filePanel, BorderLayout.CENTER);
+        getContentPane().add(tabs, BorderLayout.CENTER);
 
         JPanel buttonPanel = new JPanel();
         JButton okButton = new JButton("Import");
@@ -169,138 +320,80 @@ public class DataInportDialog extends JDialog implements ActionListener {
      */
     public void actionPerformed(ActionEvent ae) {
         String action = ae.getActionCommand();
-
+        int currentIndex = tabs.getSelectedIndex();
         if (action.equals(LocationPreferences.RNA_VCF_FILE)) {
-            getFile(action, rnaVcfFile);
+            if (currentIndex == NON_DENOVO_INDEX) {
+                getFile(action, rnaVcfFileField);
+                preferences.setRnaVcfFile(rnaVcfFileField.getText());
+            } else {
+                getFile(action, denovoRnaVcfFileField);
+                preferences.setRnaVcfFile(denovoRnaVcfFileField.getText());
+            }
         } else if (action.equals(LocationPreferences.DNA_VCF_FILE)) {
-            getFile(action, dnaVcfFile);
+            getFile(action, dnaVcfFileField);
+            preferences.setDnaVcfFile(dnaVcfFileField.getText());
         } else if (action.equals(LocationPreferences.REPEAT_FILE)) {
-            getFile(action, repeatFile);
+            if (currentIndex == NON_DENOVO_INDEX) {
+                getFile(action, repeatFileField);
+                preferences.setRepeatFile(repeatFileField.getText());
+            } else {
+                getFile(action, denovoRepeatFileField);
+                preferences.setRepeatFile(denovoRepeatFileField.getText());
+            }
         } else if (action.equals(LocationPreferences.REF_SEQ_FILE)) {
-            getFile(action, refSeqFile);
+            if (currentIndex == NON_DENOVO_INDEX) {
+                getFile(action, refSeqFileField);
+                preferences.setRefSeqFile(refSeqFileField.getText());
+            } else {
+                getFile(action, denovoRefSeqFileField);
+                preferences.setRefSeqFile(denovoRefSeqFileField.getText());
+            }
         } else if (action.equals(LocationPreferences.DBSNP_FILE)) {
-            getFile(action, dbsnpFile);
+            if (currentIndex == NON_DENOVO_INDEX) {
+                getFile(action, dbSNPFileField);
+                preferences.setDbSNPFile(dbSNPFileField.getText());
+            } else {
+                getFile(action, denovoDbSNPFileField);
+                preferences.setDbSNPFile(denovoDbSNPFileField.getText());
+            }
         } else if (action.equals(LocationPreferences.DARNED_FILE)) {
-            getFile(action, darnedFile);
+            if (currentIndex == NON_DENOVO_INDEX) {
+                getFile(action, darnedFileField);
+                preferences.setDarnedFile(darnedFileField.getText());
+            } else {
+                getFile(action, denovoDarnedFileField);
+                preferences.setDarnedFile(denovoDarnedFileField.getText());
+            }
+
+        } else if (action.equals(LocationPreferences.RSCRIPT_PATH)) {
+            if (currentIndex == NON_DENOVO_INDEX) {
+                getFile(action, rScriptPath);
+                preferences.setDarnedFile(rScriptPath.getText());
+            } else {
+                getFile(action, denovoRScriptPath);
+                preferences.setDarnedFile(denovoRScriptPath.getText());
+            }
+
         } else if (action.equals("cancel")) {
             setVisible(false);
             dispose();
         } else if (action.equals("import")) {
-            DatabaseManager manager = DatabaseManager.getInstance();
-            manager.createStatement();
-            manager.setAutoCommit(true);
-
-            boolean isDenovo = false;
-            if (!isDenovo) {
-                manager.createDatabase("dnarna");
-                manager.useDatabase("dnarna");
-
-                DnaRnaVcf df = new DnaRnaVcf(manager, rnaVcfFile.getText(), dnaVcfFile.getText(), "rnaVcf",
-                        "dnaVcf");
-                Utilities.getInstance().createCalTable(dnaVcfFile.getText());
-                df.establishDnaTable();
-                df.dnaVcf();
-
-                Clear cl = new Clear();
-                cl.clear(Utilities.getInstance().getS2(), Utilities.getInstance().getS3());
-
-                Utilities.getInstance().createCalTable(rnaVcfFile.getText());
-                df.establishRnaTable();
-                df.rnaVcf();
-
-                BasicFilter bf = new BasicFilter(manager, "rnaVcf", "specifictemp",
-                        "basictemp");
-                bf.createSpecificTable();
-                bf.specificf();
-                // The first parameter means quality and the second means depth
-                bf.basicFilter(20, 6);
-                bf.distinctTable();
-
-                RepeatFilter rf = new RepeatFilter(manager, repeatFile.getText(), "repeattemp", "referencerepeat",
-                        "basictemp");
-                rf.loadrepeat();
-                rf.establishrepeat();
-                rf.rfilter();
-                rf.distinctTable();
-
-                ComphrehensiveFilter cf = new
-                        ComphrehensiveFilter(manager, refSeqFile.getText(), "comphrehensivetemp", "refcomphrehensive",
-                        "repeattemp");
-                cf.establishCom();
-                cf.loadcom();
-                cf.comphrehensiveF(2);
-                cf.distinctTable();
-
-                DbsnpFilter sf = new
-                        DbsnpFilter(manager, dbsnpFile.getText(), "snptemp", "refsnp", "comphrehensivetemp");
-                sf.establishsnp();
-                sf.loadRefdbSnp();
-                sf.snpFilter();
-                sf.distinctTable();
-
-                DnaRnaFilter dr = new DnaRnaFilter(manager, "dnaVcf", "DnaRnatemp",
-                        "snptemp");
-                dr.createDnaRnaTable();
-                dr.dnarnaFilter();
-                dr.distinctTable();
-
-                LlrFilter lf = new LlrFilter(manager, "dnaVcf", "llrtemp",
-                        "DnaRnatemp");
-                lf.createLlrTable();
-                lf.llrtemp();
-                lf.distinctTable();
-
-                PValueFilter pv = new
-                        PValueFilter(manager, darnedFile.getText(), "pvtemp", "refHg19", "llrtemp");
-                pv.loadRefHg19();
-//                pv.fdr(args[7]);
-
-            } else {
-                manager.createDatabase("denovo");
-                manager.useDatabase("denovo");
-                Utilities.getInstance().createCalTable(rnaVcfFile.getText());
-
-                DenovoVcf df = new DenovoVcf(manager, rnaVcfFile.getText(), "rnaVcf");
-                df.rnaVcf();
-
-                BasicFilter bf = new BasicFilter(manager, "rnaVcf", "specifictemp",
-                        "basictemp");
-                bf.createSpecificTable();
-                bf.specificf();
-                // The first parameter means quality and the second means depth
-                bf.basicFilter(20, 6);
-                bf.distinctTable();
-
-                RepeatFilter rf = new
-                        RepeatFilter(manager, repeatFile.getText(), "repeattemp", "referencerepeat", "basictemp");
-                rf.loadrepeat();
-                rf.establishrepeat();
-                rf.rfilter();
-                rf.distinctTable();
-
-                ComphrehensiveFilter cf = new
-                        ComphrehensiveFilter(manager, refSeqFile.getText(), "comphrehensivetemp", "refcomphrehensive",
-                        "repeattemp");
-                cf.establishCom();
-                cf.loadcom();
-                cf.comphrehensiveF(2);
-                cf.distinctTable();
-
-                DbsnpFilter sf = new
-                        DbsnpFilter(manager, dbsnpFile.getText(), "snptemp", "refsnp", "comphrehensivetemp");
-                sf.establishsnp();
-                sf.loadRefdbSnp();
-                sf.snpFilter();
-                sf.distinctTable();
-
-                PValueFilter pv = new
-                        PValueFilter(manager, darnedFile.getText(), "pvtemp", "refHg19", "snptemp");
-                pv.loadRefHg19();
-//                pv.fdr(args[6]);
-
+            switch (currentIndex) {
+                case NON_DENOVO_INDEX:
+                    ThreadNonDenovoInput nonDenovoInput = new ThreadNonDenovoInput();
+                    nonDenovoInput.addProgressListener(REDApplication.getInstance());
+                    ProgressDialog progressDialog = new ProgressDialog("Importing Data Into Database");
+                    nonDenovoInput.addProgressListener(progressDialog);
+                    new Thread(nonDenovoInput).start();
+                    break;
+                case DENOVO_INDEX:
+                    ThreadDenovoInput denovoInput = new ThreadDenovoInput();
+                    denovoInput.addProgressListener(REDApplication.getInstance());
+                    ProgressDialog progressDialog2 = new ProgressDialog("Importing Data Into Database");
+                    denovoInput.addProgressListener(progressDialog2);
+                    new Thread(denovoInput).start();
+                    break;
             }
-            manager.closeDatabase();
-            REDPreferences.getInstance().setDataLoadedToDatabase(true);
             setVisible(false);
             dispose();
         }

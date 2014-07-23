@@ -47,6 +47,7 @@ public class REDMenu extends JMenuBar implements ActionListener {
     private JMenuItem saveProjectAs;
     private JMenuItem connectToMySQL;
     private JMenu importData;
+    private JMenuItem toDatabase;
     private JMenuItem rna;
     private JMenuItem dna;
     private JMenuItem fasta;
@@ -120,6 +121,7 @@ public class REDMenu extends JMenuBar implements ActionListener {
         saveProjectAs = new JMenuItem();
         importData = new JMenu();
         connectToMySQL = new JMenuItem();
+        toDatabase = new JMenuItem();
         rna = new JMenuItem();
         dna = new JMenuItem();
         fasta = new JMenuItem();
@@ -179,6 +181,7 @@ public class REDMenu extends JMenuBar implements ActionListener {
             {
                 addJMenuItem(fileMenu, connectToMySQL, MenuUtils.CONNECT_TO_MYSQL, KeyEvent.VK_C, true);
                 importData.setText(MenuUtils.IMPORT_DATA);
+                addJMenuItem(importData, toDatabase, MenuUtils.TO_DATABASE, -1, false);
                 addJMenuItem(importData, fasta, MenuUtils.FASTA, -1, true);
                 addJMenuItem(importData, rna, MenuUtils.RNA, -1, true);
                 addJMenuItem(importData, dna, MenuUtils.DNA, -1, true);
@@ -341,7 +344,10 @@ public class REDMenu extends JMenuBar implements ActionListener {
         } else if (action.equals(MenuUtils.SAVE_PROJECT_AS)) {
             redApplication.saveProjectAs();
         } else if (action.equals(MenuUtils.CONNECT_TO_MYSQL)) {
-            new UserPasswordDialog(redApplication);
+            UserPasswordDialog userPasswordDialog = new UserPasswordDialog(redApplication);
+            userPasswordDialog.addProgressListener(redApplication);
+        } else if (action.equals(MenuUtils.TO_DATABASE)) {
+            new DataInportDialog(redApplication);
         } else if (action.equals(MenuUtils.FASTA)) {
             redApplication.importData(new FastaFileParser(redApplication.dataCollection()));
         } else if (action.equals(MenuUtils.RNA)) {
@@ -466,10 +472,17 @@ public class REDMenu extends JMenuBar implements ActionListener {
      */
     public void dataLoaded() {
         viewMenu.setEnabled(true);
-        filterMenu.setEnabled(true);
         setDataTracks.setEnabled(true);
         reportsMenu.setEnabled(true);
         showDataPanel.setEnabled(true);
+    }
+
+    public void databaseConnected() {
+        toDatabase.setEnabled(true);
+    }
+
+    public void databaseLoaded() {
+        filterMenu.setEnabled(true);
     }
 
     /**
