@@ -39,7 +39,7 @@ public class ThreadDenovoInput implements Runnable {
         df.establishRnaTable(DatabaseManager.RNA_VCF_RESULT_TABLE_NAME);
         df.loadRnaVcfTable(DatabaseManager.RNA_VCF_RESULT_TABLE_NAME, locationPreferences.getRnaVcfFile());
 
-        progressUpdated("Filtering sites based on quality and coverage...", 3, ALL_STEP);
+        progressUpdated("Filtering sites by quality and coverage...", 3, ALL_STEP);
         BasicFilter bf = new BasicFilter(manager);
         bf.establishSpecificTable(DatabaseManager.SPECIFIC_FILTER_RESULT_TABLE_NAME);
         bf.executeSpecificFilter(DatabaseManager.SPECIFIC_FILTER_RESULT_TABLE_NAME, DatabaseManager.RNA_VCF_RESULT_TABLE_NAME);

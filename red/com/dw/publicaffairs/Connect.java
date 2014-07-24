@@ -9,31 +9,30 @@ import java.sql.SQLException;
 
 public class Connect {
     /**
-     * @param args arg[0]: true if denovo
+     * @param args The following is for non-denovo detection.
+     *             arg[0]: true if denovo
      *             arg[1]: RNA vcf file
      *             arg[2]: DNA vcf file
-     *             arg[3]: Repeat file from http://www.repeatmasker.org/PreMaskedGenomes.html
-     *             arg[4]: Ref Seq Genes from http://genome.ucsc.edu/cgi-bin/hgTables
-     *             arg[5]: http://www.ncbi.nlm.nih.gov/SNP/
-     *             arg[6]: DARNED database http://darned.ucc.ie/static/downloads/hg19.txt
+     *             arg[3]: Repeat file FROM http://www.repeatmasker.org/PreMaskedGenomes.html
+     *             arg[4]: Ref Seq Genes file FROM http://genome.ucsc.edu/cgi-bin/hgTables
+     *             arg[5]: dbSNP file FROM http://www.ncbi.nlm.nih.gov/SNP/
+     *             arg[6]: DARNED database FROM http://darned.ucc.ie/static/downloads/hg19.txt
      *             arg[7]: The path of RScript
      *             arg[8]: Column index of vcf file to select normal or cancer people
      *             arg[9]: The database name.
+     *
+     *             The following is for denovo detection
+     *             arg[0]: true if denovo
+     *             arg[1]: RNA vcf file
+     *             arg[2]: Repeat file from http://www.repeatmasker.org/PreMaskedGenomes.html
+     *             arg[3]: Ref Seq Genes from http://genome.ucsc.edu/cgi-bin/hgTables
+     *             arg[4]: dbSNP file FROM http://www.ncbi.nlm.nih.gov/SNP/
+     *             arg[5]: DARNED database FROM http://darned.ucc.ie/static/downloads/hg19.txt
+     *             arg[6]: The path of RScript
+     *             arg[7]: Column index of vcf file to select normal or cancer people
+     *             arg[8]: The database name.
      */
     public static void main(String[] args) {
-        // final String PARAM_DNA_VCF = "-d";
-        // int argsLength = args.length;
-        // if(argsLength%2!=0){
-        // System.out.println("Error Input");
-        // }
-        // Map<String,String> paramPath = new HashMap<String,String>();
-        // for(int i=0;i<args.length;i+=2){
-        // if(args[i].startsWith("-")){
-        // System.out.println("Error Parameter Input");
-        // }
-        // paramPath.put(args[i], args[i+1]);
-        // }
-        // String dnavcfPath = paramPath.get(PARAM_DNA_VCF);
 
         // TODO Auto-generated method stub
         DatabaseManager manager = DatabaseManager.getInstance();
