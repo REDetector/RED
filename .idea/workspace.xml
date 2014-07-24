@@ -13,9 +13,7 @@
     <list id="7bfbcd82-43d2-4bb3-bf21-1f16164d2c5a" name="Rejected commit: Default" comment="Fix some bugs." />
     <list id="7653a5be-4308-4b8a-af47-b29b059d9163" name="Rejected commit: Rejected commit: Default" comment="Fix some bugs." />
     <list default="true" id="8c0b48af-f12c-459a-98ff-77421d212a83" name="Failed commit: Rejected commit: Default" comment="Change all names of database and table defined by ourselves">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/com/dw/publicaffairs/Connect.java" afterPath="$PROJECT_DIR$/red/com/dw/publicaffairs/Connect.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/com/xl/thread/ThreadDenovoInput.java" afterPath="$PROJECT_DIR$/red/com/xl/thread/ThreadDenovoInput.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/com/xl/thread/ThreadNonDenovoInput.java" afterPath="$PROJECT_DIR$/red/com/xl/thread/ThreadNonDenovoInput.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="REDetector.iws" />
@@ -87,7 +85,7 @@
       <file leaf-file-name="Connect.java" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/red/com/dw/publicaffairs/Connect.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="5930" max-vertical-offset="6424">
+            <state vertical-scroll-proportion="0.0" vertical-offset="6182" max-vertical-offset="6424">
               <caret line="281" column="32" selection-start-line="235" selection-start-column="12" selection-end-line="281" selection-end-column="29" />
               <folding>
                 <element signature="imports" expanded="true" />
@@ -99,7 +97,7 @@
       <file leaf-file-name="ThreadNonDenovoInput.java" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/red/com/xl/thread/ThreadNonDenovoInput.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="2046" max-vertical-offset="4554">
+            <state vertical-scroll-proportion="0.0" vertical-offset="2288" max-vertical-offset="4554">
               <caret line="104" column="8" selection-start-line="104" selection-start-column="8" selection-end-line="108" selection-end-column="9" />
               <folding>
                 <element signature="imports" expanded="true" />
@@ -113,8 +111,8 @@
       <file leaf-file-name="ThreadDenovoInput.java" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/red/com/xl/thread/ThreadDenovoInput.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.44534412" vertical-offset="0" max-vertical-offset="3806">
-              <caret line="18" column="49" selection-start-line="18" selection-start-column="37" selection-end-line="18" selection-end-column="37" />
+            <state vertical-scroll-proportion="0.48987854" vertical-offset="0" max-vertical-offset="3806">
+              <caret line="19" column="44" selection-start-line="19" selection-start-column="0" selection-end-line="19" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -1076,7 +1074,11 @@
       <created>1406192742075</created>
       <updated>1406192742075</updated>
     </task>
-    <option name="localTasksCounter" value="73" />
+    <task id="LOCAL-00073" summary="Change all names of database and table defined by ourselves">
+      <created>1406202167333</created>
+      <updated>1406202167333</updated>
+    </task>
+    <option name="localTasksCounter" value="74" />
     <servers />
   </component>
   <component name="TodoView" selected-index="0">
@@ -1607,7 +1609,7 @@
         <state vertical-scroll-proportion="0.0" vertical-offset="9130" max-vertical-offset="9372">
           <caret line="427" column="34" selection-start-line="427" selection-start-column="29" selection-end-line="427" selection-end-column="29" />
           <folding>
-            <element signature="n#!!doc" expanded="true" />
+            <element signature="n#!!doc" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -1644,8 +1646,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/red/com/xl/thread/ThreadDenovoInput.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.44534412" vertical-offset="0" max-vertical-offset="3806">
-          <caret line="18" column="49" selection-start-line="18" selection-start-column="37" selection-end-line="18" selection-end-column="37" />
+        <state vertical-scroll-proportion="0.48987854" vertical-offset="0" max-vertical-offset="3806">
+          <caret line="19" column="44" selection-start-line="19" selection-start-column="0" selection-end-line="19" selection-end-column="0" />
           <folding />
         </state>
       </provider>

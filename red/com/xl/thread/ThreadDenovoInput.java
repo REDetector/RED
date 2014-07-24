@@ -15,7 +15,7 @@ import java.util.Iterator;
  */
 public class ThreadDenovoInput implements Runnable {
     protected final ArrayList<ProgressListener> listeners;
-    private final int ALL_STEP = 8;
+    private final int ALL_STEP = 7;
     protected boolean cancel = false;
 
     public ThreadDenovoInput() {
@@ -34,12 +34,12 @@ public class ThreadDenovoInput implements Runnable {
         manager.useDatabase(DatabaseManager.DENOVO_DATABASE_NAME);
         Utilities.getInstance().createCalTable(locationPreferences.getRnaVcfFile());
 
-        progressUpdated("Importing RNA vcf data...", 3, ALL_STEP);
+        progressUpdated("Importing RNA vcf data...", 2, ALL_STEP);
         DenovoVcf df = new DenovoVcf(manager);
         df.establishRnaTable(DatabaseManager.RNA_VCF_RESULT_TABLE_NAME);
         df.loadRnaVcfTable(DatabaseManager.RNA_VCF_RESULT_TABLE_NAME, locationPreferences.getRnaVcfFile());
 
-        progressUpdated("Filtering sites based on quality and coverage...", 4, ALL_STEP);
+        progressUpdated("Filtering sites based on quality and coverage...", 3, ALL_STEP);
         BasicFilter bf = new BasicFilter(manager);
         bf.establishSpecificTable(DatabaseManager.SPECIFIC_FILTER_RESULT_TABLE_NAME);
         bf.executeSpecificFilter(DatabaseManager.SPECIFIC_FILTER_RESULT_TABLE_NAME, DatabaseManager.RNA_VCF_RESULT_TABLE_NAME);
@@ -49,7 +49,7 @@ public class ThreadDenovoInput implements Runnable {
                 DatabaseManager.BASIC_FILTER_RESULT_TABLE_NAME, 20, 6);
         DatabaseManager.getInstance().distinctTable(DatabaseManager.BASIC_FILTER_RESULT_TABLE_NAME);
 
-        progressUpdated("Importing repeatmasker data...", 5, ALL_STEP);
+        progressUpdated("Importing repeatmasker data...", 4, ALL_STEP);
         RepeatFilter rf = new RepeatFilter(manager);
         rf.loadRepeatTable(DatabaseManager.REPEAT_FILTER_TABLE_NAME, locationPreferences.getRepeatFile());
         rf.establishRepeatResultTable(DatabaseManager.REPEAT_FILTER_RESULT_TABLE_NAME);
@@ -57,7 +57,7 @@ public class ThreadDenovoInput implements Runnable {
                 DatabaseManager.BASIC_FILTER_RESULT_TABLE_NAME);
         DatabaseManager.getInstance().distinctTable(DatabaseManager.REPEAT_FILTER_RESULT_TABLE_NAME);
 
-        progressUpdated("Importing RefSeq Genes data...", 6, ALL_STEP);
+        progressUpdated("Importing RefSeq Genes data...", 5, ALL_STEP);
         ComprehensiveFilter cf = new ComprehensiveFilter(manager);
         cf.establishComprehensiveResultTable(DatabaseManager.COMPREHENSIVE_FILTER_RESULT_TABLE_NAME);
         cf.loadComprehensiveTable(DatabaseManager.COMPREHENSIVE_FILTER_TABLE_NAME, locationPreferences.getRefSeqFile());
@@ -66,7 +66,7 @@ public class ThreadDenovoInput implements Runnable {
                 , 2);
         DatabaseManager.getInstance().distinctTable(DatabaseManager.COMPREHENSIVE_FILTER_RESULT_TABLE_NAME);
 
-        progressUpdated("Importing dbSNP data...", 7, ALL_STEP);
+        progressUpdated("Importing dbSNP data...", 6, ALL_STEP);
         DbsnpFilter sf = new DbsnpFilter(manager);
         sf.establishDbSNPResultTable(DatabaseManager.DBSNP_FILTER_RESULT_TABLE_NAME);
         sf.loadDbSNPTable(DatabaseManager.DBSNP_FILTER_TABLE_NAME, locationPreferences.getDbSNPFile());
@@ -74,7 +74,7 @@ public class ThreadDenovoInput implements Runnable {
                 DatabaseManager.DBSNP_FILTER_RESULT_TABLE_NAME, DatabaseManager.COMPREHENSIVE_FILTER_RESULT_TABLE_NAME);
         DatabaseManager.getInstance().distinctTable(DatabaseManager.DBSNP_FILTER_RESULT_TABLE_NAME);
 
-        progressUpdated("Importing DARNED data...", 8, ALL_STEP);
+        progressUpdated("Importing DARNED data...", 7, ALL_STEP);
         PValueFilter pv = new PValueFilter(manager);
         pv.estblishPvTable(DatabaseManager.PVALUE_FILTER_RESULT_TABLE_NAME);
         pv.loadDarnedTable(DatabaseManager.PVALUE_FILTER_TABLE_NAME, locationPreferences.getDarnedFile());
