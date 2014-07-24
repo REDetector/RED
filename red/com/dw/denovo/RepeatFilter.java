@@ -19,9 +19,8 @@ public class RepeatFilter {
     private DatabaseManager databaseManager;
 
     private String repeatIn = null;
-    private String repeatResultTable = null;
     private String repeatTable = null;
-    private String refTable = null;
+    private String referenceRepeat = null;
     FileInputStream inputStream;
     private String line = null;
     private int count = 3;
@@ -31,20 +30,19 @@ public class RepeatFilter {
 
     SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
-    public RepeatFilter(DatabaseManager databaseManager, String repeatPath,
-                        String repeatResultTable, String repeatTable, String refTable) {
+    public RepeatFilter(DatabaseManager databaseManager, String repeatIn,
+                        String repeatTable, String referenceRepeat) {
         this.databaseManager = databaseManager;
-        this.repeatIn = repeatPath;
-        this.repeatResultTable = repeatResultTable;
+        this.repeatIn = repeatIn;
         this.repeatTable = repeatTable;
-        this.refTable = refTable;
+        this.referenceRepeat = referenceRepeat;
     }
 
     public boolean establishRefRepeat() {
         databaseManager
-                .createRefTable(repeatTable,
+                .createRefTable(referenceRepeat,
                         "(chrome varchar(15),begin int,end int,type varchar(40),index(chrome,begin,end))");
-        ResultSet rs = databaseManager.query(repeatTable, "count(*)",
+        ResultSet rs = databaseManager.query(referenceRepeat, "count(*)",
                 "1 limit 0,100");
         int number = 0;
         try {
@@ -90,7 +88,7 @@ public class RepeatFilter {
                         index = 0;
                         continue;
                     }
-                    databaseManager.executeSQL("insert into " + repeatTable
+                    databaseManager.executeSQL("insert into " + referenceRepeat
                             + "(chrome,begin,end,type) values('"
                             + line.split("\t")[index + 5] + "','"
                             + line.split("\t")[index + 6] + "','"
@@ -115,8 +113,8 @@ public class RepeatFilter {
     public void establishrepeat() {
         System.out.println("esrepeat start" + " " + df.format(new Date()));
 
-        databaseManager.deleteTable(repeatResultTable);
-        databaseManager.createTable(repeatResultTable, "(chrome varchar(15),"
+        databaseManager.deleteTable(repeatTable);
+        databaseManager.createTable(repeatTable, "(chrome varchar(15),"
                 + Utilities.getInstance().getS2() + "," + "index(chrome,pos))");
 
         databaseManager.deleteTable("alutemp");
@@ -126,35 +124,51 @@ public class RepeatFilter {
         System.out.println("esrepeat end" + " " + df.format(new Date()));
     }
 
-    public void repeatFilter() {
+    public void repeatFilter(String refTable) {
         System.out.println("rfliter start" + " " + df.format(new Date()));
 
-        databaseManager.executeSQL("insert into " + repeatResultTable
-                + " select * from " + refTable
-                + " where not exists (select * FROM " + repeatTable + " where (" + repeatTable
-                + ".chrome= " + refTable + ".chrome and  " + repeatTable
-                + ".begin<" + refTable + ".pos and " + repeatTable
-                + ".end>" + refTable + ".pos)) ");
+		databaseManager
+				.executeSQL("insert into "
+						+ repeatTable
+						+ " select * from "
+						+ refTable
+						+ " as A left join "
+						+ referenceRepeat
+						+ " as B on (b.chrome=a.chrome and b.begin<a.pos and b.end>a.pos) where b.chrome is null");
+        
+//        databaseManager.executeSQL("insert into " + repeatTable
+//                + " select * from " + refTable
+//                + " where not exists (select * FROM " + referenceRepeat + " where (" + referenceRepeat
+//                + ".chrome= " + refTable + ".chrome and  " + referenceRepeat
+//                + ".begin<" + refTable + ".pos and " + referenceRepeat
+//                + ".end>" + refTable + ".pos)) ");
 
+		
         System.out.println("esrepeat alu start " + " " + df.format(new Date()));
-        databaseManager.executeSQL("insert into alutemp select * from "
-                + refTable + " where exists (select * FROM " + refTable
-                + " where (" + repeatTable
-                + ".chrome= " + refTable + ".chrome and  " + repeatTable
-                + ".begin<" + refTable + ".pos and " + repeatTable
-                + ".end>" + refTable + ".pos and " + repeatTable + ".type='SINE/Alu')) ");
+        
+		databaseManager.executeSQL("insert into alutemp SELECT * from "
+				+ refTable + " where exists (select chrome from "
+				+ referenceRepeat + " where " + referenceRepeat
+				+ ".chrome = " + refTable + ".chrome and " + referenceRepeat
+				+ ".begin<" + refTable + ".pos and " + referenceRepeat
+				+ ".end>" + refTable + ".pos and "+referenceRepeat+".type='SINE/Alu')");
+//        databaseManager.executeSQL("insert into alutemp select * from "
+//                + refTable + " select * from "
+//						+ refTable
+//						+ " as A left join "
+//						+ referenceRepeat
+//						+ " as B on (b.chrome=a.chrome and b.begin<a.pos and b.end>a.pos and b.type='SINE/Alu')) ");
 
         System.out.println("esrepeat final start " + " " + df.format(new Date()));
-        databaseManager.executeSQL("insert into " + repeatResultTable
+        databaseManager.executeSQL("insert into " + repeatTable
                 + " select * from alutemp");
 
         System.out.println("rfilter end" + " " + df.format(new Date()));
     }
 
-    public void rfilter() {
+    public void rfilter(String refTable) {
         try {
             System.out.println("rfliter start" + " " + df.format(new Date()));// new
-            // Date()Ϊ��ȡ��ǰϵͳʱ��
             ResultSet rs = databaseManager.query(refTable, "chrome,pos", "1");
             List<String> coordinate = new ArrayList<String>();
             databaseManager.setAutoCommit(false);
@@ -171,11 +185,11 @@ public class RepeatFilter {
                     case 1:
                         ps = coordinate.get(i);
 //					System.out.println(chr+" "+ps);
-                        rs = databaseManager.query(repeatTable, " type ",
+                        rs = databaseManager.query(referenceRepeat, " type ",
                                 "(chrome='" + chr + "' and begin<" + ps
                                         + " and end>" + ps + ")");
                         if (!rs.next()) {
-                            databaseManager.executeSQL("insert into " + repeatResultTable
+                            databaseManager.executeSQL("insert into " + repeatTable
                                     + "  select * from " + refTable
                                     + " where chrome='" + chr + "' and pos=" + ps
                                     + "");
@@ -187,7 +201,7 @@ public class RepeatFilter {
                         }
                         // SINEalu is also what we need
                         else if (rs.next() && rs.getString(1) == "SINE/Alu") {
-                            databaseManager.executeSQL("insert into " + repeatResultTable
+                            databaseManager.executeSQL("insert into " + repeatTable
                                     + "  select * from " + refTable
                                     + " where chrome='" + chr + "' and pos=" + ps
                                     + "");
@@ -216,9 +230,9 @@ public class RepeatFilter {
         System.out.println("post start" + " " + df.format(new Date()));
 
         databaseManager.executeSQL("create temporary table newtable select distinct * from "
-                + repeatResultTable);
-        databaseManager.executeSQL("truncate table " + repeatResultTable);
-        databaseManager.executeSQL("insert into " + repeatResultTable +
+                + repeatTable);
+        databaseManager.executeSQL("truncate table " + repeatTable);
+        databaseManager.executeSQL("insert into " + repeatTable +
                 " select * from  newtable");
         databaseManager.deleteTable("newTable");
 

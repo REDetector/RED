@@ -19,7 +19,6 @@ public class LLRFilter {
 
     private String dnaVcfTable = null;
     private String llrResultTable = null;
-    private String refTable = null;
     private String chr;
     private String ps;
     private String chrom = null;
@@ -28,11 +27,10 @@ public class LLRFilter {
     private int alt_n = 0;
     SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
-    public LLRFilter(DatabaseManager databaseManager, String dnaVcfTable, String llrResultTable, String refTable) {
+    public LLRFilter(DatabaseManager databaseManager, String dnaVcfTable, String llrResultTable) {
         this.databaseManager = databaseManager;
         this.dnaVcfTable = dnaVcfTable;
         this.llrResultTable = llrResultTable;
-        this.refTable = refTable;
     }
 
     public boolean createLlrTable() {
@@ -46,7 +44,7 @@ public class LLRFilter {
         return true;
     }
 
-    public void llrtemp() {
+    public void llrtemp(String refTable) {
         try {
             System.out.println("llrtemp start" + " " + df.format(new Date()));
 

@@ -174,24 +174,25 @@ public class Connect {
 		 bf.distinctTable();
 		
 		 RepeatFilter rf=new
-		 RepeatFilter(manager,args[3],"repeattemp","referencerepeat","basictemp");
+		 RepeatFilter(manager,args[3],"repeattemp","referencerepeat");
 		 rf.loadrepeat();
 		 rf.establishrepeat();
-		 rf.repeatFilter();
+		 rf.rfilter("basictemp");
+//		 rf.repeatFilter("basictemp");
 		 rf.distinctTable();
 		
 		 ComphrehensiveFilter cf=new
-		 ComphrehensiveFilter(manager,args[4],"comphrehensivetemp","refcomphrehensive","repeattemp");
+		 ComphrehensiveFilter(manager,args[4],"comphrehensivetemp","refcomphrehensive");
 		 cf.establishCom();
 		 cf.loadcom();
-		 cf.comphrehensiveF(2);
+		 cf.comphrehensiveF("repeattemp",2);
 		 cf.distinctTable();
 		
 		 DbsnpFilter sf=new
-		 DbsnpFilter(manager,args[5],"snptemp","refdbsnp","comphrehensivetemp");
+		 DbsnpFilter(manager,args[5],"snptemp","refdbsnp");
 		 sf.establishsnp();
 		 sf.loadRefdbSnp();
-		 sf.snpFilter();
+		 sf.snpFilter("comphrehensivetemp");
 		 sf.distinctTable();
 		
 		 DnaRnaFilter dr=new DnaRnaFilter(manager, "dnaVcf", "DnaRnatemp",
@@ -200,16 +201,18 @@ public class Connect {
 		 dr.dnarnaFilter();
 		 dr.distinctTable();
 
-             LLRFilter lf = new LLRFilter(manager, "dnaVcf", "llrtemp",
-                     "DnaRnatemp");
+             LLRFilter lf = new LLRFilter(manager, "dnaVcf", "llrtemp"
+                     );
 		 lf.createLlrTable();
-		 lf.llrtemp();
+		 lf.llrtemp("DnaRnatemp");
 		 lf.distinctTable();
 		
 		 PValueFilter pv=new
-		 PValueFilter(manager,args[6],"pvtemp","refHg19","llrtemp");
+		 PValueFilter(manager,args[6],"pvtemp","refHg19");
+		 pv.estblishPvTable();
+
 		 pv.loadRefHg19();
-		 pv.fdr(args[7]);
+		 pv.fdr("llrtemp",args[7]);
 		
 		 }
 		 else {
@@ -231,30 +234,32 @@ public class Connect {
 		 bf.distinctTable();
 		
 		 RepeatFilter rf=new
-		 RepeatFilter(manager,args[2],"repeattemp","referencerepeat","basictemp");
+		 RepeatFilter(manager,args[2],"repeattemp","referencerepeat");
 		 rf.loadrepeat();
 		 rf.establishrepeat();
-		 rf.repeatFilter();
+		 rf.rfilter("basictemp");
+		 rf.repeatFilter("basictemp");
 		 rf.distinctTable();
 		
 		 ComphrehensiveFilter cf=new
-		 ComphrehensiveFilter(manager,args[3],"comphrehensivetemp","refcomphrehensive","repeattemp");
+		 ComphrehensiveFilter(manager,args[3],DatabaseManager.COMPREHENSIVE_FILTER_TABLE_NAME,"refcomphrehensive");
 		 cf.establishCom();
 		 cf.loadcom();
-		 cf.comphrehensiveF(2);
+		 cf.comphrehensiveF("repeattemp",2);
 		 cf.distinctTable();
 		
 		 DbsnpFilter sf=new
-		 DbsnpFilter(manager,args[4],"snptemp","refsnp","comphrehensivetemp");
+		 DbsnpFilter(manager,args[4],"snptemp","refsnp");
 		 sf.establishsnp();
 		 sf.loadRefdbSnp();
-		 sf.snpFilter();
+		 sf.snpFilter("comphrehensivetemp");
 		 sf.distinctTable();
 		
 		 PValueFilter pv=new
-		 PValueFilter(manager,args[5],"pvtemp","refHg19","snptemp");
+		 PValueFilter(manager,args[5],"pvtemp","refHg19");
+		 pv.estblishPvTable();
 		 pv.loadRefHg19();
-		 pv.fdr(args[6]);
+		 pv.fdr("snptemp",args[6]);
 		
 		 }
 		manager.closeDatabase();

@@ -20,31 +20,28 @@ public class ComphrehensiveFilter {
     private DatabaseManager databaseManager;
 
     // FileInputStream inputStream;
-    private String refSeqPath = null;
-    private String refSeqResultTable = null;
-    private String refSeqTable = null;
-    private String refTable = null;
+    private String comIn = null;
+    private String ComphrehensiveTable = null;
+    private String referenceComphrehensive = null;
 
     private int count = 0;
     private String chr = null;
     private String ps = null;
     SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
-    public ComphrehensiveFilter(DatabaseManager databaseManager, String refSeqPath,
-                                String refSeqResultTable, String refSeqTable,
-                                String refTable) {
+    public ComphrehensiveFilter(DatabaseManager databaseManager, String comIn,
+                                String ComphrehensiveTable, String referenceComphrehensive) {
         this.databaseManager = databaseManager;
-        this.refSeqPath = refSeqPath;
-        this.refSeqResultTable = refSeqResultTable;
-        this.refSeqTable = refSeqTable;
-        this.refTable = refTable;
+        this.comIn = comIn;
+        this.ComphrehensiveTable = ComphrehensiveTable;
+        this.referenceComphrehensive = referenceComphrehensive;
     }
 
     public boolean establishCom() {
         System.out.println("escom start" + " " + df.format(new Date()));
 
-        databaseManager.deleteTable(refSeqResultTable);
-        databaseManager.createTable(refSeqResultTable, "(chrome varchar(15),"
+        databaseManager.deleteTable(ComphrehensiveTable);
+        databaseManager.createTable(ComphrehensiveTable, "(chrome varchar(15),"
                 + Utilities.getInstance().getS2() + "," + "index(chrome,pos))");
 
         System.out.println("escom end" + " " + df.format(new Date()));
@@ -54,9 +51,9 @@ public class ComphrehensiveFilter {
     public boolean establishRefCom() {
         databaseManager
                 .createTable(
-                        refSeqTable,
+                        referenceComphrehensive,
                         "(chrome varchar(15),ref varchar(30),type varchar(9),begin int,end int,unuse1 float(8,6),unuse2 varchar(5),unuse3 varchar(5),info varchar(100),index(chrome,type))");
-        ResultSet rs = databaseManager.query(refSeqTable,
+        ResultSet rs = databaseManager.query(referenceComphrehensive,
                 "count(*)", "1 limit 0,100");
         int number = 0;
         try {
@@ -78,8 +75,8 @@ public class ComphrehensiveFilter {
         System.out.println("loadcom start" + " " + df.format(new Date()));
 
         if (establishRefCom()) {
-            databaseManager.executeSQL("load data local infile '" + refSeqPath
-                    + "' into table " + refSeqTable
+            databaseManager.executeSQL("load data local infile '" + comIn
+                    + "' into table " + referenceComphrehensive
                     + " fields terminated by '\t' lines terminated by '\n'");
         }
 
@@ -89,7 +86,7 @@ public class ComphrehensiveFilter {
 
     }
 
-    public boolean comphrehensiveF(int edge) {
+    public boolean comphrehensiveF(String refTable, int edge) {
         try {
             System.out.println("comf start" + " " + df.format(new Date()));
 
@@ -109,7 +106,7 @@ public class ComphrehensiveFilter {
                         break;
                     case 1:
                         ps = coordinate.get(i);
-                        rs = databaseManager.query(refSeqTable, "type",
+                        rs = databaseManager.query(referenceComphrehensive, "type",
                                 "( ((begin<" + ps + "+" + edge + " " + "and begin>"
                                         + ps + "-" + edge + ") or " + "(end<" + ps
                                         + "+" + edge + " and end>" + ps + "-"
@@ -118,7 +115,7 @@ public class ComphrehensiveFilter {
                                         + "')");
                         if (!rs.next()) {
                             databaseManager.executeSQL("insert into "
-                                    + refSeqResultTable + "  select * from "
+                                    + ComphrehensiveTable + "  select * from "
                                     + refTable + " where chrome='" + chr
                                     + "' and pos=" + ps + "");
                             count++;
@@ -146,9 +143,9 @@ public class ComphrehensiveFilter {
         System.out.println("post start" + " " + df.format(new Date()));
 
         databaseManager.executeSQL("create temporary table newtable select distinct * from "
-                + refSeqResultTable);
-        databaseManager.executeSQL("truncate table " + refSeqResultTable);
-        databaseManager.executeSQL("insert into " + refSeqResultTable +
+                + ComphrehensiveTable);
+        databaseManager.executeSQL("truncate table " + ComphrehensiveTable);
+        databaseManager.executeSQL("insert into " + ComphrehensiveTable +
                 " select * from  newtable");
         databaseManager.deleteTable("newTable");
 

@@ -64,40 +64,40 @@ public class ThreadNonDenovoInput implements Runnable {
         bf.distinctTable();
 
 
-        RepeatFilter rf = new RepeatFilter(manager, locationPreferences.getRepeatFile(), DatabaseManager.REPEAT_FILTER_TABLE_NAME,
-                "refrepeat", DatabaseManager.BASIC_FILTER_TABLE_NAME);
-        progressUpdated("Importing repeatmasker data...", 7, ALL_STEP);
-        rf.loadrepeat();
-        rf.establishrepeat();
-        rf.repeatFilter();
-        rf.distinctTable();
-
-        progressUpdated("Importing RefSeq Genes data...", 8, ALL_STEP);
-        ComphrehensiveFilter cf = new
-                ComphrehensiveFilter(manager, locationPreferences.getRefSeqFile(), DatabaseManager.COMPREHENSIVE_FILTER_TABLE_NAME,
-                "refcomprehensive", DatabaseManager.REPEAT_FILTER_TABLE_NAME);
-        cf.loadcom();
-        cf.establishCom();
-        cf.comphrehensiveF(2);
-        cf.distinctTable();
-
-        progressUpdated("Importing dbSNP data...", 9, ALL_STEP);
-        DbsnpFilter sf = new
-                DbsnpFilter(manager, locationPreferences.getDbSNPFile(), DatabaseManager.DBSNP_FILTER_TABLE_NAME, "refsnp",
-                DatabaseManager.COMPREHENSIVE_FILTER_TABLE_NAME);
-        sf.establishsnp();
-        sf.loadRefdbSnp();
-        sf.snpFilter();
-        sf.distinctTable();
-
-        progressUpdated("Importing DARNED data...", 10, ALL_STEP);
-        PValueFilter pv = new
-                PValueFilter(manager, locationPreferences.getDarnedFile(), DatabaseManager.PVALUE_FILTER_TABLE_NAME,
-                "refdarned", DatabaseManager.DBSNP_FILTER_TABLE_NAME);
-        pv.loadRefHg19();
-        if (locationPreferences.getRScriptPath() != null && locationPreferences.getRScriptPath().length() != 0) {
-            pv.fdr(locationPreferences.getRScriptPath());
-        }
+//        RepeatFilter rf = new RepeatFilter(manager, locationPreferences.getRepeatFile(), DatabaseManager.REPEAT_FILTER_TABLE_NAME,
+//                "refrepeat", DatabaseManager.BASIC_FILTER_TABLE_NAME);
+//        progressUpdated("Importing repeatmasker data...", 7, ALL_STEP);
+//        rf.loadrepeat();
+//        rf.establishrepeat();
+//        rf.repeatFilter();
+//        rf.distinctTable();
+//
+//        progressUpdated("Importing RefSeq Genes data...", 8, ALL_STEP);
+//        ComphrehensiveFilter cf = new
+//                ComphrehensiveFilter(manager, locationPreferences.getRefSeqFile(), DatabaseManager.COMPREHENSIVE_FILTER_TABLE_NAME,
+//                "refcomprehensive", DatabaseManager.REPEAT_FILTER_TABLE_NAME);
+//        cf.loadcom();
+//        cf.establishCom();
+//        cf.comphrehensiveF(2);
+//        cf.distinctTable();
+//
+//        progressUpdated("Importing dbSNP data...", 9, ALL_STEP);
+//        DbsnpFilter sf = new
+//                DbsnpFilter(manager, locationPreferences.getDbSNPFile(), DatabaseManager.DBSNP_FILTER_TABLE_NAME, "refsnp",
+//                DatabaseManager.COMPREHENSIVE_FILTER_TABLE_NAME);
+//        sf.establishsnp();
+//        sf.loadRefdbSnp();
+//        sf.snpFilter();
+//        sf.distinctTable();
+//
+//        progressUpdated("Importing DARNED data...", 10, ALL_STEP);
+//        PValueFilter pv = new
+//                PValueFilter(manager, locationPreferences.getDarnedFile(), DatabaseManager.PVALUE_FILTER_TABLE_NAME,
+//                "refdarned", DatabaseManager.DBSNP_FILTER_TABLE_NAME);
+//        pv.loadRefHg19();
+//        if (locationPreferences.getRScriptPath() != null && locationPreferences.getRScriptPath().length() != 0) {
+//            pv.fdr(locationPreferences.getRScriptPath());
+//        }
         REDPreferences.getInstance().setDataLoadedToDatabase(true);
         processingComplete();
     }

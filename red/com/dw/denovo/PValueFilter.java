@@ -5,6 +5,7 @@ package com.dw.denovo;
  */
 
 import com.dw.publicaffairs.DatabaseManager;
+
 import rcaller.Globals;
 import rcaller.RCaller;
 import rcaller.RCode;
@@ -24,7 +25,6 @@ public class PValueFilter {
     private String darnedPath = null;
     private String darnedResultTable = null;
     private String darnedTable = null;
-    private String refTable = null;
     FileInputStream inputStream;
     private String line = null;
     private String[] col = new String[40];
@@ -49,12 +49,11 @@ public class PValueFilter {
     SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
     public PValueFilter(DatabaseManager databaseManager, String darnedPath,
-                        String darnedResultTable, String darnedTable, String refTable) {
+                        String darnedResultTable, String darnedTable) {
         this.databaseManager = databaseManager;
         this.darnedPath = darnedPath;
         this.darnedResultTable = darnedResultTable;
         this.darnedTable = darnedTable;
-        this.refTable = refTable;
     }
 
 
@@ -122,7 +121,7 @@ public class PValueFilter {
         }
     }
 
-    public void level(String chr, String ps) {
+    private void level(String refTable,String chr, String ps) {
         try {
             ref_n = alt_n = 0;
             ResultSet rs = databaseManager.query(refTable, "AD", "chrome='"
@@ -144,7 +143,7 @@ public class PValueFilter {
         }
     }
 
-    public void Exp_num() {
+    private void Exp_num(String refTable) {
         try {
             ResultSet rs = databaseManager.query(refTable, "chrome,pos", "1");
 
@@ -157,7 +156,7 @@ public class PValueFilter {
                     chr = coordinate.get(i);
                 } else {
                     ps = coordinate.get(i);
-                    level(chr, ps);
+                    level(refTable,chr, ps);
                     rs = databaseManager.query(darnedTable, "strand", "chrom='"
                             + chr + "' and coordinate='" + ps + "'");
                     fd_alt.add(alt_n);
@@ -183,7 +182,7 @@ public class PValueFilter {
         }
     }
 
-    public double calculate(double found_ref, double found_alt,
+    private double calculate(double found_ref, double found_alt,
                             double known_ref, double known_alt, String commandD) {
         try {
             RCaller caller = new RCaller();
@@ -216,11 +215,10 @@ public class PValueFilter {
                         "(chrome varchar(15),pos int,ref smallint,alt smallint,level varchar(10),p_value double,fdr double)");
     }
 
-    public void P_V(String commandD) {
+    private void P_V(String refTable,String commandD) {
         System.out.println("P_V start" + " " + df.format(new Date()));
 
-        estblishPvTable();
-        Exp_num();
+        Exp_num(refTable);
         DecimalFormat dF = new DecimalFormat("0.000 ");
 
         for (int i = 0, len = fd_ref.size(); i < len; i++) {
@@ -252,8 +250,8 @@ public class PValueFilter {
 
     }
 
-    public void fdr(String commandD) {
-        P_V(commandD);
+    public void fdr(String refTable,String commandD) {
+        P_V(refTable,commandD);
         try {
             RCaller caller = new RCaller();
             RCode code = new RCode();
@@ -293,6 +291,19 @@ public class PValueFilter {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+    
+    public void distinctTable() {
+        System.out.println("post start" + " " + df.format(new Date()));
+
+        databaseManager.executeSQL("create temporary table newtable select distinct * from "
+                + darnedResultTable);
+        databaseManager.executeSQL("truncate table " + darnedResultTable);
+        databaseManager.executeSQL("insert into " + darnedResultTable +
+                " select * from  newtable");
+        databaseManager.deleteTable("newTable");
+
+        System.out.println("post end" + " " + df.format(new Date()));
     }
 
 }

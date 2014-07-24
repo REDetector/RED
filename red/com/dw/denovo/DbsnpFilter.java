@@ -22,26 +22,24 @@ public class DbsnpFilter {
 
     private int count = 0;
     private String snpIn = null;
+    private String dbSnpResultTable = null;
     private String dbSnpTable = null;
-    private String referencedbSnp = null;
-    private String refTable = null;
     // File file = new File("D:/TDDOWNLOAD/data/dbsnp_138.hg19.vcf");
     SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
     public DbsnpFilter(DatabaseManager databaseManager, String dbSnpPath,
-                       String dbSnpResultTable, String dbSnpTable, String refTable) {
+                       String dbSnpResultTable, String dbSnpTable) {
         this.databaseManager = databaseManager;
         this.snpIn = dbSnpPath;
-        this.dbSnpTable = dbSnpResultTable;
-        this.referencedbSnp = dbSnpTable;
-        this.refTable = refTable;
+        this.dbSnpResultTable = dbSnpResultTable;
+        this.dbSnpTable = dbSnpTable;
     }
 
     public boolean establishsnp() {
         System.out.println("establishsnp start" + " " + df.format(new Date()));
 
-        databaseManager.deleteTable(dbSnpTable);
-        databaseManager.createTable(dbSnpTable, "(chrome varchar(15),"
+        databaseManager.deleteTable(dbSnpResultTable);
+        databaseManager.createTable(dbSnpResultTable, "(chrome varchar(15),"
                 + Utilities.getInstance().getS2() + "," + "index(chrome,pos))");
 
         System.out.println("establishsnp end" + " " + df.format(new Date()));
@@ -50,9 +48,9 @@ public class DbsnpFilter {
     }
 
     public boolean establishRefdbSnp() {
-        databaseManager.createTable(referencedbSnp,
+        databaseManager.createTable(dbSnpTable,
                 "(chrome varchar(15),pos int,index(chrome,pos))");
-        ResultSet rs = databaseManager.query(referencedbSnp, "count(*)",
+        ResultSet rs = databaseManager.query(dbSnpTable, "count(*)",
                 "1 limit 0,100");
         int number = 0;
         try {
@@ -90,7 +88,7 @@ public class DbsnpFilter {
                         .executeSQL("load data local infile '"
                                 + snpIn
                                 + "' into table "
-                                + referencedbSnp
+                                + dbSnpTable
                                 + " fields terminated by '\t' lines terminated by '\n' IGNORE "
                                 + count + " LINES");
             }
@@ -105,13 +103,13 @@ public class DbsnpFilter {
         return true;
     }
 
-    public void snpFilter() {
+    public void snpFilter(String refTable) {
         System.out.println("dbsnpf start" + " " + df.format(new Date()));
 
-        databaseManager.executeSQL("insert into " + dbSnpTable
+        databaseManager.executeSQL("insert into " + dbSnpResultTable
                 + " select * from " + refTable
-                + " where not exists (select chrome from " + referencedbSnp
-                + " where (" + referencedbSnp + ".chrome=" + refTable + ".chrome and " + referencedbSnp + ".pos=" + refTable + ".pos))");
+                + " where not exists (select chrome from " + dbSnpTable
+                + " where (" + dbSnpTable + ".chrome=" + refTable + ".chrome and " + dbSnpTable + ".pos=" + refTable + ".pos))");
 
         System.out.println("dbsnpf end" + " " + df.format(new Date()));
     }
@@ -161,9 +159,9 @@ public class DbsnpFilter {
         System.out.println("post start" + " " + df.format(new Date()));
 
         databaseManager.executeSQL("create temporary table newtable select distinct * from "
-                + dbSnpTable);
-        databaseManager.executeSQL("truncate table " + dbSnpTable);
-        databaseManager.executeSQL("insert into " + dbSnpTable +
+                + dbSnpResultTable);
+        databaseManager.executeSQL("truncate table " + dbSnpResultTable);
+        databaseManager.executeSQL("insert into " + dbSnpResultTable +
                 " select * from  newtable");
         databaseManager.deleteTable("newTable");
 
