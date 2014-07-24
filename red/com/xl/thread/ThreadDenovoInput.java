@@ -1,5 +1,6 @@
 package com.xl.thread;
 
+import com.dw.denovo.*;
 import com.dw.publicaffairs.DatabaseManager;
 import com.dw.publicaffairs.Utilities;
 import com.xl.interfaces.ProgressListener;
@@ -27,62 +28,62 @@ public class ThreadDenovoInput implements Runnable {
         LocationPreferences locationPreferences = LocationPreferences.getInstance();
         manager.createStatement();
         manager.setAutoCommit(true);
+
         progressUpdated("Creating denovo database...", 1, ALL_STEP);
         manager.createDatabase(DatabaseManager.DENOVO_DATABASE_NAME);
         manager.useDatabase(DatabaseManager.DENOVO_DATABASE_NAME);
         Utilities.getInstance().createCalTable(locationPreferences.getRnaVcfFile());
 
-//        DenovoVcf df = new DenovoVcf(manager, locationPreferences.getRnaVcfFile(), DatabaseManager.RNA_VCF_RESULT_TABLE_NAME);
-//        progressUpdated("Creating RNA vcf table...", 2, ALL_STEP);
-//        df.establishRnaTable();
-//        progressUpdated("Importing RNA vcf data...", 3, ALL_STEP);
-//        df.loadRnaVcfTable();
-//
-//        progressUpdated("Filtering sites based on quality and coverage...", 4, ALL_STEP);
-//        BasicFilter bf = new BasicFilter(manager, DatabaseManager.RNA_VCF_RESULT_TABLE_NAME, DatabaseManager.SPECIFIC_FILTER_RESULT_TABLE_NAME,
-//                DatabaseManager.BASIC_FILTER_RESULT_TABLE_NAME);
-//        bf.establishSpecificTable();
-//        bf.executeSpecificFilter();
-//        bf.establishBasicTable();
-//        // The first parameter means quality and the second means depth
-//        bf.executeBasicFilter(20, 6);
-//        bf.distinctTable();
-//
+        progressUpdated("Importing RNA vcf data...", 3, ALL_STEP);
+        DenovoVcf df = new DenovoVcf(manager);
+        df.establishRnaTable(DatabaseManager.RNA_VCF_RESULT_TABLE_NAME);
+        df.loadRnaVcfTable(DatabaseManager.RNA_VCF_RESULT_TABLE_NAME, locationPreferences.getRnaVcfFile());
 
-//        RepeatFilter rf = new RepeatFilter(manager, locationPreferences.getRepeatFile(), DatabaseManager.REPEAT_FILTER_TABLE_NAME,
-//                "refrepeat", DatabaseManager.BASIC_FILTER_RESULT_TABLE_NAME);
-//        progressUpdated("Importing repeatmasker data...", 5, ALL_STEP);
-//        rf.loadRepeatTable();
-//        rf.establishRepeatResultTable();
-//        rf.executeRepeatFilter();
-//        rf.distinctTable();
-//
-//        progressUpdated("Importing RefSeq Genes data...", 6, ALL_STEP);
-//        ComphrehensiveFilter cf = new
-//                ComphrehensiveFilter(manager, locationPreferences.getRefSeqFile(), DatabaseManager.COMPREHENSIVE_FILTER_TABLE_NAME,
-//                "refcomprehensive", DatabaseManager.REPEAT_FILTER_TABLE_NAME);
-//        cf.loadComprehensiveTable();
-//        cf.establishComprehensiveResultTable();
-//        cf.executeComprehensiveFilter(2);
-//        cf.distinctTable();
-//
-//        progressUpdated("Importing dbSNP data...", 7, ALL_STEP);
-//        DbsnpFilter sf = new
-//                DbsnpFilter(manager, locationPreferences.getDbSNPFile(), DatabaseManager.DBSNP_FILTER_TABLE_NAME,
-//                "refdbsnp", DatabaseManager.COMPREHENSIVE_FILTER_TABLE_NAME);
-//        sf.establishDbSNPResultTable();
-//        sf.loadDbSNPTable();
-//        sf.executeDbSNPFilter();
-//        sf.distinctTable();
-//
-//        progressUpdated("Importing DARNED data...", 8, ALL_STEP);
-//        PValueFilter pv = new
-//                PValueFilter(manager, locationPreferences.getDarnedFile(), DatabaseManager.PVALUE_FILTER_TABLE_NAME,
-//                "refpvalue", DatabaseManager.DBSNP_FILTER_TABLE_NAME);
-//        pv.loadDarnedTable();
-//        if (locationPreferences.getRScriptPath() != null && locationPreferences.getRScriptPath().length() != 0) {
-//            pv.executeFDRFilter(locationPreferences.getRScriptPath());
-//        }
+        progressUpdated("Filtering sites based on quality and coverage...", 4, ALL_STEP);
+        BasicFilter bf = new BasicFilter(manager);
+        bf.establishSpecificTable(DatabaseManager.SPECIFIC_FILTER_RESULT_TABLE_NAME);
+        bf.executeSpecificFilter(DatabaseManager.SPECIFIC_FILTER_RESULT_TABLE_NAME, DatabaseManager.RNA_VCF_RESULT_TABLE_NAME);
+        bf.establishBasicTable(DatabaseManager.BASIC_FILTER_RESULT_TABLE_NAME);
+        // The first parameter means quality and the second means depth
+        bf.executeBasicFilter(DatabaseManager.SPECIFIC_FILTER_RESULT_TABLE_NAME,
+                DatabaseManager.BASIC_FILTER_RESULT_TABLE_NAME, 20, 6);
+        DatabaseManager.getInstance().distinctTable(DatabaseManager.BASIC_FILTER_RESULT_TABLE_NAME);
+
+        progressUpdated("Importing repeatmasker data...", 5, ALL_STEP);
+        RepeatFilter rf = new RepeatFilter(manager);
+        rf.loadRepeatTable(DatabaseManager.REPEAT_FILTER_TABLE_NAME, locationPreferences.getRepeatFile());
+        rf.establishRepeatResultTable(DatabaseManager.REPEAT_FILTER_RESULT_TABLE_NAME);
+        rf.rfilter(DatabaseManager.REPEAT_FILTER_TABLE_NAME, DatabaseManager.REPEAT_FILTER_RESULT_TABLE_NAME,
+                DatabaseManager.BASIC_FILTER_RESULT_TABLE_NAME);
+        DatabaseManager.getInstance().distinctTable(DatabaseManager.REPEAT_FILTER_RESULT_TABLE_NAME);
+
+        progressUpdated("Importing RefSeq Genes data...", 6, ALL_STEP);
+        ComprehensiveFilter cf = new ComprehensiveFilter(manager);
+        cf.establishComprehensiveResultTable(DatabaseManager.COMPREHENSIVE_FILTER_RESULT_TABLE_NAME);
+        cf.loadComprehensiveTable(DatabaseManager.COMPREHENSIVE_FILTER_TABLE_NAME, locationPreferences.getRefSeqFile());
+        cf.executeComprehensiveFilter(DatabaseManager.COMPREHENSIVE_FILTER_TABLE_NAME,
+                DatabaseManager.COMPREHENSIVE_FILTER_RESULT_TABLE_NAME, DatabaseManager.REPEAT_FILTER_RESULT_TABLE_NAME
+                , 2);
+        DatabaseManager.getInstance().distinctTable(DatabaseManager.COMPREHENSIVE_FILTER_RESULT_TABLE_NAME);
+
+        progressUpdated("Importing dbSNP data...", 7, ALL_STEP);
+        DbsnpFilter sf = new DbsnpFilter(manager);
+        sf.establishDbSNPResultTable(DatabaseManager.DBSNP_FILTER_RESULT_TABLE_NAME);
+        sf.loadDbSNPTable(DatabaseManager.DBSNP_FILTER_TABLE_NAME, locationPreferences.getDbSNPFile());
+        sf.executeDbSNPFilter(DatabaseManager.DBSNP_FILTER_TABLE_NAME,
+                DatabaseManager.DBSNP_FILTER_RESULT_TABLE_NAME, DatabaseManager.COMPREHENSIVE_FILTER_RESULT_TABLE_NAME);
+        DatabaseManager.getInstance().distinctTable(DatabaseManager.DBSNP_FILTER_RESULT_TABLE_NAME);
+
+        progressUpdated("Importing DARNED data...", 8, ALL_STEP);
+        PValueFilter pv = new PValueFilter(manager);
+        pv.estblishPvTable(DatabaseManager.PVALUE_FILTER_RESULT_TABLE_NAME);
+        pv.loadDarnedTable(DatabaseManager.PVALUE_FILTER_TABLE_NAME, locationPreferences.getDarnedFile());
+        if (locationPreferences.getRScriptPath() != null && locationPreferences.getRScriptPath().length() != 0) {
+            pv.executeFDRFilter(DatabaseManager.PVALUE_FILTER_TABLE_NAME,
+                    DatabaseManager.PVALUE_FILTER_RESULT_TABLE_NAME, DatabaseManager.LLR_FILTER_RESULT_TABLE_NAME,
+                    locationPreferences.getRScriptPath());
+        }
+
         REDPreferences.getInstance().setDataLoadedToDatabase(true);
         processingComplete();
     }

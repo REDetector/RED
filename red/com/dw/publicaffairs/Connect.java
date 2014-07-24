@@ -193,16 +193,14 @@ public class Connect {
                     20, 6);
             DatabaseManager.getInstance().distinctTable(DatabaseManager.BASIC_FILTER_RESULT_TABLE_NAME);
 
-            RepeatFilter rf = new
-                    RepeatFilter(manager);
+            RepeatFilter rf = new RepeatFilter(manager);
             rf.loadRepeatTable(DatabaseManager.REPEAT_FILTER_TABLE_NAME, args[3]);
             rf.establishRepeatResultTable(DatabaseManager.REPEAT_FILTER_RESULT_TABLE_NAME);
             rf.rfilter(DatabaseManager.REPEAT_FILTER_TABLE_NAME, DatabaseManager.REPEAT_FILTER_RESULT_TABLE_NAME,
                     DatabaseManager.BASIC_FILTER_RESULT_TABLE_NAME);
             DatabaseManager.getInstance().distinctTable(DatabaseManager.REPEAT_FILTER_RESULT_TABLE_NAME);
 
-            ComprehensiveFilter cf = new
-                    ComprehensiveFilter(manager);
+            ComprehensiveFilter cf = new ComprehensiveFilter(manager);
             cf.establishComprehensiveResultTable(DatabaseManager.COMPREHENSIVE_FILTER_RESULT_TABLE_NAME);
             cf.loadComprehensiveTable(DatabaseManager.COMPREHENSIVE_FILTER_TABLE_NAME, args[4]);
             cf.executeComprehensiveFilter(DatabaseManager.COMPREHENSIVE_FILTER_TABLE_NAME,
@@ -219,7 +217,7 @@ public class Connect {
 
             DnaRnaFilter dr = new DnaRnaFilter(manager);
             dr.establishDnaRnaTable(DatabaseManager.DNA_RNA_FILTER_RESULT_TABLE_NAME);
-            dr.executeDnaRnaFilter(DatabaseManager.DNA_RNA_FILTER_RESULT_TABLE_NAME, args[5]);
+            dr.executeDnaRnaFilter(DatabaseManager.DNA_RNA_FILTER_RESULT_TABLE_NAME, DatabaseManager.DBSNP_FILTER_RESULT_TABLE_NAME);
             DatabaseManager.getInstance().distinctTable(DatabaseManager.DNA_RNA_FILTER_RESULT_TABLE_NAME);
 
             LLRFilter lf = new LLRFilter(manager);
