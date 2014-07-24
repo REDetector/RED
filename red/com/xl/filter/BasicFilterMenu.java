@@ -19,8 +19,11 @@
  */
 package com.xl.filter;
 
+import com.dw.publicaffairs.DatabaseManager;
+import com.dw.publicaffairs.Query;
 import com.xl.datatypes.DataCollection;
 import com.xl.datatypes.DataStore;
+import com.xl.datatypes.probes.Probe;
 import com.xl.exception.REDException;
 
 import javax.swing.*;
@@ -31,13 +34,15 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.sql.SQLException;
+import java.util.Vector;
 
 /**
  * The ValuesFilter filters probes based on their associated values
  * from quantiation.  Each probe is filtered independently of all
  * other probes.
  */
-public class ValuesFilter extends ProbeFilter {
+public class BasicFilterMenu extends ProbeFilter {
 
     private DataStore[] stores = new DataStore[0];
     private Double lowerLimit = null;
@@ -53,7 +58,7 @@ public class ValuesFilter extends ProbeFilter {
      * @param collection The dataCollection to filter
      * @throws REDException if the dataCollection isn't quantitated.
      */
-    public ValuesFilter(DataCollection collection) throws REDException {
+    public BasicFilterMenu(DataCollection collection) throws REDException {
         super(collection);
     }
 
@@ -70,6 +75,17 @@ public class ValuesFilter extends ProbeFilter {
      */
     @Override
     protected void generateProbeList() {
+        DatabaseManager databaseManager = DatabaseManager.getInstance();
+        try {
+            databaseManager.connectDatabase();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        } catch (SQLException e) {
+            System.err.println("You haven't connected to database ever.");
+            e.printStackTrace();
+        }
+        Vector<Probe> probes = Query.queryAllEditingSites(DatabaseManager.BASIC_FILTER_RESULT_TABLE_NAME);
+
 
 //		System.out.println("Data store size="+stores.length+" lower="+lowerLimit+" upper="+upperLimit+" type="+limitType+" chosen="+chosenNumber);
 

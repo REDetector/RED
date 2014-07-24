@@ -36,6 +36,31 @@ public class ProbeList {
      * The comments
      */
     private String comments = "";
+    /**
+     * The parent.
+     */
+    private ProbeList parent;
+
+    /**
+     * The children.
+     */
+    private Vector<ProbeList> children = new Vector<ProbeList>();
+
+    /**
+     * Instantiates a new probe list.
+     *
+     * @param name        the name
+     * @param description the description
+     */
+    public ProbeList(ProbeList parent, String name, String description) {
+        this.parent = parent;
+        if (parent != null) {
+            parent.addChild(this);
+        }
+        this.name = name;
+        this.description = description;
+        probeListAdded(this);
+    }
 
     public ProbeList getParent() {
         return parent;
@@ -81,31 +106,6 @@ public class ProbeList {
         }
     }
 
-    /**
-     * The parent.
-     */
-    private ProbeList parent;
-
-    /**
-     * The children.
-     */
-    private Vector<ProbeList> children = new Vector<ProbeList>();
-
-    /**
-     * Instantiates a new probe list.
-     *
-     * @param name        the name
-     * @param description the description
-     */
-    public ProbeList(ProbeList parent, String name, String description) {
-        this.parent = parent;
-        if (parent != null) {
-            parent.addChild(this);
-        }
-        this.name = name;
-        this.description = description;
-        probeListAdded(this);
-    }
 
     /**
      * Gets the probes for chromosome.

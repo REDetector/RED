@@ -40,7 +40,7 @@ public class DbsnpFilter {
     }
 
     public boolean hasEstablishDbSNPTable(String dbSnpTable) {
-        databaseManager.createTable(dbSnpTable,
+        databaseManager.createRefTable(dbSnpTable,
                 "(chrome varchar(15),pos int,index(chrome,pos))");
         ResultSet rs = databaseManager.query(dbSnpTable, "count(*)",
                 "1 limit 0,100");

@@ -368,10 +368,10 @@ public class DataInportDialog extends JDialog implements ActionListener {
         } else if (action.equals(LocationPreferences.RSCRIPT_PATH)) {
             if (currentIndex == NON_DENOVO_INDEX) {
                 getFile(action, rScriptPath);
-                preferences.setDarnedFile(rScriptPath.getText());
+                preferences.setRScriptPath(rScriptPath.getText());
             } else {
                 getFile(action, denovoRScriptPath);
-                preferences.setDarnedFile(denovoRScriptPath.getText());
+                preferences.setRScriptPath(denovoRScriptPath.getText());
             }
 
         } else if (action.equals("cancel")) {

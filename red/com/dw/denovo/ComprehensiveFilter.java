@@ -28,7 +28,7 @@ public class ComprehensiveFilter {
     }
 
     public boolean hasEstablishedComprehensiveTable(String comprehensiveTable) {
-        databaseManager.createTable(comprehensiveTable,
+        databaseManager.createRefTable(comprehensiveTable,
                 "(chrome varchar(15),ref varchar(30),type varchar(9),begin int,end int,unuse1 float(8,6),unuse2 varchar(5),unuse3 varchar(5),info varchar(100),index(chrome,type))");
         ResultSet rs = databaseManager.query(comprehensiveTable,
                 "count(*)", "1 limit 0,100");
