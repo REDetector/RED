@@ -5,12 +5,14 @@ package com.dw.denovo;
  */
 
 import com.dw.publicaffairs.DatabaseManager;
-
 import rcaller.Globals;
 import rcaller.RCaller;
 import rcaller.RCode;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.DecimalFormat;
@@ -22,9 +24,6 @@ import java.util.List;
 public class PValueFilter {
     private DatabaseManager databaseManager;
     // File file = new File("D:/TDDOWNLOAD/data/hg19.txt");
-    private String darnedPath = null;
-    private String darnedResultTable = null;
-    private String darnedTable = null;
     FileInputStream inputStream;
     private String line = null;
     private String[] col = new String[40];
@@ -39,25 +38,18 @@ public class PValueFilter {
     ArrayList<Double> fd_ref = new ArrayList<Double>();
     ArrayList<Double> fd_alt = new ArrayList<Double>();
     List<String> coordinate = new ArrayList<String>();
-    // private StringBuffer ref = new StringBuffer();
-    // private StringBuffer alt = new StringBuffer();
-    // float[] P_V;
     private double fdr = 0;
     private double ref_n = 0;
     private double alt_n = 0;
     private double pvalue = 0;
     SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
-    public PValueFilter(DatabaseManager databaseManager, String darnedPath,
-                        String darnedResultTable, String darnedTable) {
+    public PValueFilter(DatabaseManager databaseManager) {
         this.databaseManager = databaseManager;
-        this.darnedPath = darnedPath;
-        this.darnedResultTable = darnedResultTable;
-        this.darnedTable = darnedTable;
     }
 
 
-    public void loadRefHg19() {
+    public void loadDarnedTable(String darnedTable, String darnedPath) {
         try {
             System.out.println("loadhg19 start" + " " + df.format(new Date()));// new
 
@@ -112,16 +104,17 @@ public class PValueFilter {
 
             System.out.println("loadhg19 end" + " " + df.format(new Date()));
 
-        } catch (FileNotFoundException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
         } catch (IOException e) {
             // TODO Auto-generated catch block
+            System.err.println("Error load file from " + darnedPath + " to file stream");
+            e.printStackTrace();
+        } catch (SQLException e) {
+            System.err.println("Error execute sql clause in " + PValueFilter.class.getName() + ":loadRnaVcfTable()");
             e.printStackTrace();
         }
     }
 
-    private void level(String refTable,String chr, String ps) {
+    private void level(String refTable, String chr, String ps) {
         try {
             ref_n = alt_n = 0;
             ResultSet rs = databaseManager.query(refTable, "AD", "chrome='"
@@ -143,7 +136,7 @@ public class PValueFilter {
         }
     }
 
-    private void Exp_num(String refTable) {
+    private void Exp_num(String darnedTable, String refTable) {
         try {
             ResultSet rs = databaseManager.query(refTable, "chrome,pos", "1");
 
@@ -156,7 +149,7 @@ public class PValueFilter {
                     chr = coordinate.get(i);
                 } else {
                     ps = coordinate.get(i);
-                    level(refTable,chr, ps);
+                    level(refTable, chr, ps);
                     rs = databaseManager.query(darnedTable, "strand", "chrom='"
                             + chr + "' and coordinate='" + ps + "'");
                     fd_alt.add(alt_n);
@@ -183,7 +176,7 @@ public class PValueFilter {
     }
 
     private double calculate(double found_ref, double found_alt,
-                            double known_ref, double known_alt, String commandD) {
+                             double known_ref, double known_alt, String commandD) {
         try {
             RCaller caller = new RCaller();
             RCode code = new RCode();
@@ -207,7 +200,7 @@ public class PValueFilter {
         return 0;
     }
 
-    public void estblishPvTable() {
+    public void estblishPvTable(String darnedResultTable) {
         databaseManager.deleteTable(darnedResultTable);
         databaseManager
                 .createTable(
@@ -215,10 +208,10 @@ public class PValueFilter {
                         "(chrome varchar(15),pos int,ref smallint,alt smallint,level varchar(10),p_value double,fdr double)");
     }
 
-    private void P_V(String refTable,String commandD) {
+    private void P_V(String darnedTable, String darnedResultTable, String refTable, String commandD) {
         System.out.println("P_V start" + " " + df.format(new Date()));
 
-        Exp_num(refTable);
+        Exp_num(darnedTable, refTable);
         DecimalFormat dF = new DecimalFormat("0.000 ");
 
         for (int i = 0, len = fd_ref.size(); i < len; i++) {
@@ -237,10 +230,15 @@ public class PValueFilter {
             // }
             calculate(ref_n, alt_n, known_ref, known_alt, commandD);
             if (pvalue < 0.05) {
-                databaseManager.executeSQL("insert into " + darnedResultTable
-                        + "(chrome,pos,ref,alt,level,p_value) values('" + chr
-                        + "'," + ps + "," + (int) ref_n + "," + (int) alt_n + ","
-                        + dF.format(lev) + "," + pvalue + ")");
+                try {
+                    databaseManager.executeSQL("insert into " + darnedResultTable
+                            + "(chrome,pos,ref,alt,level,p_value) values('" + chr
+                            + "'," + ps + "," + (int) ref_n + "," + (int) alt_n + ","
+                            + dF.format(lev) + "," + pvalue + ")");
+                } catch (SQLException e) {
+                    System.err.println("Error execute sql clause in " + PValueFilter.class.getName() + ":P_V()");
+                    e.printStackTrace();
+                }
                 // System.out.println(chr+" "+ps+" "+(int)found_ref[i]+" "+(int)found_alt[i]+" "+dF.format(lev)+" "+pvalue);
                 s1.append(pvalue + "\t");
             }
@@ -250,8 +248,8 @@ public class PValueFilter {
 
     }
 
-    public void fdr(String refTable,String commandD) {
-        P_V(refTable,commandD);
+    public void executeFDRFilter(String darnedTable, String darnedResultTable, String refTable, String commandD) {
+        P_V(darnedTable, darnedResultTable, refTable, commandD);
         try {
             RCaller caller = new RCaller();
             RCode code = new RCode();
@@ -269,7 +267,7 @@ public class PValueFilter {
                 floats[i] = (Float) objs[i];
             }
             code.addFloatArray("parray", floats);
-            code.addRCode("result<-p.adjust(parray,method='fdr',length(parray))");
+            code.addRCode("result<-p.adjust(parray,method='executeFDRFilter',length(parray))");
             // code.addRCode("mylist <- list(qval = result$q.value)");
             caller.setRCode(code);
             caller.runAndReturnResult("result");
@@ -291,19 +289,6 @@ public class PValueFilter {
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }
-    
-    public void distinctTable() {
-        System.out.println("post start" + " " + df.format(new Date()));
-
-        databaseManager.executeSQL("create temporary table newtable select distinct * from "
-                + darnedResultTable);
-        databaseManager.executeSQL("truncate table " + darnedResultTable);
-        databaseManager.executeSQL("insert into " + darnedResultTable +
-                " select * from  newtable");
-        databaseManager.deleteTable("newTable");
-
-        System.out.println("post end" + " " + df.format(new Date()));
     }
 
 }

@@ -12,16 +12,20 @@ public class DatabaseManager {
     private static final DatabaseManager DATABASE_MANAGER = new DatabaseManager();
     public static final String NON_DENOVO_DATABASE_NAME = "nondenovo";
     public static final String DENOVO_DATABASE_NAME = "denovo";
-    public static final String RNA_VCF_TABLE_NAME = "rnavcf";
-    public static final String DNA_VCF_TABLE_NAME = "dnavcf";
-    public static final String BASIC_FILTER_TABLE_NAME = "basicfilter";
-    public static final String SPECIFIC_FILTER_TABLE_NAME = "specificfilter";
-    public static final String COMPREHENSIVE_FILTER_TABLE_NAME = "comprehensivefilter";
-    public static final String REPEAT_FILTER_TABLE_NAME = "repeatfilter";
-    public static final String DBSNP_FILTER_TABLE_NAME = "dbsnpfilter";
-    public static final String PVALUE_FILTER_TABLE_NAME = "pvaluefilter";
-    public static final String LLR_FILTER_TABLE_NAME = "llrfilter";
-    public static final String DNA_RNA_FILTER_TABLE_NAME = "dnarnafilter";
+    public static final String RNA_VCF_RESULT_TABLE_NAME = "rnavcf";
+    public static final String DNA_VCF_RESULT_TABLE_NAME = "dnavcf";
+    public static final String BASIC_FILTER_RESULT_TABLE_NAME = "basicfilter";
+    public static final String SPECIFIC_FILTER_RESULT_TABLE_NAME = "specificfilter";
+    public static final String COMPREHENSIVE_FILTER_TABLE_NAME = "refcomprehensive";
+    public static final String COMPREHENSIVE_FILTER_RESULT_TABLE_NAME = "comprehensivefilter";
+    public static final String DBSNP_FILTER_TABLE_NAME = "refdbsnp";
+    public static final String DBSNP_FILTER_RESULT_TABLE_NAME = "dbsnpfilter";
+    public static final String PVALUE_FILTER_TABLE_NAME = "refpvalue";
+    public static final String PVALUE_FILTER_RESULT_TABLE_NAME = "pvaluefilter";
+    public static final String REPEAT_FILTER_TABLE_NAME = "refrepeat";
+    public static final String REPEAT_FILTER_RESULT_TABLE_NAME = "repeatfilter";
+    public static final String DNA_RNA_FILTER_RESULT_TABLE_NAME = "dnarnafilter";
+    public static final String LLR_FILTER_RESULT_TABLE_NAME = "llrfilter";
 
     private Connection con = null;
     private Statement stmt = null;
@@ -137,13 +141,8 @@ public class DatabaseManager {
         }
     }
 
-    public void executeSQL(String sql) {
-        try {
-            stmt.executeUpdate(sql);
-        } catch (SQLException e) {
-            System.err.println("Error execute the sql: " + sql);
-            e.printStackTrace();
-        }
+    public void executeSQL(String sql) throws SQLException {
+        stmt.executeUpdate(sql);
     }
 
     public ResultSet query(String table, String columns, String whereArgs) {
@@ -167,5 +166,20 @@ public class DatabaseManager {
             System.err.println("Error close database!");
             e.printStackTrace();
         }
+    }
+
+    public void distinctTable(String resultTable) {
+        try {
+            executeSQL("create temporary table newtable select distinct * from "
+                    + resultTable);
+            executeSQL("truncate table " + resultTable);
+            executeSQL("insert into " + resultTable +
+                    " select * from  newtable");
+        } catch (SQLException e) {
+            System.err.println("Error execute sql clause in " + DatabaseManager.class.getName() + ":distinctTable()");
+            e.printStackTrace();
+        }
+        deleteTable("newTable");
+
     }
 }

@@ -8,17 +8,13 @@ import com.dw.publicaffairs.DatabaseManager;
 import com.dw.publicaffairs.Utilities;
 
 import java.io.*;
+import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class DnaRnaVcf {
     // establish database connection;
     private DatabaseManager databaseManager;
-
-    private String dnaVcfPath = null;
-    private String rnaVcfPath = null;
-    private String dnaVcfTable = null;
-    private String rnaVcfTable = null;
 
     FileInputStream inputStream;
     // SQL to be executed
@@ -47,35 +43,23 @@ public class DnaRnaVcf {
     // }
     // establish table structure for following tables
 
-    /**
-     * @param databaseManager
-     * @param rnaVcfPath
-     * @param dnaVcfPath
-     * @param rnaVcfTable
-     * @param dnaVcfTable
-     */
-    public DnaRnaVcf(DatabaseManager databaseManager, String rnaVcfPath, String dnaVcfPath, String rnaVcfTable,
-                     String dnaVcfTable) {
+    public DnaRnaVcf(DatabaseManager databaseManager) {
         this.databaseManager = databaseManager;
-        this.rnaVcfPath = rnaVcfPath;
-        this.dnaVcfPath = dnaVcfPath;
-        this.rnaVcfTable = rnaVcfTable;
-        this.dnaVcfTable = dnaVcfTable;
     }
 
-    public void establishRnaTable() {
-        databaseManager.deleteTable(rnaVcfTable);
-        databaseManager.createTable(rnaVcfTable, "(chrome varchar(15),"
+    public void establishRnaTable(String rnaVcfResultTable) {
+        databaseManager.deleteTable(rnaVcfResultTable);
+        databaseManager.createTable(rnaVcfResultTable, "(chrome varchar(15),"
                 + Utilities.getInstance().getS2() + ",index(chrome,pos))");
     }
 
-    public void establishDnaTable() {
-        databaseManager.deleteTable(dnaVcfTable);
-        databaseManager.createTable(dnaVcfTable, "(chrome varchar(15),"
+    public void establishDnaTable(String dnaVcfResultTable) {
+        databaseManager.deleteTable(dnaVcfResultTable);
+        databaseManager.createTable(dnaVcfResultTable, "(chrome varchar(15),"
                 + Utilities.getInstance().getS2() + ",index(chrome,pos))");
     }
 
-    public int getdepth() {
+    public int getdepth(String rnaVcfPath) {
         try {
             inputStream = new FileInputStream(rnaVcfPath);
         } catch (FileNotFoundException e) {
@@ -109,7 +93,7 @@ public class DnaRnaVcf {
     }
 
     // table for RnaVcf X.length-9=time for circulation
-    public void RnaVcf(int num) {
+    public void RnaVcf(String rnaVcfResultTable, String rnaVcfPath, int num) {
         System.out.println("rnavcf start" + " " + df.format(new Date()));
 
         try {
@@ -169,7 +153,7 @@ public class DnaRnaVcf {
                     // System.out.println(temp[i]);
                     s1.append("," + "'" + temp[i] + "'");
                 }
-                databaseManager.executeSQL("insert into " + rnaVcfTable + "("
+                databaseManager.executeSQL("insert into " + rnaVcfResultTable + "("
                         + Utilities.getInstance().getS3() + ") values(" + s1
                         + ")");
                 ts_count++;
@@ -182,6 +166,10 @@ public class DnaRnaVcf {
             databaseManager.setAutoCommit(true);
         } catch (IOException e) {
             // TODO Auto-generated catch block
+            System.err.println("Error load file from " + rnaVcfPath + " to file stream");
+            e.printStackTrace();
+        } catch (SQLException e) {
+            System.err.println("Error execute sql clause in " + DnaRnaVcf.class.getName() + ":RnaVcf()");
             e.printStackTrace();
         }
 
@@ -189,7 +177,7 @@ public class DnaRnaVcf {
 
     }
 
-    public void rnaVcf() {
+    public void rnaVcf(String rnaVcfResultTable, String rnaVcfPath) {
         System.out.println("rnavcf start" + " " + df.format(new Date()));
 
         try {
@@ -248,7 +236,7 @@ public class DnaRnaVcf {
                     // System.out.println(temp[i]);
                     s1.append("," + "'" + temp[i] + "'");
                 }
-                databaseManager.executeSQL("insert into " + rnaVcfTable + "("
+                databaseManager.executeSQL("insert into " + rnaVcfResultTable + "("
                         + Utilities.getInstance().getS3() + ") values(" + s1
                         + ")");
                 ts_count++;
@@ -261,6 +249,10 @@ public class DnaRnaVcf {
             databaseManager.setAutoCommit(true);
         } catch (IOException e) {
             // TODO Auto-generated catch block
+            System.err.println("Error load file from " + rnaVcfPath + " to file stream");
+            e.printStackTrace();
+        } catch (SQLException e) {
+            System.err.println("Error execute sql clause in " + DnaRnaVcf.class.getName() + ":rnaVcf()");
             e.printStackTrace();
         }
 
@@ -269,7 +261,7 @@ public class DnaRnaVcf {
     }
 
     // table for DnaVcf
-    public void dnaVcf(int num) {
+    public void dnaVcf(String dnaVcfResultTable, String dnaVcfPath, int num) {
         System.out.println("dnavcf start" + " " + df.format(new Date()));
 
         try {
@@ -343,7 +335,7 @@ public class DnaRnaVcf {
                     // System.out.println(temp[i]);
                     s1.append("," + "'" + temp[i] + "'");
                 }
-                databaseManager.executeSQL("insert into " + dnaVcfTable + "("
+                databaseManager.executeSQL("insert into " + dnaVcfResultTable + "("
                         + Utilities.getInstance().getS3() + ") values(" + s1
                         + ")");
                 ts_count++;
@@ -358,6 +350,10 @@ public class DnaRnaVcf {
             databaseManager.setAutoCommit(true);
         } catch (IOException e) {
             // TODO Auto-generated catch block
+            System.err.println("Error load file from " + dnaVcfPath + " to file stream");
+            e.printStackTrace();
+        } catch (SQLException e) {
+            System.err.println("Error execute sql clause in " + DnaRnaVcf.class.getName() + ":dnaVcf()");
             e.printStackTrace();
         }
         System.out.println("dnavcf end" + " " + df.format(new Date()));
@@ -365,7 +361,7 @@ public class DnaRnaVcf {
     }
 
     // table for DnaVcf
-    public void dnaVcf() {
+    public void dnaVcf(String dnaVcfResultTable, String dnaVcfPath) {
         System.out.println("dnavcf start" + " " + df.format(new Date()));
 
         try {
@@ -437,7 +433,7 @@ public class DnaRnaVcf {
                     // System.out.println(temp[i]);
                     s1.append("," + "'" + temp[i] + "'");
                 }
-                databaseManager.executeSQL("insert into " + dnaVcfTable + "("
+                databaseManager.executeSQL("insert into " + dnaVcfResultTable + "("
                         + Utilities.getInstance().getS3() + ") values(" + s1
                         + ")");
                 ts_count++;
@@ -450,6 +446,10 @@ public class DnaRnaVcf {
             databaseManager.setAutoCommit(true);
         } catch (IOException e) {
             // TODO Auto-generated catch block
+            System.err.println("Error load file from " + dnaVcfPath + " to file stream");
+            e.printStackTrace();
+        } catch (SQLException e) {
+            System.err.println("Error execute sql clause in " + DnaRnaVcf.class.getName() + ":dnaVcf()");
             e.printStackTrace();
         }
         System.out.println("dnavcf end" + " " + df.format(new Date()));

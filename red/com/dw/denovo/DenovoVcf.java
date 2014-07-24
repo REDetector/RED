@@ -7,15 +7,16 @@ package com.dw.denovo;
 import com.dw.publicaffairs.DatabaseManager;
 import com.dw.publicaffairs.Utilities;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class DenovoVcf {
     private DatabaseManager databaseManager;
-
-    private String rnaVcfPath = null;
-    private String rnaVcfTable = null;
 
     FileInputStream inputStream;
     // SQL to be executed
@@ -31,10 +32,8 @@ public class DenovoVcf {
     SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
     // establish table structure for following tables
-    public DenovoVcf(DatabaseManager databaseManager, String rnaVcfPath, String rnaVcfTable) {
+    public DenovoVcf(DatabaseManager databaseManager) {
         this.databaseManager = databaseManager;
-        this.rnaVcfPath = rnaVcfPath;
-        this.rnaVcfTable = rnaVcfTable;
     }
 
     // public int getdepth() {
@@ -68,28 +67,22 @@ public class DenovoVcf {
     // return depth;
     // }
 
-    public void establishRnaTable() {
+    public void establishRnaTable(String rnaVcfTable) {
         databaseManager.deleteTable(rnaVcfTable);
         databaseManager.createTable(rnaVcfTable, "(chrome varchar(15),"
                 + Utilities.getInstance().getS2() + ",index(chrome,pos))");
     }
 
     // table for RnaVcf X.length-9=time for circulation
-    public void rnaVcf(int num) {
+    public void loadRnaVcfTable(String rnaVcfTable, String rnaVcfPath, int num) {
         System.out.println("rnavcf start" + " " + df.format(new Date()));
 
         try {
-
             databaseManager.setAutoCommit(false);
             // timer for transaction
             int ts_count = 0;
             int gtype = -1;
-            try {
-                inputStream = new FileInputStream(rnaVcfPath);
-            } catch (FileNotFoundException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
+            inputStream = new FileInputStream(rnaVcfPath);
             BufferedReader rin = new BufferedReader(new InputStreamReader(
                     inputStream));
             while ((line = rin.readLine()) != null) {
@@ -147,28 +140,25 @@ public class DenovoVcf {
             databaseManager.setAutoCommit(true);
         } catch (IOException e) {
             // TODO Auto-generated catch block
+            System.err.println("Error load file from " + rnaVcfPath + " to file stream");
+            e.printStackTrace();
+        } catch (SQLException e) {
+            System.err.println("Error execute sql clause in " + DenovoVcf.class.getName() + ":loadRnaVcfTable()");
             e.printStackTrace();
         }
 
         System.out.println("rnavcf end" + " " + df.format(new Date()));
-
     }
 
     // table for RnaVcf X.length-9=time for circulation
-    public void rnaVcf() {
+    public void loadRnaVcfTable(String rnaVcfTable, String rnaVcfPath) {
         System.out.println("rnavcf start" + " " + df.format(new Date()));
 
         try {
-
             databaseManager.setAutoCommit(false);
             // timer for transaction
             int ts_count = 0;
-            try {
-                inputStream = new FileInputStream(rnaVcfPath);
-            } catch (FileNotFoundException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
+            inputStream = new FileInputStream(rnaVcfPath);
             BufferedReader rin = new BufferedReader(new InputStreamReader(
                     inputStream));
             while ((line = rin.readLine()) != null) {
@@ -217,9 +207,12 @@ public class DenovoVcf {
             databaseManager.setAutoCommit(true);
         } catch (IOException e) {
             // TODO Auto-generated catch block
+            System.err.println("Error load file from " + rnaVcfPath + " to file stream");
+            e.printStackTrace();
+        } catch (SQLException e) {
+            System.err.println("Error execute sql clause in " + DenovoVcf.class.getName() + ":loadRnaVcfTable()");
             e.printStackTrace();
         }
-
         System.out.println("rnavcf end" + " " + df.format(new Date()));
     }
 }

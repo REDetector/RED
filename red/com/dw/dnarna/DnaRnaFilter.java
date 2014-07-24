@@ -17,23 +17,17 @@ import java.util.List;
 public class DnaRnaFilter {
     private DatabaseManager databaseManager;
 
-    private String dnaRnaTable = null;
-    private String refTable = null;
-    private String dnaVcfPath = null;
     private String chr = null;
     private String ps = null;
     private String chrom = null;
     private int count = 0;
     SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
-    public DnaRnaFilter(DatabaseManager databaseManager, String dnaVcfPath, String dnaRnaTable, String refTable) {
+    public DnaRnaFilter(DatabaseManager databaseManager) {
         this.databaseManager = databaseManager;
-        this.dnaVcfPath = dnaVcfPath;
-        this.dnaRnaTable = dnaRnaTable;
-        this.refTable = refTable;
     }
 
-    public boolean createDnaRnaTable() {
+    public void establishDnaRnaTable(String dnaRnaTable) {
         System.out.println("esdr start" + " " + df.format(new Date()));
 
         databaseManager.deleteTable(dnaRnaTable);
@@ -41,15 +35,13 @@ public class DnaRnaFilter {
                 + Utilities.getInstance().getS2() + ")");
 
         System.out.println("esdr end" + " " + df.format(new Date()));
-
-        return true;
     }
 
-    public void dnarnaFilter() {
+    public void executeDnaRnaFilter(String dnaRnaTable, String refTable) {
         try {
             System.out.println("df start" + " " + df.format(new Date()));
 
-            ResultSet rs = databaseManager.query(dnaVcfPath, "chrome",
+            ResultSet rs = databaseManager.query(dnaRnaTable, "chrome",
                     "1 limit 0,1");
             List<String> coordinate = new ArrayList<String>();
             databaseManager.setAutoCommit(false);
@@ -78,7 +70,7 @@ public class DnaRnaFilter {
                 } else {
                     ps = coordinate.get(i);
                     // The first six base will be filtered out
-                    rs = databaseManager.query(dnaVcfPath, "GT", "chrome='" + chr
+                    rs = databaseManager.query(dnaRnaTable, "GT", "chrome='" + chr
                             + "' and pos=" + ps + "");
                     while (rs.next()) {
                         if (bool) {
@@ -109,21 +101,9 @@ public class DnaRnaFilter {
 
         } catch (SQLException e) {
             // TODO Auto-generated catch block
+            System.err.println("Error execute sql clause in " + DnaRnaFilter.class.getName() + ":loadRnaVcfTable()");
             e.printStackTrace();
         }
-    }
-
-    public void distinctTable() {
-        System.out.println("post start" + " " + df.format(new Date()));
-
-        databaseManager.executeSQL("create temporary table newtable select distinct * from "
-                + dnaRnaTable);
-        databaseManager.executeSQL("truncate table " + dnaRnaTable);
-        databaseManager.executeSQL("insert into " + dnaRnaTable +
-                " select * from  newtable");
-        databaseManager.deleteTable("newTable");
-
-        System.out.println("post end" + " " + df.format(new Date()));
     }
 
 }

@@ -18,29 +18,29 @@ public class BasicFilter {
     private DatabaseManager databaseManager;
     private String chr = null;
     private String ps = null;
-    private String rnaVcfTable = null;
-    private String basicTable = null;
-    private String specificTable = null;
 
     private SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     private int ref_n = 0;
     private int alt_n = 0;
     private int count = 0;
 
-    public BasicFilter(DatabaseManager databaseManager, String rnaVcfTable, String specificTable, String basicTable) {
+    public BasicFilter(DatabaseManager databaseManager) {
         this.databaseManager = databaseManager;
-        this.rnaVcfTable = rnaVcfTable;
-        this.specificTable = specificTable;
-        this.basicTable = basicTable;
     }
 
-    public void createSpecificTable() {
+    public void establishSpecificTable(String specificTable) {
         databaseManager.deleteTable(specificTable);
         databaseManager.createTable(specificTable, "(chrome varchar(15),"
                 + Utilities.getInstance().getS2() + "," + "index(chrome,pos))");
     }
 
-    public void specificf() {
+    public void establishBasicTable(String basicTable) {
+        databaseManager.deleteTable(basicTable);
+        databaseManager.createTable(basicTable, "(chrome varchar(15),"
+                + Utilities.getInstance().getS2() + "," + "index(chrome,pos))");
+    }
+
+    public void executeSpecificFilter(String specificTable, String rnaVcfTable) {
         System.out.println("specific start" + " " + df.format(new Date()));
 
         databaseManager.insertClause("insert into " + specificTable + "("
@@ -50,26 +50,7 @@ public class BasicFilter {
         System.out.println("specific end" + " " + df.format(new Date()));
     }
 
-    // public void spePost() {
-    // System.out.println("post start" + " " + df.format(new Date()));
-    //
-    // databaseManager.executeSQL("create temporary table newtable select distinct * from "
-    // + specificTable);
-    // databaseManager.executeSQL("truncate table " + specificTable);
-    // databaseManager.executeSQL("insert into " + specificTable +
-    // " select * from  newtable");
-    // databaseManager.deleteTable("newTable");
-    //
-    // System.out.println("post end" + " " + df.format(new Date()));
-    // }
-
-    public void createBasicTable() {
-        databaseManager.deleteTable(basicTable);
-        databaseManager.createTable(basicTable, "(chrome varchar(15),"
-                + Utilities.getInstance().getS2() + "," + "index(chrome,pos))");
-    }
-
-    public void basicFilter(double quality, int depth) {
+    public void executeBasicFilter(String specificTable, String basicTable, double quality, int depth) {
         try {
             System.out.println("bfilter start" + " " + df.format(new Date()));
             ResultSet rs = databaseManager.query(specificTable,
@@ -116,18 +97,18 @@ public class BasicFilter {
             e.printStackTrace();
         }
     }
+    // public void spePost() {
+    // System.out.println("post start" + " " + df.format(new Date()));
+    //
+    // databaseManager.executeSQL("create temporary table newtable select distinct * from "
+    // + specificTable);
+    // databaseManager.executeSQL("truncate table " + specificTable);
+    // databaseManager.executeSQL("insert into " + specificTable +
+    // " select * from  newtable");
+    // databaseManager.deleteTable("newTable");
+    //
+    // System.out.println("post end" + " " + df.format(new Date()));
+    // }
 
-    public void distinctTable() {
-        System.out.println("post start" + " " + df.format(new Date()));
-
-        databaseManager.executeSQL("create temporary table newtable select distinct * from "
-                + basicTable);
-        databaseManager.executeSQL("truncate table " + basicTable);
-        databaseManager.executeSQL("insert into " + basicTable +
-                " select * from  newtable");
-        databaseManager.deleteTable("newTable");
-
-        System.out.println("post end" + " " + df.format(new Date()));
-    }
 
 }

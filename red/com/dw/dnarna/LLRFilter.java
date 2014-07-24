@@ -17,8 +17,6 @@ import java.util.List;
 public class LLRFilter {
     private DatabaseManager databaseManager;
 
-    private String dnaVcfTable = null;
-    private String llrResultTable = null;
     private String chr;
     private String ps;
     private String chrom = null;
@@ -27,13 +25,11 @@ public class LLRFilter {
     private int alt_n = 0;
     SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
-    public LLRFilter(DatabaseManager databaseManager, String dnaVcfTable, String llrResultTable) {
+    public LLRFilter(DatabaseManager databaseManager) {
         this.databaseManager = databaseManager;
-        this.dnaVcfTable = dnaVcfTable;
-        this.llrResultTable = llrResultTable;
     }
 
-    public boolean createLlrTable() {
+    public void establishLLRResultTable(String llrResultTable) {
         System.out.println("esllr start" + " " + df.format(new Date()));
 
         databaseManager.deleteTable(llrResultTable);
@@ -41,12 +37,11 @@ public class LLRFilter {
                 + Utilities.getInstance().getS2() + ")");
 
         System.out.println("esllr end" + " " + df.format(new Date()));
-        return true;
     }
 
-    public void llrtemp(String refTable) {
+    public void executeLLRFilter(String llrResultTable, String dnaVcfTable, String refTable) {
         try {
-            System.out.println("llrtemp start" + " " + df.format(new Date()));
+            System.out.println("executeLLRFilter start" + " " + df.format(new Date()));
 
             ResultSet rs = databaseManager.query(dnaVcfTable, "chrome",
                     "1 limit 0,1");
@@ -132,7 +127,7 @@ public class LLRFilter {
             }
             databaseManager.commit();
             databaseManager.setAutoCommit(true);
-            System.out.println("llrtemp end" + " " + df.format(new Date()));
+            System.out.println("executeLLRFilter end" + " " + df.format(new Date()));
 
         } catch (SQLException e) {
             // TODO Auto-generated catch block
@@ -146,9 +141,9 @@ public class LLRFilter {
     // System.out.println("post start"+" "+df.format(new Date()));// new
     // db.usedb();
     // sql[0] =
-    // "create   temporary   table  newtable  select   distinct   *   from  llrtemp";
-    // sql[1] = "truncate   table  llrtemp";
-    // sql[2] = "insert   into   llrtemp select   *   from  newtable";
+    // "create   temporary   table  newtable  select   distinct   *   from  executeLLRFilter";
+    // sql[1] = "truncate   table  executeLLRFilter";
+    // sql[2] = "insert   into   executeLLRFilter select   *   from  newtable";
     // db.result = db.stmt.executeUpdate(sql[0]);
     // db.result = db.stmt.executeUpdate(sql[1]);
     // db.result = db.stmt.executeUpdate(sql[2]);
@@ -162,17 +157,4 @@ public class LLRFilter {
     // e.printStackTrace();
     // }
     // }
-    public void distinctTable() {
-        System.out.println("post start" + " " + df.format(new Date()));
-
-        databaseManager.executeSQL("create temporary table newtable select distinct * from "
-                + llrResultTable);
-        databaseManager.executeSQL("truncate table " + llrResultTable);
-        databaseManager.executeSQL("insert into " + llrResultTable +
-                " select * from  newtable");
-        databaseManager.deleteTable("newTable");
-
-        System.out.println("post end" + " " + df.format(new Date()));
-    }
-
 }
