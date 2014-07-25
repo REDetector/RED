@@ -51,19 +51,16 @@ public class ChromosomeDisplay extends JPanel implements DataChangeListener {
     /**
      * The view start.
      */
-    private long viewStart = 0;
+    private int viewStart = 0;
 
     /**
      * The view end.
      */
-    private long viewEnd = 0;
+    private int viewEnd = 0;
 
     private Probe[] probes = null;
 
     private DataStore activeStore = null;
-
-    private double minValue;
-    private double maxValue;
 
     // Values cached from the last update and used when
     // relating pixels to positions
@@ -75,11 +72,6 @@ public class ChromosomeDisplay extends JPanel implements DataChangeListener {
     private int selectionStart = 0;
     private int selectionEnd = 0;
 
-    // Cached values used for drawing
-    private int lastProbeXEnd = 0;
-    private double lastProbeValue = 0;
-    private int lastProbeXMid = 0;
-    private int lastProbeY = 0;
 
     /**
      * Instantiates a new chromosome display.
@@ -121,22 +113,14 @@ public class ChromosomeDisplay extends JPanel implements DataChangeListener {
         int height = getHeight() - (2 * yOffset);
 
         chrWidth = scaleX(width, chromosome.getLength(), maxLen);
-        lastProbeXEnd = 0;
-        lastProbeXMid = 0;
-        lastProbeY = 0;
-        lastProbeValue = -10000000;
 
         g.setColor(Color.WHITE);
         g.fillRect(0, 0, getWidth(), getHeight());
 
-        // If we have a quantitated active store and some probes then we'll do a
-        // full quantitative view
-
         if (activeStore != null && probes != null) {
 
             g.setColor(ColourScheme.DATA_BACKGROUND_ODD);
-            g.fillRoundRect(xOffset, yOffset,
-                    scaleX(width, chromosome.getLength(), maxLen), height, 2, 2);
+            g.fillRoundRect(xOffset, yOffset, scaleX(width, chromosome.getLength(), maxLen), height, 2, 2);
 
             // Draw a box over the selected region if there is one
             if (showView) {
@@ -153,12 +137,10 @@ public class ChromosomeDisplay extends JPanel implements DataChangeListener {
 
             // Draw as many probes as we have space for
 
-
             Color fixedColour = null;
 
             if (DisplayPreferences.getInstance().getColourType() == DisplayPreferences.COLOUR_TYPE_INDEXED) {
-                DataStore[] drawnStores = REDApplication.getInstance()
-                        .drawnDataStores();
+                DataStore[] drawnStores = REDApplication.getInstance().drawnDataStores();
                 for (int d = 0; d < drawnStores.length; d++) {
                     if (drawnStores[d] == activeStore) {
                         fixedColour = ColourIndexSet.getColour(d);
@@ -170,13 +152,7 @@ public class ChromosomeDisplay extends JPanel implements DataChangeListener {
                     fixedColour = Color.DARK_GRAY;
             }
 
-            maxValue = DisplayPreferences.getInstance().getCurrentMidPoint();
-
             // Now go through all the probes figuring out whether they need to be displayed
-
-            // Reset the values used to optimise drawing
-            lastProbeXEnd = 0;
-            lastProbeValue = 0;
 
             for (Probe probe : probes) {
                 drawProbe(probe, g, width, maxLen, yOffset, xOffset,
@@ -237,49 +213,14 @@ public class ChromosomeDisplay extends JPanel implements DataChangeListener {
     private void drawProbe(Probe p, Graphics g, int chrWidth, int maxLength,
                            int yOffset, int xOffset, int effectiveHeight, Color color) {
 
-        int wholeXStart = xOffset + scaleX(chrWidth, p.getStart(), maxLength);
-        int wholeXEnd = xOffset + scaleX(chrWidth, p.getEnd(), maxLength);
-        if ((wholeXEnd - wholeXStart) < 2) {
-            wholeXEnd = wholeXStart + 2;
-        }
-
-        double value = 0;
-
-        // Restrict the range we cover...
-        if (value > maxValue)
-            value = maxValue;
-        if (value < minValue)
-            value = minValue;
-
-        // Don't draw probes which overlap exactly with the last one
-        // and are of lower height
-        if (wholeXEnd <= lastProbeXEnd + 2) {
-
-            switch (DisplayPreferences.getInstance().getGraphType()) {
-                case DisplayPreferences.GRAPH_TYPE_LINE:
-                    return; // Never overlap
-
-                default: // Overlap if the new value is more extreme
-                    if (lastProbeValue > 0 && value > 0 && value <= lastProbeValue) {
-                        return;
-                    }
-
-                    if (lastProbeValue < 0 && value < 0 && value >= lastProbeValue) {
-                        return;
-                    }
-
-            }
-
-        }
-
-        lastProbeXEnd = wholeXEnd;
-        lastProbeValue = value;
+        int wholeXStart = xOffset + scaleX(chrWidth, p.getStart(), maxLength) - 1;
+        int wholeXEnd = wholeXStart + 2;
 
         if (color != null) {
             g.setColor(color);
         } else {
             g.setColor(DisplayPreferences.getInstance().getGradient()
-                    .getColor(value, minValue, maxValue));
+                    .getColor(p.getStart(), 0, chrWidth));
         }
 
         int yBoxStart;
@@ -295,7 +236,7 @@ public class ChromosomeDisplay extends JPanel implements DataChangeListener {
 
 
         yBoxStart = (getHeight() - yOffset)
-                - ((int) (((double) effectiveHeight) * (value / maxValue)));
+                - ((int) (((double) effectiveHeight) * (p.getStart() / chrWidth)));
         int yValue = yBoxStart;
         yBoxEnd = effectiveHeight + yOffset;
 
@@ -314,14 +255,6 @@ public class ChromosomeDisplay extends JPanel implements DataChangeListener {
 
             case DisplayPreferences.GRAPH_TYPE_LINE:
                 int xMid = wholeXStart + ((wholeXEnd - wholeXStart) / 2);
-                if (xMid <= lastProbeXMid)
-                    return; // Can happen with probes of different length
-                if (lastProbeXMid > 0) {
-                    g.drawLine(lastProbeXMid, lastProbeY, wholeXStart
-                            + ((wholeXEnd - wholeXStart) / 2), yValue);
-                }
-                lastProbeXMid = wholeXStart + ((wholeXEnd - wholeXStart) / 2);
-                lastProbeY = yValue;
                 break;
 
         }
@@ -348,7 +281,7 @@ public class ChromosomeDisplay extends JPanel implements DataChangeListener {
      * @param start the start
      * @param end   the end
      */
-    protected void setView(Chromosome c, long start, long end) {
+    protected void setView(Chromosome c, int start, int end) {
         if (c.equals(chromosome)) {
             showView = true;
             viewStart = start;

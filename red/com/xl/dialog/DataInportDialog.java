@@ -22,7 +22,9 @@ import java.io.File;
 public class DataInportDialog extends JDialog implements ActionListener {
     private final int NON_DENOVO_INDEX = 0;
     private final int DENOVO_INDEX = 1;
+    private REDApplication application;
     private LocationPreferences preferences = LocationPreferences.getInstance();
+
     private JTextField rScriptPath;
 
     private JTextField rnaVcfFileField;
@@ -70,6 +72,7 @@ public class DataInportDialog extends JDialog implements ActionListener {
      */
     public DataInportDialog(REDApplication application) {
         super(application, "Inport Data Into Database...");
+        this.application = application;
         setSize(600, 300);
         setLocationRelativeTo(REDApplication.getInstance());
         setModal(true);
@@ -379,14 +382,14 @@ public class DataInportDialog extends JDialog implements ActionListener {
         } else if (action.equals("import")) {
             switch (currentIndex) {
                 case NON_DENOVO_INDEX:
-                    ThreadNonDenovoInput nonDenovoInput = new ThreadNonDenovoInput();
+                    ThreadNonDenovoInput nonDenovoInput = new ThreadNonDenovoInput(application.dataCollection());
                     nonDenovoInput.addProgressListener(REDApplication.getInstance());
                     ProgressDialog progressDialog = new ProgressDialog("Importing Data Into Database");
                     nonDenovoInput.addProgressListener(progressDialog);
                     new Thread(nonDenovoInput).start();
                     break;
                 case DENOVO_INDEX:
-                    ThreadDenovoInput denovoInput = new ThreadDenovoInput();
+                    ThreadDenovoInput denovoInput = new ThreadDenovoInput(application.dataCollection());
                     denovoInput.addProgressListener(REDApplication.getInstance());
                     ProgressDialog progressDialog2 = new ProgressDialog("Importing Data Into Database");
                     denovoInput.addProgressListener(progressDialog2);

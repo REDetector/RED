@@ -2,13 +2,18 @@ package com.xl.thread;
 
 import com.dw.denovo.*;
 import com.dw.publicaffairs.DatabaseManager;
+import com.dw.publicaffairs.Query;
 import com.dw.publicaffairs.Utilities;
+import com.xl.datatypes.DataCollection;
+import com.xl.datatypes.probes.Probe;
+import com.xl.datatypes.probes.ProbeSet;
 import com.xl.interfaces.ProgressListener;
 import com.xl.preferences.LocationPreferences;
 import com.xl.preferences.REDPreferences;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.Vector;
 
 /**
  * Created by Administrator on 2014/7/22.
@@ -17,9 +22,11 @@ public class ThreadDenovoInput implements Runnable {
     protected final ArrayList<ProgressListener> listeners;
     private final int ALL_STEP = 7;
     protected boolean cancel = false;
+    private DataCollection dataCollection;
 
-    public ThreadDenovoInput() {
+    public ThreadDenovoInput(DataCollection dataCollection) {
         listeners = new ArrayList<ProgressListener>();
+        this.dataCollection = dataCollection;
     }
 
     @Override
@@ -38,6 +45,11 @@ public class ThreadDenovoInput implements Runnable {
         DenovoVcf df = new DenovoVcf(manager);
         df.establishRnaTable(DatabaseManager.RNA_VCF_RESULT_TABLE_NAME);
         df.loadRnaVcfTable(DatabaseManager.RNA_VCF_RESULT_TABLE_NAME, locationPreferences.getRnaVcfFile());
+
+        Vector<Probe> probes = Query.queryAllEditingSites(DatabaseManager.RNA_VCF_RESULT_TABLE_NAME);
+        Probe[] probeArray = probes.toArray(new Probe[0]);
+        dataCollection.setProbeSet(new ProbeSet("Original RNA editing sites by RNA vcf file", probeArray,
+                DatabaseManager.RNA_VCF_RESULT_TABLE_NAME));
 
         progressUpdated("Filtering sites by quality and coverage...", 3, ALL_STEP);
         BasicFilter bf = new BasicFilter(manager);

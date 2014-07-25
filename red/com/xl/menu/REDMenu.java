@@ -8,6 +8,8 @@ import com.xl.dialog.*;
 import com.xl.dialog.gotodialog.GotoDialog;
 import com.xl.dialog.gotodialog.GotoWindowDialog;
 import com.xl.display.chromosomeviewer.ChromosomeDataTrack;
+import com.xl.exception.REDException;
+import com.xl.filter.BasicFilterMenu;
 import com.xl.help.HelpDialog;
 import com.xl.main.REDApplication;
 import com.xl.panel.ToolbarPanel;
@@ -427,18 +429,24 @@ public class REDMenu extends JMenuBar implements ActionListener {
             new GotoWindowDialog(redApplication);
         }
         // --------------------FilterMenu--------------------
-        else if (action.equals(MenuUtils.BASIC_FILTER)) {
+        else if (action.contains("Filter")) {
+            try {
+                if (action.equals(MenuUtils.BASIC_FILTER)) {
+                    new FilterOptionsDialog(redApplication.dataCollection(), new BasicFilterMenu(redApplication.dataCollection()));
+                } else if (action.equals(MenuUtils.KNOWN_SNVS_FILTER)) {
 
-        } else if (action.equals(MenuUtils.KNOWN_SNVS_FILTER)) {
+                } else if (action.equals(MenuUtils.REPEATED_FILTER)) {
 
-        } else if (action.equals(MenuUtils.REPEATED_FILTER)) {
+                } else if (action.equals(MenuUtils.RNA_DNA_FILTER)) {
 
-        } else if (action.equals(MenuUtils.RNA_DNA_FILTER)) {
+                } else if (action.equals(MenuUtils.COMPREHENSIVE_FILTER)) {
 
-        } else if (action.equals(MenuUtils.COMPREHENSIVE_FILTER)) {
+                } else if (action.equals(MenuUtils.STATISTICAL_FILTER)) {
 
-        } else if (action.equals(MenuUtils.STATISTICAL_FILTER)) {
+                }
+            } catch (REDException e) {
 
+            }
         }
         // --------------------ReportsMenu------------------
         else if (action.equals(MenuUtils.VARIANT_DISTRIBUTION)) {

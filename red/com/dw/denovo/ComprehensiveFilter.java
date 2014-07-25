@@ -1,8 +1,7 @@
 package com.dw.denovo;
 
 /**
- * Comphrehensive phase
- * we focus on base in exon
+ * Comphrehensive phase we focus on base in exon
  * we discard base in the rear or front of the sequence
  */
 
@@ -28,54 +27,64 @@ public class ComprehensiveFilter {
     }
 
     public boolean hasEstablishedComprehensiveTable(String comprehensiveTable) {
-        databaseManager.createRefTable(comprehensiveTable,
-                "(chrome varchar(15),ref varchar(30),type varchar(9),begin int,end int,unuse1 float(8,6),unuse2 varchar(5),unuse3 varchar(5),info varchar(100),index(chrome,type))");
-        ResultSet rs = databaseManager.query(comprehensiveTable,
-                "count(*)", "1 limit 0,100");
+        databaseManager
+                .createRefTable(
+                        comprehensiveTable,
+                        "(chrome varchar(15),ref varchar(30),type varchar(9),begin int,end int,unuse1 float(8,6),unuse2 varchar(5),unuse3 varchar(5),info varchar(100),index(chrome,type))");
+        ResultSet rs = databaseManager.query(comprehensiveTable, "count(*)",
+                "1 limit 0,100");
         int number = 0;
         try {
             if (rs.next()) {
                 number = rs.getInt(1);
             }
         } catch (SQLException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
         return number > 0;
     }
 
-    public boolean establishComprehensiveResultTable(String comprehensiveResultTable) {
+    public boolean establishComprehensiveResultTable(
+            String comprehensiveResultTable) {
         System.out.println("escom start" + " " + df.format(new Date()));
 
         databaseManager.deleteTable(comprehensiveResultTable);
-        databaseManager.createTable(comprehensiveResultTable, "(chrome varchar(15),"
-                + Utilities.getInstance().getS2() + "," + "index(chrome,pos))");
+        databaseManager.createTable(comprehensiveResultTable,
+                "(chrome varchar(15)," + Utilities.getInstance().getS2() + ","
+                        + "index(chrome,pos))");
 
         System.out.println("escom end" + " " + df.format(new Date()));
         return true;
     }
 
-
-    public boolean loadComprehensiveTable(String comprehensiveTable, String comprehensivePath) {
-        System.out.println("loadComprehensiveTable start" + " " + df.format(new Date()));
+    public boolean loadComprehensiveTable(String comprehensiveTable,
+                                          String comprehensivePath) {
+        System.out.println("loadComprehensiveTable start" + " "
+                + df.format(new Date()));
 
         if (!hasEstablishedComprehensiveTable(comprehensiveTable)) {
             try {
-                databaseManager.executeSQL("load data local infile '" + comprehensivePath
-                        + "' into table " + comprehensiveTable
-                        + " fields terminated by '\t' lines terminated by '\n'");
+                databaseManager
+                        .executeSQL("load data local infile '"
+                                + comprehensivePath
+                                + "' into table "
+                                + comprehensiveTable
+                                + " fields terminated by '\t' lines terminated by '\n'");
             } catch (SQLException e) {
-                System.err.println("Error execute sql clause in " + ComprehensiveFilter.class.getName() + ":loadComprehensiveTable()");
+                System.err.println("Error execute sql clause in "
+                        + ComprehensiveFilter.class.getName()
+                        + ":loadComprehensiveTable().. ");
                 e.printStackTrace();
             }
         }
 
-        System.out.println("loadComprehensiveTable end" + " " + df.format(new Date()));
+        System.out.println("loadComprehensiveTable end" + " "
+                + df.format(new Date()));
         return true;
     }
 
-    public boolean executeComprehensiveFilter(String comprehensiveTable, String comprehensiveResultTable, String refTable,
-                                              int edge) {
+    public boolean executeComprehensiveFilter(String comprehensiveTable,
+                                              String comprehensiveResultTable, String refTable, int edge) {
         try {
             System.out.println("comf start" + " " + df.format(new Date()));
 
@@ -125,6 +134,27 @@ public class ComprehensiveFilter {
             return false;
         }
 
+    }
+
+    public void mysqlComprehensiveFilter(String comprehensiveTable,
+                                         String comprehensiveResultTable, String refTable, int edge) {
+        try {
+            databaseManager.executeSQL("insert into "
+                    + comprehensiveResultTable + " select * from " + refTable
+                    + " where not exists (select chrome from "
+                    + comprehensiveTable + " where (" + comprehensiveTable
+                    + ".type='CDS' and " + comprehensiveTable + ".chrome="
+                    + refTable + ".chrome and ((" + comprehensiveTable
+                    + ".begin<" + refTable + ".pos+" + edge + " and "
+                    + comprehensiveTable + ".begin>" + refTable + ".pos-"
+                    + edge + ") or (" + comprehensiveTable + ".end<" + refTable
+                    + ".pos+" + edge + " and " + comprehensiveTable + ".end>"
+                    + refTable + ".pos-" + edge + "))))");
+        } catch (SQLException e) {
+            System.err.println("Error execute sql clause in"
+                    + DbsnpFilter.class.getName() + ":executeDbSNPFilter()");
+            e.printStackTrace();
+        }
     }
 
 }

@@ -124,6 +124,18 @@ public class ChromosomeDataTrack extends JPanel {
         repaint();
     }
 
+    /**
+     * This call is made by the ChromosomeViewer when the active
+     * probe list is changed.  It allows us to update the set of
+     * probes without having to do a completely new layout (which
+     * is slow).
+     *
+     * @param newProbes The new probes for the currently displayed chromosome
+     */
+    protected void setProbes(Probe[] newProbes) {
+        probes = newProbes;
+    }
+
     /*
      * (non-Javadoc)
      *

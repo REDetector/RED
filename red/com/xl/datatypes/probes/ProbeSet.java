@@ -90,7 +90,7 @@ public class ProbeSet extends ProbeList {
      *
      * @param probes the new probes
      */
-    private void setProbes(Probe[] probes) {
+    public void setProbes(Probe[] probes) {
 
         expectedTotalCount = probes.length;
 

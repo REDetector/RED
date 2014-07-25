@@ -206,8 +206,6 @@ public class BasicFilterMenu extends ProbeFilter {
             c.gridx = 1;
             c.weightx = 0.1;
             quality = new JTextField(3);
-            quality.addActionListener(this);
-            quality.setActionCommand("quality");
             choicePanel.add(quality, c);
 
             c.gridy++;
@@ -219,8 +217,6 @@ public class BasicFilterMenu extends ProbeFilter {
             c.gridx = 1;
             c.weightx = 0.1;
             coverage = new JTextField(3);
-            coverage.addActionListener(this);
-            coverage.setActionCommand("coverage");
             choicePanel.add(coverage, c);
 
             add(new JScrollPane(choicePanel), BorderLayout.CENTER);
@@ -237,13 +233,12 @@ public class BasicFilterMenu extends ProbeFilter {
          * @see javax.swing.event.ListSelectionListener#valueChanged(javax.swing.event.ListSelectionEvent)
          */
         public void valueChanged(ListSelectionEvent lse) {
-//            List<DataStore> list = dataList.getSelectedValuesList();
-//            stores = new DataStore[o.length];
-//            for (int i = 0; i < o.length; i++) {
-//                stores[i] = (DataStore) o[i];
-//            }
-//            dataAvailableNumber.setText("" + dataList.getSelectedIndices().length);
-
+            java.util.List<DataStore> lists = dataList.getSelectedValuesList();
+            stores = new DataStore[lists.size()];
+            for (int i = 0; i < stores.length; i++) {
+                stores[i] = lists.get(i);
+            }
+            System.out.println(BasicFilterMenu.class.getName() + ":" + stores.length);
             optionsChanged();
         }
 
@@ -251,15 +246,6 @@ public class BasicFilterMenu extends ProbeFilter {
          * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
          */
         public void actionPerformed(ActionEvent ae) {
-            // This comes from the limitTypeBox
-//            if (limitTypeBox.getSelectedItem().equals("Exactly"))
-//                limitType = EXACTLY;
-//            else if (limitTypeBox.getSelectedItem().equals("At least"))
-//                limitType = AT_LEAST;
-//            else if (limitTypeBox.getSelectedItem().equals("No more than"))
-//                limitType = NO_MORE_THAN;
-//            else
-//                throw new IllegalArgumentException("Unexpected value " + limitTypeBox.getSelectedItem() + " for limit type");
 
             optionsChanged();
         }

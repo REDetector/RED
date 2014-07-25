@@ -117,6 +117,7 @@ public class UserPasswordDialog extends JDialog implements ActionListener {
         okButton.setActionCommand("connect");
         okButton.addActionListener(this);
         confirmPanel.add(okButton);
+        getRootPane().setDefaultButton(okButton);
         JButton cancelButton = new JButton("Cancel");
         cancelButton.setActionCommand("cancel");
         cancelButton.addActionListener(this);

@@ -117,19 +117,19 @@ public class RepeatFilter {
         System.out.println("esrepeat end" + " " + df.format(new Date()));
     }
 
-    public void executeRepeatFilter(String repeatTable, String repeatResultTable, String refTable) {
+    public void mysqlRepeatFilter(String repeatTable, String repeatResultTable, String refTable) {
         System.out.println("rfliter start" + " " + df.format(new Date()));
         try {
-            databaseManager.executeSQL("insert into " + repeatResultTable + " select * from " + refTable + " as A left " +
-                    "join " + repeatTable + " as B on (b.chrome=a.chrome and b.begin<a.pos and b" + ".end>a.pos) where " +
-                    "b.chrome is null");
+//            databaseManager.executeSQL("insert into " + repeatResultTable + " select * from " + refTable + " as A left " +
+//                    "join " + repeatTable + " as B on (b.chrome=a.chrome and b.begin<a.pos and b" + ".end>a.pos) where " +
+//                    "b.chrome is null");
 
-//        databaseManager.executeSQL("insert into " + repeatResultTable
-//                + " select * from " + refTable
-//                + " where not exists (select * FROM " + repeatTable + " where (" + repeatTable
-//                + ".chrome= " + refTable + ".chrome and  " + repeatTable
-//                + ".begin<" + refTable + ".pos and " + repeatTable
-//                + ".end>" + refTable + ".pos)) ");
+            databaseManager.executeSQL("insert into " + repeatResultTable
+                    + " select * from " + refTable
+                    + " where not exists (select * from " + repeatTable + " where (" + repeatTable
+                    + ".chrome= " + refTable + ".chrome and  " + repeatTable
+                    + ".begin<" + refTable + ".pos and " + repeatTable
+                    + ".end>" + refTable + ".pos)) ");
 
 
             System.out.println("esrepeat alu start " + " " + df.format(new Date()));
