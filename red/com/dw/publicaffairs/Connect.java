@@ -36,7 +36,7 @@ public class Connect {
 		// TODO Auto-generated method stub
 		DatabaseManager manager = DatabaseManager.getInstance();
 		try {
-			manager.connectDatabase("localhost", "3306", "root", "root");
+			manager.connectDatabase("localhost", "3306", "root", "sequencing");
 		} catch (ClassNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
