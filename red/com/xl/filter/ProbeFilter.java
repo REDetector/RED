@@ -28,7 +28,7 @@ public abstract class ProbeFilter implements Runnable, Cancellable {
      * Instantiates a new probe filter.
      *
      * @param collection The dataCollection
-     * @throws REDException if the dataCollection isn't quantitated
+     * @throws REDException if the collection isn't loaded
      */
     public ProbeFilter(DataCollection collection) throws REDException {
         if (!REDPreferences.getInstance().isDataLoadedToDatabase()) {

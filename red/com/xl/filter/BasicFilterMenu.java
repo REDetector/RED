@@ -24,7 +24,10 @@ import com.dw.publicaffairs.Query;
 import com.xl.datatypes.DataCollection;
 import com.xl.datatypes.DataStore;
 import com.xl.datatypes.probes.Probe;
+import com.xl.datatypes.probes.ProbeList;
+import com.xl.dialog.TypeColourRenderer;
 import com.xl.exception.REDException;
+import com.xl.utils.ListDefaultSelector;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
@@ -45,12 +48,7 @@ import java.util.Vector;
 public class BasicFilterMenu extends ProbeFilter {
 
     private DataStore[] stores = new DataStore[0];
-    private Double lowerLimit = null;
-    private Double upperLimit = null;
-    private int chosenNumber = -1;
-
     private ValuesFilterOptionPanel optionsPanel = new ValuesFilterOptionPanel();
-
 
     /**
      * Instantiates a new values filter with default values
@@ -62,22 +60,17 @@ public class BasicFilterMenu extends ProbeFilter {
         super(collection);
     }
 
-    /* (non-Javadoc)
-     * @see uk.ac.babraham.SeqMonk.Filters.ProbeFilter#description()
-     */
     @Override
     public String description() {
-        return "Filters on the quantitated values associated with each probe";
+        return "Filter editing bases by quality and coverage.";
     }
 
-    /* (non-Javadoc)
-     * @see uk.ac.babraham.SeqMonk.Filters.ProbeFilter#generateProbeList()
-     */
     @Override
     protected void generateProbeList() {
         DatabaseManager databaseManager = DatabaseManager.getInstance();
         try {
             databaseManager.connectDatabase();
+            databaseManager.createStatement();
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         } catch (SQLException e) {
@@ -85,72 +78,20 @@ public class BasicFilterMenu extends ProbeFilter {
             e.printStackTrace();
         }
         Vector<Probe> probes = Query.queryAllEditingSites(DatabaseManager.BASIC_FILTER_RESULT_TABLE_NAME);
-
-
-//		System.out.println("Data store size="+stores.length+" lower="+lowerLimit+" upper="+upperLimit+" type="+limitType+" chosen="+chosenNumber);
-
-//        Probe[] probes = startingList.getAllProbes();
-//        ProbeList newList = new ProbeList(startingList, "Filtered Probes", "");
-//
-//        for (int p = 0; p < probes.length; p++) {
-//
-//            progressUpdated(p, probes.length);
-//
-//            if (cancel) {
-//                cancel = false;
-//                progressCancelled();
-//                return;
-//            }
-//
-//
-//            int count = 0;
-//            for (int s = 0; s < stores.length; s++) {
-//                double d = 0;
-//                if (!stores[s].hasValueForProbe(probes[p])) continue;
-//
-//                try {
-//                    d = stores[s].getValueForProbe(probes[p]);
-//                } catch (SeqMonkException e) {
-//                    e.printStackTrace();
-//                    continue;
-//                }
-//
-//                // Now we have the value we need to know if it passes the test
-//                if (upperLimit != null)
-//                    if (d > upperLimit)
-//                        continue;
-//
-//                if (lowerLimit != null)
-//                    if (d < lowerLimit)
-//                        continue;
-//
-//                // This one passes, we can add it to the count
-//                ++count;
-//            }
-//
-//            // We can now figure out if the count we've got lets us add this
-//            // probe to the probe set.
-//            switch (limitType) {
-//                case EXACTLY:
-//                    if (count == chosenNumber)
-//                        newList.addProbe(probes[p], null);
-//                    break;
-//
-//                case AT_LEAST:
-//                    if (count >= chosenNumber)
-//                        newList.addProbe(probes[p], null);
-//                    break;
-//
-//                case NO_MORE_THAN:
-//                    if (count <= chosenNumber)
-//                        newList.addProbe(probes[p], null);
-//                    break;
-//            }
-//        }
-//
-//
-//        newList.setName("Value between " + lowerLimit + "-" + upperLimit);
-//        filterFinished(newList);
+        ProbeList newList = new ProbeList(startingList, DatabaseManager.BASIC_FILTER_RESULT_TABLE_NAME, "",
+                DatabaseManager.BASIC_FILTER_RESULT_TABLE_NAME);
+        int index = 0;
+        int probesLength = probes.size();
+        for (Probe probe : probes) {
+            progressUpdated(index++, probesLength);
+            if (cancel) {
+                cancel = false;
+                progressCancelled();
+                return;
+            }
+            newList.addProbe(probe);
+        }
+        filterFinished(newList);
 
     }
 
@@ -175,15 +116,7 @@ public class BasicFilterMenu extends ProbeFilter {
      */
     @Override
     public boolean isReady() {
-        if (stores.length == 0) return false;
-
-        if (chosenNumber < 1 || chosenNumber > stores.length) return false;
-
-        if (lowerLimit == null && upperLimit == null) return false;
-
-        if (lowerLimit != null && upperLimit != null && lowerLimit > upperLimit) return false;
-
-        return true;
+        return stores.length != 0;
     }
 
     /* (non-Javadoc)
@@ -203,18 +136,6 @@ public class BasicFilterMenu extends ProbeFilter {
 
         b.append("Filter on probes in ");
         b.append(collection.probeSet().getActiveList().name());
-        b.append(" where ");
-//        if (limitType == EXACTLY) {
-//            b.append("exactly ");
-//        } else if (limitType == AT_LEAST) {
-//            b.append("at least ");
-//        } else if (limitType == NO_MORE_THAN) {
-//            b.append("no more than ");
-//        }
-
-        b.append(chosenNumber);
-
-        b.append(" of ");
 
         for (int s = 0; s < stores.length; s++) {
             b.append(stores[s].name());
@@ -222,29 +143,6 @@ public class BasicFilterMenu extends ProbeFilter {
                 b.append(" , ");
             }
         }
-
-        b.append(" had a value ");
-
-        if (lowerLimit != null && upperLimit != null) {
-            b.append("between ");
-            b.append(lowerLimit);
-            b.append(" and ");
-            b.append(upperLimit);
-        } else if (lowerLimit != null) {
-            b.append("above ");
-            b.append(lowerLimit);
-        } else if (upperLimit != null) {
-            b.append("below ");
-            b.append(upperLimit);
-        }
-
-        b.append(". Quantitation was ");
-//        if (collection.probeSet().currentQuantitation() == null) {
-//            b.append("not known.");
-//        } else {
-//            b.append(collection.probeSet().currentQuantitation());
-//        }
-
         return b.toString();
     }
 
@@ -255,20 +153,7 @@ public class BasicFilterMenu extends ProbeFilter {
     protected String listName() {
         StringBuffer b = new StringBuffer();
 
-        b.append("Value ");
-
-        if (lowerLimit != null && upperLimit != null) {
-            b.append("between ");
-            b.append(lowerLimit);
-            b.append(" and ");
-            b.append(upperLimit);
-        } else if (lowerLimit != null) {
-            b.append("above ");
-            b.append(lowerLimit);
-        } else if (upperLimit != null) {
-            b.append("below ");
-            b.append(upperLimit);
-        }
+        b.append("Basic Filter by ");
 
         return b.toString();
     }
@@ -278,10 +163,9 @@ public class BasicFilterMenu extends ProbeFilter {
      */
     private class ValuesFilterOptionPanel extends JPanel implements ListSelectionListener, KeyListener, ActionListener {
 
-        private JList dataList;
-        private JTextField lowerLimitField;
-        private JTextField upperLimitField;
-        private JComboBox limitTypeBox;
+        private JList<DataStore> dataList;
+        private JTextField quality;
+        private JTextField coverage;
         private JTextField chosenNumberField;
         private JLabel dataAvailableNumber;
 
@@ -289,70 +173,59 @@ public class BasicFilterMenu extends ProbeFilter {
          * Instantiates a new values filter option panel.
          */
         public ValuesFilterOptionPanel() {
-//            setLayout(new BorderLayout());
-//            JPanel dataPanel = new JPanel();
-//            dataPanel.setBorder(BorderFactory.createEmptyBorder(4, 4, 0, 4));
-//            dataPanel.setLayout(new BorderLayout());
-//            dataPanel.add(new JLabel("Data Sets/Groups", JLabel.CENTER), BorderLayout.NORTH);
-//
-//            DefaultListModel dataModel = new DefaultListModel();
-//
-//            DataStore[] stores = collection.getAllDataStores();
-//
-//            for (int i = 0; i < stores.length; i++) {
-//                if (stores[i].isQuantitated()) {
-//                    dataModel.addElement(stores[i]);
-//                }
-//            }
-//
-//            dataList = new JList(dataModel);
-//            ListDefaultSelector.selectDefaultStores(dataList);
-//            dataList.setCellRenderer(new TypeColourRenderer());
-//            dataList.addListSelectionListener(this);
-//            dataPanel.add(new JScrollPane(dataList), BorderLayout.CENTER);
-//
-//            add(dataPanel, BorderLayout.WEST);
-//
-//            JPanel choicePanel = new JPanel();
-//            choicePanel.setLayout(new BoxLayout(choicePanel, BoxLayout.Y_AXIS));
-//
-//
-//            JPanel choicePanel2 = new JPanel();
-//            choicePanel2.add(new JLabel("Value must be between "));
-//            lowerLimitField = new JTextField(3);
-//            lowerLimitField.addKeyListener(this);
-//            choicePanel2.add(lowerLimitField);
-//
-//            choicePanel2.add(new JLabel(" and "));
-//
-//            upperLimitField = new JTextField(3);
-//            upperLimitField.addKeyListener(this);
-//            choicePanel2.add(upperLimitField);
-//            choicePanel.add(choicePanel2);
-//
-//            JPanel choicePanel3 = new JPanel();
-//            choicePanel3.add(new JLabel(" for "));
-//
-//            limitTypeBox = new JComboBox(new String[]{"Exactly", "At least", "No more than"});
-//            limitTypeBox.addActionListener(this);
-//            choicePanel3.add(limitTypeBox);
-//
-//            chosenNumber = dataList.getSelectedIndices().length;
-//            chosenNumberField = new JTextField("" + chosenNumber, 3);
-//            chosenNumberField.addKeyListener(this);
-//            choicePanel3.add(chosenNumberField);
-//
-//            choicePanel3.add(new JLabel(" of the "));
-//
-//            dataAvailableNumber = new JLabel("");
-//            valueChanged(null);
-//            choicePanel3.add(dataAvailableNumber);
-//
-//            choicePanel3.add(new JLabel(" selected Data Stores "));
-//
-//            choicePanel.add(choicePanel3);
-//            add(new JScrollPane(choicePanel), BorderLayout.CENTER);
+            setLayout(new BorderLayout());
+            JPanel dataPanel = new JPanel();
+            dataPanel.setBorder(BorderFactory.createEmptyBorder(4, 4, 4, 4));
+            dataPanel.setLayout(new BorderLayout());
+            dataPanel.add(new JLabel("Data Sets/Groups", JLabel.CENTER), BorderLayout.NORTH);
 
+            DefaultListModel<DataStore> dataModel = new DefaultListModel<DataStore>();
+
+            DataStore[] stores = collection.getAllDataStores();
+
+            for (int i = 0; i < stores.length; i++) {
+                dataModel.addElement(stores[i]);
+            }
+
+            dataList = new JList<DataStore>(dataModel);
+            ListDefaultSelector.selectDefaultStores(dataList);
+            dataList.setCellRenderer(new TypeColourRenderer());
+            dataList.addListSelectionListener(this);
+            dataPanel.add(new JScrollPane(dataList), BorderLayout.CENTER);
+
+            add(dataPanel, BorderLayout.WEST);
+
+
+            JPanel choicePanel = new JPanel();
+            choicePanel.setLayout(new GridBagLayout());
+            choicePanel.setBorder(BorderFactory.createEmptyBorder(4, 4, 4, 4));
+            GridBagConstraints c = new GridBagConstraints();
+
+            c.gridy = 0;
+            c.gridx = 0;
+            c.weightx = 0.5;
+            c.weighty = 0.5;
+            c.fill = GridBagConstraints.HORIZONTAL;
+            choicePanel.add(new JLabel("Least Quality"), c);
+            c.gridx = 1;
+            c.weightx = 0.1;
+            quality = new JTextField(3);
+            quality.addKeyListener(this);
+            choicePanel.add(quality, c);
+
+            c.gridy++;
+            c.gridx = 0;
+            c.weightx = 0.5;
+            c.weighty = 0.5;
+            c.fill = GridBagConstraints.HORIZONTAL;
+            choicePanel.add(new JLabel("Coverage"), c);
+            c.gridx = 1;
+            c.weightx = 0.1;
+            coverage = new JTextField(3);
+            coverage.addKeyListener(this);
+            choicePanel.add(coverage, c);
+
+            add(new JScrollPane(choicePanel), BorderLayout.CENTER);
         }
 
         /* (non-Javadoc)
@@ -383,29 +256,29 @@ public class BasicFilterMenu extends ProbeFilter {
             JTextField f = (JTextField) ke.getSource();
 
             try {
-                if (f == lowerLimitField) {
-                    if (f.getText().length() == 0) {
-                        lowerLimit = null;
-                    } else if (f.getText().equals("-")) {
-                        lowerLimit = 0d;
-                    } else {
-                        lowerLimit = Double.parseDouble(f.getText());
-                    }
-                } else if (f == upperLimitField) {
-                    if (f.getText().length() == 0) {
-                        upperLimit = null;
-                    } else if (f.getText().equals("-")) {
-                        upperLimit = 0d;
-                    } else {
-                        upperLimit = Double.parseDouble(f.getText());
-                    }
-                } else if (f == chosenNumberField) {
-                    if (f.getText().length() == 0) {
-                        chosenNumber = -1; // Won't allow filter to register as ready
-                    } else {
-                        chosenNumber = Integer.parseInt(f.getText());
-                    }
-                }
+//                if (f == lowerLimitField) {
+//                    if (f.getText().length() == 0) {
+//                        lowerLimit = null;
+//                    } else if (f.getText().equals("-")) {
+//                        lowerLimit = 0d;
+//                    } else {
+//                        lowerLimit = Double.parseDouble(f.getText());
+//                    }
+//                } else if (f == upperLimitField) {
+//                    if (f.getText().length() == 0) {
+//                        upperLimit = null;
+//                    } else if (f.getText().equals("-")) {
+//                        upperLimit = 0d;
+//                    } else {
+//                        upperLimit = Double.parseDouble(f.getText());
+//                    }
+//                } else if (f == chosenNumberField) {
+//                    if (f.getText().length() == 0) {
+//                        chosenNumber = -1; // Won't allow filter to register as ready
+//                    } else {
+//                        chosenNumber = Integer.parseInt(f.getText());
+//                    }
+//                }
             } catch (NumberFormatException e) {
                 f.setText(f.getText().substring(0, f.getText().length() - 1));
             }
