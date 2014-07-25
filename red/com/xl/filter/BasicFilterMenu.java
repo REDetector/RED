@@ -35,8 +35,6 @@ import javax.swing.event.ListSelectionListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 import java.sql.SQLException;
 import java.util.Vector;
 
@@ -161,13 +159,11 @@ public class BasicFilterMenu extends ProbeFilter {
     /**
      * The ValuesFilterOptionPanel.
      */
-    private class ValuesFilterOptionPanel extends JPanel implements ListSelectionListener, KeyListener, ActionListener {
+    private class ValuesFilterOptionPanel extends JPanel implements ListSelectionListener, ActionListener {
 
         private JList<DataStore> dataList;
         private JTextField quality;
         private JTextField coverage;
-        private JTextField chosenNumberField;
-        private JLabel dataAvailableNumber;
 
         /**
          * Instantiates a new values filter option panel.
@@ -183,8 +179,8 @@ public class BasicFilterMenu extends ProbeFilter {
 
             DataStore[] stores = collection.getAllDataStores();
 
-            for (int i = 0; i < stores.length; i++) {
-                dataModel.addElement(stores[i]);
+            for (DataStore store : stores) {
+                dataModel.addElement(store);
             }
 
             dataList = new JList<DataStore>(dataModel);
@@ -210,7 +206,8 @@ public class BasicFilterMenu extends ProbeFilter {
             c.gridx = 1;
             c.weightx = 0.1;
             quality = new JTextField(3);
-            quality.addKeyListener(this);
+            quality.addActionListener(this);
+            quality.setActionCommand("quality");
             choicePanel.add(quality, c);
 
             c.gridy++;
@@ -222,7 +219,8 @@ public class BasicFilterMenu extends ProbeFilter {
             c.gridx = 1;
             c.weightx = 0.1;
             coverage = new JTextField(3);
-            coverage.addKeyListener(this);
+            coverage.addActionListener(this);
+            coverage.setActionCommand("coverage");
             choicePanel.add(coverage, c);
 
             add(new JScrollPane(choicePanel), BorderLayout.CENTER);
@@ -236,66 +234,15 @@ public class BasicFilterMenu extends ProbeFilter {
         }
 
         /* (non-Javadoc)
-         * @see java.awt.event.KeyListener#keyTyped(java.awt.event.KeyEvent)
-         */
-        public void keyTyped(KeyEvent arg0) {
-        }
-
-        /* (non-Javadoc)
-         * @see java.awt.event.KeyListener#keyPressed(java.awt.event.KeyEvent)
-         */
-        public void keyPressed(KeyEvent ke) {
-
-        }
-
-        /* (non-Javadoc)
-         * @see java.awt.event.KeyListener#keyReleased(java.awt.event.KeyEvent)
-         */
-        public void keyReleased(KeyEvent ke) {
-
-            JTextField f = (JTextField) ke.getSource();
-
-            try {
-//                if (f == lowerLimitField) {
-//                    if (f.getText().length() == 0) {
-//                        lowerLimit = null;
-//                    } else if (f.getText().equals("-")) {
-//                        lowerLimit = 0d;
-//                    } else {
-//                        lowerLimit = Double.parseDouble(f.getText());
-//                    }
-//                } else if (f == upperLimitField) {
-//                    if (f.getText().length() == 0) {
-//                        upperLimit = null;
-//                    } else if (f.getText().equals("-")) {
-//                        upperLimit = 0d;
-//                    } else {
-//                        upperLimit = Double.parseDouble(f.getText());
-//                    }
-//                } else if (f == chosenNumberField) {
-//                    if (f.getText().length() == 0) {
-//                        chosenNumber = -1; // Won't allow filter to register as ready
-//                    } else {
-//                        chosenNumber = Integer.parseInt(f.getText());
-//                    }
-//                }
-            } catch (NumberFormatException e) {
-                f.setText(f.getText().substring(0, f.getText().length() - 1));
-            }
-
-            optionsChanged();
-        }
-
-        /* (non-Javadoc)
          * @see javax.swing.event.ListSelectionListener#valueChanged(javax.swing.event.ListSelectionEvent)
          */
         public void valueChanged(ListSelectionEvent lse) {
-            Object[] o = dataList.getSelectedValues();
-            stores = new DataStore[o.length];
-            for (int i = 0; i < o.length; i++) {
-                stores[i] = (DataStore) o[i];
-            }
-            dataAvailableNumber.setText("" + dataList.getSelectedIndices().length);
+//            List<DataStore> list = dataList.getSelectedValuesList();
+//            stores = new DataStore[o.length];
+//            for (int i = 0; i < o.length; i++) {
+//                stores[i] = (DataStore) o[i];
+//            }
+//            dataAvailableNumber.setText("" + dataList.getSelectedIndices().length);
 
             optionsChanged();
         }

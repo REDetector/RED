@@ -1,5 +1,5 @@
 #RED Preferences. DO NOT edit it individually.
-#Fri Jul 25 14:52:11 CST 2014
+#Fri Jul 25 15:13:40 CST 2014
 Proxy=,0
 RefSeq\ File=D\:/Downloads/Documents/genes.gtf
 CompressOutput=false

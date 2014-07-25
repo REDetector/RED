@@ -21,7 +21,6 @@ public class DnaRnaVcf {
     // basic unit to process
     private String line = null;
     // data of each column
-    private String[] col = new String[40];
     private String[] temp = new String[10];
     private StringBuffer s1 = new StringBuffer();
     // count for each function
@@ -116,13 +115,11 @@ public class DnaRnaVcf {
                     continue;
                 }
                 String[] sections = line.split("\\t");
-                for (int i = 0, len = sections.length; i < len; i++) {
-                    col[i] = sections[i];
-                }
 
-                String[] columnInfo = col[8].split(":");
+
+                String[] columnInfo = sections[8].split(":");
                 int length = columnInfo.length;
-                if (col[num].split(":").length != length) {
+                if (sections[num].split(":").length != length) {
                     continue;
                 }
                 if (count_r > 0) {
@@ -137,16 +134,16 @@ public class DnaRnaVcf {
                 // if ((depth>-1)&&col[num].split(":")[depth].equals("."))
                 // continue;
                 if (gtype > -1
-                        && ((col[num].split(":")[gtype].split("/")[0]
-                        .equals(".")) || (col[num].split(":")[gtype]
+                        && ((sections[num].split(":")[gtype].split("/")[0]
+                        .equals(".")) || (sections[num].split(":")[gtype]
                         .split("/")[1].equals(".")))) {
                     continue;
                 }
-                s1.append("'" + col[0] + "'");
+                s1.append("'" + sections[0] + "'");
                 for (int i = 1; i < 8; i++)
-                    s1.append("," + "'" + col[i] + "'");
+                    s1.append("," + "'" + sections[i] + "'");
 
-                String[] numColumnInfo = col[num].split(":");
+                String[] numColumnInfo = sections[num].split(":");
                 for (int i = 0, len = numColumnInfo.length; i < len; i++) {
                     temp[i] = numColumnInfo[i].replace(",", ";");
                     // System.out.println(temp[i]);
@@ -243,11 +240,11 @@ public class DnaRnaVcf {
                     continue;
                 }
 
-                s1.append("'" + col[0] + "'");
+                s1.append("'" + sections[0] + "'");
                 for (int i = 1; i < 8; i++)
-                    s1.append("," + "'" + col[i] + "'");
-                for (int i = 0; i < col[num].split(":").length; i++) {
-                    temp[i] = col[num].split(":")[i].replace(",", ";");
+                    s1.append("," + "'" + sections[i] + "'");
+                for (int i = 0; i < sections[num].split(":").length; i++) {
+                    temp[i] = sections[num].split(":")[i].replace(",", ";");
                     // System.out.println(temp[i]);
                     s1.append("," + "'" + temp[i] + "'");
                 }

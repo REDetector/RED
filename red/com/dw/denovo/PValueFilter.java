@@ -264,7 +264,7 @@ public class PValueFilter {
                 pValueArray[i] = pValueList.get(i);
             }
             code.addDoubleArray("parray", pValueArray);
-            code.addRCode("result<-p.adjust(parray,method='executeFDRFilter',length(parray))");
+            code.addRCode("result<-p.adjust(parray,method='fdr',length(parray))");
             // code.addRCode("mylist <- list(qval = result$q.value)");
             caller.setRCode(code);
             caller.runAndReturnResult("result");
