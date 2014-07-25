@@ -20,8 +20,7 @@ public class BasicFilter {
     private String ps = null;
 
     private SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-    private int ref_n = 0;
-    private int alt_n = 0;
+
     private int count = 0;
 
     public BasicFilter(DatabaseManager databaseManager) {
@@ -31,12 +30,6 @@ public class BasicFilter {
     public void establishSpecificTable(String specificTable) {
         databaseManager.deleteTable(specificTable);
         databaseManager.createTable(specificTable, "(chrome varchar(15),"
-                + Utilities.getInstance().getS2() + "," + "index(chrome,pos))");
-    }
-
-    public void establishBasicTable(String basicTable) {
-        databaseManager.deleteTable(basicTable);
-        databaseManager.createTable(basicTable, "(chrome varchar(15),"
                 + Utilities.getInstance().getS2() + "," + "index(chrome,pos))");
     }
 
@@ -50,9 +43,30 @@ public class BasicFilter {
         System.out.println("specific end" + " " + df.format(new Date()));
     }
 
+    // public void spePost() {
+    // System.out.println("post start" + " " + df.format(new Date()));
+    //
+    // databaseManager.executeSQL("create temporary table newtable select distinct * from "
+    // + specificTable);
+    // databaseManager.executeSQL("truncate table " + specificTable);
+    // databaseManager.executeSQL("insert into " + specificTable +
+    // " select * from  newtable");
+    // databaseManager.deleteTable("newTable");
+    //
+    // System.out.println("post end" + " " + df.format(new Date()));
+    // }
+
+    public void establishBasicTable(String basicTable) {
+        databaseManager.deleteTable(basicTable);
+        databaseManager.createTable(basicTable, "(chrome varchar(15),"
+                + Utilities.getInstance().getS2() + "," + "index(chrome,pos))");
+    }
+
     public void executeBasicFilter(String specificTable, String basicTable, double quality, int depth) {
         try {
             System.out.println("bfilter start" + " " + df.format(new Date()));
+            int ref_n;
+            int alt_n;
             ResultSet rs = databaseManager.query(specificTable,
                     "chrome,pos,AD", "1");
             List<String> coordinate = new ArrayList<String>();
@@ -97,18 +111,5 @@ public class BasicFilter {
             e.printStackTrace();
         }
     }
-    // public void spePost() {
-    // System.out.println("post start" + " " + df.format(new Date()));
-    //
-    // databaseManager.executeSQL("create temporary table newtable select distinct * from "
-    // + specificTable);
-    // databaseManager.executeSQL("truncate table " + specificTable);
-    // databaseManager.executeSQL("insert into " + specificTable +
-    // " select * from  newtable");
-    // databaseManager.deleteTable("newTable");
-    //
-    // System.out.println("post end" + " " + df.format(new Date()));
-    // }
-
 
 }

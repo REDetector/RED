@@ -180,6 +180,5 @@ public class DatabaseManager {
             e.printStackTrace();
         }
         deleteTable("newTable");
-
     }
 }
