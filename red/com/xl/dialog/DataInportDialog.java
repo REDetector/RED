@@ -311,7 +311,6 @@ public class DataInportDialog extends JDialog implements ActionListener {
         chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
         if (chooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
             f.setText(chooser.getSelectedFile().getAbsolutePath().replaceAll("\\\\", "/"));
-            System.out.println(f.getText());
         }
     }
 

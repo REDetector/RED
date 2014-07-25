@@ -151,7 +151,7 @@ public class DatabaseManager {
                     + " where " + whereArgs);
         } catch (SQLException e) {
             System.err.println("Error execute query clause: '" + "select "
-                    + columns + " from" + table + "'");
+                    + columns + " from " + table + "'");
             e.printStackTrace();
             return null;
         }

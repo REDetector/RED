@@ -1,5 +1,5 @@
 #RED Preferences. DO NOT edit it individually.
-#Wed Jul 23 23:42:57 CST 2014
+#Fri Jul 25 10:51:59 CST 2014
 Proxy=,0
 RefSeq\ File=D\:/Downloads/Documents/genes.gtf
 CompressOutput=false
@@ -8,10 +8,10 @@ Temp=E\:\\Workspace\\REDetector\\Data\\Temp
 RecentlyOpenedFiles_0=E\:\\Workspace\\REDetector\\test.red
 Genome=E\:\\Workspace\\REDetector\\Data\\Genome
 User=root
-DataLoaded=true
+DataLoaded=false
 RNA\ Vcf\ File=D\:/Downloads/Documents/BJ22.RNA.chr8.snvs.vcf
-RScriptPath=
-CheckForUpdate=true
+RScriptPath=D\:/Program Files (x86)/R/R-3.1.1/bin/x64/Rscript.exe
+CheckForUpdate=false
 CrashEmail=
 RecentlyOpenedFilesNumber=1
 dbSNP\ File=D\:/Downloads/Documents/dbsnp_138.hg19.vcf
