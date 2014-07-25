@@ -729,15 +729,17 @@ public class REDParser implements Runnable, ProgressListener {
 
         int n = Integer.parseInt(sections[1]);
 
+        String tableName = sections[2];
+
         String description = "No generator description available";
 
-        if (sections.length > 2) {
-            description = sections[2];
+        if (sections.length > 3) {
+            description = sections[3];
         }
 
-        ProbeSet probeSet = new ProbeSet(description, n);
+        ProbeSet probeSet = new ProbeSet(description, n, tableName);
 
-        if (sections.length > 3) {
+        if (sections.length > 4) {
             probeSet.setComments(sections[4].replaceAll("`", "\n"));
         }
 
@@ -874,10 +876,10 @@ public class REDParser implements Runnable, ProgressListener {
 
             lists[i] = new ProbeList(
                     linkage[Integer.parseInt(listSections[0]) - 1],
-                    listSections[1], listSections[2]);
-            int currentListProbeLength = Integer.parseInt(sections[3]);
-            if (listSections.length > 4) {
-                lists[i].setComments(listSections[4].replaceAll("`", "\n"));
+                    listSections[1], listSections[2], listSections[3]);
+            int currentListProbeLength = Integer.parseInt(sections[4]);
+            if (listSections.length > 5) {
+                lists[i].setComments(listSections[5].replaceAll("`", "\n"));
             }
             linkage[Integer.parseInt(listSections[0])] = lists[i];
             // Next we reach the probe list data. These comes as a long list of values the first of which is the probe
@@ -902,7 +904,7 @@ public class REDParser implements Runnable, ProgressListener {
                 String chr = sections[0];
                 if (chr == null) {
                     throw new REDException("Couldn't find a chromosome called "
-                            + sections[1]);
+                            + sections[0]);
                 }
                 Probe p = new Probe(chr, Integer.parseInt(sections[1]), sections[2].toCharArray()[0]);
                 lists[i].addProbe(p);

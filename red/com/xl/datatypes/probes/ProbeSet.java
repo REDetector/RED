@@ -39,8 +39,8 @@ public class ProbeSet extends ProbeList {
      * @param description the description
      * @param probes      the probes
      */
-    public ProbeSet(String description, Probe[] probes) {
-        super(null, "All Probes", description);
+    public ProbeSet(String description, Probe[] probes, String tableName) {
+        super(null, "All Probes", description, tableName);
         setProbes(probes);
     }
 
@@ -50,14 +50,14 @@ public class ProbeSet extends ProbeList {
      * @param description  the description
      * @param expectedSize the expected size
      */
-    public ProbeSet(String description, int expectedSize) {
+    public ProbeSet(String description, int expectedSize, String tableName) {
         /**
          * This constructor should only be called by the SeqMonkParser since it
          * relies on the correct number of probes eventually being added.
          * Ideally we'd go back to sort out this requirement by changing the
          * SeqMonk file format, but for now we're stuck with this work round
          */
-        super(null, "All Probes", description);
+        super(null, "All Probes", description, tableName);
         expectedTotalCount = expectedSize;
     }
 

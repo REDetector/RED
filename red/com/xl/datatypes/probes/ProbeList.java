@@ -41,6 +41,9 @@ public class ProbeList {
      */
     private ProbeList parent;
 
+
+    private String tableName;
+
     /**
      * The children.
      */
@@ -52,13 +55,14 @@ public class ProbeList {
      * @param name        the name
      * @param description the description
      */
-    public ProbeList(ProbeList parent, String name, String description) {
+    public ProbeList(ProbeList parent, String name, String description, String tableName) {
         this.parent = parent;
         if (parent != null) {
             parent.addChild(this);
         }
         this.name = name;
         this.description = description;
+        this.tableName = tableName;
         probeListAdded(this);
     }
 
@@ -314,6 +318,10 @@ public class ProbeList {
      */
     public String name() {
         return name;
+    }
+
+    public String getTableName() {
+        return tableName;
     }
 
     /*

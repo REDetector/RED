@@ -537,7 +537,8 @@ public class REDDataWriter implements Runnable, Cancellable {
 
         String comments = probeSet.comments().replaceAll("[\\r\\n]", "`");
 
-        p.println(ParsingUtils.PROBES + "\t" + probes.length + "\t" + probeSet.justDescription() + "\t" + comments);
+        p.println(ParsingUtils.PROBES + "\t" + probes.length + "\t" + probeSet.getTableName() + "\t" + probeSet
+                .justDescription() + "\t" + comments);
 
         // Next we print out the data
 
@@ -625,8 +626,8 @@ public class REDDataWriter implements Runnable, Cancellable {
             String listComments = probeList.comments().replaceAll("[\\r\\n]", "`");
             Probe[] currentListProbes = probeList.getAllProbes();
             int probeLength = currentListProbes.length;
-            p.println(getListDepth(probeList) + "\t" + probeList.name() + "\t" + probeList.description()
-                    + "\t" + probeLength + "\t" + listComments);
+            p.println(getListDepth(probeList) + "\t" + probeList.name() + "\t" + probeList.description() + "\t" +
+                    probeList.getTableName() + "\t" + probeLength + "\t" + listComments);
 
             for (int j = 0; j < probeLength; j++) {
                 if (j % 1000 == 0) {
