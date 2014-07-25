@@ -265,13 +265,14 @@ public class PValueFilter {
             }
             
             code.addDoubleArray("parray", pValueArray);
-            code.addRCode("result <- qvalue(parray)");
+            code.addRCode("qobj <- qvalue(parray)");
+            code.addRCode("mylist<-list(qval=qobj$qvalues");
 //            code.addRCode("result<-p.adjust(parray,method='fdr',length(parray))");
             // code.addRCode("mylist <- list(qval = result$q.value)");
             caller.setRCode(code);
-            caller.runAndReturnResult("result");
+            caller.runAndReturnResult("mylist");
 
-            double[] results = caller.getParser().getAsDoubleArray("result");
+            double[] results = caller.getParser().getAsDoubleArray("qval");
             for (int i = 0, len = results.length; i < len; i++) {
                 // for (int i = 0; i < coordinate.size(); i++) {
                 fdr = results[i];
