@@ -40,7 +40,7 @@ public class ThreadNonDenovoInput implements Runnable {
         DnaRnaVcf df = new DnaRnaVcf(manager);
         Utilities.getInstance().createCalTable(locationPreferences.getDnaVcfFile());
         df.establishDnaTable(DatabaseManager.DNA_VCF_RESULT_TABLE_NAME);
-        df.dnaVcf(DatabaseManager.DNA_VCF_RESULT_TABLE_NAME, locationPreferences.getDnaVcfFile());
+        df.loadDnaVcfTable(DatabaseManager.DNA_VCF_RESULT_TABLE_NAME, locationPreferences.getDnaVcfFile());
 
         Clear cl = new Clear();
         cl.clear(Utilities.getInstance().getS2(), Utilities.getInstance().getS3());
@@ -48,7 +48,7 @@ public class ThreadNonDenovoInput implements Runnable {
         progressUpdated("Importing RNA vcf data...", 3, ALL_STEP);
         Utilities.getInstance().createCalTable(locationPreferences.getRnaVcfFile());
         df.establishRnaTable(DatabaseManager.RNA_VCF_RESULT_TABLE_NAME);
-        df.rnaVcf(DatabaseManager.RNA_VCF_RESULT_TABLE_NAME, locationPreferences.getRnaVcfFile());
+        df.loadRnaVcfTable(DatabaseManager.RNA_VCF_RESULT_TABLE_NAME, locationPreferences.getRnaVcfFile());
 
         progressUpdated("Filtering sites by quality and coverage...", 4, ALL_STEP);
         BasicFilter bf = new BasicFilter(manager);

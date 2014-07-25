@@ -28,7 +28,6 @@ public class DenovoVcf {
     private StringBuffer s1 = new StringBuffer();
     // count for each function
     private int count_r = 1;
-    private int depth = -1;
     SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
     // establish table structure for following tables
@@ -73,7 +72,7 @@ public class DenovoVcf {
                 + Utilities.getInstance().getS2() + ",index(chrome,pos))");
     }
 
-    // table for RnaVcf X.length-9=time for circulation
+    // table for loadRnaVcf X.length-9=time for circulation
     public void loadRnaVcfTable(String rnaVcfTable, String rnaVcfPath, int num) {
         System.out.println("rnavcf start" + " " + df.format(new Date()));
 
@@ -91,26 +90,25 @@ public class DenovoVcf {
                 if (line.startsWith("#")) {
                     continue;
                 }
-                for (int i = 0; i < line.split("\\t").length; i++) {
-                    col[i] = line.split("\\t")[i];
+                String[] sections = line.split("\\t");
+                for (int i = 0, len = sections.length; i < len; i++) {
+                    col[i] = sections[i];
                 }
-                int length = col[8].split(":").length;
+
+                String[] columnInfo = col[8].split(":");
+                int length = columnInfo.length;
                 if (col[num].split(":").length != length) {
                     continue;
                 }
                 if (count_r > 0) {
                     for (int i = 0; i < length; i++) {
-                        if (col[8].split(":")[i].equals("DP")) {
-                            depth = i;
-                        }
-                        if (col[8].split(":")[i].equals("GT")) {
+                        if (columnInfo[i].equals("GT")) {
                             gtype = i;
                         }
                     }
                     count_r--;
                 }
-                // data for import
-                // '.' stands for undetected, so we discard it
+                // data for import '.' stands for undetected, so we discard it
                 // if ((depth>-1)&&col[num].split(":")[depth].equals("."))
                 // continue;
                 if (gtype > -1
@@ -122,8 +120,10 @@ public class DenovoVcf {
                 s1.append("'" + col[0] + "'");
                 for (int i = 1; i < 8; i++)
                     s1.append("," + "'" + col[i] + "'");
-                for (int i = 0; i < col[num].split(":").length; i++) {
-                    temp[i] = col[num].split(":")[i].replace(",", ";");
+
+                String[] numColumnInfo = col[num].split(":");
+                for (int i = 0, len = numColumnInfo.length; i < len; i++) {
+                    temp[i] = numColumnInfo[i].replace(",", ";");
                     // System.out.println(temp[i]);
                     s1.append("," + "'" + temp[i] + "'");
                 }
@@ -150,69 +150,8 @@ public class DenovoVcf {
         System.out.println("rnavcf end" + " " + df.format(new Date()));
     }
 
-    // table for RnaVcf X.length-9=time for circulation
+    // table for loadRnaVcf X.length-9=time for circulation
     public void loadRnaVcfTable(String rnaVcfTable, String rnaVcfPath) {
-        System.out.println("rnavcf start" + " " + df.format(new Date()));
-
-        try {
-            databaseManager.setAutoCommit(false);
-            // timer for transaction
-            int ts_count = 0;
-            inputStream = new FileInputStream(rnaVcfPath);
-            BufferedReader rin = new BufferedReader(new InputStreamReader(
-                    inputStream));
-            while ((line = rin.readLine()) != null) {
-                if (line.startsWith("##"))
-                    continue;
-                if (line.startsWith("#")) {
-                    continue;
-                }
-                for (int i = 0; i < line.split("\\t").length; i++) {
-                    col[i] = line.split("\\t")[i];
-                }
-                int length = col[8].split(":").length;
-                if (col[9].split(":").length != length) {
-                    continue;
-                }
-                if (count_r > 0) {
-                    for (int i = 0; i < length; i++) {
-                        if (col[8].split(":")[i].equals("DP")) {
-                            depth = i;
-                        }
-                    }
-                    count_r--;
-                }
-                // data for import
-                // '.' stands for undetected, so we discard it
-                // if ((depth>-1)&&col[num].split(":")[depth].equals("."))
-                // continue;
-                s1.append("'" + col[0] + "'");
-                for (int i = 1; i < 8; i++)
-                    s1.append("," + "'" + col[i] + "'");
-                for (int i = 0; i < col[9].split(":").length; i++) {
-                    temp[i] = col[9].split(":")[i].replace(",", ";");
-                    // System.out.println(temp[i]);
-                    s1.append("," + "'" + temp[i] + "'");
-                }
-                databaseManager.executeSQL("insert into " + rnaVcfTable + "("
-                        + Utilities.getInstance().getS3() + ") values(" + s1
-                        + ")");
-                ts_count++;
-                if (ts_count % 20000 == 0)
-                    databaseManager.commit();
-                // clear insert data
-                s1.delete(0, s1.length());
-            }
-            databaseManager.commit();
-            databaseManager.setAutoCommit(true);
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            System.err.println("Error load file from " + rnaVcfPath + " to file stream");
-            e.printStackTrace();
-        } catch (SQLException e) {
-            System.err.println("Error execute sql clause in " + DenovoVcf.class.getName() + ":loadRnaVcfTable()");
-            e.printStackTrace();
-        }
-        System.out.println("rnavcf end" + " " + df.format(new Date()));
+        loadRnaVcfTable(rnaVcfTable, rnaVcfPath, 9);
     }
 }

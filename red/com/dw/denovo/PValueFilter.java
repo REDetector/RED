@@ -27,7 +27,6 @@ public class PValueFilter {
     FileInputStream inputStream;
     private String line = null;
     private String[] col = new String[40];
-    private StringBuffer s1 = new StringBuffer();
     private StringBuffer s2 = new StringBuffer();
     private StringBuffer s3 = new StringBuffer();
     private int count = 1;
@@ -38,10 +37,12 @@ public class PValueFilter {
     ArrayList<Double> fd_ref = new ArrayList<Double>();
     ArrayList<Double> fd_alt = new ArrayList<Double>();
     List<String> coordinate = new ArrayList<String>();
+    List<String> pValueCoordinate = new ArrayList<String>();
+
     private double fdr = 0;
     private double ref_n = 0;
     private double alt_n = 0;
-    private double pvalue = 0;
+    private double pValue = 0;
     SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
     public PValueFilter(DatabaseManager databaseManager) {
@@ -98,7 +99,6 @@ public class PValueFilter {
             databaseManager.setAutoCommit(true);
 
             // clear insert data
-            s1.delete(0, s1.length());
             s2.delete(0, s2.length());
             s3.delete(0, s3.length());
 
@@ -192,8 +192,8 @@ public class PValueFilter {
 
             caller.setRCode(code);
             caller.runAndReturnResult("mylist");
-            pvalue = caller.getParser().getAsDoubleArray("pval")[0];
-            return pvalue;
+            pValue = caller.getParser().getAsDoubleArray("pval")[0];
+            return pValue;
         } catch (Exception e) {
             System.out.println(e.toString());
         }
@@ -208,9 +208,11 @@ public class PValueFilter {
                         "(chrome varchar(15),pos int,ref smallint,alt smallint,level varchar(10),p_value double,fdr double)");
     }
 
-    private void P_V(String darnedTable, String darnedResultTable, String refTable, String commandD) {
-        System.out.println("P_V start" + " " + df.format(new Date()));
+    private List<Double> executePValueFilter(String darnedTable, String darnedResultTable, String refTable,
+                                             String commandD) {
+        System.out.println("executePValueFilter start" + " " + df.format(new Date()));
 
+        List<Double> pValueList = new ArrayList<Double>();
         Exp_num(darnedTable, refTable);
         DecimalFormat dF = new DecimalFormat("0.000 ");
 
@@ -229,61 +231,57 @@ public class PValueFilter {
             // continue;
             // }
             calculate(ref_n, alt_n, known_ref, known_alt, commandD);
-            if (pvalue < 0.05) {
+            if (pValue < 0.05) {
                 try {
                     databaseManager.executeSQL("insert into " + darnedResultTable
                             + "(chrome,pos,ref,alt,level,p_value) values('" + chr
                             + "'," + ps + "," + (int) ref_n + "," + (int) alt_n + ","
-                            + dF.format(lev) + "," + pvalue + ")");
+                            + dF.format(lev) + "," + pValue + ")");
                 } catch (SQLException e) {
-                    System.err.println("Error execute sql clause in " + PValueFilter.class.getName() + ":P_V()");
+                    System.err.println("Error execute sql clause in " + PValueFilter.class.getName() + ":executePValueFilter()");
                     e.printStackTrace();
                 }
-                // System.out.println(chr+" "+ps+" "+(int)found_ref[i]+" "+(int)found_alt[i]+" "+dF.format(lev)+" "+pvalue);
-                s1.append(pvalue + "\t");
+                // System.out.println(chr+" "+ps+" "+(int)found_ref[i]+" "+(int)found_alt[i]+" "+dF.format(lev)+" "+pValue);
+                pValueList.add(pValue);
+                pValueCoordinate.add(chr);
+                pValueCoordinate.add(ps);
             }
         }
-
-        System.out.println("P_V end" + " " + df.format(new Date()));
-
+        System.out.println("executePValueFilter end" + " " + df.format(new Date()));
+        return pValueList;
     }
 
-    public void executeFDRFilter(String darnedTable, String darnedResultTable, String refTable, String commandD) {
-        P_V(darnedTable, darnedResultTable, refTable, commandD);
+    public void executeFDRFilter(String darnedTable, String darnedResultTable, String refTable, String rScciptPath) {
+
         try {
             RCaller caller = new RCaller();
             RCode code = new RCode();
             Globals.detect_current_rscript();
-            caller.setRscriptExecutable(commandD);
-            ArrayList<Float> P_V = new ArrayList<Float>();
-            for (int i = 0; i < s1.toString().split("\t").length; i++) {
-                // System.out.println(s1.toString().split("\t")[i]);
-                // P_V[i]=Double.parseDouble(s1.toString().split("\t")[i]);
-                P_V.add(Float.valueOf(s1.toString().split("\t")[i]));
+            caller.setRscriptExecutable(rScciptPath);
+            List<Double> pValueList = executePValueFilter(darnedTable, darnedResultTable, refTable, rScciptPath);
+            double[] pValueArray = new double[pValueList.size()];
+            for (int i = 0, len = pValueList.size(); i < len; i++) {
+                pValueArray[i] = pValueList.get(i);
             }
-            Object[] objs = P_V.toArray();
-            float[] floats = new float[objs.length];
-            for (int i = 0; i < objs.length; i++) {
-                floats[i] = (Float) objs[i];
-            }
-            code.addFloatArray("parray", floats);
+            code.addDoubleArray("parray", pValueArray);
             code.addRCode("result<-p.adjust(parray,method='executeFDRFilter',length(parray))");
             // code.addRCode("mylist <- list(qval = result$q.value)");
             caller.setRCode(code);
             caller.runAndReturnResult("result");
 
-            for (int i = 0; i < caller.getParser().getAsDoubleArray("result").length; i++) {
+            double[] results = caller.getParser().getAsDoubleArray("result");
+            for (int i = 0, len = results.length; i < len; i++) {
                 // for (int i = 0; i < coordinate.size(); i++) {
-                fdr = caller.getParser().getAsDoubleArray("result")[i];
-                chr = coordinate.get(i);
-                i++;
-                ps = coordinate.get(i);
-                databaseManager.executeSQL("update " + darnedResultTable
-                        + " set fdr=" + fdr + " where chrome='" + chr
-                        + "' and pos=" + ps + " ");
+                fdr = results[i];
+                chr = pValueCoordinate.get(2 * i);
+                ps = pValueCoordinate.get(2 * i + 1);
+                if (fdr < 0.05) {
+                    databaseManager.executeSQL("update " + darnedResultTable
+                            + " set fdr=" + fdr + " where chrome='" + chr
+                            + "' and pos=" + ps + " ");
+                }
             }
             // clear insert data
-            s1.delete(0, s1.length());
             s2.delete(0, s2.length());
             s3.delete(0, s3.length());
         } catch (Exception e) {
