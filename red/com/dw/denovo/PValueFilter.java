@@ -5,6 +5,7 @@ package com.dw.denovo;
  */
 
 import com.dw.publicaffairs.DatabaseManager;
+
 import rcaller.Globals;
 import rcaller.RCaller;
 import rcaller.RCode;
@@ -50,10 +51,47 @@ public class PValueFilter {
     }
 
 
-    public void loadDarnedTable(String darnedTable, String darnedPath) {
+    public boolean hasEstablishedDarnedTable(String darnedTable,String darnedPath ) {
+    	try {
+    	inputStream = new FileInputStream(darnedPath);
+        BufferedReader rin = new BufferedReader(new InputStreamReader(
+                inputStream));
+        while ((line = rin.readLine()) != null) {
+                s2.append(line.split("\\t")[0] + " " + "varchar(15)");
+                s2.append("," + line.split("\\t")[1] + " " + "int");
+                s2.append("," + line.split("\\t")[2] + " " + "varchar(5)");
+                s2.append("," + line.split("\\t")[3] + " " + "varchar(5)");
+                s2.append("," + line.split("\\t")[4] + " " + "varchar(5)");
+                databaseManager.createRefTable(darnedTable, "(" + s2
+                        + ",index(chrom,coordinate))");
+                continue;
+        }
+    	}catch (IOException e) {
+            // TODO Auto-generated catch block
+            System.err.println("Error create file from " + darnedPath + " to file stream");
+            e.printStackTrace();
+        } 
+        ResultSet rs = databaseManager.query(darnedTable,
+                "count(*)", "1 limit 0,100");
+        int number = 0;
         try {
-            System.out.println("loadhg19 start" + " " + df.format(new Date()));// new
-
+            if (rs.next()) {
+                number = rs.getInt(1);
+            }
+        } catch (SQLException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+     // clear insert data
+        s2.delete(0, s2.length());
+        return number > 0;
+    }
+    
+    public void loadDarnedTable(String darnedTable, String darnedPath) {
+    	if (!hasEstablishedDarnedTable(darnedTable,darnedPath)) {
+        try {
+            System.out.println("loadhg19 start" + " " + df.format(new Date()));
+            
             int count_ts = 0;
             inputStream = new FileInputStream(darnedPath);
             BufferedReader rin = new BufferedReader(new InputStreamReader(
@@ -61,18 +99,10 @@ public class PValueFilter {
             while ((line = rin.readLine()) != null) {
                 StringBuffer s1 = new StringBuffer();
                 if (count > 0) {
-                    s2.append(line.split("\\t")[0] + " " + "varchar(15)");
-                    s2.append("," + line.split("\\t")[1] + " " + "int");
-                    s2.append("," + line.split("\\t")[2] + " " + "varchar(5)");
-                    s2.append("," + line.split("\\t")[3] + " " + "varchar(5)");
-                    s2.append("," + line.split("\\t")[4] + " " + "varchar(5)");
                     count--;
                     s3.append(line.split("\\t")[0]);
                     for (int i = 1; i < 5; i++)
                         s3.append("," + line.split("\\t")[i]);
-                    databaseManager.deleteTable(darnedTable);
-                    databaseManager.createTable(darnedTable, "(" + s2
-                            + ",index(chrom,coordinate))");
                     continue;
                 }
                 databaseManager.setAutoCommit(false);
@@ -101,9 +131,7 @@ public class PValueFilter {
             // clear insert data
             s2.delete(0, s2.length());
             s3.delete(0, s3.length());
-
-            System.out.println("loadhg19 end" + " " + df.format(new Date()));
-
+            
         } catch (IOException e) {
             // TODO Auto-generated catch block
             System.err.println("Error load file from " + darnedPath + " to file stream");
@@ -112,6 +140,8 @@ public class PValueFilter {
             System.err.println("Error execute sql clause in " + PValueFilter.class.getName() + ":loadRnaVcfTable()");
             e.printStackTrace();
         }
+    	}
+    	System.out.println("loadhg19 end" + " " + df.format(new Date()));
     }
 
     private void level(String refTable, String chr, String ps) {
