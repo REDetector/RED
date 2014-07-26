@@ -101,7 +101,6 @@ public class ThreadDenovoInput implements Runnable {
                     DatabaseManager.PVALUE_FILTER_RESULT_TABLE_NAME, DatabaseManager.DBSNP_FILTER_RESULT_TABLE_NAME,
                     locationPreferences.getRScriptPath());
         }
-
         REDPreferences.getInstance().setDataLoadedToDatabase(true);
         processingComplete();
     }

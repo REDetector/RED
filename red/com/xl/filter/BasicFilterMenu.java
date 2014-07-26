@@ -37,7 +37,6 @@ import javax.swing.event.ListSelectionListener;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.sql.SQLException;
 import java.util.Vector;
 
 /**
@@ -70,15 +69,6 @@ public class BasicFilterMenu extends ProbeFilter {
     @Override
     protected void generateProbeList() {
         DatabaseManager databaseManager = DatabaseManager.getInstance();
-        try {
-            databaseManager.connectDatabase();
-            databaseManager.createStatement();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        } catch (SQLException e) {
-            System.err.println("You haven't connected to database ever.");
-            e.printStackTrace();
-        }
         if (REDPreferences.getInstance().isDenovo()) {
             databaseManager.useDatabase(DatabaseManager.DENOVO_DATABASE_NAME);
         } else {
@@ -94,7 +84,6 @@ public class BasicFilterMenu extends ProbeFilter {
                 DatabaseManager.BASIC_FILTER_RESULT_TABLE_NAME, qualityInt, coverageInt);
         DatabaseManager.getInstance().distinctTable(DatabaseManager.BASIC_FILTER_RESULT_TABLE_NAME);
         Vector<Probe> probes = Query.queryAllEditingSites(DatabaseManager.BASIC_FILTER_RESULT_TABLE_NAME);
-        DatabaseManager.getInstance().closeDatabase();
         ProbeList newList = new ProbeList(startingList, DatabaseManager.BASIC_FILTER_RESULT_TABLE_NAME, "",
                 DatabaseManager.BASIC_FILTER_RESULT_TABLE_NAME);
         int index = 0;
@@ -109,7 +98,6 @@ public class BasicFilterMenu extends ProbeFilter {
             newList.addProbe(probe);
         }
         filterFinished(newList);
-
     }
 
     /* (non-Javadoc)
@@ -149,7 +137,7 @@ public class BasicFilterMenu extends ProbeFilter {
      */
     @Override
     protected String listDescription() {
-        StringBuffer b = new StringBuffer();
+        StringBuilder b = new StringBuilder();
 
         b.append("Filter on probes in ");
         b.append(collection.probeSet().getActiveList().name() + " ");
@@ -168,11 +156,7 @@ public class BasicFilterMenu extends ProbeFilter {
      */
     @Override
     protected String listName() {
-        StringBuffer b = new StringBuffer();
-
-        b.append("Basic Filter by ");
-
-        return b.toString();
+        return "Filter:" + "quality>=" + qualityInt + ",coverage>=" + coverageInt;
     }
 
     /**

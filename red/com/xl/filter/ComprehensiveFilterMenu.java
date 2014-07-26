@@ -37,7 +37,6 @@ import javax.swing.event.ListSelectionListener;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.sql.SQLException;
 import java.util.Vector;
 
 /**
@@ -63,21 +62,12 @@ public class ComprehensiveFilterMenu extends ProbeFilter {
 
     @Override
     public String description() {
-        return "Filter editing bases by quality and coverage.";
+        return "Filter editing bases by sequence edge.";
     }
 
     @Override
     protected void generateProbeList() {
         DatabaseManager databaseManager = DatabaseManager.getInstance();
-        try {
-            databaseManager.connectDatabase();
-            databaseManager.createStatement();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        } catch (SQLException e) {
-            System.err.println("You haven't connected to database ever.");
-            e.printStackTrace();
-        }
         if (REDPreferences.getInstance().isDenovo()) {
             databaseManager.useDatabase(DatabaseManager.DENOVO_DATABASE_NAME);
         } else {
@@ -90,7 +80,6 @@ public class ComprehensiveFilterMenu extends ProbeFilter {
                 DatabaseManager.COMPREHENSIVE_FILTER_RESULT_TABLE_NAME, parentTable, 2);
         DatabaseManager.getInstance().distinctTable(DatabaseManager.COMPREHENSIVE_FILTER_RESULT_TABLE_NAME);
         Vector<Probe> probes = Query.queryAllEditingSites(DatabaseManager.COMPREHENSIVE_FILTER_RESULT_TABLE_NAME);
-        DatabaseManager.getInstance().closeDatabase();
         ProbeList newList = new ProbeList(startingList, DatabaseManager.COMPREHENSIVE_FILTER_RESULT_TABLE_NAME, "",
                 DatabaseManager.COMPREHENSIVE_FILTER_RESULT_TABLE_NAME);
         int index = 0;
@@ -148,7 +137,7 @@ public class ComprehensiveFilterMenu extends ProbeFilter {
         StringBuilder b = new StringBuilder();
 
         b.append("Filter on probes in ");
-        b.append(collection.probeSet().getActiveList().name());
+        b.append(collection.probeSet().getActiveList().name() + " ");
 
         for (int s = 0; s < stores.length; s++) {
             b.append(stores[s].name());
@@ -164,7 +153,7 @@ public class ComprehensiveFilterMenu extends ProbeFilter {
      */
     @Override
     protected String listName() {
-        return "Comprehensive Filter by edge length " + sequenceEdge;
+        return "Filter by sequence edge length " + sequenceEdge;
     }
 
     /**
