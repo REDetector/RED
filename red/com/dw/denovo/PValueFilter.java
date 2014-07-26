@@ -5,7 +5,6 @@ package com.dw.denovo;
  */
 
 import com.dw.publicaffairs.DatabaseManager;
-
 import rcaller.Globals;
 import rcaller.RCaller;
 import rcaller.RCode;
@@ -282,6 +281,7 @@ public class PValueFilter {
     }
 
     public void executeFDRFilter(String darnedTable, String darnedResultTable, String refTable, String rScciptPath) {
+        System.out.println("executeFDRFilter start" + " " + df.format(new Date()));
 
         try {
             RCaller caller = new RCaller();
@@ -295,14 +295,14 @@ public class PValueFilter {
             }
             
             code.addDoubleArray("parray", pValueArray);
-            code.addRCode("qobj <- qvalue(parray)");
-            code.addRCode("mylist<-list(qval=qobj$qvalues");
-//            code.addRCode("result<-p.adjust(parray,method='fdr',length(parray))");
+//            code.addRCode("qobj <- qvalue(parray)");
+//            code.addRCode("mylist<-list(qval=qobj$qvalues");
+            code.addRCode("result<-p.adjust(parray,method='fdr',length(parray))");
             // code.addRCode("mylist <- list(qval = result$q.value)");
             caller.setRCode(code);
-            caller.runAndReturnResult("mylist");
+            caller.runAndReturnResult("result");
 
-            double[] results = caller.getParser().getAsDoubleArray("qval");
+            double[] results = caller.getParser().getAsDoubleArray("result");
             for (int i = 0, len = results.length; i < len; i++) {
                 // for (int i = 0; i < coordinate.size(); i++) {
                 fdr = results[i];
@@ -320,6 +320,9 @@ public class PValueFilter {
         } catch (Exception e) {
             e.printStackTrace();
         }
+        System.out.println("executeFDRFilter end" + " " + df.format(new Date()));
+
+
     }
 
 }
