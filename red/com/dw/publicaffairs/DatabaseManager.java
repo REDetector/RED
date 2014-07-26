@@ -181,4 +181,10 @@ public class DatabaseManager {
         }
         deleteTable("newTable");
     }
+
+    @Override
+    protected void finalize() throws Throwable {
+        super.finalize();
+        closeDatabase();
+    }
 }
