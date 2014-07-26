@@ -240,7 +240,7 @@ public class Connect {
             DnaRnaFilter dr = new DnaRnaFilter(manager);
             dr.establishDnaRnaTable(DatabaseManager.DNA_RNA_FILTER_RESULT_TABLE_NAME);
             dr.executeDnaRnaFilter(
-                    DatabaseManager.DNA_RNA_FILTER_RESULT_TABLE_NAME,
+                    DatabaseManager.DNA_RNA_FILTER_RESULT_TABLE_NAME, DatabaseManager.DNA_VCF_RESULT_TABLE_NAME,
                     DatabaseManager.DBSNP_FILTER_RESULT_TABLE_NAME);
             DatabaseManager.getInstance().distinctTable(
                     DatabaseManager.DNA_RNA_FILTER_RESULT_TABLE_NAME);

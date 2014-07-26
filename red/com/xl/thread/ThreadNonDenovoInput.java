@@ -101,7 +101,8 @@ public class ThreadNonDenovoInput implements Runnable {
         progressUpdated("Executing DNA & RNA Filter...", 8, ALL_STEP);
         DnaRnaFilter dr = new DnaRnaFilter(manager);
         dr.establishDnaRnaTable(DatabaseManager.DNA_RNA_FILTER_RESULT_TABLE_NAME);
-        dr.executeDnaRnaFilter(DatabaseManager.DNA_RNA_FILTER_RESULT_TABLE_NAME, DatabaseManager.DBSNP_FILTER_RESULT_TABLE_NAME);
+        dr.executeDnaRnaFilter(DatabaseManager.DNA_RNA_FILTER_RESULT_TABLE_NAME, DatabaseManager.DNA_VCF_RESULT_TABLE_NAME,
+                DatabaseManager.DBSNP_FILTER_RESULT_TABLE_NAME);
         DatabaseManager.getInstance().distinctTable(DatabaseManager.DNA_RNA_FILTER_RESULT_TABLE_NAME);
 
         progressUpdated("Executing LLR Filter...", 9, ALL_STEP);

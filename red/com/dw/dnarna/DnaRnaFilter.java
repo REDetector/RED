@@ -37,11 +37,11 @@ public class DnaRnaFilter {
         System.out.println("esdr end" + " " + df.format(new Date()));
     }
 
-    public void executeDnaRnaFilter(String dnaRnaTable, String refTable) {
+    public void executeDnaRnaFilter(String dnaRnaResultTable, String dnaVcfTable, String refTable) {
         try {
             System.out.println("df start" + " " + df.format(new Date()));
 
-            ResultSet rs = databaseManager.query(dnaRnaTable, "chrome",
+            ResultSet rs = databaseManager.query(dnaVcfTable, "chrome",
                     "1 limit 0,1");
             List<String> coordinate = new ArrayList<String>();
             databaseManager.setAutoCommit(false);
@@ -70,13 +70,13 @@ public class DnaRnaFilter {
                 } else {
                     ps = coordinate.get(i);
                     // The first six base will be filtered out
-                    rs = databaseManager.query(dnaRnaTable, "GT", "chrome='" + chr
+                    rs = databaseManager.query(dnaVcfTable, "GT", "chrome='" + chr
                             + "' and pos=" + ps + "");
                     while (rs.next()) {
                         if (bool) {
                             chr = "chr" + chr;
                             databaseManager.executeSQL("insert into "
-                                    + dnaRnaTable + " select * from "
+                                    + dnaRnaResultTable + " select * from "
                                     + refTable + " where chrome='" + chr
                                     + "' and pos=" + ps + "");
                             count++;
@@ -84,7 +84,7 @@ public class DnaRnaFilter {
                                 databaseManager.commit();
                         } else {
                             databaseManager.executeSQL("insert into "
-                                    + dnaRnaTable + " select * from "
+                                    + dnaRnaResultTable + " select * from "
                                     + refTable + " where chrome='" + chr
                                     + "' and pos=" + ps + "");
                             count++;
