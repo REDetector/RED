@@ -66,7 +66,9 @@ public class ThreadDenovoInput implements Runnable {
         RepeatFilter rf = new RepeatFilter(manager);
         rf.loadRepeatTable(DatabaseManager.REPEAT_FILTER_TABLE_NAME, locationPreferences.getRepeatFile());
         rf.establishRepeatResultTable(DatabaseManager.REPEAT_FILTER_RESULT_TABLE_NAME);
-        rf.rfilter(DatabaseManager.REPEAT_FILTER_TABLE_NAME, DatabaseManager.REPEAT_FILTER_RESULT_TABLE_NAME,
+//        rf.rfilter(DatabaseManager.REPEAT_FILTER_TABLE_NAME, DatabaseManager.REPEAT_FILTER_RESULT_TABLE_NAME,
+//                DatabaseManager.BASIC_FILTER_RESULT_TABLE_NAME);
+        rf.mysqlRepeatFilter(DatabaseManager.REPEAT_FILTER_TABLE_NAME, DatabaseManager.REPEAT_FILTER_RESULT_TABLE_NAME,
                 DatabaseManager.BASIC_FILTER_RESULT_TABLE_NAME);
         DatabaseManager.getInstance().distinctTable(DatabaseManager.REPEAT_FILTER_RESULT_TABLE_NAME);
 
@@ -74,7 +76,10 @@ public class ThreadDenovoInput implements Runnable {
         ComprehensiveFilter cf = new ComprehensiveFilter(manager);
         cf.establishComprehensiveResultTable(DatabaseManager.COMPREHENSIVE_FILTER_RESULT_TABLE_NAME);
         cf.loadComprehensiveTable(DatabaseManager.COMPREHENSIVE_FILTER_TABLE_NAME, locationPreferences.getRefSeqFile());
-        cf.executeComprehensiveFilter(DatabaseManager.COMPREHENSIVE_FILTER_TABLE_NAME,
+//        cf.executeComprehensiveFilter(DatabaseManager.COMPREHENSIVE_FILTER_TABLE_NAME,
+//                DatabaseManager.COMPREHENSIVE_FILTER_RESULT_TABLE_NAME, DatabaseManager.REPEAT_FILTER_RESULT_TABLE_NAME
+//                , 2);
+        cf.mysqlComprehensiveFilter(DatabaseManager.COMPREHENSIVE_FILTER_TABLE_NAME,
                 DatabaseManager.COMPREHENSIVE_FILTER_RESULT_TABLE_NAME, DatabaseManager.REPEAT_FILTER_RESULT_TABLE_NAME
                 , 2);
         DatabaseManager.getInstance().distinctTable(DatabaseManager.COMPREHENSIVE_FILTER_RESULT_TABLE_NAME);

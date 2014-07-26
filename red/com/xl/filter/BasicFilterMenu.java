@@ -210,7 +210,6 @@ public class BasicFilterMenu extends ProbeFilter {
 
             add(dataPanel, BorderLayout.WEST);
 
-
             JPanel choicePanel = new JPanel();
             choicePanel.setLayout(new GridBagLayout());
             choicePanel.setBorder(BorderFactory.createEmptyBorder(4, 4, 4, 4));
@@ -218,10 +217,10 @@ public class BasicFilterMenu extends ProbeFilter {
 
             c.gridy = 0;
             c.gridx = 0;
-            c.weightx = 0.5;
+            c.weightx = 0.2;
             c.weighty = 0.5;
             c.fill = GridBagConstraints.HORIZONTAL;
-            choicePanel.add(new JLabel("Least Quality"), c);
+            choicePanel.add(new JLabel("Quality >= "), c);
             c.gridx = 1;
             c.weightx = 0.1;
             quality = new JTextField(3);
@@ -230,10 +229,10 @@ public class BasicFilterMenu extends ProbeFilter {
 
             c.gridy++;
             c.gridx = 0;
-            c.weightx = 0.5;
+            c.weightx = 0.2;
             c.weighty = 0.5;
             c.fill = GridBagConstraints.HORIZONTAL;
-            choicePanel.add(new JLabel("Coverage"), c);
+            choicePanel.add(new JLabel("Coverage >= "), c);
             c.gridx = 1;
             c.weightx = 0.1;
             coverage = new JTextField(3);
@@ -247,7 +246,7 @@ public class BasicFilterMenu extends ProbeFilter {
          * @see javax.swing.JComponent#getPreferredSize()
          */
         public Dimension getPreferredSize() {
-            return new Dimension(600, 300);
+            return new Dimension(400, 250);
         }
 
         /* (non-Javadoc)

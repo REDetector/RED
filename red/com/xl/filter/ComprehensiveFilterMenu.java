@@ -201,7 +201,6 @@ public class ComprehensiveFilterMenu extends ProbeFilter {
 
             add(dataPanel, BorderLayout.WEST);
 
-
             JPanel choicePanel = new JPanel();
             choicePanel.setLayout(new GridBagLayout());
             choicePanel.setBorder(BorderFactory.createEmptyBorder(4, 4, 4, 4));
@@ -212,7 +211,7 @@ public class ComprehensiveFilterMenu extends ProbeFilter {
             c.weightx = 0.5;
             c.weighty = 0.5;
             c.fill = GridBagConstraints.HORIZONTAL;
-            choicePanel.add(new JLabel("Least Quality"), c);
+            choicePanel.add(new JLabel("Edge"), c);
             c.gridx = 1;
             c.weightx = 0.1;
             edgeField = new JTextField(3);

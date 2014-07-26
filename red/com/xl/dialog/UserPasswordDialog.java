@@ -169,8 +169,6 @@ public class UserPasswordDialog extends JDialog implements ActionListener {
                                 JOptionPane.INFORMATION_MESSAGE);
                         processingComplete("database_loaded");
                     }
-                    progressUpdated("Connecting Sucessfully!", 999, 1000);
-                    Thread.sleep(2000);
                     processingComplete("database_connected");
                     dispose();
                 }
@@ -182,9 +180,6 @@ public class UserPasswordDialog extends JDialog implements ActionListener {
                 JOptionPane.showMessageDialog(this, "Sorry, fail to connect to database. You may input one of wrong " +
                                 "database site, user name or password.", "Connected Failed",
                         JOptionPane.ERROR_MESSAGE);
-                progressCancelled();
-                e1.printStackTrace();
-            } catch (InterruptedException e1) {
                 progressCancelled();
                 e1.printStackTrace();
             }
