@@ -19,7 +19,7 @@
  */
 package com.xl.filter;
 
-import com.dw.denovo.BasicFilter;
+import com.dw.denovo.ComprehensiveFilter;
 import com.dw.publicaffairs.DatabaseManager;
 import com.dw.publicaffairs.Query;
 import com.xl.datatypes.DataCollection;
@@ -45,20 +45,19 @@ import java.util.Vector;
  * from quantiation.  Each probe is filtered independently of all
  * other probes.
  */
-public class BasicFilterMenu extends ProbeFilter {
+public class ComprehensiveFilterMenu extends ProbeFilter {
 
     private DataStore[] stores = new DataStore[0];
-    private BasicFilterOptionPanel optionsPanel = new BasicFilterOptionPanel();
-    private int qualityInt = -1;
-    private int coverageInt = -1;
+    private ComprehensiveFilterOptionPanel optionsPanel = new ComprehensiveFilterOptionPanel();
+    private int sequenceEdge = -1;
 
     /**
      * Instantiates a new values filter with default values
      *
      * @param collection The dataCollection to filter
-     * @throws REDException if the dataCollection isn't quantitated.
+     * @throws com.xl.exception.REDException if the dataCollection isn't quantitated.
      */
-    public BasicFilterMenu(DataCollection collection) throws REDException {
+    public ComprehensiveFilterMenu(DataCollection collection) throws REDException {
         super(collection);
     }
 
@@ -85,18 +84,15 @@ public class BasicFilterMenu extends ProbeFilter {
             databaseManager.useDatabase(DatabaseManager.NON_DENOVO_DATABASE_NAME);
         }
         String parentTable = startingList.getTableName();
-        BasicFilter bf = new BasicFilter(databaseManager);
-        bf.establishSpecificTable(DatabaseManager.SPECIFIC_FILTER_RESULT_TABLE_NAME);
-        bf.executeSpecificFilter(DatabaseManager.SPECIFIC_FILTER_RESULT_TABLE_NAME, parentTable);
-        bf.establishBasicTable(DatabaseManager.BASIC_FILTER_RESULT_TABLE_NAME);
-        // The first parameter means quality and the second means depth
-        bf.executeBasicFilter(DatabaseManager.SPECIFIC_FILTER_RESULT_TABLE_NAME,
-                DatabaseManager.BASIC_FILTER_RESULT_TABLE_NAME, qualityInt, coverageInt);
-        DatabaseManager.getInstance().distinctTable(DatabaseManager.BASIC_FILTER_RESULT_TABLE_NAME);
-        Vector<Probe> probes = Query.queryAllEditingSites(DatabaseManager.BASIC_FILTER_RESULT_TABLE_NAME);
+        ComprehensiveFilter cf = new ComprehensiveFilter(databaseManager);
+        cf.establishComprehensiveResultTable(DatabaseManager.COMPREHENSIVE_FILTER_RESULT_TABLE_NAME);
+        cf.executeComprehensiveFilter(DatabaseManager.COMPREHENSIVE_FILTER_TABLE_NAME,
+                DatabaseManager.COMPREHENSIVE_FILTER_RESULT_TABLE_NAME, parentTable, 2);
+        DatabaseManager.getInstance().distinctTable(DatabaseManager.COMPREHENSIVE_FILTER_RESULT_TABLE_NAME);
+        Vector<Probe> probes = Query.queryAllEditingSites(DatabaseManager.COMPREHENSIVE_FILTER_RESULT_TABLE_NAME);
         DatabaseManager.getInstance().closeDatabase();
-        ProbeList newList = new ProbeList(startingList, DatabaseManager.BASIC_FILTER_RESULT_TABLE_NAME, "",
-                DatabaseManager.BASIC_FILTER_RESULT_TABLE_NAME);
+        ProbeList newList = new ProbeList(startingList, DatabaseManager.COMPREHENSIVE_FILTER_RESULT_TABLE_NAME, "",
+                DatabaseManager.COMPREHENSIVE_FILTER_RESULT_TABLE_NAME);
         int index = 0;
         int probesLength = probes.size();
         for (Probe probe : probes) {
@@ -133,7 +129,7 @@ public class BasicFilterMenu extends ProbeFilter {
      */
     @Override
     public boolean isReady() {
-        return stores.length != 0 && qualityInt != -1 && coverageInt != -1;
+        return stores.length != 0 && sequenceEdge != -1;
     }
 
     /* (non-Javadoc)
@@ -149,7 +145,7 @@ public class BasicFilterMenu extends ProbeFilter {
      */
     @Override
     protected String listDescription() {
-        StringBuffer b = new StringBuffer();
+        StringBuilder b = new StringBuilder();
 
         b.append("Filter on probes in ");
         b.append(collection.probeSet().getActiveList().name());
@@ -168,26 +164,21 @@ public class BasicFilterMenu extends ProbeFilter {
      */
     @Override
     protected String listName() {
-        StringBuffer b = new StringBuffer();
-
-        b.append("Basic Filter by ");
-
-        return b.toString();
+        return "Comprehensive Filter by edge length " + sequenceEdge;
     }
 
     /**
      * The ValuesFilterOptionPanel.
      */
-    private class BasicFilterOptionPanel extends JPanel implements ListSelectionListener, KeyListener {
+    private class ComprehensiveFilterOptionPanel extends JPanel implements ListSelectionListener, KeyListener {
 
         private JList<DataStore> dataList;
-        private JTextField quality;
-        private JTextField coverage;
+        private JTextField edgeField;
 
         /**
          * Instantiates a new values filter option panel.
          */
-        public BasicFilterOptionPanel() {
+        public ComprehensiveFilterOptionPanel() {
             setLayout(new BorderLayout());
             JPanel dataPanel = new JPanel();
             dataPanel.setBorder(BorderFactory.createEmptyBorder(4, 4, 4, 4));
@@ -224,21 +215,10 @@ public class BasicFilterMenu extends ProbeFilter {
             choicePanel.add(new JLabel("Least Quality"), c);
             c.gridx = 1;
             c.weightx = 0.1;
-            quality = new JTextField(3);
-            quality.addKeyListener(this);
-            choicePanel.add(quality, c);
+            edgeField = new JTextField(3);
+            edgeField.addKeyListener(this);
+            choicePanel.add(edgeField, c);
 
-            c.gridy++;
-            c.gridx = 0;
-            c.weightx = 0.5;
-            c.weighty = 0.5;
-            c.fill = GridBagConstraints.HORIZONTAL;
-            choicePanel.add(new JLabel("Coverage"), c);
-            c.gridx = 1;
-            c.weightx = 0.1;
-            coverage = new JTextField(3);
-            coverage.addKeyListener(this);
-            choicePanel.add(coverage, c);
             valueChanged(null);
             add(new JScrollPane(choicePanel), BorderLayout.CENTER);
         }
@@ -254,7 +234,7 @@ public class BasicFilterMenu extends ProbeFilter {
          * @see javax.swing.event.ListSelectionListener#valueChanged(javax.swing.event.ListSelectionEvent)
          */
         public void valueChanged(ListSelectionEvent lse) {
-            System.out.println(BasicFilterMenu.class.getName() + ":valueChanged()");
+            System.out.println(ComprehensiveFilterMenu.class.getName() + ":valueChanged()");
             java.util.List<DataStore> lists = dataList.getSelectedValuesList();
             stores = new DataStore[lists.size()];
             for (int i = 0; i < stores.length; i++) {
@@ -281,10 +261,8 @@ public class BasicFilterMenu extends ProbeFilter {
             if (f.getText().length() == 0) {
                 return;
             }
-            if (f == quality) {
-                qualityInt = Integer.parseInt(quality.getText());
-            } else if (f == coverage) {
-                coverageInt = Integer.parseInt(coverage.getText());
+            if (f == edgeField) {
+                sequenceEdge = Integer.parseInt(edgeField.getText());
             }
             optionsChanged();
         }

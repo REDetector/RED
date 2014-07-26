@@ -28,6 +28,7 @@ public class UserPasswordDialog extends JDialog implements ActionListener {
     public UserPasswordDialog(REDApplication application) {
         super(application, "MySQL Server Login...");
         listeners = new ArrayList<ProgressListener>();
+        listeners.add(application);
         this.application = application;
         setSize(500, 400);
         setModal(true);
@@ -166,10 +167,11 @@ public class UserPasswordDialog extends JDialog implements ActionListener {
                                         "<br>You can detect editing sites using the filter in 'Filter' menu",
                                 "Connect Successfully",
                                 JOptionPane.INFORMATION_MESSAGE);
+                        processingComplete("database_loaded");
                     }
                     progressUpdated("Connecting Sucessfully!", 999, 1000);
                     Thread.sleep(2000);
-                    processingComplete();
+                    processingComplete("database_connected");
                     dispose();
                 }
             } catch (ClassNotFoundException e1) {
@@ -189,32 +191,6 @@ public class UserPasswordDialog extends JDialog implements ActionListener {
         } else if (action.equals("cancel")) {
             setVisible(false);
             dispose();
-        }
-    }
-
-    /**
-     * Adds a progress listener.
-     *
-     * @param l The listener to add
-     */
-    public void addProgressListener(ProgressListener l) {
-        if (l == null) {
-            throw new NullPointerException("DataParserListener can't be null");
-        }
-
-        if (!listeners.contains(l)) {
-            listeners.add(l);
-        }
-    }
-
-    /**
-     * Removes a progress listener.
-     *
-     * @param l The listener to remove
-     */
-    public void removeProgressListener(ProgressListener l) {
-        if (l != null && listeners.contains(l)) {
-            listeners.remove(l);
         }
     }
 
@@ -272,10 +248,10 @@ public class UserPasswordDialog extends JDialog implements ActionListener {
      * Tells all listeners that the parser has finished parsing the data
      * The list of dataSets should be the same length as the original file list.
      */
-    protected void processingComplete() {
+    protected void processingComplete(String command) {
         Iterator<ProgressListener> i = listeners.iterator();
         for (; i.hasNext(); ) {
-            i.next().progressComplete("database_connected", null);
+            i.next().progressComplete(command, null);
         }
     }
 }

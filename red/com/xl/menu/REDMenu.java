@@ -10,6 +10,7 @@ import com.xl.dialog.gotodialog.GotoWindowDialog;
 import com.xl.display.chromosomeviewer.ChromosomeDataTrack;
 import com.xl.exception.REDException;
 import com.xl.filter.BasicFilterMenu;
+import com.xl.filter.ComprehensiveFilterMenu;
 import com.xl.help.HelpDialog;
 import com.xl.main.REDApplication;
 import com.xl.panel.ToolbarPanel;
@@ -183,7 +184,7 @@ public class REDMenu extends JMenuBar implements ActionListener {
             {
                 addJMenuItem(fileMenu, connectToMySQL, MenuUtils.CONNECT_TO_MYSQL, KeyEvent.VK_C, true);
                 importData.setText(MenuUtils.IMPORT_DATA);
-                addJMenuItem(importData, toDatabase, MenuUtils.TO_DATABASE, -1, false);
+                addJMenuItem(importData, toDatabase, MenuUtils.DATABASE, -1, false);
                 addJMenuItem(importData, fasta, MenuUtils.FASTA, -1, true);
                 addJMenuItem(importData, rna, MenuUtils.RNA, -1, true);
                 addJMenuItem(importData, dna, MenuUtils.DNA, -1, true);
@@ -346,9 +347,8 @@ public class REDMenu extends JMenuBar implements ActionListener {
         } else if (action.equals(MenuUtils.SAVE_PROJECT_AS)) {
             redApplication.saveProjectAs();
         } else if (action.equals(MenuUtils.CONNECT_TO_MYSQL)) {
-            UserPasswordDialog userPasswordDialog = new UserPasswordDialog(redApplication);
-            userPasswordDialog.addProgressListener(redApplication);
-        } else if (action.equals(MenuUtils.TO_DATABASE)) {
+            new UserPasswordDialog(redApplication);
+        } else if (action.equals(MenuUtils.DATABASE)) {
             new DataInportDialog(redApplication);
         } else if (action.equals(MenuUtils.FASTA)) {
             redApplication.importData(new FastaFileParser(redApplication.dataCollection()));
@@ -440,7 +440,8 @@ public class REDMenu extends JMenuBar implements ActionListener {
                 } else if (action.equals(MenuUtils.RNA_DNA_FILTER)) {
 
                 } else if (action.equals(MenuUtils.COMPREHENSIVE_FILTER)) {
-
+                    new FilterOptionsDialog(redApplication.dataCollection(),
+                            new ComprehensiveFilterMenu(redApplication.dataCollection()));
                 } else if (action.equals(MenuUtils.STATISTICAL_FILTER)) {
 
                 }

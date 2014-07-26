@@ -153,7 +153,6 @@ public class ChromosomeDisplay extends JPanel implements DataChangeListener {
             }
 
             // Now go through all the probes figuring out whether they need to be displayed
-
             for (Probe probe : probes) {
                 drawProbe(probe, g, width, maxLen, yOffset, xOffset,
                         height, fixedColour);
@@ -213,8 +212,8 @@ public class ChromosomeDisplay extends JPanel implements DataChangeListener {
     private void drawProbe(Probe p, Graphics g, int chrWidth, int maxLength,
                            int yOffset, int xOffset, int effectiveHeight, Color color) {
 
-        int wholeXStart = xOffset + scaleX(chrWidth, p.getStart(), maxLength) - 1;
-        int wholeXEnd = wholeXStart + 2;
+        int wholeXStart = xOffset + scaleX(chrWidth, p.getStart(), maxLength);
+        int wholeXEnd = wholeXStart + 1;
 
         if (color != null) {
             g.setColor(color);
@@ -237,28 +236,11 @@ public class ChromosomeDisplay extends JPanel implements DataChangeListener {
 
         yBoxStart = (getHeight() - yOffset)
                 - ((int) (((double) effectiveHeight) * (p.getStart() / chrWidth)));
-        int yValue = yBoxStart;
         yBoxEnd = effectiveHeight + yOffset;
 
-        switch (DisplayPreferences.getInstance().getGraphType()) {
+        g.fillRect(wholeXStart, yBoxStart, (wholeXEnd - wholeXStart), yBoxEnd - yBoxStart);
 
-            case DisplayPreferences.GRAPH_TYPE_BAR:
-
-                g.fillRect(wholeXStart, yBoxStart, (wholeXEnd - wholeXStart),
-                        yBoxEnd - yBoxStart);
-                break;
-
-            case DisplayPreferences.GRAPH_TYPE_POINT:
-                g.fillOval(wholeXStart + ((wholeXEnd - wholeXStart) / 2), yValue,
-                        2, 2);
-                break;
-
-            case DisplayPreferences.GRAPH_TYPE_LINE:
-                int xMid = wholeXStart + ((wholeXEnd - wholeXStart) / 2);
-                break;
-
-        }
-        // System.out.println("Drawing probe from x="+wholeXStart+" y="+yBoxStart+" width="+(wholeXEnd-wholeXStart)+" height="+(yBoxEnd-yBoxStart));
+//        System.out.println("Drawing probe from x=" + wholeXStart + " y=" + yBoxStart + " width=" + (wholeXEnd - wholeXStart) + " height=" + (yBoxEnd - yBoxStart));
 
     }
 
