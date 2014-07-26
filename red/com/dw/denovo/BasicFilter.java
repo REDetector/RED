@@ -40,7 +40,7 @@ public class BasicFilter {
                 + Utilities.getInstance().getS3() + ")  select * from " + ""
                 + rnaVcfTable + " where " + "REF='A' AND ALT='G'");
 
-        System.out.println("specific end" + " " + df.format(new Date()));
+        System.out.println("specific end" + "  " + df.format(new Date()));
     }
 
     // public void spePost() {
