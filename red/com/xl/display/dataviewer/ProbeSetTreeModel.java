@@ -56,7 +56,7 @@ public class ProbeSetTreeModel implements TreeModel, ProbeSetChangeListener, Dat
     /**
      * The root node.
      */
-    private folderNode rootNode;
+    private FolderNode rootNode;
 
     /**
      * Instantiates a new probe set tree model.
@@ -71,7 +71,7 @@ public class ProbeSetTreeModel implements TreeModel, ProbeSetChangeListener, Dat
         if (probes != null) {
             collection.probeSet().addProbeSetChangeListener(this);
         }
-        rootNode = new folderNode("Probe Lists");
+        rootNode = new FolderNode("Probe Lists");
     }
 
     /* (non-Javadoc)
@@ -154,7 +154,7 @@ public class ProbeSetTreeModel implements TreeModel, ProbeSetChangeListener, Dat
     public boolean isLeaf(Object node) {
         if (node instanceof ProbeList) {
             return ((ProbeList) node).children().length == 0;
-        } else if (node instanceof folderNode) {
+        } else if (node instanceof FolderNode) {
             return false;
         }
         return true;
@@ -307,7 +307,7 @@ public class ProbeSetTreeModel implements TreeModel, ProbeSetChangeListener, Dat
     /**
      * The Class folderNode.
      */
-    private class folderNode {
+    private class FolderNode {
 
         /**
          * The name.
@@ -319,7 +319,7 @@ public class ProbeSetTreeModel implements TreeModel, ProbeSetChangeListener, Dat
          *
          * @param name the name
          */
-        public folderNode(String name) {
+        public FolderNode(String name) {
             this.name = name;
         }
 

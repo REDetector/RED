@@ -718,12 +718,12 @@ public class REDParser implements Runnable, ProgressListener {
      */
     private void parseProbes(String[] sections) throws REDException,
             IOException {
-
-        if (sections.length < 2) {
+        System.out.println(REDParser.class.getName() + ":parseProbes()");
+        if (sections.length < 3) {
             throw new REDException(
-                    "Probe line didn't contain at least 2 sections");
+                    "Probe line didn't contain at least 3 sections");
         }
-        if (!sections[0].equals("Probes")) {
+        if (!sections[0].equals(ParsingUtils.PROBES)) {
             throw new REDException("Couldn't find expected probes line");
         }
 
@@ -731,10 +731,12 @@ public class REDParser implements Runnable, ProgressListener {
 
         String tableName = sections[2];
 
-        String description = "No generator description available";
+        String description;
 
         if (sections.length > 3) {
             description = sections[3];
+        } else {
+            description = "No generator description available";
         }
 
         ProbeSet probeSet = new ProbeSet(description, n, tableName);
@@ -754,7 +756,7 @@ public class REDParser implements Runnable, ProgressListener {
                 throw new REDException("Ran out of probe data at line " + i
                         + " (expected " + n + " probes)");
             }
-            if (i % 10000 == 0) {
+            if (i % 1000 == 0) {
                 Enumeration<ProgressListener> e = listeners.elements();
                 while (e.hasMoreElements()) {
                     e.nextElement().progressUpdated(
@@ -848,6 +850,7 @@ public class REDParser implements Runnable, ProgressListener {
      * @throws IOException  Signals that an I/O exception has occurred.
      */
     private void parseLists(String[] sections) throws REDException, IOException {
+        System.out.println(REDParser.class.getName() + ":parseLists()");
         if (sections.length != 2) {
             throw new REDException("Probe Lists line didn't contain 2 sections");
         }
@@ -863,21 +866,19 @@ public class REDParser implements Runnable, ProgressListener {
 
         // The 0 linkage list will always be the full ProbeSet
         linkage[0] = application.dataCollection().probeSet();
-
         for (int i = 0; i < n; i++) {
             String line = br.readLine();
+            System.out.println(line);
             if (line == null) {
                 throw new REDException("Ran out of probe data at line " + i
                         + " (expected " + n + " probes)");
             }
             String[] listSections = line.split("\\t");
             // The fields should be linkage, name, value name, description
-            //
 
-            lists[i] = new ProbeList(
-                    linkage[Integer.parseInt(listSections[0]) - 1],
+            lists[i] = new ProbeList(linkage[Integer.parseInt(listSections[0]) - 1],
                     listSections[1], listSections[2], listSections[3]);
-            int currentListProbeLength = Integer.parseInt(sections[4]);
+            int currentListProbeLength = Integer.parseInt(listSections[4]);
             if (listSections.length > 5) {
                 lists[i].setComments(listSections[5].replaceAll("`", "\n"));
             }
@@ -908,11 +909,8 @@ public class REDParser implements Runnable, ProgressListener {
                 }
                 Probe p = new Probe(chr, Integer.parseInt(sections[1]), sections[2].toCharArray()[0]);
                 lists[i].addProbe(p);
-
             }
         }
-
-
     }
 
     /**

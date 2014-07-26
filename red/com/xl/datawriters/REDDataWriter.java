@@ -220,7 +220,7 @@ public class REDDataWriter implements Runnable, Cancellable {
             }
 
             if (probes != null) {
-                if (!printProbeSet(data.probeSet(), probes, dataSets, p)) {
+                if (!printProbeSet(data.probeSet(), probes, p)) {
                     return; // They cancelled
                 }
             }
@@ -524,12 +524,10 @@ public class REDDataWriter implements Runnable, Cancellable {
      *
      * @param probeSet the probe set
      * @param probes   the probes
-     * @param dataSets the data sets
      * @param p        the p
      * @return false if cancelled, else true
      */
-    private boolean printProbeSet(ProbeSet probeSet, Probe[] probes,
-                                  DataSet[] dataSets, PrintStream p) throws IOException {
+    private boolean printProbeSet(ProbeSet probeSet, Probe[] probes, PrintStream p) throws IOException {
 
         // We need the saved string to be linear so we replace the line breaks
         // with ` (which we've replaced with ' in the
@@ -559,12 +557,6 @@ public class REDDataWriter implements Runnable, Cancellable {
             }
 
             p.println(probes[i].getChr() + "\t" + probes[i].getStart() + "\t" + probes[i].getEditingBase());
-//            for (DataSet dataSet : dataSets) {
-//                SequenceRead[] sequenceReads = dataSet.getReadsForProbe(probes[i]);
-//                for (SequenceRead sequenceRead : sequenceReads) {
-//                    p.println(sequenceRead.toWrite());
-//                }
-//            }
         }
         return true;
     }
@@ -622,12 +614,12 @@ public class REDDataWriter implements Runnable, Cancellable {
 
         p.println(ParsingUtils.LISTS + "\t" + (lists.length - 1));
 
-        for (ProbeList probeList : lists) {
-            String listComments = probeList.comments().replaceAll("[\\r\\n]", "`");
-            Probe[] currentListProbes = probeList.getAllProbes();
+        for (int i = 1, len = lists.length; i < len; i++) {
+            String listComments = lists[i].comments().replaceAll("[\\r\\n]", "`");
+            Probe[] currentListProbes = lists[i].getAllProbes();
             int probeLength = currentListProbes.length;
-            p.println(getListDepth(probeList) + "\t" + probeList.name() + "\t" + probeList.description() + "\t" +
-                    probeList.getTableName() + "\t" + probeLength + "\t" + listComments);
+            p.println(getListDepth(lists[i]) + "\t" + lists[i].name() + "\t" + lists[i].description() + "\t" +
+                    lists[i].getTableName() + "\t" + probeLength + "\t" + listComments);
 
             for (int j = 0; j < probeLength; j++) {
                 if (j % 1000 == 0) {

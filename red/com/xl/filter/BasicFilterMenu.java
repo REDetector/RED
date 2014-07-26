@@ -152,7 +152,7 @@ public class BasicFilterMenu extends ProbeFilter {
         StringBuffer b = new StringBuffer();
 
         b.append("Filter on probes in ");
-        b.append(collection.probeSet().getActiveList().name());
+        b.append(collection.probeSet().getActiveList().name() + " ");
 
         for (int s = 0; s < stores.length; s++) {
             b.append(stores[s].name());
