@@ -63,7 +63,7 @@ public class PValueFilter {
                 s2.append("," + line.split("\\t")[4] + " " + "varchar(5)");
                 databaseManager.createRefTable(darnedTable, "(" + s2
                         + ",index(chrom,coordinate))");
-                continue;
+                break;
         }
     	}catch (IOException e) {
             // TODO Auto-generated catch block

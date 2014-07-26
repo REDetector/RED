@@ -1,10 +1,10 @@
 #Fat Jar Configuration File
-#Fri Jul 25 14:56:54 CST 2014
+#Sat Jul 26 14:31:39 CST 2014
 onejar.license.required=true
 manifest.classpath=
 manifest.removesigners=true
 onejar.checkbox=false
-jarname=D\:\\Master\\\u91CD\u5E86\u9879\u76EE\\jar\\test_REDetector_v10.jar
+jarname=D\:\\Master\\\u91CD\u5E86\u9879\u76EE\\jar\\REDetector_v11.jar
 manifest.mergeall=true
 manifest.mainclass=com.dw.publicaffairs.Connect
 manifest.file=<createnew>
