@@ -61,7 +61,7 @@ public class GenomeSelector extends JDialog {
         File[] genomes = genomeDirectory.listFiles();
 
         if (genomes == null || genomes.length == 0) {
-            JOptionPane.showMessageDialog(application, "<html>The default gGenome directory is " + LocationPreferences
+            JOptionPane.showMessageDialog(application, "<html>The default Genome directory is " + LocationPreferences
                             .getInstance().getGenomeDirectory() + ".<br>There is nothing in the default genome " +
                             "directory.<br>You can move your genome files into the default genome directory or " +
                             "select menu Edit->Preferences to change genome directory.<br>However, " +

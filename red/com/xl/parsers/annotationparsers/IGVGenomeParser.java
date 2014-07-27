@@ -19,7 +19,6 @@ import com.xl.utils.*;
 import com.xl.utils.filefilters.FileFilterImpl;
 import com.xl.utils.namemanager.GenomeUtils;
 import com.xl.utils.namemanager.SuffixUtils;
-import net.xl.genomes.GenomeLists;
 
 import java.io.*;
 import java.util.*;
@@ -276,73 +275,6 @@ public class IGVGenomeParser implements Runnable {
         }
         progressComplete("load_genome", genome);
     }
-
-
-    /**
-     * Create a Genome from a single fasta file.
-     *
-     * @param genomePath
-     * @return
-     * @throws IOException
-     */
-    private Genome loadFastaFile(String genomePath) throws IOException {
-        Genome newGenome;// Assume its a fasta
-        String fastaPath = null;
-        String fastaIndexPath = null;
-        if (genomePath.endsWith(".fai")) {
-            fastaPath = genomePath.substring(0, genomePath.length() - 4);
-            fastaIndexPath = genomePath;
-        } else {
-            fastaPath = genomePath;
-            fastaIndexPath = genomePath + ".fai";
-        }
-
-        if (!ParsingUtils.resourceExists(fastaIndexPath)) {
-            //Have to make sure we have a local copy of the fasta file
-            //to index it
-            if (!ParsingUtils.isRemote(fastaPath)) {
-                File archiveFile = new File(fastaPath);
-                fastaPath = archiveFile.getAbsolutePath();
-                fastaIndexPath = fastaPath + ".fai";
-
-                FastaUtils.createIndexFile(fastaPath, fastaIndexPath);
-            }
-
-        }
-
-        GenomeLists item = buildFromPath(fastaPath);
-        if (item == null) {
-            throw new IOException(fastaPath + " does not exist, could not load genome");
-        }
-
-        FastaIndexedSequence fastaSequence = new FastaIndexedSequence(fastaPath);
-        Sequence sequence = new SequenceWrapper(fastaSequence);
-        newGenome = new Genome(item.getId(), item.getDisplayName(), sequence, true);
-        return newGenome;
-    }
-
-    /**
-     * @param path
-     * @return GenomeListItem representing this path, or null
-     * if it's a local path which doesn't exist (we don't check for existence of remote file)
-     */
-    public static GenomeLists buildFromPath(String path) {
-
-        String id = path;
-        String name;
-        if (ParsingUtils.isRemote(path)) {
-            name = FileUtils.getFileNameFromURL(path);
-        } else {
-            File file = new File(path);
-            if (!file.exists()) {
-                return null;
-            }
-            name = file.getName();
-        }
-
-        return new GenomeLists(name, path, id);
-    }
-
 
     public void setGenomeDescriptor(Properties properties) {
         String cytobandFileName = properties
