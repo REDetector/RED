@@ -33,25 +33,6 @@ public class MainREDToolbar extends REDToolbar {
 
         super(menu);
 
-        JButton posNegButton = new JButton(
-                new ImageIcon(
-                        ClassLoader
-                                .getSystemResource("resources/toolbar/above_and_below.png")));
-        posNegButton.setActionCommand("scale_negative");
-        posNegButton.setToolTipText("Positive and Negative Scale");
-        posNegButton.addActionListener(menu);
-        add(posNegButton);
-
-        JButton posButton = new JButton(new ImageIcon(
-                ClassLoader
-                        .getSystemResource("resources/toolbar/above_only.png")));
-        posButton.setActionCommand("scale_positive");
-        posButton.setToolTipText("Positive Scale");
-        posButton.addActionListener(menu);
-        add(posButton);
-
-        addSeparator();
-
         JButton readsOnlyButton = new JButton(new ImageIcon(
                 ClassLoader
                         .getSystemResource("resources/toolbar/reads_only.png")));
@@ -76,27 +57,6 @@ public class MainREDToolbar extends REDToolbar {
         probesAndReadsButton.setToolTipText("Show Probes and Reads");
         probesAndReadsButton.addActionListener(menu);
         add(probesAndReadsButton);
-
-        addSeparator();
-
-        JButton combinePackedReadsButton = new JButton(
-                new ImageIcon(
-                        ClassLoader
-                                .getSystemResource("resources/toolbar/combine_pack_reads.png")));
-        combinePackedReadsButton.setActionCommand("read_pack_combine");
-        combinePackedReadsButton.setToolTipText("Combine Packed Reads");
-        combinePackedReadsButton.addActionListener(menu);
-
-        add(combinePackedReadsButton);
-
-        JButton splitPackedReadsButton = new JButton(
-                new ImageIcon(
-                        ClassLoader
-                                .getSystemResource("resources/toolbar/split_pack_reads.png")));
-        splitPackedReadsButton.setActionCommand("read_pack_separate");
-        splitPackedReadsButton.setToolTipText("Split Packed Reads");
-        splitPackedReadsButton.addActionListener(menu);
-        add(splitPackedReadsButton);
 
         addSeparator();
 
@@ -144,6 +104,7 @@ public class MainREDToolbar extends REDToolbar {
         System.out.println(this.getClass().getName() + ":genomeLoaded()");
         jumpToPositionButton.setEnabled(true);
         jumpToPositionButton.setFocusable(false);
+
         findFeatureButton.setEnabled(true);
         findFeatureButton.setFocusable(false);
         add(new DataZoomSelector(REDApplication.getInstance(), null).getContentPane());
