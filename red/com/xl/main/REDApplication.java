@@ -411,8 +411,8 @@ public class REDApplication extends JFrame implements ProgressListener,
                             "You have made changes which were not saved.  Do you want to save before exiting?",
                             "Save before exit?", JOptionPane.OK_CANCEL_OPTION,
                             JOptionPane.QUESTION_MESSAGE, null, new String[]{
-                            "Save and Exit", "Exit without Saving",
-                            "Cancel"}, "Save");
+                                    "Save and Exit", "Exit without Saving",
+                                    "Cancel"}, "Save");
 
             switch (answer) {
                 case 0:
@@ -584,8 +584,8 @@ public class REDApplication extends JFrame implements ProgressListener,
                             "You have made changes which were not saved.  Do you want to save before exiting?",
                             "Save before loading new data?", JOptionPane.OK_CANCEL_OPTION,
                             JOptionPane.QUESTION_MESSAGE, null, new String[]{
-                            "Save before Loading",
-                            "Load without Saving", "Cancel"}, "Save");
+                                    "Save before Loading",
+                                    "Load without Saving", "Cancel"}, "Save");
 
             switch (answer) {
                 case 0:
@@ -706,7 +706,7 @@ public class REDApplication extends JFrame implements ProgressListener,
         // Check if we're stepping on anyone's toes...
         if (file.exists()) {
             int answer = JOptionPane.showOptionDialog(this, file.getName()
-                    + " exists.  Do you want to overwrite the existing file?",
+                            + " exists.  Do you want to overwrite the existing file?",
                     "Overwrite file?", JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null,
                     new String[]{"Overwrite and Save", "Cancel"},
                     "Overwrite and Save");

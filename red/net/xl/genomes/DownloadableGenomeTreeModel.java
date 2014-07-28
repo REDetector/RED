@@ -17,7 +17,7 @@ public class DownloadableGenomeTreeModel implements TreeModel {
 
         HashSet<Character> usedChars = new HashSet<Character>();
 
-        genomeLists = GenomeLists.getGenomeList();
+        genomeLists = DownloadableGenomeSet.getGenomeLists().toArray(new GenomeLists[0]);
         // for(GenomeLists genome: genomeLists){
         // System.out.println(genome.getGenomeDisplayName()+" "+genome.getGenomeDownloadLocation()+" "+genome.getGenomeId());
         // }

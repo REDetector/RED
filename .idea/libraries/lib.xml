@@ -9,6 +9,10 @@
       <root url="jar://$PROJECT_DIR$/lib/REngine.jar!/" />
       <root url="jar://$PROJECT_DIR$/lib/RserveEngine.jar!/" />
       <root url="jar://$PROJECT_DIR$/lib/sam-1.104.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/github-api-1.56.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/jackson-databind-2.2.3.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/jackson-core-2.2.2.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/jackson-annotations-2.1.4.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />

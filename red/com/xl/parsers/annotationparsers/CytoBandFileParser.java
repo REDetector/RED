@@ -72,7 +72,6 @@ public class CytoBandFileParser {
     }
 
     private static void parseData(String[] tokens, Cytoband cytoData) {
-
         cytoData.setStart(Integer.parseInt(tokens[1].trim()));
         cytoData.setEnd(Integer.parseInt(tokens[2].trim()));
         if (tokens.length > 3) {
@@ -83,7 +82,7 @@ public class CytoBandFileParser {
                 cytoData.setType('c');
             } else {
                 cytoData.setType(tokens[4].charAt(1));
-                if (cytoData.getType() == 'p') {
+                if (cytoData.getType() == 'p' && tokens[4].length() > 4) {
                     cytoData.setStain(Short.parseShort(tokens[4].substring(4).trim()));
                 }
             }

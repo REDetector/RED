@@ -36,7 +36,6 @@ import java.util.Vector;
  * local genome cache.
  */
 public class GenomeDownloader implements Runnable {
-
     private Vector<ProgressListener> listeners = new Vector<ProgressListener>();
     private String id = null;
     private String displayName = null;
