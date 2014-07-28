@@ -10,8 +10,6 @@
     <list id="7bfbcd82-43d2-4bb3-bf21-1f16164d2c5a" name="Rejected commit: Default" comment="Fix some bugs." />
     <list id="7653a5be-4308-4b8a-af47-b29b059d9163" name="Rejected commit: Rejected commit: Default" comment="Fix some bugs." />
     <list default="true" id="8c0b48af-f12c-459a-98ff-77421d212a83" name="Failed commit: Rejected commit: Default" comment="Fix a bug of presenting the new genome which can be downloaded.">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/com/xl/parsers/dataparsers/BAMFileParser.java" afterPath="$PROJECT_DIR$/red/com/xl/parsers/dataparsers/BAMFileParser.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/com/xl/panel/DataParserOptionsPanel.java" afterPath="$PROJECT_DIR$/red/com/xl/panel/DataParserOptionsPanel.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/com/xl/thread/ThreadDenovoInput.java" afterPath="$PROJECT_DIR$/red/com/xl/thread/ThreadDenovoInput.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red/com/xl/thread/ThreadNonDenovoInput.java" afterPath="$PROJECT_DIR$/red/com/xl/thread/ThreadNonDenovoInput.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/red_prefs.txt" afterPath="$PROJECT_DIR$/red_prefs.txt" />
@@ -120,7 +118,7 @@
       <file leaf-file-name="BAMFileParser.java" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/red/com/xl/parsers/dataparsers/BAMFileParser.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="405" max-vertical-offset="12100">
+            <state vertical-scroll-proportion="0.0" vertical-offset="572" max-vertical-offset="12100">
               <caret line="26" column="56" selection-start-line="26" selection-start-column="56" selection-end-line="26" selection-end-column="56" />
               <folding>
                 <element signature="imports" expanded="true" />
@@ -146,7 +144,7 @@
         <entry file="file://$PROJECT_DIR$/red/com/xl/panel/DataParserOptionsPanel.java">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.720524" vertical-offset="0" max-vertical-offset="1826">
-              <caret line="22" column="43" selection-start-line="22" selection-start-column="0" selection-end-line="22" selection-end-column="0" />
+              <caret line="22" column="48" selection-start-line="22" selection-start-column="0" selection-end-line="22" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -1190,7 +1188,11 @@
       <created>1406555308892</created>
       <updated>1406555308892</updated>
     </task>
-    <option name="localTasksCounter" value="95" />
+    <task id="LOCAL-00095" summary="Delete some options when importing bam/sam file to the program.">
+      <created>1406555362699</created>
+      <updated>1406555362699</updated>
+    </task>
+    <option name="localTasksCounter" value="96" />
     <servers />
   </component>
   <component name="TodoView" selected-index="0">
@@ -1260,7 +1262,6 @@
     <option name="myTodoPanelSettings">
       <TodoPanelSettings />
     </option>
-    <MESSAGE value="Package some public methods and make the code be read more easily." />
     <MESSAGE value="Change the structure of data-saved location. We divide the data into genome/fasta/dna/rna/annotation/cache/others, and we create the temp directory to store some temp files." />
     <MESSAGE value="Change the structure of Probe from a rectangle to a point. We need to find out the editing sites instead of reads. The function has not been tested." />
     <MESSAGE value="Fix the Probe functions to meet our command." />
@@ -1285,7 +1286,8 @@
     <MESSAGE value="Fix a bug with DnaRnaFilter." />
     <MESSAGE value="Fix a bug of presenting the new genome which can be downloaded." />
     <MESSAGE value="Re-design table creators of all editing filters. Delete all redundant class" />
-    <option name="LAST_COMMIT_MESSAGE" value="Re-design table creators of all editing filters. Delete all redundant class" />
+    <MESSAGE value="Delete some options when importing bam/sam file to the program." />
+    <option name="LAST_COMMIT_MESSAGE" value="Delete some options when importing bam/sam file to the program." />
     <option name="OPTIMIZE_IMPORTS_BEFORE_PROJECT_COMMIT" value="true" />
     <option name="REFORMAT_BEFORE_PROJECT_COMMIT" value="true" />
   </component>
@@ -1770,7 +1772,7 @@
     <entry file="file://$PROJECT_DIR$/red/com/xl/panel/DataParserOptionsPanel.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.720524" vertical-offset="0" max-vertical-offset="1826">
-          <caret line="22" column="43" selection-start-line="22" selection-start-column="0" selection-end-line="22" selection-end-column="0" />
+          <caret line="22" column="48" selection-start-line="22" selection-start-column="0" selection-end-line="22" selection-end-column="0" />
           <folding />
         </state>
       </provider>

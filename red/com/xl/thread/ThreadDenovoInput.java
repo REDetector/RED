@@ -3,7 +3,6 @@ package com.xl.thread;
 import com.dw.denovo.*;
 import com.dw.publicaffairs.DatabaseManager;
 import com.dw.publicaffairs.Query;
-import com.dw.publicaffairs.Utilities;
 import com.xl.datatypes.DataCollection;
 import com.xl.datatypes.probes.Probe;
 import com.xl.datatypes.probes.ProbeSet;
@@ -41,10 +40,9 @@ public class ThreadDenovoInput implements Runnable {
         manager.createDatabase(DatabaseManager.DENOVO_DATABASE_NAME);
         manager.useDatabase(DatabaseManager.DENOVO_DATABASE_NAME);
 
-        Utilities.getInstance().createCalTable(locationPreferences.getRnaVcfFile());
         progressUpdated("Importing RNA vcf data...", 2, ALL_STEP);
         DenovoVcf df = new DenovoVcf(manager);
-        df.establishRnaTable(DatabaseManager.RNA_VCF_RESULT_TABLE_NAME);
+        df.establishRnaTable(DatabaseManager.RNA_VCF_RESULT_TABLE_NAME, locationPreferences.getRnaVcfFile());
         df.loadRnaVcfTable(DatabaseManager.RNA_VCF_RESULT_TABLE_NAME, locationPreferences.getRnaVcfFile());
 
         Vector<Probe> probes = Query.queryAllEditingSites(DatabaseManager.RNA_VCF_RESULT_TABLE_NAME);
@@ -66,10 +64,11 @@ public class ThreadDenovoInput implements Runnable {
         RepeatFilter rf = new RepeatFilter(manager);
         rf.loadRepeatTable(DatabaseManager.REPEAT_FILTER_TABLE_NAME, locationPreferences.getRepeatFile());
         rf.establishRepeatResultTable(DatabaseManager.REPEAT_FILTER_RESULT_TABLE_NAME);
+        rf.establishAluResultTable(DatabaseManager.ALU_FILTER_RESULT_TABLE_NAME);
 //        rf.rfilter(DatabaseManager.REPEAT_FILTER_TABLE_NAME, DatabaseManager.REPEAT_FILTER_RESULT_TABLE_NAME,
 //                DatabaseManager.BASIC_FILTER_RESULT_TABLE_NAME);
         rf.mysqlRepeatFilter(DatabaseManager.REPEAT_FILTER_TABLE_NAME, DatabaseManager.REPEAT_FILTER_RESULT_TABLE_NAME,
-                DatabaseManager.BASIC_FILTER_RESULT_TABLE_NAME);
+                DatabaseManager.ALU_FILTER_RESULT_TABLE_NAME, DatabaseManager.BASIC_FILTER_RESULT_TABLE_NAME);
         DatabaseManager.getInstance().distinctTable(DatabaseManager.REPEAT_FILTER_RESULT_TABLE_NAME);
 
         progressUpdated("Importing RefSeq Genes data...", 5, ALL_STEP);

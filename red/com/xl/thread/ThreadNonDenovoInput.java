@@ -4,10 +4,8 @@ import com.dw.denovo.*;
 import com.dw.dnarna.DnaRnaFilter;
 import com.dw.dnarna.DnaRnaVcf;
 import com.dw.dnarna.LLRFilter;
-import com.dw.publicaffairs.Clear;
 import com.dw.publicaffairs.DatabaseManager;
 import com.dw.publicaffairs.Query;
-import com.dw.publicaffairs.Utilities;
 import com.xl.datatypes.DataCollection;
 import com.xl.datatypes.probes.Probe;
 import com.xl.datatypes.probes.ProbeSet;
@@ -46,16 +44,13 @@ public class ThreadNonDenovoInput implements Runnable {
 
         progressUpdated("Importing DNA vcf data...", 2, ALL_STEP);
         DnaRnaVcf df = new DnaRnaVcf(manager);
-        Utilities.getInstance().createCalTable(locationPreferences.getDnaVcfFile());
-        df.establishDnaTable(DatabaseManager.DNA_VCF_RESULT_TABLE_NAME);
+
+        df.establishDnaTable(DatabaseManager.DNA_VCF_RESULT_TABLE_NAME, locationPreferences.getDnaVcfFile());
         df.loadDnaVcfTable(DatabaseManager.DNA_VCF_RESULT_TABLE_NAME, locationPreferences.getDnaVcfFile());
 
-        Clear cl = new Clear();
-        cl.clear(Utilities.getInstance().getS2(), Utilities.getInstance().getS3());
 
         progressUpdated("Importing RNA vcf data...", 3, ALL_STEP);
-        Utilities.getInstance().createCalTable(locationPreferences.getRnaVcfFile());
-        df.establishRnaTable(DatabaseManager.RNA_VCF_RESULT_TABLE_NAME);
+        df.establishRnaTable(DatabaseManager.RNA_VCF_RESULT_TABLE_NAME, locationPreferences.getRnaVcfFile());
         df.loadRnaVcfTable(DatabaseManager.RNA_VCF_RESULT_TABLE_NAME, locationPreferences.getRnaVcfFile());
 
         Vector<Probe> probes = Query.queryAllEditingSites(DatabaseManager.RNA_VCF_RESULT_TABLE_NAME);
@@ -77,7 +72,9 @@ public class ThreadNonDenovoInput implements Runnable {
         RepeatFilter rf = new RepeatFilter(manager);
         rf.loadRepeatTable(DatabaseManager.REPEAT_FILTER_TABLE_NAME, locationPreferences.getRepeatFile());
         rf.establishRepeatResultTable(DatabaseManager.REPEAT_FILTER_RESULT_TABLE_NAME);
-        rf.rfilter(DatabaseManager.REPEAT_FILTER_TABLE_NAME, DatabaseManager.REPEAT_FILTER_RESULT_TABLE_NAME,
+        rf.establishAluResultTable(DatabaseManager.ALU_FILTER_RESULT_TABLE_NAME);
+        rf.mysqlRepeatFilter(DatabaseManager.REPEAT_FILTER_TABLE_NAME, DatabaseManager.REPEAT_FILTER_RESULT_TABLE_NAME,
+                DatabaseManager.ALU_FILTER_RESULT_TABLE_NAME,
                 DatabaseManager.BASIC_FILTER_RESULT_TABLE_NAME);
         DatabaseManager.getInstance().distinctTable(DatabaseManager.REPEAT_FILTER_RESULT_TABLE_NAME);
 
