@@ -173,17 +173,11 @@ public class Connect {
             manager.useDatabase(args[9]);
 
             DnaRnaVcf df = new DnaRnaVcf(manager);
-            Utilities.getInstance().createCalTable(args[2]);
-            df.establishDnaTable(DatabaseManager.DNA_VCF_RESULT_TABLE_NAME);
+            df.establishDnaTable(DatabaseManager.DNA_VCF_RESULT_TABLE_NAME, args[2]);
             df.loadDnaVcfTable(DatabaseManager.DNA_VCF_RESULT_TABLE_NAME, args[2],
                     Integer.parseInt(args[8]));
 
-            Clear cl = new Clear();
-            cl.clear(Utilities.getInstance().getS2(), Utilities.getInstance()
-                    .getS3());
-
-            Utilities.getInstance().createCalTable(args[1]);
-            df.establishRnaTable(DatabaseManager.RNA_VCF_RESULT_TABLE_NAME);
+            df.establishRnaTable(DatabaseManager.RNA_VCF_RESULT_TABLE_NAME, args[1]);
             df.loadRnaVcfTable(DatabaseManager.RNA_VCF_RESULT_TABLE_NAME, args[1],
                     Integer.parseInt(args[8]));
 
@@ -201,12 +195,12 @@ public class Connect {
                     DatabaseManager.BASIC_FILTER_RESULT_TABLE_NAME);
 
             RepeatFilter rf = new RepeatFilter(manager);
-            rf.loadRepeatTable(DatabaseManager.REPEAT_FILTER_TABLE_NAME,
-                    args[3]);
+            rf.loadRepeatTable(DatabaseManager.REPEAT_FILTER_TABLE_NAME, args[3]);
             rf.establishRepeatResultTable(DatabaseManager.REPEAT_FILTER_RESULT_TABLE_NAME);
-			rf.mysqlRepeatFilter(DatabaseManager.REPEAT_FILTER_TABLE_NAME,
-					DatabaseManager.REPEAT_FILTER_RESULT_TABLE_NAME,
-					DatabaseManager.BASIC_FILTER_RESULT_TABLE_NAME);
+            rf.establishAluResultTable(DatabaseManager.ALU_FILTER_RESULT_TABLE_NAME);
+            rf.mysqlRepeatFilter(DatabaseManager.REPEAT_FILTER_TABLE_NAME,
+                    DatabaseManager.REPEAT_FILTER_RESULT_TABLE_NAME,
+                    DatabaseManager.ALU_FILTER_RESULT_TABLE_NAME, DatabaseManager.BASIC_FILTER_RESULT_TABLE_NAME);
 //            rf.rfilter(DatabaseManager.REPEAT_FILTER_TABLE_NAME,
 //                    DatabaseManager.REPEAT_FILTER_RESULT_TABLE_NAME,
 //                    DatabaseManager.BASIC_FILTER_RESULT_TABLE_NAME);
@@ -221,10 +215,10 @@ public class Connect {
 //                    DatabaseManager.COMPREHENSIVE_FILTER_TABLE_NAME,
 //                    DatabaseManager.COMPREHENSIVE_FILTER_RESULT_TABLE_NAME,
 //                    DatabaseManager.REPEAT_FILTER_RESULT_TABLE_NAME, 2);
-			cf.mysqlComprehensiveFilter(
-					DatabaseManager.COMPREHENSIVE_FILTER_TABLE_NAME,
-					DatabaseManager.COMPREHENSIVE_FILTER_RESULT_TABLE_NAME,
-					DatabaseManager.REPEAT_FILTER_RESULT_TABLE_NAME, 2);
+            cf.mysqlComprehensiveFilter(
+                    DatabaseManager.COMPREHENSIVE_FILTER_TABLE_NAME,
+                    DatabaseManager.COMPREHENSIVE_FILTER_RESULT_TABLE_NAME,
+                    DatabaseManager.REPEAT_FILTER_RESULT_TABLE_NAME, 2);
             DatabaseManager.getInstance().distinctTable(
                     DatabaseManager.COMPREHENSIVE_FILTER_RESULT_TABLE_NAME);
 
@@ -264,10 +258,9 @@ public class Connect {
         } else {
             manager.createDatabase(args[8]);
             manager.useDatabase(args[8]);
-            Utilities.getInstance().createCalTable(args[1]);
 
             DenovoVcf df = new DenovoVcf(manager);
-            df.establishRnaTable(DatabaseManager.RNA_VCF_RESULT_TABLE_NAME);
+            df.establishRnaTable(DatabaseManager.RNA_VCF_RESULT_TABLE_NAME, args[1]);
             df.loadRnaVcfTable(DatabaseManager.RNA_VCF_RESULT_TABLE_NAME,
                     args[1], Integer.parseInt(args[7]));
 
@@ -288,9 +281,10 @@ public class Connect {
             rf.loadRepeatTable(DatabaseManager.REPEAT_FILTER_TABLE_NAME,
                     args[2]);
             rf.establishRepeatResultTable(DatabaseManager.REPEAT_FILTER_RESULT_TABLE_NAME);
+            rf.establishAluResultTable(DatabaseManager.ALU_FILTER_RESULT_TABLE_NAME);
             rf.mysqlRepeatFilter(DatabaseManager.REPEAT_FILTER_TABLE_NAME,
-					DatabaseManager.REPEAT_FILTER_RESULT_TABLE_NAME,
-					DatabaseManager.BASIC_FILTER_RESULT_TABLE_NAME);
+                    DatabaseManager.REPEAT_FILTER_RESULT_TABLE_NAME, DatabaseManager.ALU_FILTER_RESULT_TABLE_NAME,
+                    DatabaseManager.BASIC_FILTER_RESULT_TABLE_NAME);
 //            rf.rfilter(DatabaseManager.REPEAT_FILTER_TABLE_NAME,
 //                    DatabaseManager.REPEAT_FILTER_RESULT_TABLE_NAME,
 //                    DatabaseManager.BASIC_FILTER_RESULT_TABLE_NAME);
@@ -306,9 +300,9 @@ public class Connect {
 //                    DatabaseManager.COMPREHENSIVE_FILTER_RESULT_TABLE_NAME,
 //                    DatabaseManager.REPEAT_FILTER_RESULT_TABLE_NAME, 2);
             cf.mysqlComprehensiveFilter(
-					DatabaseManager.COMPREHENSIVE_FILTER_TABLE_NAME,
-					DatabaseManager.COMPREHENSIVE_FILTER_RESULT_TABLE_NAME,
-					DatabaseManager.REPEAT_FILTER_RESULT_TABLE_NAME, 2);
+                    DatabaseManager.COMPREHENSIVE_FILTER_TABLE_NAME,
+                    DatabaseManager.COMPREHENSIVE_FILTER_RESULT_TABLE_NAME,
+                    DatabaseManager.REPEAT_FILTER_RESULT_TABLE_NAME, 2);
             DatabaseManager.getInstance().distinctTable(
                     DatabaseManager.COMPREHENSIVE_FILTER_RESULT_TABLE_NAME);
 

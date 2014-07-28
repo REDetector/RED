@@ -2,7 +2,6 @@ package com.dw.dnarna;
 
 
 import com.dw.publicaffairs.DatabaseManager;
-import com.dw.publicaffairs.Utilities;
 
 import java.io.*;
 import java.sql.SQLException;
@@ -39,16 +38,14 @@ public class DnaRnaVcf {
     /**
      * @param rnaVcfResultTable
      */
-    public void establishRnaTable(String rnaVcfResultTable) {
+    public void establishRnaTable(String rnaVcfResultTable, String rnaVcfPath) {
         databaseManager.deleteTable(rnaVcfResultTable);
-        databaseManager.createTable(rnaVcfResultTable, "(chrome varchar(15),"
-                + Utilities.getInstance().getS2() + ",index(chrome,pos))");
+        databaseManager.createVCFTable(rnaVcfResultTable, rnaVcfPath);
     }
 
-    public void establishDnaTable(String dnaVcfResultTable) {
+    public void establishDnaTable(String dnaVcfResultTable, String dnaVcfPath) {
         databaseManager.deleteTable(dnaVcfResultTable);
-        databaseManager.createTable(dnaVcfResultTable, "(chrome varchar(15),"
-                + Utilities.getInstance().getS2() + ",index(chrome,pos))");
+        databaseManager.createVCFTable(dnaVcfResultTable, dnaVcfPath);
     }
 
     /**
@@ -150,7 +147,7 @@ public class DnaRnaVcf {
                     s1.append("," + "'" + temp[i] + "'");
                 }
                 databaseManager.executeSQL("insert into " + rnaVcfTable + "("
-                        + Utilities.getInstance().getS3() + ") values(" + s1
+                        + databaseManager.getColumnInfo() + ") values(" + s1
                         + ")");
                 ts_count++;
                 if (ts_count % 20000 == 0)
@@ -249,7 +246,7 @@ public class DnaRnaVcf {
                     s1.append("," + "'" + temp[i] + "'");
                 }
                 databaseManager.executeSQL("insert into " + dnaVcfResultTable + "("
-                        + Utilities.getInstance().getS3() + ") values(" + s1
+                        + databaseManager.getColumnInfo() + ") values(" + s1
                         + ")");
                 ts_count++;
                 if (ts_count % 20000 == 0) {

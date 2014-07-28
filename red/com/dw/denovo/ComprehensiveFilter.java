@@ -6,7 +6,6 @@ package com.dw.denovo;
  */
 
 import com.dw.publicaffairs.DatabaseManager;
-import com.dw.publicaffairs.Utilities;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -27,10 +26,8 @@ public class ComprehensiveFilter {
     }
 
     public boolean hasEstablishedComprehensiveTable(String comprehensiveTable) {
-        databaseManager
-                .createRefTable(
-                        comprehensiveTable,
-                        "(chrome varchar(15),ref varchar(30),type varchar(9),begin int,end int,unuse1 float(8,6),unuse2 varchar(5),unuse3 varchar(5),info varchar(100),index(chrome,type))");
+        databaseManager.createRefTable(comprehensiveTable,
+                "(chrom varchar(15),ref varchar(30),type varchar(9),begin int,end int,unuse1 float(8,6),unuse2 varchar(5),unuse3 varchar(5),info varchar(100),index(chrom,type))");
         ResultSet rs = databaseManager.query(comprehensiveTable, "count(*)",
                 "1 limit 0,100");
         int number = 0;
@@ -49,9 +46,7 @@ public class ComprehensiveFilter {
         System.out.println("escom start" + " " + df.format(new Date()));
 
         databaseManager.deleteTable(comprehensiveResultTable);
-        databaseManager.createTable(comprehensiveResultTable,
-                "(chrome varchar(15)," + Utilities.getInstance().getS2() + ","
-                        + "index(chrome,pos))");
+        databaseManager.createFilterTable(comprehensiveResultTable);
 
         System.out.println("escom end" + " " + df.format(new Date()));
         return true;
@@ -88,7 +83,7 @@ public class ComprehensiveFilter {
         try {
             System.out.println("comf start" + " " + df.format(new Date()));
 
-            ResultSet rs = databaseManager.query(refTable, "chrome,pos", "1");
+            ResultSet rs = databaseManager.query(refTable, "chrom,pos", "1");
             List<String> coordinate = new ArrayList<String>();
             databaseManager.setAutoCommit(false);
 
@@ -108,12 +103,12 @@ public class ComprehensiveFilter {
                                         + ps + "-" + edge + ") or " + "(end<" + ps
                                         + "+" + edge + " and end>" + ps + "-"
                                         + edge + ")) "
-                                        + "and type='CDS' and chrome='" + chr
+                                        + "and type='CDS' and chrom='" + chr
                                         + "')");
                         if (!rs.next()) {
                             databaseManager.executeSQL("insert into "
                                     + comprehensiveResultTable + "  select * from "
-                                    + refTable + " where chrome='" + chr
+                                    + refTable + " where chrom='" + chr
                                     + "' and pos=" + ps + "");
                             count++;
                             if (count % 10000 == 0)
@@ -141,10 +136,10 @@ public class ComprehensiveFilter {
         try {
             databaseManager.executeSQL("insert into "
                     + comprehensiveResultTable + " select * from " + refTable
-                    + " where not exists (select chrome from "
+                    + " where not exists (select chrom from "
                     + comprehensiveTable + " where (" + comprehensiveTable
-                    + ".type='CDS' and " + comprehensiveTable + ".chrome="
-                    + refTable + ".chrome and ((" + comprehensiveTable
+                    + ".type='CDS' and " + comprehensiveTable + ".chrom="
+                    + refTable + ".chrom and ((" + comprehensiveTable
                     + ".begin<" + refTable + ".pos+" + edge + " and "
                     + comprehensiveTable + ".begin>" + refTable + ".pos-"
                     + edge + ") or (" + comprehensiveTable + ".end<" + refTable

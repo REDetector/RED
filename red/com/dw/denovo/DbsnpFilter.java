@@ -5,7 +5,6 @@ package com.dw.denovo;
  */
 
 import com.dw.publicaffairs.DatabaseManager;
-import com.dw.publicaffairs.Utilities;
 
 import java.io.BufferedReader;
 import java.io.FileInputStream;
@@ -31,8 +30,7 @@ public class DbsnpFilter {
         System.out.println("establishDbSNPResultTable start" + " " + df.format(new Date()));
 
         databaseManager.deleteTable(dbSnpResultTable);
-        databaseManager.createTable(dbSnpResultTable, "(chrome varchar(15),"
-                + Utilities.getInstance().getS2() + "," + "index(chrome,pos))");
+        databaseManager.createFilterTable(dbSnpResultTable);
 
         System.out.println("establishDbSNPResultTable end" + " " + df.format(new Date()));
         return true;
@@ -41,7 +39,7 @@ public class DbsnpFilter {
 
     public boolean hasEstablishDbSNPTable(String dbSnpTable) {
         databaseManager.createRefTable(dbSnpTable,
-                "(chrome varchar(15),pos int,index(chrome,pos))");
+                "(chrom varchar(15),pos int,index(chrom,pos))");
         ResultSet rs = databaseManager.query(dbSnpTable, "count(*)",
                 "1 limit 0,100");
         int number = 0;
@@ -93,8 +91,8 @@ public class DbsnpFilter {
         try {
             databaseManager.executeSQL("insert into " + dbSnpResultTable
                     + " select * from " + refTable
-                    + " where not exists (select chrome from " + dbSnpTable
-                    + " where (" + dbSnpTable + ".chrome=" + refTable + ".chrome and " + dbSnpTable + ".pos=" + refTable + ".pos))");
+                    + " where not exists (select chrom from " + dbSnpTable
+                    + " where (" + dbSnpTable + ".chrom=" + refTable + ".chrom and " + dbSnpTable + ".pos=" + refTable + ".pos))");
         } catch (SQLException e) {
             System.err.println("Error execute sql clause in" + DbsnpFilter.class.getName() + ":executeDbSNPFilter()");
             e.printStackTrace();
@@ -115,7 +113,7 @@ public class DbsnpFilter {
     //
     // }
     // public void post() throws SQLException {
-    // sql[0]="insert into snptemp select *from Comphrehensivetemp where not exists (select *FROM dbSnpVcf where (Comphrehensivetemp.chrome=dbSnpVcf.chrome and Comphrehensivetemp.pos=dbSnpVcf.pos))";
+    // sql[0]="insert into snptemp select *from Comphrehensivetemp where not exists (select *FROM dbSnpVcf where (Comphrehensivetemp.chrom=dbSnpVcf.chrom and Comphrehensivetemp.pos=dbSnpVcf.pos))";
     // db.result = db.stmt.executeUpdate(sql[0]);
     // db.con.commit();
     // while (rs.next()) {
@@ -129,11 +127,11 @@ public class DbsnpFilter {
     // break;
     // case 1:
     // ps = coordinate.get(i);
-    // rs=databaseManager.query(referencedbSnp, "chrome", "(pos="+ ps+
-    // " and chrome='"+ chr + "')");
+    // rs=databaseManager.query(referencedbSnp, "chrom", "(pos="+ ps+
+    // " and chrom='"+ chr + "')");
     // if(!rs.next())
     // {
-    // databaseManager.executeSQL("insert into "+dbSnpTable+"  select * from "+comphrehensiveTable+" where chrome='"+chr+"' and pos="+ps+"");
+    // databaseManager.executeSQL("insert into "+dbSnpTable+"  select * from "+comphrehensiveTable+" where chrom='"+chr+"' and pos="+ps+"");
     // count++;
     // if(count%10000==0)
     // databaseManager.commit();

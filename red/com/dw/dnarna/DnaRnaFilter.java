@@ -5,7 +5,6 @@ package com.dw.dnarna;
  */
 
 import com.dw.publicaffairs.DatabaseManager;
-import com.dw.publicaffairs.Utilities;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -31,8 +30,7 @@ public class DnaRnaFilter {
         System.out.println("esdr start" + " " + df.format(new Date()));
 
         databaseManager.deleteTable(dnaRnaTable);
-        databaseManager.createTable(dnaRnaTable, "(chrome varchar(15),"
-                + Utilities.getInstance().getS2() + ")");
+        databaseManager.createFilterTable(dnaRnaTable);
 
         System.out.println("esdr end" + " " + df.format(new Date()));
     }
@@ -41,7 +39,7 @@ public class DnaRnaFilter {
         try {
             System.out.println("df start" + " " + df.format(new Date()));
 
-            ResultSet rs = databaseManager.query(dnaVcfTable, "chrome",
+            ResultSet rs = databaseManager.query(dnaVcfTable, "chrom",
                     "1 limit 0,1");
             List<String> coordinate = new ArrayList<String>();
             databaseManager.setAutoCommit(false);
@@ -52,7 +50,7 @@ public class DnaRnaFilter {
                 bool = true;
             }
 
-            rs = databaseManager.query(refTable, "chrome,pos", "1");
+            rs = databaseManager.query(refTable, "chrom,pos", "1");
             while (rs.next()) {
                 if (bool) {
                     chrom = rs.getString(1).replace("chr", "");
@@ -70,14 +68,14 @@ public class DnaRnaFilter {
                 } else {
                     ps = coordinate.get(i);
                     // The first six base will be filtered out
-                    rs = databaseManager.query(dnaVcfTable, "GT", "chrome='" + chr
+                    rs = databaseManager.query(dnaVcfTable, "GT", "chrom='" + chr
                             + "' and pos=" + ps + "");
                     while (rs.next()) {
                         if (bool) {
                             chr = "chr" + chr;
                             databaseManager.executeSQL("insert into "
                                     + dnaRnaResultTable + " select * from "
-                                    + refTable + " where chrome='" + chr
+                                    + refTable + " where chrom='" + chr
                                     + "' and pos=" + ps + "");
                             count++;
                             if (count % 10000 == 0)
@@ -85,7 +83,7 @@ public class DnaRnaFilter {
                         } else {
                             databaseManager.executeSQL("insert into "
                                     + dnaRnaResultTable + " select * from "
-                                    + refTable + " where chrome='" + chr
+                                    + refTable + " where chrom='" + chr
                                     + "' and pos=" + ps + "");
                             count++;
                             if (count % 10000 == 0)

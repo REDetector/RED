@@ -1,7 +1,6 @@
 package com.dw.denovo;
 
 import com.dw.publicaffairs.DatabaseManager;
-import com.dw.publicaffairs.Utilities;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -29,16 +28,13 @@ public class BasicFilter {
 
     public void establishSpecificTable(String specificTable) {
         databaseManager.deleteTable(specificTable);
-        databaseManager.createTable(specificTable, "(chrome varchar(15),"
-                + Utilities.getInstance().getS2() + "," + "index(chrome,pos))");
+        databaseManager.createFilterTable(specificTable);
     }
 
     public void executeSpecificFilter(String specificTable, String rnaVcfTable) {
         System.out.println("specific start" + " " + df.format(new Date()));
 
-        databaseManager.insertClause("insert into " + specificTable + "("
-                + Utilities.getInstance().getS3() + ")  select * from " + ""
-                + rnaVcfTable + " where " + "REF='A' AND ALT='G'");
+        databaseManager.insertClause("insert into " + specificTable + "  select * from " + rnaVcfTable + " where " + "REF='A' AND ALT='G'");
 
         System.out.println("specific end" + "  " + df.format(new Date()));
     }
@@ -58,8 +54,7 @@ public class BasicFilter {
 
     public void establishBasicTable(String basicTable) {
         databaseManager.deleteTable(basicTable);
-        databaseManager.createTable(basicTable, "(chrome varchar(15),"
-                + Utilities.getInstance().getS2() + "," + "index(chrome,pos))");
+        databaseManager.createFilterTable(basicTable);
     }
 
     public void executeBasicFilter(String specificTable, String basicTable, double quality, int depth) {
@@ -68,7 +63,7 @@ public class BasicFilter {
             int ref_n;
             int alt_n;
             ResultSet rs = databaseManager.query(specificTable,
-                    "chrome,pos,AD", "1");
+                    "chrom,pos,AD", "1");
             List<String> coordinate = new ArrayList<String>();
             databaseManager.setAutoCommit(false);
 
@@ -91,10 +86,9 @@ public class BasicFilter {
                         alt_n = Integer.parseInt(section[1]);
                         if (ref_n + alt_n > depth) {
                             databaseManager.executeSQL("insert into " + basicTable
-                                    + "( " + Utilities.getInstance().getS3()
-                                    + ") (select * from " + specificTable
+                                    + " (select * from " + specificTable
                                     + " where filter='PASS' and pos=" + ps
-                                    + " and qual >" + quality + " and chrome='"
+                                    + " and qual >" + quality + " and chrom='"
                                     + chr + "')");
                             count++;
                             if (count % 10000 == 0)

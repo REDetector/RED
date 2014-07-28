@@ -5,7 +5,6 @@ package com.dw.denovo;
  */
 
 import com.dw.publicaffairs.DatabaseManager;
-import com.dw.publicaffairs.Utilities;
 
 import java.io.BufferedReader;
 import java.io.FileInputStream;
@@ -65,10 +64,9 @@ public class DenovoVcf {
     // return depth;
     // }
 
-    public void establishRnaTable(String rnaVcfTable) {
+    public void establishRnaTable(String rnaVcfTable, String rnaVcfPath) {
         databaseManager.deleteTable(rnaVcfTable);
-        databaseManager.createTable(rnaVcfTable, "(chrome varchar(15),"
-                + Utilities.getInstance().getS2() + ",index(chrome,pos))");
+        databaseManager.createVCFTable(rnaVcfTable, rnaVcfPath);
     }
 
     // table for loadRnaVcf X.length-9=time for circulation
@@ -125,7 +123,7 @@ public class DenovoVcf {
                     s1.append("," + "'" + temp[i] + "'");
                 }
                 databaseManager.executeSQL("insert into " + rnaVcfTable + "("
-                        + Utilities.getInstance().getS3() + ") values(" + s1
+                        + databaseManager.getColumnInfo().toString() + ") values(" + s1
                         + ")");
                 ts_count++;
                 if (ts_count % 20000 == 0)

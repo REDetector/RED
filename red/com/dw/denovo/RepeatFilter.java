@@ -5,7 +5,6 @@ package com.dw.denovo;
  */
 
 import com.dw.publicaffairs.DatabaseManager;
-import com.dw.publicaffairs.Utilities;
 
 import java.io.*;
 import java.sql.ResultSet;
@@ -34,7 +33,7 @@ public class RepeatFilter {
     public boolean hasEstablishedRepeatTable(String repeatTable) {
         databaseManager
                 .createRefTable(repeatTable,
-                        "(chrome varchar(15),begin int,end int,type varchar(40),index(chrome,begin,end))");
+                        "(chrom varchar(15),begin int,end int,type varchar(40),index(chrom,begin,end))");
         ResultSet rs = databaseManager.query(repeatTable, "count(*)",
                 "1 limit 0,100");
         int number = 0;
@@ -78,7 +77,7 @@ public class RepeatFilter {
                     }
                     String section[] = line.split("\t");
                     databaseManager.executeSQL("insert into " + repeatTable
-                            + "(chrome,begin,end,type) values('"
+                            + "(chrom,begin,end,type) values('"
                             + section[index + 5] + "','"
                             + section[index + 6] + "','"
                             + section[index + 7] + "','"
@@ -107,37 +106,42 @@ public class RepeatFilter {
         System.out.println("esrepeat start" + " " + df.format(new Date()));
 
         databaseManager.deleteTable(repeatResultTable);
-        databaseManager.createTable(repeatResultTable, "(chrome varchar(15),"
-                + Utilities.getInstance().getS2() + "," + "index(chrome,pos))");
-
-        databaseManager.deleteTable("alutemp");
-        databaseManager.createTable("alutemp", "(chrome varchar(15),"
-                + Utilities.getInstance().getS2() + "," + "index(chrome,pos))");
+        databaseManager.createFilterTable(repeatResultTable);
 
         System.out.println("esrepeat end" + " " + df.format(new Date()));
     }
 
-    public void mysqlRepeatFilter(String repeatTable, String repeatResultTable, String refTable) {
+    public void establishAluResultTable(String aluResultTable) {
+        System.out.println("alu start" + " " + df.format(new Date()));
+
+        databaseManager.deleteTable(aluResultTable);
+        databaseManager.createFilterTable(aluResultTable);
+
+        System.out.println("alu end" + " " + df.format(new Date()));
+    }
+
+
+    public void mysqlRepeatFilter(String repeatTable, String repeatResultTable, String aluResultTable, String refTable) {
         System.out.println("rfliter start" + " " + df.format(new Date()));
         try {
 //            databaseManager.executeSQL("insert into " + repeatResultTable + " select * from " + refTable + " as A left " +
-//                    "join " + repeatTable + " as B on (b.chrome=a.chrome and b.begin<a.pos and b" + ".end>a.pos) where " +
-//                    "b.chrome is null");
+//                    "join " + repeatTable + " as B on (b.chrom=a.chrom and b.begin<a.pos and b" + ".end>a.pos) where " +
+//                    "b.chrom is null");
 
             databaseManager.executeSQL("insert into " + repeatResultTable
                     + " select * from " + refTable
                     + " where not exists (select * from " + repeatTable + " where (" + repeatTable
-                    + ".chrome= " + refTable + ".chrome and  " + repeatTable
+                    + ".chrom= " + refTable + ".chrom and  " + repeatTable
                     + ".begin<" + refTable + ".pos and " + repeatTable
                     + ".end>" + refTable + ".pos)) ");
 
 
             System.out.println("esrepeat alu start " + " " + df.format(new Date()));
 
-            databaseManager.executeSQL("insert into alutemp SELECT * from "
-                    + refTable + " where exists (select chrome from "
+            databaseManager.executeSQL("insert into " + aluResultTable + " SELECT * from "
+                    + refTable + " where exists (select chrom from "
                     + repeatTable + " where " + repeatTable
-                    + ".chrome = " + refTable + ".chrome and " + repeatTable
+                    + ".chrom = " + refTable + ".chrom and " + repeatTable
                     + ".begin<" + refTable + ".pos and " + repeatTable
                     + ".end>" + refTable + ".pos and " + repeatTable + ".type='SINE/Alu')");
 //        databaseManager.executeSQL("insert into alutemp select * from "
@@ -145,21 +149,21 @@ public class RepeatFilter {
 //						+ refTable
 //						+ " as A left join "
 //						+ repeatTable
-//						+ " as B on (b.chrome=a.chrome and b.begin<a.pos and b.end>a.pos and b.type='SINE/Alu')) ");
+//						+ " as B on (b.chrom=a.chrom and b.begin<a.pos and b.end>a.pos and b.type='SINE/Alu')) ");
 
             System.out.println("esrepeat final start " + " " + df.format(new Date()));
             databaseManager.executeSQL("insert into " + repeatResultTable
-                    + " select * from alutemp");
+                    + " select * from " + aluResultTable);
         } catch (SQLException e) {
             e.printStackTrace();
         }
         System.out.println("rfilter end" + " " + df.format(new Date()));
     }
 
-    public void rfilter(String repeatTable, String repeatResultTable, String refTable) {
+    public void rfilter(String repeatTable, String repeatResultTable, String aluResultTable, String refTable) {
         try {
             System.out.println("rfliter start" + " " + df.format(new Date()));// new
-            ResultSet rs = databaseManager.query(refTable, "chrome,pos", "1");
+            ResultSet rs = databaseManager.query(refTable, "chrom,pos", "1");
             List<String> coordinate = new ArrayList<String>();
             databaseManager.setAutoCommit(false);
 
@@ -176,27 +180,20 @@ public class RepeatFilter {
                         ps = coordinate.get(i);
 //					System.out.println(chr+" "+ps);
                         rs = databaseManager.query(repeatTable, " type ",
-                                "(chrome='" + chr + "' and begin<" + ps
+                                "(chrom='" + chr + "' and begin<" + ps
                                         + " and end>" + ps + ")");
+
                         if (!rs.next()) {
                             databaseManager.executeSQL("insert into " + repeatResultTable
                                     + "  select * from " + refTable
-                                    + " where chrome='" + chr + "' and pos=" + ps
+                                    + " where chrom='" + chr + "' and pos=" + ps
                                     + "");
                             count++;
-
-                            if (count % 10000 == 0) {
-                                databaseManager.commit();
-                            }
-                        }
-                        // SINEalu is also what we need
-                        else if (rs.next() && rs.getString(1) == "SINE/Alu") {
-                            databaseManager.executeSQL("insert into " + repeatResultTable
+                        } else if (rs.next() && rs.getString(1).equals("SINE/Alu")) {
+                            databaseManager.executeSQL("insert into " + aluResultTable
                                     + "  select * from " + refTable
-                                    + " where chrome='" + chr + "' and pos=" + ps
-                                    + "");
+                                    + " where chrom='" + chr + "' and pos=" + ps);
                             count++;
-
                             if (count % 10000 == 0) {
                                 databaseManager.commit();
                             }
@@ -204,7 +201,8 @@ public class RepeatFilter {
                         break;
                 }
             }
-
+            databaseManager.commit();
+            databaseManager.executeSQL("insert into " + repeatResultTable + "  select * from " + aluResultTable);
             databaseManager.commit();
             databaseManager.setAutoCommit(true);
 

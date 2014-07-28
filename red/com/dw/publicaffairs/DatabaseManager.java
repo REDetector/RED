@@ -4,9 +4,13 @@ package com.dw.publicaffairs;
  * Linked to target database
  */
 
+import com.xl.exception.REDException;
 import com.xl.preferences.REDPreferences;
 
+import java.io.*;
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class DatabaseManager {
     private static final DatabaseManager DATABASE_MANAGER = new DatabaseManager();
@@ -26,9 +30,13 @@ public class DatabaseManager {
     public static final String REPEAT_FILTER_RESULT_TABLE_NAME = "repeatfilter";
     public static final String DNA_RNA_FILTER_RESULT_TABLE_NAME = "dnarnafilter";
     public static final String LLR_FILTER_RESULT_TABLE_NAME = "llrfilter";
+    public static final String ALU_FILTER_RESULT_TABLE_NAME = "alufilter";
 
     private Connection con = null;
     private Statement stmt = null;
+
+    private StringBuilder tableBuilder = null;
+    private List<String> columnInfo = null;
 
     private DatabaseManager() {
     }
@@ -67,6 +75,25 @@ public class DatabaseManager {
         }
     }
 
+    public StringBuilder getTableBuilder() {
+        return tableBuilder;
+    }
+
+    public StringBuilder getColumnInfo() {
+        if (columnInfo == null) {
+            return null;
+        }
+        StringBuilder stringBuilder = new StringBuilder();
+        for (String column : columnInfo) {
+            stringBuilder.append(column + ",");
+        }
+        if (stringBuilder.length() > 0) {
+            stringBuilder.deleteCharAt(stringBuilder.length() - 1);
+        }
+        return stringBuilder;
+    }
+
+
     public void createStatement() {
         try {
             stmt = con.createStatement();
@@ -103,11 +130,74 @@ public class DatabaseManager {
         }
     }
 
-    public void createTable(String tableName, String tableParam) {
+    public void createFilterTable(String tableName) {
+        if (tableBuilder == null) {
+            try {
+                throw new REDException("RNA/DNA vcf file has not been imported.");
+            } catch (REDException e) {
+                e.printStackTrace();
+            }
+        }
         try {
-            stmt.executeUpdate("create table " + tableName + tableParam);
+            stmt.executeUpdate("create table " + tableName + "(" + tableBuilder.toString() + ")");
         } catch (SQLException e) {
+            System.err.println("Error create table if not exists '" + tableName + "'");
+            e.printStackTrace();
+        }
+    }
+
+    public void createVCFTable(String tableName, String path) {
+        BufferedReader rin;
+        tableBuilder = new StringBuilder();
+        columnInfo = new ArrayList<String>();
+        try {
+            InputStream inputStream = new FileInputStream(path);
+            rin = new BufferedReader(new InputStreamReader(inputStream));
+            String line;
+            while ((line = rin.readLine()) != null) {
+                String[] section = line.split("\\t");
+                if (line.startsWith("##"))
+                    continue;
+                if (line.startsWith("#")) {
+                    tableBuilder.append(section[0].substring(1) + " " + " varchar(15)");
+                    tableBuilder.append("," + section[1] + " " + "int");
+                    tableBuilder.append("," + section[2] + " " + "varchar(30)");
+                    tableBuilder.append("," + section[3] + " " + "varchar(3)");
+                    tableBuilder.append("," + section[4] + " " + "varchar(5)");
+                    tableBuilder.append("," + section[5] + " " + "float(8,2)");
+                    tableBuilder.append("," + section[6] + " " + "text");
+                    tableBuilder.append("," + section[7] + " " + "text");
+                    columnInfo.add(section[0].substring(1));
+                    for (int i = 1; i < 8; i++)
+                        columnInfo.add(section[i]);
+                    continue;
+                }
+                String[] column8 = section[8].split(":");
+                for (int i = 0, len = column8.length; i < len; i++) {
+                    tableBuilder.append("," + column8[i] + " " + "text");
+                    columnInfo.add(column8[i]);
+                }
+                tableBuilder.append(",index(chrom,pos)");
+                break;
+            }
+            stmt.executeUpdate("create table " + tableName + "(" + tableBuilder.toString() + ")");
+        } catch (FileNotFoundException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (SQLException e1) {
             System.err.println("Error create table '" + tableName + "'");
+            e1.printStackTrace();
+        }
+    }
+
+    public void createPValueTable(String darnedResultTable) {
+        try {
+            stmt.executeUpdate("create table " + darnedResultTable + "(chrom varchar(15),pos int,ref smallint," +
+                    "alt smallint,level varchar(10),p_value double,fdr double)");
+        } catch (SQLException e) {
+            System.err.println("Error create table '" + darnedResultTable + "'");
             e.printStackTrace();
         }
     }

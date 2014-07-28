@@ -10,7 +10,7 @@ public class Query {
     public static Vector<Probe> queryAllEditingSites(String tableName) {
         DatabaseManager databaseManager = DatabaseManager.getInstance();
         Vector<Probe> probeVector = new Vector<Probe>();
-        ResultSet rs = databaseManager.query(tableName, " chrome, pos,alt ", " 1 ");
+        ResultSet rs = databaseManager.query(tableName, " chrom, pos,alt ", " 1 ");
         try {
             while (rs.next()) {
                 Probe p = new Probe(rs.getString(1), rs.getInt(2), rs.getString(3).toCharArray()[0]);
@@ -23,10 +23,10 @@ public class Query {
         return probeVector;
     }
 
-    public static Probe queryEditingSite(String tableName, String chrome, int pos) {
+    public static Probe queryEditingSite(String tableName, String chrom, int pos) {
         DatabaseManager databaseManager = DatabaseManager.getInstance();
 
-        ResultSet rs = databaseManager.query(tableName, " chrome, pos ,alt ", " chrome=" + chrome + " and pos='" + pos + "' ");
+        ResultSet rs = databaseManager.query(tableName, " chrom, pos ,alt ", " chrom=" + chrom + " and pos='" + pos + "' ");
         try {
             while (rs.next()) {
                 return new Probe(rs.getString(1), rs.getInt(2), rs.getString(3).toCharArray()[0]);
@@ -39,11 +39,11 @@ public class Query {
         return null;
     }
 
-    public static Vector<Probe> queryEditingSitesForChr(String tableName, String chrome) {
+    public static Vector<Probe> queryEditingSitesForChr(String tableName, String chrom) {
         DatabaseManager databaseManager = DatabaseManager.getInstance();
 
         Vector<Probe> probeVector = new Vector<Probe>();
-        ResultSet rs = databaseManager.query(tableName, " chrome, pos ,alt ", " chrome=" + chrome + " ");
+        ResultSet rs = databaseManager.query(tableName, " chrom, pos ,alt ", " chrom=" + chrom + " ");
         try {
             while (rs.next()) {
                 Probe p = new Probe(rs.getString(1), rs.getInt(2), rs.getString(3).toCharArray()[0]);

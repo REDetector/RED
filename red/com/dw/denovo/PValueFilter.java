@@ -50,12 +50,12 @@ public class PValueFilter {
     }
 
 
-    public boolean hasEstablishedDarnedTable(String darnedTable,String darnedPath ) {
-    	try {
-    	inputStream = new FileInputStream(darnedPath);
-        BufferedReader rin = new BufferedReader(new InputStreamReader(
-                inputStream));
-        while ((line = rin.readLine()) != null) {
+    public boolean hasEstablishedDarnedTable(String darnedTable, String darnedPath) {
+        try {
+            inputStream = new FileInputStream(darnedPath);
+            BufferedReader rin = new BufferedReader(new InputStreamReader(
+                    inputStream));
+            while ((line = rin.readLine()) != null) {
                 s2.append(line.split("\\t")[0] + " " + "varchar(15)");
                 s2.append("," + line.split("\\t")[1] + " " + "int");
                 s2.append("," + line.split("\\t")[2] + " " + "varchar(5)");
@@ -64,12 +64,12 @@ public class PValueFilter {
                 databaseManager.createRefTable(darnedTable, "(" + s2
                         + ",index(chrom,coordinate))");
                 break;
-        }
-    	}catch (IOException e) {
+            }
+        } catch (IOException e) {
             // TODO Auto-generated catch block
             System.err.println("Error create file from " + darnedPath + " to file stream");
             e.printStackTrace();
-        } 
+        }
         ResultSet rs = databaseManager.query(darnedTable,
                 "count(*)", "1 limit 0,100");
         int number = 0;
@@ -81,72 +81,72 @@ public class PValueFilter {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
-     // clear insert data
+        // clear insert data
         s2.delete(0, s2.length());
         return number > 0;
     }
-    
-    public void loadDarnedTable(String darnedTable, String darnedPath) {
-    	if (!hasEstablishedDarnedTable(darnedTable,darnedPath)) {
-        try {
-            System.out.println("loadhg19 start" + " " + df.format(new Date()));
-            
-            int count_ts = 0;
-            inputStream = new FileInputStream(darnedPath);
-            BufferedReader rin = new BufferedReader(new InputStreamReader(
-                    inputStream));
-            while ((line = rin.readLine()) != null) {
-                StringBuffer s1 = new StringBuffer();
-                if (count > 0) {
-                    count--;
-                    s3.append(line.split("\\t")[0]);
-                    for (int i = 1; i < 5; i++)
-                        s3.append("," + line.split("\\t")[i]);
-                    continue;
-                }
-                databaseManager.setAutoCommit(false);
-                for (int i = 0; i < 5; i++) {
-                    col[i] = line.split("\\t")[i];
-                    if (i == 0 && col[i].length() < 3)
-                        col[i] = "chr" + col[i];
-                }
-                // A-I or G is what we focus on
-                if (col[3].toCharArray()[0] == 'A'
-                        && (col[4].toCharArray()[0] == 'G' || col[4]
-                        .toCharArray()[0] == 'I')) {
-                    s1.append("'" + col[0] + "'");
-                    for (int i = 1; i < 5; i++)
-                        s1.append("," + "'" + col[i] + "'");
-                    databaseManager.executeSQL("insert into " + darnedTable + "("
-                            + s3 + ") values(" + s1 + ")");
-                    count_ts++;
-                    if (count_ts % 20000 == 0)
-                        databaseManager.commit();
-                }
-            }
-            databaseManager.commit();
-            databaseManager.setAutoCommit(true);
 
-            // clear insert data
-            s2.delete(0, s2.length());
-            s3.delete(0, s3.length());
-            
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            System.err.println("Error load file from " + darnedPath + " to file stream");
-            e.printStackTrace();
-        } catch (SQLException e) {
-            System.err.println("Error execute sql clause in " + PValueFilter.class.getName() + ":loadRnaVcfTable()");
-            e.printStackTrace();
+    public void loadDarnedTable(String darnedTable, String darnedPath) {
+        if (!hasEstablishedDarnedTable(darnedTable, darnedPath)) {
+            try {
+                System.out.println("loadhg19 start" + " " + df.format(new Date()));
+
+                int count_ts = 0;
+                inputStream = new FileInputStream(darnedPath);
+                BufferedReader rin = new BufferedReader(new InputStreamReader(
+                        inputStream));
+                while ((line = rin.readLine()) != null) {
+                    StringBuffer s1 = new StringBuffer();
+                    if (count > 0) {
+                        count--;
+                        s3.append(line.split("\\t")[0]);
+                        for (int i = 1; i < 5; i++)
+                            s3.append("," + line.split("\\t")[i]);
+                        continue;
+                    }
+                    databaseManager.setAutoCommit(false);
+                    for (int i = 0; i < 5; i++) {
+                        col[i] = line.split("\\t")[i];
+                        if (i == 0 && col[i].length() < 3)
+                            col[i] = "chr" + col[i];
+                    }
+                    // A-I or G is what we focus on
+                    if (col[3].toCharArray()[0] == 'A'
+                            && (col[4].toCharArray()[0] == 'G' || col[4]
+                            .toCharArray()[0] == 'I')) {
+                        s1.append("'" + col[0] + "'");
+                        for (int i = 1; i < 5; i++)
+                            s1.append("," + "'" + col[i] + "'");
+                        databaseManager.executeSQL("insert into " + darnedTable + "("
+                                + s3 + ") values(" + s1 + ")");
+                        count_ts++;
+                        if (count_ts % 20000 == 0)
+                            databaseManager.commit();
+                    }
+                }
+                databaseManager.commit();
+                databaseManager.setAutoCommit(true);
+
+                // clear insert data
+                s2.delete(0, s2.length());
+                s3.delete(0, s3.length());
+
+            } catch (IOException e) {
+                // TODO Auto-generated catch block
+                System.err.println("Error load file from " + darnedPath + " to file stream");
+                e.printStackTrace();
+            } catch (SQLException e) {
+                System.err.println("Error execute sql clause in " + PValueFilter.class.getName() + ":loadRnaVcfTable()");
+                e.printStackTrace();
+            }
         }
-    	}
-    	System.out.println("loadhg19 end" + " " + df.format(new Date()));
+        System.out.println("loadhg19 end" + " " + df.format(new Date()));
     }
 
     private void level(String refTable, String chr, String ps) {
         try {
             ref_n = alt_n = 0;
-            ResultSet rs = databaseManager.query(refTable, "AD", "chrome='"
+            ResultSet rs = databaseManager.query(refTable, "AD", "chrom='"
                     + chr + "' and pos=" + ps + "");
 
             List<String> coordinate_level = new ArrayList<String>();
@@ -167,7 +167,7 @@ public class PValueFilter {
 
     private void Exp_num(String darnedTable, String refTable) {
         try {
-            ResultSet rs = databaseManager.query(refTable, "chrome,pos", "1");
+            ResultSet rs = databaseManager.query(refTable, "chrom,pos", "1");
 
             while (rs.next()) {
                 coordinate.add(rs.getString(1));
@@ -193,7 +193,6 @@ public class PValueFilter {
                 }
 
             }
-
             known_alt /= (coordinate.size() / 2);
             known_ref /= (coordinate.size() / 2);
             known_alt = Math.round(known_alt);
@@ -231,10 +230,7 @@ public class PValueFilter {
 
     public void estblishPvTable(String darnedResultTable) {
         databaseManager.deleteTable(darnedResultTable);
-        databaseManager
-                .createTable(
-                        darnedResultTable,
-                        "(chrome varchar(15),pos int,ref smallint,alt smallint,level varchar(10),p_value double,fdr double)");
+        databaseManager.createPValueTable(darnedResultTable);
     }
 
     private List<Double> executePValueFilter(String darnedTable, String darnedResultTable, String refTable,
@@ -263,7 +259,7 @@ public class PValueFilter {
             if (pValue < 0.05) {
                 try {
                     databaseManager.executeSQL("insert into " + darnedResultTable
-                            + "(chrome,pos,ref,alt,level,p_value) values('" + chr
+                            + "(chrom,pos,ref,alt,level,p_value) values('" + chr
                             + "'," + ps + "," + (int) ref_n + "," + (int) alt_n + ","
                             + dF.format(lev) + "," + pValue + ")");
                 } catch (SQLException e) {
@@ -293,7 +289,7 @@ public class PValueFilter {
             for (int i = 0, len = pValueList.size(); i < len; i++) {
                 pValueArray[i] = pValueList.get(i);
             }
-            
+
             code.addDoubleArray("parray", pValueArray);
 //            code.addRCode("qobj <- qvalue(parray)");
 //            code.addRCode("mylist<-list(qval=qobj$qvalues");
@@ -310,7 +306,7 @@ public class PValueFilter {
                 ps = pValueCoordinate.get(2 * i + 1);
                 if (fdr < 0.05) {
                     databaseManager.executeSQL("update " + darnedResultTable
-                            + " set fdr=" + fdr + " where chrome='" + chr
+                            + " set fdr=" + fdr + " where chrom='" + chr
                             + "' and pos=" + ps + " ");
                 }
             }
@@ -322,7 +318,5 @@ public class PValueFilter {
         }
         System.out.println("executeFDRFilter end" + " " + df.format(new Date()));
 
-
     }
-
 }

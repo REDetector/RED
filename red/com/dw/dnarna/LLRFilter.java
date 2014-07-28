@@ -5,7 +5,6 @@ package com.dw.dnarna;
  */
 
 import com.dw.publicaffairs.DatabaseManager;
-import com.dw.publicaffairs.Utilities;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -33,8 +32,7 @@ public class LLRFilter {
         System.out.println("esllr start" + " " + df.format(new Date()));
 
         databaseManager.deleteTable(llrResultTable);
-        databaseManager.createTable(llrResultTable, "(chrome varchar(15),"
-                + Utilities.getInstance().getS2() + ")");
+        databaseManager.createFilterTable(llrResultTable);
 
         System.out.println("esllr end" + " " + df.format(new Date()));
     }
@@ -43,7 +41,7 @@ public class LLRFilter {
         try {
             System.out.println("executeLLRFilter start" + " " + df.format(new Date()));
 
-            ResultSet rs = databaseManager.query(dnaVcfTable, "chrome",
+            ResultSet rs = databaseManager.query(dnaVcfTable, "chrom",
                     "1 limit 0,1");
             List<String> coordinate = new ArrayList<String>();
             databaseManager.setAutoCommit(false);
@@ -54,7 +52,7 @@ public class LLRFilter {
                 bool = true;
             }
 
-            rs = databaseManager.query(refTable, "chrome,pos,AD", "1");
+            rs = databaseManager.query(refTable, "chrom,pos,AD", "1");
             while (rs.next()) {
                 if (bool) {
                     chrom = rs.getString(1).replace("chr", "");
@@ -82,7 +80,7 @@ public class LLRFilter {
                         alt_n = Integer.parseInt(section[1]);
 
                         double q = 0;
-                        rs = databaseManager.query(dnaVcfTable, "qual", "chrome='" + chr
+                        rs = databaseManager.query(dnaVcfTable, "qual", "chrom='" + chr
                                 + "' and pos=" + ps + "");
                         while (rs.next()) {
                             q = rs.getDouble(1);
@@ -104,7 +102,7 @@ public class LLRFilter {
                                     chr = "chr" + chr;
                                     databaseManager.executeSQL("insert into "
                                             + llrResultTable + " select * from "
-                                            + refTable + " where chrome='" + chr
+                                            + refTable + " where chrom='" + chr
                                             + "' and pos=" + ps + "");
                                     count++;
                                     if (count % 10000 == 0) {
@@ -113,7 +111,7 @@ public class LLRFilter {
                                 } else {
                                     databaseManager.executeSQL("insert into "
                                             + llrResultTable + " select * from "
-                                            + refTable + " where chrome='" + chr
+                                            + refTable + " where chrom='" + chr
                                             + "' and pos=" + ps + "");
                                     count++;
                                     if (count % 10000 == 0) {
