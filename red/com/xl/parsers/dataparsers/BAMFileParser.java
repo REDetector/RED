@@ -2,7 +2,6 @@ package com.xl.parsers.dataparsers;
 
 import com.xl.datatypes.DataCollection;
 import com.xl.datatypes.DataSet;
-import com.xl.datatypes.PairedDataSet;
 import com.xl.datatypes.genome.Chromosome;
 import com.xl.datatypes.sequence.SequenceRead;
 import com.xl.exception.REDException;
@@ -25,13 +24,7 @@ import java.util.Vector;
 public class BAMFileParser extends DataParser {
 
     // Extra options which can be set
-    private boolean pairedEndImport = false;
-    private int pairedEndDistance = 1000;
-    private boolean separateSplicedReads = false;
-    private boolean importIntrons = false;
-    private int extendBy = 0;
-    private DataParserOptionsPanel prefs = new DataParserOptionsPanel(true,
-            true, false, true);
+    private DataParserOptionsPanel prefs = new DataParserOptionsPanel();
     private int minMappingQuality = 0;
 
     /**
@@ -43,34 +36,13 @@ public class BAMFileParser extends DataParser {
         super(dataCollection);
     }
 
-    /**
-     * Instantiates a new SAM file parser with all options set
-     *
-     * @param data                    The dataCollection to which new data will be added.
-     * @param pairedEndImport         Whether to import this as paired end data
-     * @param pairedEndDistanceCutoff The maximum distance (bp) between valid paired ends
-     * @param splitSplicedReads       Whether to split up spliced reads into their component parts
-     */
-    public BAMFileParser(DataCollection data, boolean pairedEndImport,
-                         int pairedEndDistanceCutoff, boolean splitSplicedReads) {
-        super(data);
-        this.pairedEndImport = pairedEndImport;
-        this.separateSplicedReads = splitSplicedReads;
-        pairedEndDistance = pairedEndDistanceCutoff;
-    }
-
     /*
      * (non-Javadoc)
      *
      * @see java.lang.Runnable#run()
      */
     public void run() {
-        System.out.println(this.getClass().getName() + ":run()");
-        pairedEndImport = prefs.pairedEnd();
-        pairedEndDistance = prefs.pairDistanceCutoff();
-        separateSplicedReads = prefs.splitSplicedReads();
-        importIntrons = prefs.importIntrons();
-        extendBy = prefs.extendReads();
+        System.out.println(BAMFileParser.class.getName() + ":run()");
         minMappingQuality = prefs.minMappingQuality();
 
         File[] samFiles = getFiles();
@@ -84,16 +56,10 @@ public class BAMFileParser extends DataParser {
 
                 SAMFileReader inputSam = new SAMFileReader(samFiles[f]);
 
-                if (prefs.isHiC()) {
-                    newData[f] = new PairedDataSet(samFiles[f].getName(),
-                            samFiles[f].getCanonicalPath(),
-                            prefs.removeDuplicates(), prefs.hiCDistance(),
-                            prefs.hiCIgnoreTrans());
-                } else {
-                    newData[f] = new DataSet(samFiles[f].getName(),
-                            samFiles[f].getCanonicalPath(),
-                            prefs.removeDuplicates());
-                }
+
+                newData[f] = new DataSet(samFiles[f].getName(),
+                        samFiles[f].getCanonicalPath(),
+                        prefs.removeDuplicates());
 
                 int lineCount = 0;
                 // Now process the file
@@ -121,29 +87,9 @@ public class BAMFileParser extends DataParser {
                                 + samFiles[f].getName(), f, samFiles.length);
                     }
 
-                    if (pairedEndImport && !samRecord.getReadPairedFlag()) {
-                        progressWarningReceived(new REDException(
-                                "Data was single ended during paired end import"));
-                        continue;
-                    }
-
-                    if (pairedEndImport && !separateSplicedReads
-                            && !samRecord.getFirstOfPairFlag()) {
-                        // This isn't the first read in a pair so we don't
-                        // process
-                        // it. We do process both ends if we're working on
-                        // spliced data.
-                        continue;
-                    }
 
                     if (samRecord.getReadUnmappedFlag()) {
                         // There was no match
-                        continue;
-                    }
-                    if (pairedEndImport && !separateSplicedReads
-                            && samRecord.getMateUnmappedFlag()) {
-                        // No match on the reverse strand. Doesn't matter if
-                        // we're doing spliced reads.
                         continue;
                     }
 
@@ -153,61 +99,15 @@ public class BAMFileParser extends DataParser {
                         continue;
                     }
 
-                    // TODO: Check what this actually stores - might be a real
-                    // name rather than 0/=
-                    if (pairedEndImport && !separateSplicedReads
-                            && !prefs.isHiC()
-                            && samRecord.getMateReferenceName().equals("0")) {
-                        if (samRecord.getMateReferenceName().equals("=")) {
-                            try {
-                                throw new REDException(
-                                        "Unexpected mate referenece name "
-                                                + samRecord
-                                                .getMateReferenceName());
-                            } finally {
-                                if (inputSam != null) {
-                                    inputSam.close();
-                                }
-                            }
-                        }
-                        // Matches were on different chromosomes
-                        continue;
-                    }
                     try {
-                        if (pairedEndImport && prefs.isHiC()) {
-//                            System.out.println(this.getClass().getName() + ":getPairedEndHiCRead(samRecord);");
-                            SequenceRead[] reads = getPairedEndHiCRead(samRecord);
-                            newData[f].addData(reads[0]);
-                            newData[f].addData(reads[1]);
-                        } else if (pairedEndImport && !separateSplicedReads) {
-//                            System.out.println(this.getClass().getName() + ":getPairedEndRead(samRecord)");
-                            SequenceRead read = getPairedEndRead(samRecord);
-                            newData[f].addData(read);
-                        } else if (separateSplicedReads) {
-//                            System.out.println(this.getClass().getName() + ":getSplitSingleEndRead(samRecord)");
-                            SequenceRead[] reads = getSplitSingleEndRead(samRecord);
-                            for (int r = 0; r < reads.length; r++) {
-                                newData[f].addData(reads[r]);
-                            }
-                        } else {
 //                            System.out.println(this.getClass().getName() + ":else\tgetSingleEndRead(samRecord)");
-                            SequenceRead read = getSingleEndRead(samRecord);
-                            if (read != null) {
-                                newData[f].addData(read);
-                            }
+                        SequenceRead read = getSingleEndRead(samRecord);
+                        if (read != null) {
+                            newData[f].addData(read);
                         }
                     } catch (REDException ex) {
                         progressWarningReceived(ex);
-
-                        if (prefs.isHiC() && !pairedEndImport) {
-                            if (((PairedDataSet) newData[f])
-                                    .importSequenceSkipped()) {
-                                // Skip the next line
-                                skipNext = true;
-                            }
-                        }
                     }
-
                 }
                 // We're finished with the file.
                 inputSam.close();
@@ -277,6 +177,7 @@ public class BAMFileParser extends DataParser {
             }
         } catch (Exception e) {
             e.printStackTrace();
+            return null;
         }
 
 
@@ -316,69 +217,38 @@ public class BAMFileParser extends DataParser {
             } else if (cigarOperations[pos + 1].equals("N")) {
                 // Make a new sequence as far as this point
 
-                if (importIntrons) {
-                    if (lastEnd > 0) {
-                        if (start > c.getLength()) {
-                            int overrun = (start - 1) - c.getLength();
-                            throw new REDException("Reading position "
-                                    + (start - 1) + " was " + overrun
-                                    + "bp beyond the end of chr" + c.getName()
-                                    + " (" + c.getLength() + ")");
-                        }
-                        newReads.add(new SequenceRead(c.getName(), start, strand, samRecord
-                                .getReadBases(), samRecord.getBaseQualities()));
-                    }
-
-                    // Update the lastEnd whether we added a read or not since
-                    // this will be the start of the next intron
-                    lastEnd = currentPosition;
-                } else {
-                    // We also don't allow readings which are beyond the end of
-                    // the chromosome
-                    if (currentPosition > c.getLength()) {
-                        int overrun = currentPosition - c.getLength();
-                        throw new REDException("Reading position "
-                                + currentPosition + " was " + overrun
-                                + "bp beyond the end of chr" + c.getName()
-                                + " (" + c.getLength() + ")");
-                    }
-
-                    newReads.add(new SequenceRead(c.getName(), start, strand, samRecord
-                            .getReadBases(), samRecord.getBaseQualities()));
+                // We also don't allow readings which are beyond the end of
+                // the chromosome
+                if (currentPosition > c.getLength()) {
+                    int overrun = currentPosition - c.getLength();
+                    throw new REDException("Reading position "
+                            + currentPosition + " was " + overrun
+                            + "bp beyond the end of chr" + c.getName()
+                            + " (" + c.getLength() + ")");
                 }
 
-                currentPosition += Integer.parseInt(cigarNumbers[pos]) + 1;
-                start = currentPosition;
-            }
-
-        }
-
-        if (importIntrons) {
-            if (lastEnd > 0) {
-                if (start > c.getLength()) {
-                    int overrun = (start - 1) - c.getLength();
-                    throw new REDException("Reading position " + (start - 1)
-                            + " was " + overrun + "bp beyond the end of chr"
-                            + c.getName() + " (" + c.getLength() + ")");
-                }
                 newReads.add(new SequenceRead(c.getName(), start, strand, samRecord
                         .getReadBases(), samRecord.getBaseQualities()));
             }
-        } else {
-            // We have to process the last read in the string.
 
-            // We also don't allow readings which are beyond the end of the
-            // chromosome
-            if (currentPosition > c.getLength()) {
-                int overrun = currentPosition - c.getLength();
-                throw new REDException("Reading position " + currentPosition
-                        + " was " + overrun + "bp beyond the end of chr"
-                        + c.getName() + " (" + c.getLength() + ")");
-            }
+            currentPosition += Integer.parseInt(cigarNumbers[pos]) + 1;
+            start = currentPosition;
 
-            newReads.add(new SequenceRead(c.getName(), start, strand, samRecord
-                    .getReadBases(), samRecord.getBaseQualities()));
         }
+
+        // We have to process the last read in the string.
+
+        // We also don't allow readings which are beyond the end of the
+        // chromosome
+        if (currentPosition > c.getLength()) {
+            int overrun = currentPosition - c.getLength();
+            throw new REDException("Reading position " + currentPosition
+                    + " was " + overrun + "bp beyond the end of chr"
+                    + c.getName() + " (" + c.getLength() + ")");
+        }
+
+        newReads.add(new SequenceRead(c.getName(), start, strand, samRecord
+                .getReadBases(), samRecord.getBaseQualities()));
 
         return newReads.toArray(new SequenceRead[0]);
 
@@ -397,7 +267,6 @@ public class BAMFileParser extends DataParser {
         Strand strand;
         int start;
         int end;
-//        MessageUtils.showInfo(BAMFileParser.class,(samRecord==null)+"");
         start = samRecord.getAlignmentStart();
         end = samRecord.getAlignmentEnd();
 
@@ -407,15 +276,7 @@ public class BAMFileParser extends DataParser {
             strand = Strand.POSITIVE;
         }
 
-        if (extendBy > 0) {
-            if (strand == Strand.POSITIVE) {
-                end += extendBy;
-            } else if (strand == Strand.NEGATIVE) {
-                start -= extendBy;
-            }
-        }
-
-        Chromosome c = null;
+        Chromosome c;
         try {
             String chrName = samRecord.getReferenceName();
             if (chrName.length() <= 3) {
@@ -428,6 +289,7 @@ public class BAMFileParser extends DataParser {
             }
         } catch (Exception e) {
             e.printStackTrace();
+            return null;
         }
 
         // We also don't allow readings which are beyond the end of the
@@ -445,9 +307,8 @@ public class BAMFileParser extends DataParser {
         }
 
         // We can now make the new reading
-        SequenceRead read = new SequenceRead(c.getName(), start, strand, samRecord
+        return new SequenceRead(c.getName(), start, strand, samRecord
                 .getReadBases(), samRecord.getBaseQualities());
-        return read;
     }
 
     /**
@@ -576,12 +437,6 @@ public class BAMFileParser extends DataParser {
             strand = Strand.NONE;
         }
 
-        if ((end - start) + 1 > pairedEndDistance) {
-            throw new REDException("Distance between ends "
-                    + ((end - start) + 1) + " was larger than cutoff ("
-                    + pairedEndDistance + ")");
-        }
-
         Chromosome c = null;
         try {
             String chrName = samRecord.getReferenceName();
@@ -624,7 +479,7 @@ public class BAMFileParser extends DataParser {
      * @see uk.ac.babraham.SeqMonk.DataParsers.DataParser#description()
      */
     public String getDescription() {
-        return "Imports Data standard BAM Format files";
+        return "Imports Standard BAM/SAM Format Files";
     }
 
     /*
