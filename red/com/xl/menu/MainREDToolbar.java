@@ -24,6 +24,8 @@ public class MainREDToolbar extends REDToolbar {
      */
     private JButton findFeatureButton;
 
+    private JButton changeDataZoomButton;
+
     /**
      * Instantiates a new red toolbar.
      *
@@ -60,7 +62,7 @@ public class MainREDToolbar extends REDToolbar {
 
         addSeparator();
 
-        JButton changeDataZoomButton = new JButton(
+        changeDataZoomButton = new JButton(
                 new ImageIcon(
                         ClassLoader
                                 .getSystemResource("resources/toolbar/change_data_zoom.png")));
@@ -104,7 +106,7 @@ public class MainREDToolbar extends REDToolbar {
         System.out.println(this.getClass().getName() + ":genomeLoaded()");
         jumpToPositionButton.setEnabled(true);
         jumpToPositionButton.setFocusable(false);
-
+        changeDataZoomButton.setEnabled(true);
         findFeatureButton.setEnabled(true);
         findFeatureButton.setFocusable(false);
         add(new DataZoomSelector(REDApplication.getInstance(), null).getContentPane());

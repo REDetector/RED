@@ -20,7 +20,6 @@ import com.xl.main.REDApplication;
 import com.xl.parsers.annotationparsers.IGVGenomeParser;
 import com.xl.preferences.DisplayPreferences;
 import com.xl.preferences.LocationPreferences;
-import com.xl.utils.MessageUtils;
 import com.xl.utils.ParsingUtils;
 import com.xl.utils.Strand;
 import com.xl.utils.namemanager.GenomeUtils;
@@ -48,7 +47,7 @@ public class REDParser implements Runnable, ProgressListener {
     public static final int MAX_DATA_VERSION = 1;
 
     private REDApplication application;
-    private BufferedReader br;
+    private BufferedReader reader;
     private Vector<ProgressListener> listeners = new Vector<ProgressListener>();
     private DataSet[] dataSets;
     private DataGroup[] dataGroups;
@@ -115,7 +114,7 @@ public class REDParser implements Runnable, ProgressListener {
 
             Vector<AnnotationSet> annotationSets = new Vector<AnnotationSet>();
 
-            while ((line = br.readLine()) != null) {
+            while ((line = reader.readLine()) != null) {
                 sections = line.split("\\t");
 
                 // Now we look where to send this...
@@ -188,31 +187,32 @@ public class REDParser implements Runnable, ProgressListener {
             }
 
             // We're finished with the file
-            if (br != null) {
-                br.close();
+            if (reader != null) {
+                reader.close();
             }
-            application.resetChangesWereMade();
 
         } catch (Exception ex) {
+            ex.printStackTrace();
             Enumeration<ProgressListener> e = listeners.elements();
             while (e.hasMoreElements()) {
                 e.nextElement().progressExceptionReceived(ex);
             }
             try {
-                br.close();
+                reader.close();
             } catch (IOException e1) {
                 new CrashReporter(e1);
             }
             return;
         }
 
+        System.out.println(listeners.size());
+        System.out.println("project_loaded");
         Enumeration<ProgressListener> e = listeners.elements();
         while (e.hasMoreElements()) {
             // In this case we put out a dummy empty dataset since
             // we've already entered the data into the collection by now
-            e.nextElement().progressComplete("datasets_loaded", null);
+            e.nextElement().progressComplete("project_loaded", null);
         }
-        application.resetChangesWereMade();
 
     }
 
@@ -234,7 +234,7 @@ public class REDParser implements Runnable, ProgressListener {
 
         try {
             fis = new FileInputStream(file);
-            br = new BufferedReader(new InputStreamReader(new GZIPInputStream(
+            reader = new BufferedReader(new InputStreamReader(new GZIPInputStream(
                     fis)));
         } catch (IOException ioe) {
 
@@ -242,7 +242,7 @@ public class REDParser implements Runnable, ProgressListener {
                 if (fis != null) {
                     fis.close();
                 }
-                br = new BufferedReader(new FileReader(file));
+                reader = new BufferedReader(new FileReader(file));
             } catch (IOException ex) {
                 Enumeration<ProgressListener> e = listeners.elements();
                 while (e.hasMoreElements()) {
@@ -288,7 +288,7 @@ public class REDParser implements Runnable, ProgressListener {
         System.out.println(this.getClass().getName() + ":parseGenome()");
         String line;
         String[] sections;
-        while ((line = br.readLine()) != null) {
+        while ((line = reader.readLine()) != null) {
             if (line.equals(ParsingUtils.GENOME_INFORMATION_END)) {
                 break;
             }
@@ -388,7 +388,7 @@ public class REDParser implements Runnable, ProgressListener {
                 progressUpdated("Parsing annotation in " + set.name(), i,
                         featureCount);
             }
-            sections = br.readLine().split("\\t");
+            sections = reader.readLine().split("\\t");
             String name = sections[0];
             String chr = sections[1];
             Strand strand = Strand.parseStrand(sections[2]);
@@ -440,7 +440,7 @@ public class REDParser implements Runnable, ProgressListener {
         dataSets = new DataSet[n];
 
         for (int i = 0; i < n; i++) {
-            sections = br.readLine().split("\\t");
+            sections = reader.readLine().split("\\t");
             // Originally there was only one section (the DataSet name). Then
             // there were two names, a user supplied name and the original
             // imported file name. Now there are 3 sections where the third
@@ -474,7 +474,7 @@ public class REDParser implements Runnable, ProgressListener {
             }
 
             // The first line is
-            line = br.readLine();
+            line = reader.readLine();
             sections = line.split("\t");
             if (sections.length != 2) {
                 throw new REDException("Read line " + i
@@ -499,7 +499,7 @@ public class REDParser implements Runnable, ProgressListener {
                 while (true) {
                     // The first line should be the chromosome and a number of
                     // reads
-                    line = br.readLine();
+                    line = reader.readLine();
 
                     if (line == null) {
                         throw new REDException(
@@ -528,7 +528,7 @@ public class REDParser implements Runnable, ProgressListener {
 
                     for (int r = 0; r < chrReadCount; r++) {
 
-                        line = br.readLine();
+                        line = reader.readLine();
                         if (line == null) {
                             throw new REDException(
                                     "Ran out of data whilst parsing reads for sample "
@@ -579,7 +579,7 @@ public class REDParser implements Runnable, ProgressListener {
                 while (true) {
                     // The first line should be the chromosome and a number of
                     // reads
-                    line = br.readLine();
+                    line = reader.readLine();
 
                     if (line == null) {
                         throw new REDException(
@@ -608,7 +608,7 @@ public class REDParser implements Runnable, ProgressListener {
                             }
                         }
 
-                        line = br.readLine();
+                        line = reader.readLine();
                         if (line == null) {
                             throw new REDException(
                                     "Ran out of data whilst parsing reads for sample "
@@ -650,7 +650,7 @@ public class REDParser implements Runnable, ProgressListener {
      */
     private void parseGroups(String[] sections) throws REDException,
             IOException {
-        MessageUtils.showInfo(REDParser.class, "parseGroups(String[] sections)");
+        System.out.println(REDParser.class.getName() + ":parseGroups(String[] sections)");
         if (sections.length != 2) {
             throw new REDException("Data Groups line didn't contain 2 sections");
         }
@@ -663,7 +663,7 @@ public class REDParser implements Runnable, ProgressListener {
         dataGroups = new DataGroup[n];
 
         for (int i = 0; i < n; i++) {
-            String[] group = br.readLine().split("\\t");
+            String[] group = reader.readLine().split("\\t");
             DataSet[] groupMembers = new DataSet[group.length - 1];
 
             if (thisDataVersion < 4) {
@@ -751,7 +751,7 @@ public class REDParser implements Runnable, ProgressListener {
 
         String line;
         for (int i = 0; i < n; i++) {
-            line = br.readLine();
+            line = reader.readLine();
             if (line == null) {
                 throw new REDException("Ran out of probe data at line " + i
                         + " (expected " + n + " probes)");
@@ -813,7 +813,7 @@ public class REDParser implements Runnable, ProgressListener {
         DataStore[] drawnStores = new DataStore[n];
 
         for (int i = 0; i < n; i++) {
-            String line = br.readLine();
+            String line = reader.readLine();
             if (line == null) {
                 throw new REDException("Ran out of visible store data at line "
                         + i + " (expected " + n + " stores)");
@@ -867,8 +867,7 @@ public class REDParser implements Runnable, ProgressListener {
         // The 0 linkage list will always be the full ProbeSet
         linkage[0] = application.dataCollection().probeSet();
         for (int i = 0; i < n; i++) {
-            String line = br.readLine();
-            System.out.println(line);
+            String line = reader.readLine();
             if (line == null) {
                 throw new REDException("Ran out of probe data at line " + i
                         + " (expected " + n + " probes)");
@@ -893,7 +892,7 @@ public class REDParser implements Runnable, ProgressListener {
                                 "Processed list data for " + i + " probes", i, n);
                     }
                 }
-                line = br.readLine();
+                line = reader.readLine();
                 if (line == null) {
                     throw new REDException("Couldn't find probe line for list data");
                 }
@@ -933,8 +932,10 @@ public class REDParser implements Runnable, ProgressListener {
         }
 
         String[] prefs;
+        String line = reader.readLine();
+        System.out.println(line);
         for (int i = 0; i < linesToParse; i++) {
-            prefs = br.readLine().split("\\t");
+            prefs = line.split("\\t");
 
             if (prefs[0].equals("DisplayMode")) {
                 DisplayPreferences.getInstance().setDisplayMode(

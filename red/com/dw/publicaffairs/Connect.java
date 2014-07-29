@@ -45,7 +45,6 @@ public class Connect {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
-        manager.createStatement();
         manager.setAutoCommit(true);
 
         // boolean isDenovo = false;

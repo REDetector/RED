@@ -151,7 +151,6 @@ public class UserPasswordDialog extends JDialog implements ActionListener {
                                             "<br>Click 'ok' to the next step.",
                                     "Connect Successfully",
                                     JOptionPane.INFORMATION_MESSAGE);
-                            setVisible(false);
                             application.startNewProject();
                         } else {
                             JOptionPane.showMessageDialog(application, "<html>Connect Successfully. " +
@@ -159,14 +158,19 @@ public class UserPasswordDialog extends JDialog implements ActionListener {
                                             "sites. <br>Click 'ok' to the next step.",
                                     "Connect Successfully",
                                     JOptionPane.INFORMATION_MESSAGE);
-                            setVisible(false);
                             new DataInportDialog(application);
                         }
+                        setVisible(false);
                     } else {
                         JOptionPane.showMessageDialog(application, "<html>Connect Successfully. " +
                                         "<br>You can detect editing sites using the filter in 'Filter' menu",
                                 "Connect Successfully",
                                 JOptionPane.INFORMATION_MESSAGE);
+                        if (REDPreferences.getInstance().isDenovo()) {
+                            DatabaseManager.getInstance().useDatabase(DatabaseManager.DENOVO_DATABASE_NAME);
+                        } else {
+                            DatabaseManager.getInstance().useDatabase(DatabaseManager.NON_DENOVO_DATABASE_NAME);
+                        }
                         processingComplete("database_loaded");
                     }
                     processingComplete("database_connected");

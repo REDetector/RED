@@ -33,7 +33,6 @@ public class ThreadDenovoInput implements Runnable {
         DatabaseManager manager = DatabaseManager.getInstance();
         LocationPreferences locationPreferences = LocationPreferences.getInstance();
         REDPreferences.getInstance().setDenovo(true);
-        manager.createStatement();
         manager.setAutoCommit(true);
 
         progressUpdated("Creating denovo database...", 1, ALL_STEP);

@@ -4,12 +4,15 @@
 
 package com.xl.main;
 
+import com.dw.publicaffairs.DatabaseManager;
+import com.dw.publicaffairs.Query;
 import com.xl.datatypes.DataCollection;
 import com.xl.datatypes.DataGroup;
 import com.xl.datatypes.DataSet;
 import com.xl.datatypes.DataStore;
 import com.xl.datatypes.annotation.AnnotationSet;
 import com.xl.datatypes.genome.Genome;
+import com.xl.datatypes.probes.Probe;
 import com.xl.datatypes.probes.ProbeList;
 import com.xl.datatypes.probes.ProbeSet;
 import com.xl.datatypes.probes.ProbeSetChangeListener;
@@ -893,6 +896,10 @@ public class REDApplication extends JFrame implements ProgressListener,
         } else if (command.equals("datasets_loaded")) {
             addNewDataSets((DataSet[]) result);
             changesWereMade();
+        } else if (command.equals("project_loaded")) {
+            System.out.println("project_loaded");
+            addNewDataSets((DataSet[]) result);
+            resetChangesWereMade();
         } else if (command.equals("database_connected")) {
             System.out.println(REDApplication.class.getName() + ":database_connected");
             menu.databaseConnected();
@@ -901,6 +908,10 @@ public class REDApplication extends JFrame implements ProgressListener,
             System.out.println(REDApplication.class.getName() + ":database_loaded");
             menu.databaseConnected();
             menu.databaseLoaded();
+            Vector<Probe> probes = Query.queryAllEditingSites(DatabaseManager.RNA_VCF_RESULT_TABLE_NAME);
+            Probe[] probeArray = probes.toArray(new Probe[0]);
+            dataCollection.setProbeSet(new ProbeSet("Original RNA editing sites by RNA vcf file", probeArray,
+                    DatabaseManager.RNA_VCF_RESULT_TABLE_NAME));
             changesWereMade();
         } else if (command.equals("fasta_loaded")) {
             chromosomeViewer.setEnableFastaSequence(true);

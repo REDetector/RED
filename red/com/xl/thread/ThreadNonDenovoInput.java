@@ -36,7 +36,6 @@ public class ThreadNonDenovoInput implements Runnable {
         DatabaseManager manager = DatabaseManager.getInstance();
         LocationPreferences locationPreferences = LocationPreferences.getInstance();
         REDPreferences.getInstance().setDenovo(false);
-        manager.createStatement();
         manager.setAutoCommit(true);
         progressUpdated("Creating non-denovo database...", 1, ALL_STEP);
         manager.createDatabase(DatabaseManager.NON_DENOVO_DATABASE_NAME);

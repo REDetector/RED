@@ -255,7 +255,7 @@ public class PValueFilter {
             // {
             // continue;
             // }
-            calculate(ref_n, alt_n, known_ref, known_alt, commandD);
+            pValue = calculate(ref_n, alt_n, known_ref, known_alt, commandD);
             if (pValue < 0.05) {
                 try {
                     databaseManager.executeSQL("insert into " + darnedResultTable

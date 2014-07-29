@@ -261,11 +261,9 @@ public class DisplayPreferences {
     public void writeConfiguration(PrintStream p) {
         // Make sure this number at the end equates to the number of
         // configuration lines to be written
-        p.println(ParsingUtils.DISPLAY_PREFERENCES + "\t9");
+        p.println(ParsingUtils.DISPLAY_PREFERENCES + "\t4");
 
         p.println("DisplayMode\t" + getDisplayMode());
-
-        p.println("QuantitationColour\t" + getColourType());
 
         p.println("Gradient\t" + getGradientValue());
 

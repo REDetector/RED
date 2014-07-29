@@ -528,6 +528,7 @@ public class REDMenu extends JMenuBar implements ActionListener {
         viewMenu.setEnabled(false);
         filterMenu.setEnabled(false);
         reportsMenu.setEnabled(false);
+        redToolbar.reset();
     }
 
     public JPanel toolbarPanel() {

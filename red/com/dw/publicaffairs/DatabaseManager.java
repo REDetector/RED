@@ -35,7 +35,6 @@ public class DatabaseManager {
     private Connection con = null;
     private Statement stmt = null;
 
-    private StringBuilder tableBuilder = null;
     private List<String> columnInfo = null;
 
     private DatabaseManager() {
@@ -51,7 +50,8 @@ public class DatabaseManager {
         Class.forName("com.mysql.jdbc.Driver");
         String connectionURL = "jdbc:mysql://" + host + ":" + port + "";
         con = DriverManager.getConnection(connectionURL, user, password);
-        return con != null;
+        stmt = con.createStatement();
+        return con != null && stmt != null;
     }
 
     public boolean connectDatabase() throws ClassNotFoundException, SQLException {
@@ -75,10 +75,6 @@ public class DatabaseManager {
         }
     }
 
-    public StringBuilder getTableBuilder() {
-        return tableBuilder;
-    }
-
     public StringBuilder getColumnInfo() {
         if (columnInfo == null) {
             return null;
@@ -91,16 +87,6 @@ public class DatabaseManager {
             stringBuilder.deleteCharAt(stringBuilder.length() - 1);
         }
         return stringBuilder;
-    }
-
-
-    public void createStatement() {
-        try {
-            stmt = con.createStatement();
-        } catch (SQLException e) {
-            System.err.println("Error create createStatement");
-            e.printStackTrace();
-        }
     }
 
     public void commit() {
@@ -131,7 +117,7 @@ public class DatabaseManager {
     }
 
     public void createFilterTable(String tableName) {
-        if (tableBuilder == null) {
+        if (REDPreferences.getInstance().getDatabaseTableBuilder() == null) {
             try {
                 throw new REDException("RNA/DNA vcf file has not been imported.");
             } catch (REDException e) {
@@ -139,16 +125,16 @@ public class DatabaseManager {
             }
         }
         try {
-            stmt.executeUpdate("create table " + tableName + "(" + tableBuilder.toString() + ")");
+            stmt.executeUpdate("create table " + tableName + "(" + REDPreferences.getInstance().getDatabaseTableBuilder() + ")");
         } catch (SQLException e) {
-            System.err.println("Error create table if not exists '" + tableName + "'");
+            System.err.println("Error create table '" + tableName + "'");
             e.printStackTrace();
         }
     }
 
     public void createVCFTable(String tableName, String path) {
         BufferedReader rin;
-        tableBuilder = new StringBuilder();
+        StringBuilder tableBuilders = new StringBuilder();
         columnInfo = new ArrayList<String>();
         try {
             InputStream inputStream = new FileInputStream(path);
@@ -159,14 +145,14 @@ public class DatabaseManager {
                 if (line.startsWith("##"))
                     continue;
                 if (line.startsWith("#")) {
-                    tableBuilder.append(section[0].substring(1) + " " + " varchar(15)");
-                    tableBuilder.append("," + section[1] + " " + "int");
-                    tableBuilder.append("," + section[2] + " " + "varchar(30)");
-                    tableBuilder.append("," + section[3] + " " + "varchar(3)");
-                    tableBuilder.append("," + section[4] + " " + "varchar(5)");
-                    tableBuilder.append("," + section[5] + " " + "float(8,2)");
-                    tableBuilder.append("," + section[6] + " " + "text");
-                    tableBuilder.append("," + section[7] + " " + "text");
+                    tableBuilders.append(section[0].substring(1) + " " + " varchar(15)");
+                    tableBuilders.append("," + section[1] + " " + "int");
+                    tableBuilders.append("," + section[2] + " " + "varchar(30)");
+                    tableBuilders.append("," + section[3] + " " + "varchar(3)");
+                    tableBuilders.append("," + section[4] + " " + "varchar(5)");
+                    tableBuilders.append("," + section[5] + " " + "float(8,2)");
+                    tableBuilders.append("," + section[6] + " " + "text");
+                    tableBuilders.append("," + section[7] + " " + "text");
                     columnInfo.add(section[0].substring(1));
                     for (int i = 1; i < 8; i++)
                         columnInfo.add(section[i]);
@@ -174,13 +160,14 @@ public class DatabaseManager {
                 }
                 String[] column8 = section[8].split(":");
                 for (int i = 0, len = column8.length; i < len; i++) {
-                    tableBuilder.append("," + column8[i] + " " + "text");
+                    tableBuilders.append("," + column8[i] + " " + "text");
                     columnInfo.add(column8[i]);
                 }
-                tableBuilder.append(",index(chrom,pos)");
+                tableBuilders.append(",index(chrom,pos)");
                 break;
             }
-            stmt.executeUpdate("create table " + tableName + "(" + tableBuilder.toString() + ")");
+            stmt.executeUpdate("create table " + tableName + "(" + tableBuilders + ")");
+            REDPreferences.getInstance().setDatabaseTableBuilder(tableBuilders.toString());
         } catch (FileNotFoundException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
