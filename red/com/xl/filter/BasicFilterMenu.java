@@ -28,7 +28,6 @@ import com.xl.datatypes.probes.Probe;
 import com.xl.datatypes.probes.ProbeList;
 import com.xl.dialog.TypeColourRenderer;
 import com.xl.exception.REDException;
-import com.xl.preferences.REDPreferences;
 import com.xl.utils.ListDefaultSelector;
 
 import javax.swing.*;
@@ -68,13 +67,6 @@ public class BasicFilterMenu extends ProbeFilter {
 
     @Override
     protected void generateProbeList() {
-        DatabaseManager databaseManager = DatabaseManager.getInstance();
-        if (REDPreferences.getInstance().isDenovo()) {
-            databaseManager.useDatabase(DatabaseManager.DENOVO_DATABASE_NAME);
-        } else {
-            databaseManager.useDatabase(DatabaseManager.NON_DENOVO_DATABASE_NAME);
-        }
-        String parentTable = startingList.getTableName();
         BasicFilter bf = new BasicFilter(databaseManager);
         bf.establishSpecificTable(DatabaseManager.SPECIFIC_FILTER_RESULT_TABLE_NAME);
         bf.executeSpecificFilter(DatabaseManager.SPECIFIC_FILTER_RESULT_TABLE_NAME, parentTable);
@@ -84,7 +76,7 @@ public class BasicFilterMenu extends ProbeFilter {
                 DatabaseManager.BASIC_FILTER_RESULT_TABLE_NAME, qualityInt, coverageInt);
         DatabaseManager.getInstance().distinctTable(DatabaseManager.BASIC_FILTER_RESULT_TABLE_NAME);
         Vector<Probe> probes = Query.queryAllEditingSites(DatabaseManager.BASIC_FILTER_RESULT_TABLE_NAME);
-        ProbeList newList = new ProbeList(startingList, DatabaseManager.BASIC_FILTER_RESULT_TABLE_NAME, "",
+        ProbeList newList = new ProbeList(parentList, DatabaseManager.BASIC_FILTER_RESULT_TABLE_NAME, "",
                 DatabaseManager.BASIC_FILTER_RESULT_TABLE_NAME);
         int index = 0;
         int probesLength = probes.size();

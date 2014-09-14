@@ -897,7 +897,6 @@ public class REDApplication extends JFrame implements ProgressListener,
             addNewDataSets((DataSet[]) result);
             changesWereMade();
         } else if (command.equals("project_loaded")) {
-            System.out.println("project_loaded");
             addNewDataSets((DataSet[]) result);
             resetChangesWereMade();
         } else if (command.equals("database_connected")) {

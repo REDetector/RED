@@ -1,5 +1,6 @@
 package com.xl.filter;
 
+import com.dw.publicaffairs.DatabaseManager;
 import com.xl.datatypes.DataCollection;
 import com.xl.datatypes.probes.ProbeList;
 import com.xl.exception.REDException;
@@ -19,7 +20,9 @@ import java.util.Iterator;
 public abstract class ProbeFilter implements Runnable, Cancellable {
 
     protected final DataCollection collection;
-    protected final ProbeList startingList;
+    protected final ProbeList parentList;
+    protected final String parentTable;
+    protected final DatabaseManager databaseManager;
     private ArrayList<ProgressListener> listeners = new ArrayList<ProgressListener>();
     private ArrayList<OptionsListener> optionsListeners = new ArrayList<OptionsListener>();
     protected boolean cancel = false;
@@ -35,7 +38,14 @@ public abstract class ProbeFilter implements Runnable, Cancellable {
             throw new REDException("You must importing your data into database before running filters.");
         }
         this.collection = collection;
-        startingList = collection.probeSet().getActiveList();
+        parentList = collection.probeSet().getActiveList();
+        parentTable = parentList.getTableName();
+        databaseManager = DatabaseManager.getInstance();
+        if (REDPreferences.getInstance().isDenovo()) {
+            databaseManager.useDatabase(DatabaseManager.DENOVO_DATABASE_NAME);
+        } else {
+            databaseManager.useDatabase(DatabaseManager.NON_DENOVO_DATABASE_NAME);
+        }
     }
 
     /* (non-Javadoc)

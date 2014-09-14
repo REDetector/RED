@@ -28,7 +28,6 @@ import com.xl.datatypes.probes.Probe;
 import com.xl.datatypes.probes.ProbeList;
 import com.xl.dialog.TypeColourRenderer;
 import com.xl.exception.REDException;
-import com.xl.preferences.REDPreferences;
 import com.xl.utils.ListDefaultSelector;
 
 import javax.swing.*;
@@ -67,20 +66,13 @@ public class ComprehensiveFilterMenu extends ProbeFilter {
 
     @Override
     protected void generateProbeList() {
-        DatabaseManager databaseManager = DatabaseManager.getInstance();
-        if (REDPreferences.getInstance().isDenovo()) {
-            databaseManager.useDatabase(DatabaseManager.DENOVO_DATABASE_NAME);
-        } else {
-            databaseManager.useDatabase(DatabaseManager.NON_DENOVO_DATABASE_NAME);
-        }
-        String parentTable = startingList.getTableName();
         ComprehensiveFilter cf = new ComprehensiveFilter(databaseManager);
         cf.establishComprehensiveResultTable(DatabaseManager.COMPREHENSIVE_FILTER_RESULT_TABLE_NAME);
         cf.executeComprehensiveFilter(DatabaseManager.COMPREHENSIVE_FILTER_TABLE_NAME,
-                DatabaseManager.COMPREHENSIVE_FILTER_RESULT_TABLE_NAME, parentTable, 2);
+                DatabaseManager.COMPREHENSIVE_FILTER_RESULT_TABLE_NAME, parentTable, sequenceEdge);
         DatabaseManager.getInstance().distinctTable(DatabaseManager.COMPREHENSIVE_FILTER_RESULT_TABLE_NAME);
         Vector<Probe> probes = Query.queryAllEditingSites(DatabaseManager.COMPREHENSIVE_FILTER_RESULT_TABLE_NAME);
-        ProbeList newList = new ProbeList(startingList, DatabaseManager.COMPREHENSIVE_FILTER_RESULT_TABLE_NAME, "",
+        ProbeList newList = new ProbeList(parentList, DatabaseManager.COMPREHENSIVE_FILTER_RESULT_TABLE_NAME, "",
                 DatabaseManager.COMPREHENSIVE_FILTER_RESULT_TABLE_NAME);
         int index = 0;
         int probesLength = probes.size();

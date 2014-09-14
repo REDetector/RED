@@ -25,6 +25,9 @@ public class MainREDToolbar extends REDToolbar {
     private JButton findFeatureButton;
 
     private JButton changeDataZoomButton;
+    private JButton readsOnlyButton;
+    private JButton probesOnlyButton;
+    private JButton probesAndReadsButton;
 
     /**
      * Instantiates a new red toolbar.
@@ -35,23 +38,21 @@ public class MainREDToolbar extends REDToolbar {
 
         super(menu);
 
-        JButton readsOnlyButton = new JButton(new ImageIcon(
+        readsOnlyButton = new JButton(new ImageIcon(
                 ClassLoader
                         .getSystemResource("resources/toolbar/reads_only.png")));
         readsOnlyButton.setActionCommand("data_reads");
         readsOnlyButton.setToolTipText("Show only Reads");
         readsOnlyButton.addActionListener(menu);
         add(readsOnlyButton);
-
-        JButton probesOnlyButton = new JButton(
+        probesOnlyButton = new JButton(
                 new ImageIcon(ClassLoader
                         .getSystemResource("resources/toolbar/probes_only.png")));
         probesOnlyButton.setActionCommand("data_probes");
         probesOnlyButton.setToolTipText("Show only Probes");
         probesOnlyButton.addActionListener(menu);
         add(probesOnlyButton);
-
-        JButton probesAndReadsButton = new JButton(
+        probesAndReadsButton = new JButton(
                 new ImageIcon(
                         ClassLoader
                                 .getSystemResource("resources/toolbar/probes_and_reads.png")));
@@ -59,7 +60,6 @@ public class MainREDToolbar extends REDToolbar {
         probesAndReadsButton.setToolTipText("Show Probes and Reads");
         probesAndReadsButton.addActionListener(menu);
         add(probesAndReadsButton);
-
         addSeparator();
 
         changeDataZoomButton = new JButton(
@@ -104,6 +104,9 @@ public class MainREDToolbar extends REDToolbar {
     public void genomeLoaded() {
         // Enable the buttons relating only to the genome
         System.out.println(this.getClass().getName() + ":genomeLoaded()");
+        readsOnlyButton.setEnabled(true);
+        probesOnlyButton.setEnabled(true);
+        probesAndReadsButton.setEnabled(true);
         jumpToPositionButton.setEnabled(true);
         jumpToPositionButton.setFocusable(false);
         changeDataZoomButton.setEnabled(true);

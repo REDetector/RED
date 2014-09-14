@@ -235,7 +235,7 @@ public class DataViewer extends JPanel implements MouseListener, TreeSelectionLi
         public DataPopupMenu(DataSet d) {
             this.d = d;
 
-            JCheckBoxMenuItem displayTrack = new JCheckBoxMenuItem("Show track in chromosome view");
+            JCheckBoxMenuItem displayTrack = new JCheckBoxMenuItem("Show Track in Chromosome View");
             displayTrack.setActionCommand("display_track");
             displayTrack.addActionListener(this);
             if (application.dataStoreIsDrawn(d)) {
@@ -313,7 +313,7 @@ public class DataViewer extends JPanel implements MouseListener, TreeSelectionLi
          */
         public GroupPopupMenu(DataGroup d) {
             this.d = d;
-            JCheckBoxMenuItem displayTrack = new JCheckBoxMenuItem("Show track in chromosome view");
+            JCheckBoxMenuItem displayTrack = new JCheckBoxMenuItem("Show Track in Chromosome View");
             displayTrack.setActionCommand("display_track");
             displayTrack.addActionListener(this);
             if (application.dataStoreIsDrawn(d)) {

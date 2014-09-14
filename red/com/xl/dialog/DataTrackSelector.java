@@ -156,17 +156,6 @@ public class DataTrackSelector extends JDialog implements ActionListener, ListSe
         availableGroupList.setCellRenderer(renderer);
         availablePanel.add(new JScrollPane(availableGroupList), c2);
 
-        c2.gridy++;
-        c2.weighty = 0.01;
-        c2.fill = GridBagConstraints.HORIZONTAL;
-        availablePanel.add(new JLabel("Replicate Sets", JLabel.LEFT), c2);
-
-        c2.gridy++;
-        c2.weighty = 1;
-        c2.fill = GridBagConstraints.BOTH;
-
-        getContentPane().add(availablePanel, c);
-
         c.gridx++;
         c.weightx = 0.2;
         c.fill = GridBagConstraints.NONE;
@@ -233,23 +222,23 @@ public class DataTrackSelector extends JDialog implements ActionListener, ListSe
         getContentPane().add(bottomPanel, c);
 
         DataSet[] availableSets = application.dataCollection().getAllDataSets();
-        for (int i = 0; i < availableSets.length; i++) {
-            availableSetModel.addElement(availableSets[i]);
+        for (DataSet availableSet : availableSets) {
+            availableSetModel.addElement(availableSet);
         }
 
         DataGroup[] availableGroups = application.dataCollection().getAllDataGroups();
-        for (int i = 0; i < availableGroups.length; i++) {
-            availableGroupModel.addElement(availableGroups[i]);
+        for (DataGroup availableGroup : availableGroups) {
+            availableGroupModel.addElement(availableGroup);
         }
 
         DataStore[] drawnStores = application.drawnDataStores();
-        for (int i = 0; i < drawnStores.length; i++) {
-            if (drawnStores[i] instanceof DataSet) {
-                availableSetModel.removeElement(drawnStores[i]);
+        for (DataStore drawnStore : drawnStores) {
+            if (drawnStore instanceof DataSet) {
+                availableSetModel.removeElement(drawnStore);
             } else {
-                availableGroupModel.removeElement(drawnStores[i]);
+                availableGroupModel.removeElement(drawnStore);
             }
-            usedModel.addElement(drawnStores[i]);
+            usedModel.addElement(drawnStore);
         }
 
         setVisible(true);
@@ -274,6 +263,10 @@ public class DataTrackSelector extends JDialog implements ActionListener, ListSe
 
         if (c.equals("add")) {
             Object[] adds = availableGroupList.getSelectedValues();
+            for (Object add : adds) {
+                usedModel.addElement(add);
+                availableGroupModel.removeElement(add);
+            }
             for (int i = 0; i < adds.length; i++) {
                 usedModel.addElement(adds[i]);
                 availableGroupModel.removeElement(adds[i]);

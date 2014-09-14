@@ -205,8 +205,6 @@ public class REDParser implements Runnable, ProgressListener {
             return;
         }
 
-        System.out.println(listeners.size());
-        System.out.println("project_loaded");
         Enumeration<ProgressListener> e = listeners.elements();
         while (e.hasMoreElements()) {
             // In this case we put out a dummy empty dataset since
@@ -932,20 +930,14 @@ public class REDParser implements Runnable, ProgressListener {
         }
 
         String[] prefs;
-        String line = reader.readLine();
-        System.out.println(line);
         for (int i = 0; i < linesToParse; i++) {
-            prefs = line.split("\\t");
-
+            prefs = reader.readLine().split("\\t");
             if (prefs[0].equals("DisplayMode")) {
                 DisplayPreferences.getInstance().setDisplayMode(
                         Integer.parseInt(prefs[1]));
             } else if (prefs[0].equals("CurrentView")) {
                 DisplayPreferences.getInstance().setLocation(prefs[1],
                         Integer.parseInt(prefs[2]), Integer.parseInt(prefs[3]));
-            } else if (prefs[0].equals("QuantitationColour")) {
-                DisplayPreferences.getInstance().setColourType(
-                        Integer.parseInt(prefs[1]));
             } else if (prefs[0].equals("Gradient")) {
                 DisplayPreferences.getInstance().setGradient(
                         Integer.parseInt(prefs[1]));
