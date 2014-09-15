@@ -33,7 +33,7 @@ import java.awt.event.ActionListener;
 import java.util.Arrays;
 
 /**
- * The Class DataTrackSelector provides a means to select the data
+ * The Class DataTrackSelector provides a mean to select the data
  * tracks which are shown in the chromosome view.
  */
 public class DataTrackSelector extends JDialog implements ActionListener, ListSelectionListener {

@@ -76,7 +76,7 @@ public class DataInportDialog extends JDialog implements ActionListener {
         setSize(600, 300);
         setLocationRelativeTo(REDApplication.getInstance());
         setModal(true);
-        String rScripPath = preferences.getRScriptPath();
+        String rScript = preferences.getRScriptPath();
         String rnaVcfFile = preferences.getRnaVcfFile();
         String dnaVcfFile = preferences.getDnaVcfFile();
         String repeatFile = preferences.getRepeatFile();
@@ -90,10 +90,10 @@ public class DataInportDialog extends JDialog implements ActionListener {
 
         GridBagConstraints c = new GridBagConstraints();
         c.gridy = 0;
-        JLabel rSciptLable = new JLabel(LocationPreferences.RSCRIPT_PATH);
+        JLabel rScriptLable = new JLabel(LocationPreferences.RSCRIPT_PATH);
         rScriptPath = new JTextField();
-        if (rScripPath != null) {
-            rScriptPath.setText(rScripPath);
+        if (rScript != null) {
+            rScriptPath.setText(rScript);
         } else {
             rScriptPath.setText("");
         }
@@ -101,7 +101,7 @@ public class DataInportDialog extends JDialog implements ActionListener {
         JButton rScriptButton = new JButton("Browse");
         rScriptButton.setActionCommand(LocationPreferences.RSCRIPT_PATH);
         rScriptButton.addActionListener(this);
-        addItem(c, nonDenovoPanel, rSciptLable, rScriptPath, rScriptButton);
+        addItem(c, nonDenovoPanel, rScriptLable, rScriptPath, rScriptButton);
 
         c.gridy++;
         JLabel rnaVcfLable = new JLabel(LocationPreferences.RNA_VCF_FILE);
@@ -197,8 +197,8 @@ public class DataInportDialog extends JDialog implements ActionListener {
         c.gridy = 0;
         JLabel denovoRSciptLable = new JLabel(LocationPreferences.RSCRIPT_PATH);
         denovoRScriptPath = new JTextField();
-        if (rScripPath != null) {
-            denovoRScriptPath.setText(rScripPath);
+        if (rScript != null) {
+            denovoRScriptPath.setText(rScript);
         } else {
             denovoRScriptPath.setText("");
         }

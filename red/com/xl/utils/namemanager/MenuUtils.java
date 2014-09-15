@@ -50,7 +50,9 @@ public class MenuUtils {
     public static final String REPEATED_FILTER = "Repeated Filter...";
     public static final String RNA_DNA_FILTER = "RNA-DNA Filter...";
     public static final String COMPREHENSIVE_FILTER = "Comprehensive Filter...";
-    public static final String STATISTICAL_FILTER = "Statistical Filter...";
+    public static final String STATISTICAL_FILTER = "Statistical Filter";
+    public static final String PVALUE_FILTER = "P-Value Filter...";
+    public static final String LLR_FILTER = "LLR Filter...";
 
     /*Reports menu*/
     public static final String REPORTS_MENU = "Reports";

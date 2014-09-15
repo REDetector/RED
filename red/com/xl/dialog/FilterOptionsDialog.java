@@ -42,7 +42,7 @@ public class FilterOptionsDialog extends JDialog implements OptionsListener, Pro
             setSize(optionsPanel.getPreferredSize());
         } else {
             getContentPane().add(new JLabel("No Options", JLabel.CENTER), BorderLayout.CENTER);
-            setSize(400, 50);
+            setSize(400, 100);
         }
 
         JPanel buttonPanel = new JPanel();

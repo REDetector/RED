@@ -19,7 +19,7 @@
  */
 package com.xl.filter;
 
-import com.dw.denovo.BasicFilter;
+import com.dw.dnarna.LLRFilter;
 import com.dw.publicaffairs.DatabaseManager;
 import com.dw.publicaffairs.Query;
 import com.xl.datatypes.DataCollection;
@@ -34,8 +34,6 @@ import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import java.awt.*;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 import java.util.Vector;
 
 /**
@@ -43,41 +41,37 @@ import java.util.Vector;
  * from quantiation.  Each probe is filtered independently of all
  * other probes.
  */
-public class BasicFilterMenu extends ProbeFilter {
+public class LLRFilterMenu extends ProbeFilter {
 
     private DataStore[] stores = new DataStore[0];
-    private BasicFilterOptionPanel optionsPanel = new BasicFilterOptionPanel();
-    private int qualityInt = -1;
-    private int coverageInt = -1;
+    private RepeatFilterOptionPanel optionsPanel = new RepeatFilterOptionPanel();
 
     /**
      * Instantiates a new values filter with default values
      *
      * @param collection The dataCollection to filter
-     * @throws REDException if the dataCollection isn't quantitated.
+     * @throws com.xl.exception.REDException if the dataCollection isn't quantitated.
      */
-    public BasicFilterMenu(DataCollection collection) throws REDException {
+    public LLRFilterMenu(DataCollection collection) throws REDException {
         super(collection);
     }
 
     @Override
     public String description() {
-        return "Filter editing bases by quality and coverage.";
+        return "Filter editing bases by statistic method (LLR).";
     }
 
     @Override
     protected void generateProbeList() {
-        BasicFilter bf = new BasicFilter(databaseManager);
-        bf.establishSpecificTable(DatabaseManager.SPECIFIC_FILTER_RESULT_TABLE_NAME);
-        bf.executeSpecificFilter(DatabaseManager.SPECIFIC_FILTER_RESULT_TABLE_NAME, parentTable);
-        bf.establishBasicTable(DatabaseManager.BASIC_FILTER_RESULT_TABLE_NAME);
-        // The first parameter means quality and the second means depth
-        bf.executeBasicFilter(DatabaseManager.SPECIFIC_FILTER_RESULT_TABLE_NAME,
-                DatabaseManager.BASIC_FILTER_RESULT_TABLE_NAME, qualityInt, coverageInt);
-        DatabaseManager.getInstance().distinctTable(DatabaseManager.BASIC_FILTER_RESULT_TABLE_NAME);
-        Vector<Probe> probes = Query.queryAllEditingSites(DatabaseManager.BASIC_FILTER_RESULT_TABLE_NAME);
-        ProbeList newList = new ProbeList(parentList, DatabaseManager.BASIC_FILTER_RESULT_TABLE_NAME, "",
-                DatabaseManager.BASIC_FILTER_RESULT_TABLE_NAME);
+        LLRFilter lf = new LLRFilter(databaseManager);
+        lf.establishLLRResultTable(DatabaseManager.LLR_FILTER_RESULT_TABLE_NAME);
+        lf.executeLLRFilter(DatabaseManager.LLR_FILTER_RESULT_TABLE_NAME,
+                DatabaseManager.DNA_VCF_RESULT_TABLE_NAME, parentTable);
+        DatabaseManager.getInstance().distinctTable(DatabaseManager.LLR_FILTER_RESULT_TABLE_NAME);
+
+        Vector<Probe> probes = Query.queryAllEditingSites(DatabaseManager.LLR_FILTER_RESULT_TABLE_NAME);
+        ProbeList newList = new ProbeList(parentList, DatabaseManager.LLR_FILTER_RESULT_TABLE_NAME, "",
+                DatabaseManager.LLR_FILTER_RESULT_TABLE_NAME);
         int index = 0;
         int probesLength = probes.size();
         for (Probe probe : probes) {
@@ -113,7 +107,7 @@ public class BasicFilterMenu extends ProbeFilter {
      */
     @Override
     public boolean isReady() {
-        return stores.length != 0 && qualityInt != -1 && coverageInt != -1;
+        return stores.length != 0;
     }
 
     /* (non-Javadoc)
@@ -121,7 +115,7 @@ public class BasicFilterMenu extends ProbeFilter {
      */
     @Override
     public String name() {
-        return "Basic Filter";
+        return "LLR Filter";
     }
 
     /* (non-Javadoc)
@@ -148,22 +142,22 @@ public class BasicFilterMenu extends ProbeFilter {
      */
     @Override
     protected String listName() {
-        return "Quality >= " + qualityInt + ",coverage >= " + coverageInt;
+        return "LLR filter";
     }
+
 
     /**
      * The ValuesFilterOptionPanel.
      */
-    private class BasicFilterOptionPanel extends JPanel implements ListSelectionListener, KeyListener {
+    private class RepeatFilterOptionPanel extends JPanel implements ListSelectionListener {
 
         private JList<DataStore> dataList;
-        private JTextField quality;
-        private JTextField coverage;
+        private JTextArea description = null;
 
         /**
          * Instantiates a new values filter option panel.
          */
-        public BasicFilterOptionPanel() {
+        public RepeatFilterOptionPanel() {
             setLayout(new BorderLayout());
             JPanel dataPanel = new JPanel();
             dataPanel.setBorder(BorderFactory.createEmptyBorder(4, 4, 4, 4));
@@ -189,31 +183,14 @@ public class BasicFilterMenu extends ProbeFilter {
             JPanel choicePanel = new JPanel();
             choicePanel.setLayout(new GridBagLayout());
             choicePanel.setBorder(BorderFactory.createEmptyBorder(4, 4, 4, 4));
-            GridBagConstraints c = new GridBagConstraints();
+            description = new JTextArea("A likelihood ratio test is a statistical test used to \n" +
+                    "compare the fit of two models, one of which (the null \n" +
+                    "model) is a special case of the other (the alternative \n" +
+                    "model).");
+//            description.setLineWrap(true);
+            description.setEditable(false);
+            choicePanel.add(description);
 
-            c.gridy = 0;
-            c.gridx = 0;
-            c.weightx = 0.2;
-            c.weighty = 0.5;
-            c.fill = GridBagConstraints.HORIZONTAL;
-            choicePanel.add(new JLabel("Quality >= "), c);
-            c.gridx = 1;
-            c.weightx = 0.1;
-            quality = new JTextField(3);
-            quality.addKeyListener(this);
-            choicePanel.add(quality, c);
-
-            c.gridy++;
-            c.gridx = 0;
-            c.weightx = 0.2;
-            c.weighty = 0.5;
-            c.fill = GridBagConstraints.HORIZONTAL;
-            choicePanel.add(new JLabel("Coverage >= "), c);
-            c.gridx = 1;
-            c.weightx = 0.1;
-            coverage = new JTextField(3);
-            coverage.addKeyListener(this);
-            choicePanel.add(coverage, c);
             valueChanged(null);
             add(new JScrollPane(choicePanel), BorderLayout.CENTER);
         }
@@ -229,37 +206,11 @@ public class BasicFilterMenu extends ProbeFilter {
          * @see javax.swing.event.ListSelectionListener#valueChanged(javax.swing.event.ListSelectionEvent)
          */
         public void valueChanged(ListSelectionEvent lse) {
-            System.out.println(BasicFilterMenu.class.getName() + ":valueChanged()");
+            System.out.println(LLRFilterMenu.class.getName() + ":valueChanged()");
             java.util.List<DataStore> lists = dataList.getSelectedValuesList();
             stores = new DataStore[lists.size()];
             for (int i = 0; i < stores.length; i++) {
                 stores[i] = lists.get(i);
-            }
-            optionsChanged();
-        }
-
-        @Override
-        public void keyTyped(KeyEvent e) {
-            int keyChar = e.getKeyChar();
-            if (!(keyChar >= KeyEvent.VK_0 && keyChar <= KeyEvent.VK_9))
-                e.consume();
-        }
-
-        @Override
-        public void keyPressed(KeyEvent e) {
-
-        }
-
-        @Override
-        public void keyReleased(KeyEvent e) {
-            JTextField f = (JTextField) e.getSource();
-            if (f.getText().length() == 0) {
-                return;
-            }
-            if (f == quality) {
-                qualityInt = Integer.parseInt(quality.getText());
-            } else if (f == coverage) {
-                coverageInt = Integer.parseInt(coverage.getText());
             }
             optionsChanged();
         }

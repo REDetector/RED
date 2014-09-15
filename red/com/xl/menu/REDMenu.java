@@ -9,8 +9,7 @@ import com.xl.dialog.gotodialog.GotoDialog;
 import com.xl.dialog.gotodialog.GotoWindowDialog;
 import com.xl.display.chromosomeviewer.ChromosomeDataTrack;
 import com.xl.exception.REDException;
-import com.xl.filter.BasicFilterMenu;
-import com.xl.filter.ComprehensiveFilterMenu;
+import com.xl.filter.*;
 import com.xl.help.HelpDialog;
 import com.xl.main.REDApplication;
 import com.xl.panel.ToolbarPanel;
@@ -49,7 +48,7 @@ public class REDMenu extends JMenuBar implements ActionListener {
     private JMenuItem saveProject;
     private JMenuItem saveProjectAs;
     private JMenuItem connectToMySQL;
-    private JMenu importData;
+    private JMenu importDataMenu;
     private JMenuItem toDatabase;
     private JMenuItem rna;
     private JMenuItem dna;
@@ -67,17 +66,17 @@ public class REDMenu extends JMenuBar implements ActionListener {
     private JCheckBoxMenuItem showChromosomePanel;
     private JCheckBoxMenuItem showFeaturePanel;
     private JCheckBoxMenuItem showStatusPanel;
-
     private JMenuItem setDataTracks;
     private JMenuItem find;
     private JMenuItem preference;
+
     private JMenu viewMenu;
     private JMenuItem zoomIn;
     private JMenuItem zoomOut;
     private JMenuItem setZoomLevel;
     private JMenuItem moveLeft;
     private JMenuItem moveRight;
-    private JMenu gotoMenuItem;
+    private JMenu gotoMenu;
     private JMenuItem gotoPosition;
     private JMenuItem gotoWindow;
 
@@ -87,12 +86,15 @@ public class REDMenu extends JMenuBar implements ActionListener {
     private JMenuItem rnadnaFilter;
     private JMenuItem repetitiveFilter;
     private JMenuItem comprehensiveFilter;
-    private JMenuItem statisticalFilter;
+    private JMenu statisticalFilterMenu;
+    private JMenuItem pvalueFilter;
+    private JMenuItem llrFilter;
 
     private JMenu reportsMenu;
     private JMenuItem variantDistribution;
     private JMenuItem barChart;
     private JMenuItem filterReports;
+
     private JMenu helpMenu;
     private JMenuItem welcome;
     private JMenuItem helpContents;
@@ -103,7 +105,6 @@ public class REDMenu extends JMenuBar implements ActionListener {
     private boolean dataViewerVisible = true;
     private boolean genomeViewerVisible = true;
     private boolean featurePanelVisible = true;
-    private boolean dataPanelVisible = true;
     private boolean chromosomeViewerVisible = true;
     private boolean statusBarVisible = true;
 
@@ -122,7 +123,7 @@ public class REDMenu extends JMenuBar implements ActionListener {
         openProject = new JMenuItem();
         saveProject = new JMenuItem();
         saveProjectAs = new JMenuItem();
-        importData = new JMenu();
+        importDataMenu = new JMenu();
         connectToMySQL = new JMenuItem();
         toDatabase = new JMenuItem();
         rna = new JMenuItem();
@@ -141,7 +142,7 @@ public class REDMenu extends JMenuBar implements ActionListener {
         showDataPanel = new JCheckBoxMenuItem(MenuUtils.SHOW_DATA_PANEL, true);
         showStatusPanel = new JCheckBoxMenuItem(MenuUtils.SHOW_STATUS_PANEL, true);
 
-        gotoMenuItem = new JMenu();
+        gotoMenu = new JMenu();
         gotoPosition = new JMenuItem();
         gotoWindow = new JMenuItem();
         find = new JMenuItem();
@@ -159,7 +160,9 @@ public class REDMenu extends JMenuBar implements ActionListener {
         rnadnaFilter = new JMenuItem();
         repetitiveFilter = new JMenuItem();
         comprehensiveFilter = new JMenuItem();
-        statisticalFilter = new JMenuItem();
+        statisticalFilterMenu = new JMenu();
+        pvalueFilter = new JMenuItem();
+        llrFilter = new JMenuItem();
         reportsMenu = new JMenu();
         variantDistribution = new JMenuItem();
         barChart = new JMenuItem();
@@ -183,14 +186,14 @@ public class REDMenu extends JMenuBar implements ActionListener {
             // ======== importData ========
             {
                 addJMenuItem(fileMenu, connectToMySQL, MenuUtils.CONNECT_TO_MYSQL, KeyEvent.VK_C, true);
-                importData.setText(MenuUtils.IMPORT_DATA);
-                addJMenuItem(importData, toDatabase, MenuUtils.DATABASE, -1, false);
-                addJMenuItem(importData, fasta, MenuUtils.FASTA, -1, true);
-                addJMenuItem(importData, rna, MenuUtils.RNA, -1, true);
-                addJMenuItem(importData, dna, MenuUtils.DNA, -1, true);
-                addJMenuItem(importData, annotation, MenuUtils.ANNOTATION, -1, true);
-                fileMenu.add(importData);
-                importData.setEnabled(false);
+                importDataMenu.setText(MenuUtils.IMPORT_DATA);
+                addJMenuItem(importDataMenu, toDatabase, MenuUtils.DATABASE, -1, false);
+                addJMenuItem(importDataMenu, fasta, MenuUtils.FASTA, -1, true);
+                addJMenuItem(importDataMenu, rna, MenuUtils.RNA, -1, true);
+                addJMenuItem(importDataMenu, dna, MenuUtils.DNA, -1, true);
+                addJMenuItem(importDataMenu, annotation, MenuUtils.ANNOTATION, -1, true);
+                fileMenu.add(importDataMenu);
+                importDataMenu.setEnabled(false);
             }
             addJMenuItem(fileMenu, loadGenome, MenuUtils.LOAD_GENOME, KeyEvent.VK_L, false);
             addJMenuItem(fileMenu, exportImage, MenuUtils.EXPORT_IMAGE, KeyEvent.VK_E, false);
@@ -241,12 +244,12 @@ public class REDMenu extends JMenuBar implements ActionListener {
             addJMenuItem(viewMenu, moveRight, MenuUtils.MOVE_RIGHT, -1);
             viewMenu.addSeparator();
             {
-                gotoMenuItem.setText(MenuUtils.GOTO);
-                addJMenuItem(gotoMenuItem, gotoPosition,
+                gotoMenu.setText(MenuUtils.GOTO);
+                addJMenuItem(gotoMenu, gotoPosition,
                         MenuUtils.GOTO_POSITION, -1);
-                addJMenuItem(gotoMenuItem, gotoWindow, MenuUtils.GOTO_WINDOW,
+                addJMenuItem(gotoMenu, gotoWindow, MenuUtils.GOTO_WINDOW,
                         -1);
-                viewMenu.add(gotoMenuItem);
+                viewMenu.add(gotoMenu);
             }
         }
         add(viewMenu);
@@ -260,7 +263,12 @@ public class REDMenu extends JMenuBar implements ActionListener {
             addJMenuItem(filterMenu, rnadnaFilter, MenuUtils.RNA_DNA_FILTER, -1);
             addJMenuItem(filterMenu, repetitiveFilter, MenuUtils.REPEATED_FILTER, -1);
             addJMenuItem(filterMenu, comprehensiveFilter, MenuUtils.COMPREHENSIVE_FILTER, -1);
-            addJMenuItem(filterMenu, statisticalFilter, MenuUtils.STATISTICAL_FILTER, -1);
+            {
+                statisticalFilterMenu.setText(MenuUtils.STATISTICAL_FILTER);
+                addJMenuItem(statisticalFilterMenu, pvalueFilter, MenuUtils.PVALUE_FILTER, -1);
+                addJMenuItem(statisticalFilterMenu, llrFilter, MenuUtils.LLR_FILTER, -1);
+                filterMenu.add(statisticalFilterMenu);
+            }
         }
         add(filterMenu);
         filterMenu.setEnabled(false);
@@ -432,21 +440,29 @@ public class REDMenu extends JMenuBar implements ActionListener {
         else if (action.contains("Filter")) {
             try {
                 if (action.equals(MenuUtils.BASIC_FILTER)) {
-                    new FilterOptionsDialog(redApplication.dataCollection(), new BasicFilterMenu(redApplication.dataCollection()));
+                    new FilterOptionsDialog(redApplication.dataCollection(), new BasicFilterMenu(redApplication
+                            .dataCollection()));
                 } else if (action.equals(MenuUtils.KNOWN_SNVS_FILTER)) {
-
+                    new FilterOptionsDialog(redApplication.dataCollection(), new DbSNPFilterMenu(redApplication
+                            .dataCollection()));
                 } else if (action.equals(MenuUtils.REPEATED_FILTER)) {
-
+                    new FilterOptionsDialog(redApplication.dataCollection(), new RepeatFilterMenu(redApplication
+                            .dataCollection()));
                 } else if (action.equals(MenuUtils.RNA_DNA_FILTER)) {
-
+                    new FilterOptionsDialog(redApplication.dataCollection(), new RnaDnaFilterMenu(redApplication
+                            .dataCollection()));
                 } else if (action.equals(MenuUtils.COMPREHENSIVE_FILTER)) {
                     new FilterOptionsDialog(redApplication.dataCollection(),
                             new ComprehensiveFilterMenu(redApplication.dataCollection()));
-                } else if (action.equals(MenuUtils.STATISTICAL_FILTER)) {
-
+                } else if (action.equals(MenuUtils.PVALUE_FILTER)) {
+                    new FilterOptionsDialog(redApplication.dataCollection(), new PValueFilterMenu(redApplication
+                            .dataCollection()));
+                } else if (action.equals(MenuUtils.LLR_FILTER)) {
+                    new FilterOptionsDialog(redApplication.dataCollection(), new LLRFilterMenu(redApplication
+                            .dataCollection()));
                 }
             } catch (REDException e) {
-
+                e.printStackTrace();
             }
         }
         // --------------------ReportsMenu------------------
@@ -499,13 +515,13 @@ public class REDMenu extends JMenuBar implements ActionListener {
      */
     public void genomeLoadedMenu() {
         updateVisibleToolBars();
-        importData.setEnabled(true);
+        importDataMenu.setEnabled(true);
         viewMenu.setEnabled(true);
         saveProject.setEnabled(true);
         saveProjectAs.setEnabled(true);
         exportImage.setEnabled(true);
         find.setEnabled(true);
-        gotoMenuItem.setEnabled(true);
+        gotoMenu.setEnabled(true);
         gotoPosition.setEnabled(true);
         showToolbar.setEnabled(true);
         showDirectoryPanel.setEnabled(true);
@@ -523,7 +539,7 @@ public class REDMenu extends JMenuBar implements ActionListener {
     public void resetMenus() {
         saveProject.setEnabled(false);
         saveProjectAs.setEnabled(false);
-        importData.setEnabled(false);
+        importDataMenu.setEnabled(false);
         exportImage.setEnabled(false);
         viewMenu.setEnabled(false);
         filterMenu.setEnabled(false);

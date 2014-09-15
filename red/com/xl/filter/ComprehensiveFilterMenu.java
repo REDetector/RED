@@ -145,7 +145,7 @@ public class ComprehensiveFilterMenu extends ProbeFilter {
      */
     @Override
     protected String listName() {
-        return "Filter by sequence edge length " + sequenceEdge;
+        return "Sequence edge length = " + sequenceEdge;
     }
 
     /**
@@ -192,7 +192,7 @@ public class ComprehensiveFilterMenu extends ProbeFilter {
             c.weightx = 0.5;
             c.weighty = 0.5;
             c.fill = GridBagConstraints.HORIZONTAL;
-            choicePanel.add(new JLabel("Edge"), c);
+            choicePanel.add(new JLabel("Edge = "), c);
             c.gridx = 1;
             c.weightx = 0.1;
             edgeField = new JTextField(3);
@@ -207,7 +207,7 @@ public class ComprehensiveFilterMenu extends ProbeFilter {
          * @see javax.swing.JComponent#getPreferredSize()
          */
         public Dimension getPreferredSize() {
-            return new Dimension(600, 300);
+            return new Dimension(600, 250);
         }
 
         /* (non-Javadoc)
