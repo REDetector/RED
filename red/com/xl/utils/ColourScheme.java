@@ -88,10 +88,6 @@ public class ColourScheme {
      */
     public static final Color ACTIVE_FEATURE_MATCH = new Color(0, 180, 0);
     /**
-     * The list colour for quantitations requiring HiC data *
-     */
-    public static final Color HIC_QUANTITATION = ACTIVE_FEATURE_MATCH;
-    /**
      * The background to odd numbered feature tracks
      */
     public static final Color FEATURE_BACKGROUND_ODD = new Color(220, 220, 255);

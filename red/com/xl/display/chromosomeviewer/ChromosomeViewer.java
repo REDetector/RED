@@ -61,10 +61,10 @@ public class ChromosomeViewer extends JPanel implements DataChangeListener,
 	 * correctly and we'll probably get errors.
 	 */
 
-    private static boolean showAllLables = false;
     private REDApplication application;
     private Chromosome chromosome;
     private ChromosomeFeatureTrack featureTrack = null;
+    private ChromosomeSequenceTrack sequenceTrack = null;
     private Vector<ChromosomeDataTrack> dataTracks = new Vector<ChromosomeDataTrack>();
     private JPanel featurePanel;
     private JLabel titleLabel; // Tried using a TextField to get Copy/Paste, but this broke SVG export
@@ -73,9 +73,6 @@ public class ChromosomeViewer extends JPanel implements DataChangeListener,
     private boolean makingSelection = false;
     private int currentStart = 1;
     private int currentEnd = 1;
-
-
-    private boolean enableFastaSequence = false;
 
     /**
      * Instantiates a new chromosome viewer.
@@ -133,9 +130,10 @@ public class ChromosomeViewer extends JPanel implements DataChangeListener,
             Feature[] features = application.dataCollection().genome()
                     .getAnnotationCollection()
                     .getFeaturesForChr(chromosome);
+            featureTrack.updateFeature(features);
             RandomAccessFile raf = application.dataCollection().genome()
                     .getAnnotationCollection().getFastaForChr(chromosome);
-            featureTrack.updateFeatureAndSequence(features, raf);
+            sequenceTrack.updateSequence(raf);
         }
         DisplayPreferences.getInstance().setChromosome(chromosome);
     }
@@ -160,8 +158,8 @@ public class ChromosomeViewer extends JPanel implements DataChangeListener,
                 .getAnnotationCollection().getFeaturesForChr(chromosome);
         RandomAccessFile raf = application.dataCollection().genome().getAnnotationCollection().getFastaForChr
                 (chromosome);
-        featureTrack = new ChromosomeFeatureTrack(this,
-                currentFeatureTrackName, features, raf);
+        featureTrack = new ChromosomeFeatureTrack(this, currentFeatureTrackName, features);
+        sequenceTrack = new ChromosomeSequenceTrack(this, application.dataCollection().genome().getDisplayName(), raf);
 
         DataStore[] dataStores = application.drawnDataStores();
         System.out.println(this.getClass().getName() + ":dataStores\t"
@@ -179,19 +177,25 @@ public class ChromosomeViewer extends JPanel implements DataChangeListener,
         gridBagConstraints.gridy = 0;
         gridBagConstraints.fill = GridBagConstraints.BOTH;
         gridBagConstraints.weightx = 1;
-        gridBagConstraints.weighty = 0.05;
-
+        gridBagConstraints.weighty = 0.1;
         featurePanel.add(featureTrack, gridBagConstraints);
-        gridBagConstraints.gridy++;
 
+        gridBagConstraints.gridy++;
+        gridBagConstraints.weighty = 0.02;
+        featurePanel.add(sequenceTrack, gridBagConstraints);
+        sequenceTrack.setVisible(false);
+        gridBagConstraints.gridy++;
         // We weight the data tracks six times as heavily as the feature tracks
-        gridBagConstraints.weighty = 0.5;
+        gridBagConstraints.weighty = 1;
         Enumeration<ChromosomeDataTrack> e2 = dataTracks.elements();
 
         while (e2.hasMoreElements()) {
             ChromosomeDataTrack cdt = e2.nextElement();
             JScrollPane scroll = new JScrollPane(cdt);
+            scroll.setPreferredSize(new Dimension(400, 200));
             scroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+            scroll.revalidate();
+            scroll.repaint();
             featurePanel.add(cdt, gridBagConstraints);
             gridBagConstraints.gridy++;
             System.out.println(ChromosomeViewer.class.getName() + ":ChromosomeDataTrack: featurePanel.add(e.nextElement(), c)");
@@ -224,24 +228,12 @@ public class ChromosomeViewer extends JPanel implements DataChangeListener,
 
         currentStart = start;
         currentEnd = end;
+        if (currentEnd - currentStart < getWidth() && DisplayPreferences.getInstance().isFastaEnable()) {
+            sequenceTrack.setVisible(true);
+        } else {
+            sequenceTrack.setVisible(false);
+        }
         repaint();
-    }
-
-    /**
-     * Toggles whether all feature labels are currently shown.
-     */
-    public void toggleLabels() {
-        showAllLables = !showAllLables;
-        repaint();
-    }
-
-    /**
-     * Says whether we're currently showing all feature labels.
-     *
-     * @return true, if we're showing all feature labels.
-     */
-    public boolean showAllLables() {
-        return showAllLables;
     }
 
     /**
@@ -295,7 +287,6 @@ public class ChromosomeViewer extends JPanel implements DataChangeListener,
                 currentEnd - interval);
         currentStart -= interval;
         currentEnd -= interval;
-
     }
 
     /**
@@ -311,14 +302,6 @@ public class ChromosomeViewer extends JPanel implements DataChangeListener,
                 currentEnd + interval);
         currentStart += interval;
         currentEnd += interval;
-    }
-
-    public boolean isEnableFastaSequence() {
-        return enableFastaSequence;
-    }
-
-    public void setEnableFastaSequence(boolean enableFastaSequence) {
-        this.enableFastaSequence = enableFastaSequence;
     }
 
     /**
@@ -449,6 +432,9 @@ public class ChromosomeViewer extends JPanel implements DataChangeListener,
     }
 
     public void activeProbeListChanged(ProbeList l) {
+        for (ChromosomeDataTrack cdt : dataTracks) {
+            cdt.activeProbeListChanged(l);
+        }
     }
 
     public void dataGroupAdded(DataGroup g) {
@@ -477,6 +463,9 @@ public class ChromosomeViewer extends JPanel implements DataChangeListener,
     public void probeSetReplaced(ProbeSet p) {
         // TODO: Do we need to do anything here? Probably not as active probe
         // list replaced will be called
+        for (ChromosomeDataTrack cdt : dataTracks) {
+            cdt.probeSetReplaced(p);
+        }
     }
 
     /**

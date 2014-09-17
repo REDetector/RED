@@ -20,7 +20,7 @@ public class Probe implements Location {
     /**
      * Instantiates a new probe.
      *
-     * @param chr  the chr
+     * @param chr         the chr
      * @param position    the position
      * @param editingBase the editing base
      */
@@ -32,10 +32,6 @@ public class Probe implements Location {
 
     public char getEditingBase() {
         return editingBase;
-    }
-
-    public void setEditingBase(char editingBase) {
-        this.editingBase = editingBase;
     }
 
     @Override

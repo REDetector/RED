@@ -913,7 +913,7 @@ public class REDApplication extends JFrame implements ProgressListener,
                     DatabaseManager.RNA_VCF_RESULT_TABLE_NAME));
             changesWereMade();
         } else if (command.equals("fasta_loaded")) {
-            chromosomeViewer.setEnableFastaSequence(true);
+            DisplayPreferences.getInstance().setFastaEnable(true);
             JOptionPane.showMessageDialog(this, "The fasta file has been loaded. Please zoom out to make it visible" +
                     "...", "Load fasta file completed", JOptionPane.INFORMATION_MESSAGE);
             changesWereMade();

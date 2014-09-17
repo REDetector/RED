@@ -170,15 +170,16 @@ public class REDParser implements Runnable, ProgressListener {
                                 "No genome definition found before data");
                     }
                     parseVisibleStores(sections);
+                    System.out.println(REDParser.class.getName() + ":parseVisibleStores END");
                 } else if (sections[0].equals(ParsingUtils.DISPLAY_PREFERENCES)) {
                     if (!genomeLoaded) {
                         throw new REDException(
                                 "No genome definition found before data");
                     }
-
+                    System.out.println(REDParser.class.getName() + ":DISPLAY_PREFERENCES1");
                     // Add any annotation sets we've parsed at this point
                     application.dataCollection().genome().getAnnotationCollection().addAnnotationSets(annotationSets.toArray(new AnnotationSet[0]));
-
+                    System.out.println(REDParser.class.getName() + ":DISPLAY_PREFERENCES2");
                     parseDisplayPreferences(sections);
                 } else {
                     throw new REDException("Didn't recognise section '"
@@ -837,7 +838,6 @@ public class REDParser implements Runnable, ProgressListener {
         }
 
         application.addToDrawnDataStores(drawnStores);
-
     }
 
     /**
@@ -944,6 +944,9 @@ public class REDParser implements Runnable, ProgressListener {
             } else if (prefs[0].equals("GraphType")) {
                 DisplayPreferences.getInstance().setGraphType(
                         Integer.parseInt(prefs[1]));
+            } else if (prefs[0].equals("Fasta")) {
+                DisplayPreferences.getInstance().setFastaEnable(
+                        Boolean.parseBoolean(prefs[1]));
             } else {
                 throw new REDException(
                         "Didn't know how to process display preference '"

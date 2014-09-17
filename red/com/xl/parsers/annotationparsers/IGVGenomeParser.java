@@ -14,6 +14,7 @@ import com.xl.datatypes.sequence.SequenceWrapper;
 import com.xl.dialog.ProgressDialog;
 import com.xl.interfaces.ProgressListener;
 import com.xl.main.REDApplication;
+import com.xl.preferences.DisplayPreferences;
 import com.xl.preferences.LocationPreferences;
 import com.xl.utils.*;
 import com.xl.utils.filefilters.FileFilterImpl;
@@ -132,7 +133,7 @@ public class IGVGenomeParser implements Runnable {
                 properties.load(new FileReader(fastaCacheCompleteFile));
                 String version = properties.getProperty(GenomeUtils.KEY_VERSION_NAME);
                 if (REDApplication.VERSION.equals(version)) {
-                    REDApplication.getInstance().chromosomeViewer().setEnableFastaSequence(true);
+                    DisplayPreferences.getInstance().setFastaEnable(true);
                     break;
                 }
             } catch (IOException e) {

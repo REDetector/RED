@@ -1,10 +1,14 @@
 package com.xl.display.chromosomeviewer;
 
 import com.xl.datatypes.DataCollection;
+import com.xl.datatypes.DataGroup;
+import com.xl.datatypes.DataSet;
 import com.xl.datatypes.DataStore;
 import com.xl.datatypes.probes.Probe;
+import com.xl.datatypes.probes.ProbeList;
+import com.xl.datatypes.probes.ProbeSet;
 import com.xl.datatypes.sequence.SequenceRead;
-import com.xl.interfaces.HiCDataStore;
+import com.xl.interfaces.DataChangeListener;
 import com.xl.preferences.DisplayPreferences;
 import com.xl.utils.AsciiUtils;
 import com.xl.utils.ColourScheme;
@@ -24,9 +28,9 @@ import java.util.List;
  * view containing the data from a single data store. Depending on the display
  * preferences it can show either just raw data, or quantitated data, or both.
  */
-public class ChromosomeDataTrack extends JPanel {
+public class ChromosomeDataTrack extends JPanel implements DataChangeListener {
 
-    // private static final int MAX_HEIGHT = 500;
+
     private DataCollection collection = null;
     /**
      * The viewer.
@@ -59,12 +63,13 @@ public class ChromosomeDataTrack extends JPanel {
 
     private boolean timing = true;
 
+    private float basePixel = 0;
+
     /**
      * The drawn reads.
      */
     private Vector<DrawnRead> drawnReads = new Vector<DrawnRead>();
 
-    private Vector<Probe> drawnProbes = new Vector<Probe>();
     /**
      * The active read.
      */
@@ -80,8 +85,6 @@ public class ChromosomeDataTrack extends JPanel {
     private int readHeight = 10;
 
     private int[] readsYIndex = null;
-
-    private Probe activeProbe = null;
 
     /**
      * Instantiates a new chromosome data track.
@@ -113,6 +116,15 @@ public class ChromosomeDataTrack extends JPanel {
         } else {
             probes = new Probe[0];
         }
+        int count = 0;
+        for (Probe probe : probes) {
+            if (count++ < 10) {
+                System.out.println(probe.getStart());
+            } else {
+                break;
+            }
+        }
+//        System.out.println(probes[0].getStart()+"\t"+probes[1].getStart());
         Arrays.sort(probes);
         reads = data.getReadsForChromosome(currentChromosome);
         readsYIndex = new int[reads.length];
@@ -180,17 +192,26 @@ public class ChromosomeDataTrack extends JPanel {
             g.fillRect(useStart, 0, selWidth, displayHeight);
         }
 
-
-        int readsLength = reads.length;
-        for (int i = 0; i < readsLength; i++) {
+        for (int i = 0, readsLength = reads.length; i < readsLength; i++) {
             if (reads[i].getEnd() > viewerCurrentStart && reads[i].getStart() < viewerCurrentEnd) {
                 drawRead(g, reads[i], bpToPixel(reads[i].getStart()), readsYIndex[i] * readHeight);
             }
         }
+        for (Probe probe : probes) {
+            if (probe.getStart() > viewerCurrentStart && probe.getStart() < viewerCurrentEnd) {
+                drawProbe(g, probe);
+                System.out.println("Probe: " + probe.getStart());
+            }
+        }
+
 //        Always draw the active read last
         if (activeRead != null) {
             drawRead(g, activeRead, bpToPixel(activeRead.getStart()), activeReadIndex);
         }
+
+//        if(activeProbe!=null){
+//
+//        }
 
         // Draw a line across the bottom of the display
         g.setColor(Color.LIGHT_GRAY);
@@ -216,10 +237,6 @@ public class ChromosomeDataTrack extends JPanel {
 
         String name = data.name();
 
-        if (data instanceof HiCDataStore && ((HiCDataStore) data).isValidHiC()) {
-            name = "[HiC] " + name;
-        }
-
         // Draw a box into which we'll put the track name so it's not obscured
         // by the data
         int nameWidth = g.getFontMetrics().stringWidth(name);
@@ -243,7 +260,7 @@ public class ChromosomeDataTrack extends JPanel {
             g.drawRoundRect(pixelXStart, pixelYStart, readPixel, readHeight, 3, 3);
             byte[] readBases = r.getReadBases();
             char[] cChar = AsciiUtils.getChars(readBases);
-            double basePixel = (double) (readPixel) / (readBases.length);
+            basePixel = (float) (readPixel) / (readBases.length);
             g.setFont(new Font("Times New Roman", Font.PLAIN, readHeight));
             for (int i = 0; i < cChar.length; i++) {
                 char c = cChar[i];
@@ -251,6 +268,15 @@ public class ChromosomeDataTrack extends JPanel {
                 g.drawString(String.valueOf(c), (int) (pixelXStart + basePixel * i + basePixel / 2), pixelYStart + readHeight);
             }
         }
+    }
+
+    private void drawProbe(Graphics g, Probe b) {
+        g.setColor(ColourScheme.getBaseColor(b.getEditingBase()));
+        int position = b.getStart();
+        int left = Math.round(bpToPixel(position));
+        int right = Math.round(bpToPixel(position) + basePixel);
+        g.drawLine(left, 0, left, displayHeight);
+        g.drawLine(right, 0, right, displayHeight);
     }
 
     private Color getSequenceColor(SequenceRead read, int pixelYStart) {
@@ -345,6 +371,10 @@ public class ChromosomeDataTrack extends JPanel {
         }
     }
 
+    @Override
+    public Dimension getPreferredSize() {
+        return new Dimension(750, 300);
+    }
 
     private class SequenceListner implements MouseListener, MouseMotionListener {
 
@@ -376,6 +406,8 @@ public class ChromosomeDataTrack extends JPanel {
                 viewer.zoomOut();
             } else if (me.getClickCount() == 2) {
                 viewer.zoomIn();
+            } else if (me.getClickCount() == 1) {
+                System.out.println(me.getX() + "\t" + me.getY() + "\t" + pixelToBp(me.getX()));
             }
         }
 
@@ -479,70 +511,64 @@ public class ChromosomeDataTrack extends JPanel {
         }
     }
 
-    /**
-     * The Class DrawnProbe.
-     */
-    private class DrawnProbe {
+    @Override
+    public void dataSetAdded(DataSet d) {
 
-        /**
-         * The left.
-         */
-        public int left;
+    }
 
-        /**
-         * The right.
-         */
-        public int right;
+    @Override
+    public void dataSetsRemoved(DataSet[] d) {
 
-        /**
-         * The top.
-         */
-        public int top;
+    }
 
-        /**
-         * The bottom.
-         */
-        public int bottom;
+    @Override
+    public void dataGroupAdded(DataGroup g) {
 
-        /**
-         * The probe.
-         */
-        public Probe probe;
+    }
 
-        /**
-         * The value.
-         */
-        public double value;
+    @Override
+    public void dataGroupsRemoved(DataGroup[] g) {
 
-        /**
-         * Instantiates a new drawn probe.
-         *
-         * @param left   the left
-         * @param right  the right
-         * @param bottom the bottom
-         * @param top    the top
-         * @param probe  the probe
-         * @param value  the value
-         */
-        public DrawnProbe(int left, int right, int bottom, int top, Probe probe, double value) {
-            this.left = left;
-            this.right = right;
-            this.top = top;
-            this.bottom = bottom;
-            this.probe = probe;
-            this.value = value;
-        }
+    }
 
-        /**
-         * Checks if is in feature.
-         *
-         * @param x the x
-         * @param y the y
-         * @return true, if is in feature
-         */
-        public boolean isInFeature(int x, int y) {
-            return x >= left && x <= right && y >= bottom && y <= top;
+    @Override
+    public void dataSetRenamed(DataSet d) {
+
+    }
+
+    @Override
+    public void dataGroupRenamed(DataGroup g) {
+
+    }
+
+    @Override
+    public void dataGroupSamplesChanged(DataGroup g) {
+
+    }
+
+    @Override
+    public void probeSetReplaced(ProbeSet p) {
+        if (p == null) {
+            probes = null;
+        } else {
+            probes = p.getProbesForChromosome(DisplayPreferences.getInstance().getCurrentChromosome().getName());
+            Arrays.sort(probes);
         }
     }
 
+    @Override
+    public void activeDataStoreChanged(DataStore s) {
+
+    }
+
+    @Override
+    public void activeProbeListChanged(ProbeList l) {
+        if (l == null) {
+            probes = null;
+        } else {
+            probes = l.getProbesForChromosome(DisplayPreferences.getInstance().getCurrentChromosome().getName());
+            Arrays.sort(probes);
+        }
+        repaint();
+    }
 }

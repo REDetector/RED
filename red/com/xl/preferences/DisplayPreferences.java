@@ -78,6 +78,9 @@ public class DisplayPreferences {
     private int currentEndLocation = 0;
 
 
+    private boolean fastaEnable = false;
+
+
     /**
      * We make this a singleton so it's only accessible by a static method *
      */
@@ -238,6 +241,14 @@ public class DisplayPreferences {
         }
     }
 
+    public boolean isFastaEnable() {
+        return fastaEnable;
+    }
+
+    public void setFastaEnable(boolean fastaEnable) {
+        this.fastaEnable = fastaEnable;
+    }
+
     public int getGradientValue() {
         return currentGradientValue;
     }
@@ -261,13 +272,15 @@ public class DisplayPreferences {
     public void writeConfiguration(PrintStream p) {
         // Make sure this number at the end equates to the number of
         // configuration lines to be written
-        p.println(ParsingUtils.DISPLAY_PREFERENCES + "\t4");
+        p.println(ParsingUtils.DISPLAY_PREFERENCES + "\t5");
 
         p.println("DisplayMode\t" + getDisplayMode());
 
         p.println("Gradient\t" + getGradientValue());
 
         p.println("GraphType\t" + getGraphType());
+
+        p.println("Fasta\t" + fastaEnable);
 
         p.println("CurrentView\t" + currentChromosome.getName() + "\t"
                 + currentStartLocation + "\t" + currentEndLocation);
@@ -280,5 +293,6 @@ public class DisplayPreferences {
         }
         return false;
     }
+
 
 }

@@ -4,7 +4,9 @@ import com.xl.datatypes.sequence.Location;
 import com.xl.display.featureviewer.Feature;
 import com.xl.display.featureviewer.FeatureViewer;
 import com.xl.preferences.DisplayPreferences;
-import com.xl.utils.*;
+import com.xl.utils.ColourScheme;
+import com.xl.utils.PositionFormat;
+import com.xl.utils.Strand;
 
 import javax.swing.*;
 import java.awt.*;
@@ -12,8 +14,6 @@ import java.awt.event.InputEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
-import java.io.IOException;
-import java.io.RandomAccessFile;
 import java.util.Enumeration;
 import java.util.Vector;
 
@@ -67,9 +67,7 @@ public class ChromosomeFeatureTrack extends JPanel {
     /**
      * A list of drawn features, used for lookups when finding an active feature
      */
-    private Vector<DrawnBasicFeature> drawnFeatures = new Vector<DrawnBasicFeature>();
-
-    private RandomAccessFile fastaFile;
+    private Vector<DrawnFeature> drawnFeatures = new Vector<DrawnFeature>();
 
     /**
      * Instantiates a new chromosome feature track. We have to send the name of
@@ -81,20 +79,17 @@ public class ChromosomeFeatureTrack extends JPanel {
      * @param featureName The name of the type of features we're going to show
      * @param features    A list of features we're going to show
      */
-    public ChromosomeFeatureTrack(ChromosomeViewer viewer, String featureName,
-                                  Feature[] features, RandomAccessFile fastaFile) {
+    public ChromosomeFeatureTrack(ChromosomeViewer viewer, String featureName, Feature[] features) {
         this.viewer = viewer;
         this.featureName = featureName;
         this.features = features;
-        this.fastaFile = fastaFile;
         addMouseMotionListener(new FeatureListener());
         addMouseListener(new FeatureListener());
-        drawnFeatures = new Vector<DrawnBasicFeature>();
+        drawnFeatures = new Vector<DrawnFeature>();
     }
 
-    public void updateFeatureAndSequence(Feature[] features, RandomAccessFile fastaFile) {
+    public void updateFeature(Feature[] features) {
         this.features = features;
-        this.fastaFile = fastaFile;
         repaint();
     }
 
@@ -148,11 +143,7 @@ public class ChromosomeFeatureTrack extends JPanel {
                 }
             }
         }
-        if (viewer.isEnableFastaSequence() && endBp - startBp < getWidth() && fastaFile != null) {
-            g.drawRoundRect(0, displayHeight - 10, displayWidth, 10, 3, 3);
-            g.setFont(FontManager.defaultFont);
-            drawSequence(getSequenceForChr(fastaFile, startBp, endBp), g);
-        }
+
         if (activeFeature != null)
             drawBasicFeature(activeFeature, g);
 
@@ -170,22 +161,6 @@ public class ChromosomeFeatureTrack extends JPanel {
 
     }
 
-    public byte[] getSequenceForChr(RandomAccessFile raf, int start, int end) {
-        byte[] sequence = new byte[end - start];
-        try {
-            raf.seek(start - 1);
-            int len = raf.read(sequence);
-            if (len == end - start) {
-                return sequence;
-            } else {
-                return null;
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
-
     // There's no sense in letting the annotation tracks get too tall. We're
     // better off using that space for data tracks.
     /*
@@ -197,17 +172,7 @@ public class ChromosomeFeatureTrack extends JPanel {
         return new Dimension(30, 30);
     }
 
-    private void drawSequence(byte[] sequence, Graphics g) {
-        char[] cChar = AsciiUtils.getChars(sequence);
-        double pixelForEachBase = (double) displayWidth / (sequence.length);
-        for (int i = 0, len = cChar.length; i < len; i++) {
-            char c = cChar[i];
-            g.setColor(ColourScheme.getBaseColor(c));
-            g.drawString(String.valueOf(c), (int) (pixelForEachBase * i + pixelForEachBase / 2), displayHeight);
-        }
-    }
-
-    private Color getSequenceColor(Feature feature) {
+    private Color getFeatureColor(Feature feature) {
         if (feature.getStrand() == Strand.POSITIVE) {
             return ColourScheme.FORWARD_FEATURE;
         } else if (feature.getStrand() == Strand.NEGATIVE) {
@@ -227,7 +192,7 @@ public class ChromosomeFeatureTrack extends JPanel {
      * @param g       the graphics object to use for drawing
      */
     private void drawBasicFeature(Feature feature, Graphics g) {
-        g.setColor(getSequenceColor(feature));
+        g.setColor(getFeatureColor(feature));
 
         // If there's space we'll put a label on the track as well as the feature.
         boolean drawLabel = false;
@@ -240,7 +205,7 @@ public class ChromosomeFeatureTrack extends JPanel {
         Location[] exons = feature.getExonLocations();
         int wholeXStart = bpToPixel(tx.getStart());
         int wholeXEnd = bpToPixel(tx.getEnd());
-        drawnFeatures.add(new DrawnBasicFeature(wholeXStart, wholeXEnd,
+        drawnFeatures.add(new DrawnFeature(wholeXStart, wholeXEnd,
                 feature));
         g.fillRect(wholeXStart, txYPosition - yLableHeight, wholeXEnd - wholeXStart, 2);
 
@@ -254,7 +219,7 @@ public class ChromosomeFeatureTrack extends JPanel {
                 g.fillRect(exonStart, exonYPosition - yLableHeight, exonEnd, exonHeight);
             }
 
-            if (drawLabel && (feature == activeFeature || viewer.showAllLables())) {
+            if (drawLabel && (feature == activeFeature)) {
 //                g.setColor(Color.DARK_GRAY);
                 g.drawString(feature.getChr() + ":" + feature.getAliasName(), cursorXPosition, ((displayHeight + exonHeight) / 2 + yLableHeight));
             }
@@ -300,7 +265,7 @@ public class ChromosomeFeatureTrack extends JPanel {
      * the display. Split location features will use a separate DrawnFeature for
      * each exon.
      */
-    private class DrawnBasicFeature {
+    private class DrawnFeature {
 
         /**
          * The start.
@@ -324,7 +289,7 @@ public class ChromosomeFeatureTrack extends JPanel {
          * @param end     the end position in pixels
          * @param feature the feature
          */
-        public DrawnBasicFeature(int start, int end, Feature feature) {
+        public DrawnFeature(int start, int end, Feature feature) {
             this.start = start;
             this.end = end;
             this.feature = feature;
@@ -375,9 +340,9 @@ public class ChromosomeFeatureTrack extends JPanel {
         public void mouseMoved(MouseEvent me) {
             int x = me.getX();
             cursorXPosition = x;
-            Enumeration<DrawnBasicFeature> e = drawnFeatures.elements();
+            Enumeration<DrawnFeature> e = drawnFeatures.elements();
             while (e.hasMoreElements()) {
-                DrawnBasicFeature drawnFeature = e.nextElement();
+                DrawnFeature drawnFeature = e.nextElement();
                 if (drawnFeature.isInFeature(x)) {
                     if (activeFeature != drawnFeature.feature) {
                         int length = drawnFeature.feature.getTotalLength();
