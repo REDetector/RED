@@ -773,6 +773,7 @@ public class REDApplication extends JFrame implements ProgressListener,
 
     @Override
     public void dataSetAdded(DataSet d) {
+        menu.dataLoaded();
         changesWereMade();
     }
 
