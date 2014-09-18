@@ -7,6 +7,7 @@ import com.xl.utils.FontManager;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.InputEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.IOException;
@@ -179,8 +180,13 @@ public class ChromosomeSequenceTrack extends JPanel {
     private class SequenceListener implements MouseListener {
 
         @Override
-        public void mouseClicked(MouseEvent e) {
-
+        public void mouseClicked(MouseEvent me) {
+            if ((me.getModifiers() & InputEvent.BUTTON3_MASK) == InputEvent.BUTTON3_MASK && me.getClickCount() == 1) {
+                viewer.zoomOut();
+            } else if ((me.getModifiers() & InputEvent.BUTTON1_MASK) == InputEvent.BUTTON1_MASK && me.getClickCount() ==
+                    1) {
+                viewer.zoomIn();
+            }
         }
 
         @Override

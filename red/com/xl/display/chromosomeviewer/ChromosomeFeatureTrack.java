@@ -14,6 +14,7 @@ import java.awt.event.InputEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
+import java.util.Date;
 import java.util.Enumeration;
 import java.util.Vector;
 
@@ -318,6 +319,7 @@ public class ChromosomeFeatureTrack extends JPanel {
      */
     private class FeatureListener implements MouseMotionListener,
             MouseListener {
+        private long currentTime = 0;
 
         /*
          * (non-Javadoc)
@@ -380,17 +382,27 @@ public class ChromosomeFeatureTrack extends JPanel {
          * java.awt.event.MouseListener#mouseClicked(java.awt.event.MouseEvent)
          */
         public void mouseClicked(MouseEvent me) {
-            if ((me.getModifiers() & InputEvent.BUTTON3_MASK) == InputEvent.BUTTON3_MASK && me.getClickCount() == 2) {
+            if ((me.getModifiers() & InputEvent.BUTTON3_MASK) == InputEvent.BUTTON3_MASK) {
                 viewer.zoomOut();
-            } else if ((me.getModifiers() & InputEvent.BUTTON1_MASK) == InputEvent.BUTTON1_MASK && me.getClickCount()
-                    == 2) {
-                viewer.zoomIn();
-            } else if ((me.getModifiers() & InputEvent.BUTTON1_MASK) == InputEvent.BUTTON1_MASK && me.getClickCount()
-                    == 1) {
+                return;
+            }
+            if (checkClickTime() && me.getClickCount() >= 2) {
                 if (activeFeature != null) {
                     new FeatureViewer(activeFeature);
                 }
+            } else {
+                viewer.zoomIn();
             }
+        }
+
+        public boolean checkClickTime() {
+            long nowTime = (new Date()).getTime();
+            if ((nowTime - currentTime) < 300) {
+                currentTime = nowTime;
+                return true;
+            }
+            currentTime = nowTime;
+            return false;
         }
 
         /*

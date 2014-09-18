@@ -86,6 +86,8 @@ public class ChromosomeDataTrack extends JPanel implements DataChangeListener {
 
     private int[] readsYIndex = null;
 
+    private int maxCoverage = 0;
+
     /**
      * Instantiates a new chromosome data track.
      *
@@ -116,23 +118,14 @@ public class ChromosomeDataTrack extends JPanel implements DataChangeListener {
         } else {
             probes = new Probe[0];
         }
-        int count = 0;
-        for (Probe probe : probes) {
-            if (count++ < 10) {
-                System.out.println(probe.getStart());
-            } else {
-                break;
-            }
-        }
-//        System.out.println(probes[0].getStart()+"\t"+probes[1].getStart());
         Arrays.sort(probes);
         reads = data.getReadsForChromosome(currentChromosome);
         readsYIndex = new int[reads.length];
         Arrays.fill(readsYIndex, -1);
-        processSequence();
+        maxCoverage = processSequence();
         // Force the slots to be reassigned
         displayHeight = 0;
-
+        setSize(getWidth(), maxCoverage * readHeight);
         repaint();
     }
 
@@ -200,7 +193,6 @@ public class ChromosomeDataTrack extends JPanel implements DataChangeListener {
         for (Probe probe : probes) {
             if (probe.getStart() > viewerCurrentStart && probe.getStart() < viewerCurrentEnd) {
                 drawProbe(g, probe);
-                System.out.println("Probe: " + probe.getStart());
             }
         }
 
@@ -345,9 +337,9 @@ public class ChromosomeDataTrack extends JPanel implements DataChangeListener {
         }
     }
 
-    private void processSequence() {
+    private int processSequence() {
         if (reads == null || reads.length == 0) {
-            return;
+            return 0;
         }
         List<Integer> lastYIndexes = new ArrayList<Integer>();
         lastYIndexes.add(reads[0].getEnd());
@@ -369,11 +361,12 @@ public class ChromosomeDataTrack extends JPanel implements DataChangeListener {
                 lastYIndexes.add(reads[i].getEnd());
             }
         }
+        return lastYIndexes.size();
     }
 
     @Override
     public Dimension getPreferredSize() {
-        return new Dimension(750, 300);
+        return new Dimension(displayWidth, maxCoverage * readHeight);
     }
 
     private class SequenceListner implements MouseListener, MouseMotionListener {
@@ -402,12 +395,11 @@ public class ChromosomeDataTrack extends JPanel implements DataChangeListener {
 
         @Override
         public void mouseClicked(MouseEvent me) {
-            if ((me.getModifiers() & InputEvent.BUTTON3_MASK) == InputEvent.BUTTON3_MASK && me.getClickCount() == 2) {
+            if ((me.getModifiers() & InputEvent.BUTTON3_MASK) == InputEvent.BUTTON3_MASK && me.getClickCount() == 1) {
                 viewer.zoomOut();
-            } else if (me.getClickCount() == 2) {
+            } else if ((me.getModifiers() & InputEvent.BUTTON1_MASK) == InputEvent.BUTTON1_MASK && me.getClickCount() ==
+                    1) {
                 viewer.zoomIn();
-            } else if (me.getClickCount() == 1) {
-                System.out.println(me.getX() + "\t" + me.getY() + "\t" + pixelToBp(me.getX()));
             }
         }
 

@@ -192,11 +192,12 @@ public class ChromosomeViewer extends JPanel implements DataChangeListener,
         while (e2.hasMoreElements()) {
             ChromosomeDataTrack cdt = e2.nextElement();
             JScrollPane scroll = new JScrollPane(cdt);
-            scroll.setPreferredSize(new Dimension(400, 200));
+//            scroll.setPreferredSize(new Dimension(400, 200));
             scroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
-            scroll.revalidate();
-            scroll.repaint();
-            featurePanel.add(cdt, gridBagConstraints);
+            scroll.getVerticalScrollBar().setUnitIncrement(20);
+//            scroll.revalidate();
+//            scroll.repaint();
+            featurePanel.add(scroll, gridBagConstraints);
             gridBagConstraints.gridy++;
             System.out.println(ChromosomeViewer.class.getName() + ":ChromosomeDataTrack: featurePanel.add(e.nextElement(), c)");
         }
