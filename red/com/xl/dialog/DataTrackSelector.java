@@ -156,6 +156,8 @@ public class DataTrackSelector extends JDialog implements ActionListener, ListSe
         availableGroupList.setCellRenderer(renderer);
         availablePanel.add(new JScrollPane(availableGroupList), c2);
 
+        getContentPane().add(availablePanel, c);
+
         c.gridx++;
         c.weightx = 0.2;
         c.fill = GridBagConstraints.NONE;
