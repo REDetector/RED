@@ -6,7 +6,6 @@ import com.xl.datatypes.probes.ProbeSet;
 import com.xl.exception.REDException;
 import com.xl.interfaces.DataChangeListener;
 import com.xl.main.REDApplication;
-import com.xl.utils.MessageUtils;
 
 import java.util.Arrays;
 import java.util.Enumeration;
@@ -137,7 +136,7 @@ public class DataCollection {
     public void addDataSet(DataSet data) {
         dataSets.add(data);
         data.setCollection(this);
-        MessageUtils.showInfo(DataCollection.class, "addDataSet (DataSet data)" + dataSets.size());
+        System.out.println(DataCollection.class.getName() + ":addDataSet (DataSet data)" + dataSets.size());
 
         // We need to let this dataset know about the
         // current probset.
