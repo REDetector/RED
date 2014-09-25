@@ -8,6 +8,7 @@ import com.xl.dialog.*;
 import com.xl.dialog.gotodialog.GotoDialog;
 import com.xl.dialog.gotodialog.GotoWindowDialog;
 import com.xl.display.chromosomeviewer.ChromosomeDataTrack;
+import com.xl.display.report.EditingSitesDistributionHistogram;
 import com.xl.exception.REDException;
 import com.xl.filter.*;
 import com.xl.help.HelpDialog;
@@ -18,6 +19,7 @@ import com.xl.parsers.annotationparsers.AnnotationParserRunner;
 import com.xl.parsers.annotationparsers.UCSCRefGeneParser;
 import com.xl.parsers.dataparsers.BAMFileParser;
 import com.xl.parsers.dataparsers.FastaFileParser;
+import com.xl.preferences.DisplayPreferences;
 import com.xl.preferences.LocationPreferences;
 import com.xl.utils.imagemanager.ImageSaver;
 import com.xl.utils.namemanager.MenuUtils;
@@ -55,7 +57,9 @@ public class REDMenu extends JMenuBar implements ActionListener {
     private JMenuItem fasta;
     private JMenuItem loadGenome;
     private JMenuItem annotation;
-    private JMenuItem exportImage;
+    private JMenu exportImage;
+    private JMenuItem genomeView;
+    private JMenuItem chromosomeView;
     private JMenuItem exit;
 
     private JMenu editMenu;
@@ -131,8 +135,11 @@ public class REDMenu extends JMenuBar implements ActionListener {
         fasta = new JMenuItem();
         loadGenome = new JMenuItem();
         annotation = new JMenuItem();
-        exportImage = new JMenuItem();
+        exportImage = new JMenu();
+        genomeView = new JMenuItem();
+        chromosomeView = new JMenuItem();
         exit = new JMenuItem();
+
         editMenu = new JMenu();
         showToolbar = new JCheckBoxMenuItem(MenuUtils.SHOW_TOOLBAR, redToolbar.shown());
         showDirectoryPanel = new JCheckBoxMenuItem(MenuUtils.SHOW_DIRECTORY_PANEL, true);
@@ -196,7 +203,14 @@ public class REDMenu extends JMenuBar implements ActionListener {
                 importDataMenu.setEnabled(false);
             }
             addJMenuItem(fileMenu, loadGenome, MenuUtils.LOAD_GENOME, KeyEvent.VK_L, false);
-            addJMenuItem(fileMenu, exportImage, MenuUtils.EXPORT_IMAGE, KeyEvent.VK_E, false);
+
+            {
+                exportImage.setText(MenuUtils.EXPORT_IMAGE);
+                addJMenuItem(exportImage, genomeView, MenuUtils.GENOME_VIEW, -1, true);
+                addJMenuItem(exportImage, chromosomeView, MenuUtils.CHROMOSOME_VIEW, -1, true);
+                fileMenu.add(exportImage);
+            }
+
             fileMenu.addSeparator();
 
             List<String> recentPaths = LocationPreferences.getInstance().getRecentlyOpenedFiles();
@@ -372,10 +386,13 @@ public class REDMenu extends JMenuBar implements ActionListener {
                             .genome()));
         } else if (action.equals(MenuUtils.LOAD_GENOME)) {
             redApplication.startNewProject();
-        } else if (action.equals(MenuUtils.EXPORT_IMAGE)) {
-            ImageSaver.saveImage(redApplication);
+        } else if (action.equals(MenuUtils.CHROMOSOME_VIEW)) {
+            ImageSaver.saveImage(redApplication.chromosomeViewer());
+        } else if (action.equals(MenuUtils.GENOME_VIEW)) {
+            ImageSaver.saveImage(redApplication.genomeViewer());
         } else if (action.equals(MenuUtils.EXIT)) {
             redApplication.dispose();
+            System.exit(0);
         }
         // --------------------EditMenu--------------------
         else if (action.equals(MenuUtils.SHOW_TOOLBAR)) {
@@ -467,7 +484,11 @@ public class REDMenu extends JMenuBar implements ActionListener {
         }
         // --------------------ReportsMenu------------------
         else if (action.equals(MenuUtils.VARIANT_DISTRIBUTION)) {
-
+            if (redApplication.dataCollection().getActiveDataStore() == null) {
+                JOptionPane.showMessageDialog(redApplication, "You need to select a data store in the Data panel before viewing this plot", "No data selected...", JOptionPane.INFORMATION_MESSAGE);
+            } else {
+                new EditingSitesDistributionHistogram(redApplication.dataCollection().getActiveDataStore());
+            }
         } else if (action.equals(MenuUtils.BAR_CHART)) {
 
         } else if (action.equals(MenuUtils.FILTER_REPORTS)) {
@@ -483,6 +504,14 @@ public class REDMenu extends JMenuBar implements ActionListener {
             new UserPasswordDialog(redApplication);
         } else if (action.equals(MenuUtils.ABOUT_RED)) {
             new AboutDialog();
+        }
+        //--------------------Main Toolbar---------------------
+        else if (action.equals(MenuUtils.SHOW_READS_ONLY)) {
+            DisplayPreferences.getInstance().setDisplayMode(DisplayPreferences.DISPLAY_MODE_READS_ONLY);
+        } else if (action.equals(MenuUtils.SHOW_PROBES_ONLY)) {
+            DisplayPreferences.getInstance().setDisplayMode(DisplayPreferences.DISPLAY_MODE_PROBES_ONLY);
+        } else if (action.equals(MenuUtils.SHOW_READS_AND_PROBES)) {
+            DisplayPreferences.getInstance().setDisplayMode(DisplayPreferences.DISPLAY_MODE_READS_AND_PROBES);
         }
     }
 

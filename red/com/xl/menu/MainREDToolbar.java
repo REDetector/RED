@@ -41,14 +41,14 @@ public class MainREDToolbar extends REDToolbar {
         readsOnlyButton = new JButton(new ImageIcon(
                 ClassLoader
                         .getSystemResource("resources/toolbar/reads_only.png")));
-        readsOnlyButton.setActionCommand("data_reads");
+        readsOnlyButton.setActionCommand(MenuUtils.SHOW_READS_ONLY);
         readsOnlyButton.setToolTipText("Show only Reads");
         readsOnlyButton.addActionListener(menu);
         add(readsOnlyButton);
         probesOnlyButton = new JButton(
                 new ImageIcon(ClassLoader
                         .getSystemResource("resources/toolbar/probes_only.png")));
-        probesOnlyButton.setActionCommand("data_probes");
+        probesOnlyButton.setActionCommand(MenuUtils.SHOW_PROBES_ONLY);
         probesOnlyButton.setToolTipText("Show only Probes");
         probesOnlyButton.addActionListener(menu);
         add(probesOnlyButton);
@@ -56,8 +56,8 @@ public class MainREDToolbar extends REDToolbar {
                 new ImageIcon(
                         ClassLoader
                                 .getSystemResource("resources/toolbar/probes_and_reads.png")));
-        probesAndReadsButton.setActionCommand("data_reads_probes");
-        probesAndReadsButton.setToolTipText("Show Probes and Reads");
+        probesAndReadsButton.setActionCommand(MenuUtils.SHOW_READS_AND_PROBES);
+        probesAndReadsButton.setToolTipText("Show Reads and Probes");
         probesAndReadsButton.addActionListener(menu);
         add(probesAndReadsButton);
         addSeparator();
