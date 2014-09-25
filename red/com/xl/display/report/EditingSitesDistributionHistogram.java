@@ -1,26 +1,11 @@
-package com.xl.display.HistogramPlot;
+package com.xl.display.report;
 
 /**
- * Copyright Copyright 2006-13 Simon Andrews
- *
- *    This file is part of SeqMonk.
- *
- *    SeqMonk is free software; you can redistribute it and/or modify
- *    it under the terms of the GNU General Public License as published by
- *    the Free Software Foundation; either version 3 of the License, or
- *    (at your option) any later version.
- *
- *    SeqMonk is distributed in the hope that it will be useful,
- *    but WITHOUT ANY WARRANTY; without even the implied warranty of
- *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *    GNU General Public License for more details.
- *
- *    You should have received a copy of the GNU General Public License
- *    along with SeqMonk; if not, write to the Free Software
- *    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+ * Created by Administrator on 2014/9/23.
  */
 
 import com.xl.datatypes.DataStore;
+import com.xl.datatypes.genome.Chromosome;
 import com.xl.datatypes.sequence.SequenceRead;
 import com.xl.dialog.CrashReporter;
 import com.xl.main.REDApplication;
@@ -36,10 +21,10 @@ import java.io.File;
 import java.io.IOException;
 
 /**
- * The Class ReadLengthHistogramPlot shows the distribution of read lengths
+ * The Class EditingSitesDistributionHistogram shows the distribution of read lengths
  * in a data store.
  */
-public class ReadLengthHistogramPlot extends JDialog implements ActionListener {
+public class EditingSitesDistributionHistogram extends JDialog implements ActionListener {
 
     /**
      * The plot panel.
@@ -51,12 +36,12 @@ public class ReadLengthHistogramPlot extends JDialog implements ActionListener {
      *
      * @param d the data
      */
-    public ReadLengthHistogramPlot(DataStore d) {
+    public EditingSitesDistributionHistogram(DataStore d) {
         super(REDApplication.getInstance(), "Read Length Plot [" + d.name() + "]");
         setSize(800, 600);
         setLocationRelativeTo(REDApplication.getInstance());
         setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-        plotPanel = new HistogramPanel(getReadLengths(d));
+        plotPanel = new HistogramPanel(d.collection().genome(), d.collection().probeSet().getActiveList().getAllProbes());
         getContentPane().setLayout(new BorderLayout());
         getContentPane().add(plotPanel, BorderLayout.CENTER);
 
@@ -92,14 +77,17 @@ public class ReadLengthHistogramPlot extends JDialog implements ActionListener {
 
         int offset = 0;
 
-        String[] chrs = d.collection().genome().getAllChromosomeNames();
-        for (String chr : chrs) {
-            SequenceRead[] reads = d.getReadsForChromosome(chr);
+        Chromosome[] chrs = d.collection().genome().getAllChromosomes();
+
+        for (int c = 0; c < chrs.length; c++) {
+            SequenceRead[] reads = d.getReadsForChromosome(chrs[c].getName());
+
             for (int r = 0; r < reads.length; r++) {
                 data[offset + r] = reads[r].length();
             }
             offset += reads.length;
         }
+
         return data;
     }
 
@@ -131,9 +119,7 @@ public class ReadLengthHistogramPlot extends JDialog implements ActionListener {
 
             // Check if we're stepping on anyone's toes...
             if (file.exists()) {
-                int answer = JOptionPane.showOptionDialog(this, file.getName() + " exists.  " +
-                                "Do you want to overwrite the existing file?", "Overwrite file?", JOptionPane.YES_NO_OPTION,
-                        JOptionPane.QUESTION_MESSAGE, null, new String[]{"Overwrite and Save", "Cancel"}, "Overwrite and Save");
+                int answer = JOptionPane.showOptionDialog(this, file.getName() + " exists.  Do you want to overwrite the existing file?", "Overwrite file?", 0, JOptionPane.QUESTION_MESSAGE, null, new String[]{"Overwrite and Save", "Cancel"}, "Overwrite and Save");
 
                 if (answer > 0) {
                     return;
