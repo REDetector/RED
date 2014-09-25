@@ -76,8 +76,10 @@ public class LocationPreferences {
      */
     private String tempDirectory = projectDataDirectory + File.separator + TEMP_DIRECTORY;
 
+    /**
+     * The directory in which to save cache files to make all data load faster
+     */
     private String cacheDirectory = projectDataDirectory + File.separator + CACHE_DIRECTORY;
-
 
     /**
      * The directory in which to save some fragmentary files like 'cytoband.txt'
@@ -93,7 +95,6 @@ public class LocationPreferences {
      * The default save location.
      */
     private String projectSaveLocation = projectDirectory;
-
 
     private String dnaVcfFile = "";
     private String rnaVcfFile = "";

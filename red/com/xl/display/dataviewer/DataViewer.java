@@ -8,12 +8,8 @@ import com.xl.datatypes.annotation.AnnotationSet;
 import com.xl.datatypes.annotation.CoreAnnotationSet;
 import com.xl.datatypes.probes.ProbeList;
 import com.xl.datatypes.probes.ProbeSet;
-import com.xl.dialog.AnnotationSetPropertiesDialog;
-import com.xl.dialog.CrashReporter;
-import com.xl.dialog.DataStorePropertiesDialog;
-import com.xl.dialog.ProbeListCommentEditDialog;
-import com.xl.display.HistogramPlot.ProbeLengthHistogramPlot;
-import com.xl.display.HistogramPlot.ReadLengthHistogramPlot;
+import com.xl.dialog.*;
+import com.xl.display.report.EditingSitesDistributionHistogram;
 import com.xl.exception.REDException;
 import com.xl.main.REDApplication;
 
@@ -54,7 +50,6 @@ public class DataViewer extends JPanel implements MouseListener, TreeSelectionLi
         con.weighty = 0.01;
         con.fill = GridBagConstraints.HORIZONTAL;
         con.anchor = GridBagConstraints.FIRST_LINE_START;
-
 
         DataCollectionTreeModel model = new DataCollectionTreeModel(collection);
         dataTree = new UnfocusableTree(model);
@@ -245,11 +240,6 @@ public class DataViewer extends JPanel implements MouseListener, TreeSelectionLi
             }
             add(displayTrack);
 
-            JMenuItem readLenHistogram = new JMenuItem("Show Read Length Histogram");
-            readLenHistogram.setActionCommand("readlen_histogram");
-            readLenHistogram.addActionListener(this);
-            add(readLenHistogram);
-
             JMenuItem rename = new JMenuItem("Rename");
             rename.setActionCommand("rename");
             rename.addActionListener(this);
@@ -259,7 +249,6 @@ public class DataViewer extends JPanel implements MouseListener, TreeSelectionLi
             properties.setActionCommand("properties");
             properties.addActionListener(this);
             add(properties);
-
 
             // I'm not sure at the moment whether I should allow
             // deletion of a data set.  There are lots of places
@@ -278,9 +267,7 @@ public class DataViewer extends JPanel implements MouseListener, TreeSelectionLi
          * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
          */
         public void actionPerformed(ActionEvent ae) {
-            if (ae.getActionCommand().equals("scatter")) {
-//				application.showScatterPlot(d);
-            } else if (ae.getActionCommand().equals("display_track")) {
+            if (ae.getActionCommand().equals("display_track")) {
                 if (((JCheckBoxMenuItem) ae.getSource()).getState()) {
                     application.addToDrawnDataStores(new DataStore[]{d});
                 } else {
@@ -323,11 +310,6 @@ public class DataViewer extends JPanel implements MouseListener, TreeSelectionLi
             }
             add(displayTrack);
 
-            JMenuItem readLenHistogram = new JMenuItem("Show Read Length Histogram");
-            readLenHistogram.setActionCommand("readlen_histogram");
-            readLenHistogram.addActionListener(this);
-            add(readLenHistogram);
-
             JMenuItem rename = new JMenuItem("Rename");
             rename.setActionCommand("rename");
             rename.addActionListener(this);
@@ -350,11 +332,7 @@ public class DataViewer extends JPanel implements MouseListener, TreeSelectionLi
          * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
          */
         public void actionPerformed(ActionEvent ae) {
-            if (ae.getActionCommand().equals("readlen_histogram")) {
-                new ReadLengthHistogramPlot(d);
-            } else if (ae.getActionCommand().equals("hiclen_histogram")) {
-//				new HiCLengthHistogramPlot(d, null);
-            } else if (ae.getActionCommand().equals("display_track")) {
+            if (ae.getActionCommand().equals("display_track")) {
                 if (((JCheckBoxMenuItem) ae.getSource()).getState()) {
                     application.addToDrawnDataStores(new DataStore[]{d});
                 } else {
@@ -395,18 +373,8 @@ public class DataViewer extends JPanel implements MouseListener, TreeSelectionLi
             view.addActionListener(this);
             add(view);
 
-            JMenuItem report = new JMenuItem("Make List Report");
-            report.setActionCommand("report");
-            report.addActionListener(this);
-            add(report);
-
-            JMenuItem similar = new JMenuItem("Similar Lists");
-            similar.setActionCommand("similar");
-            similar.addActionListener(this);
-            add(similar);
-
-            JMenuItem length = new JMenuItem("Show Probe Length Histogram");
-            length.setActionCommand("length");
+            JMenuItem length = new JMenuItem("Show Probe Distribution");
+            length.setActionCommand("distribution");
             length.addActionListener(this);
             add(length);
 
@@ -436,7 +404,11 @@ public class DataViewer extends JPanel implements MouseListener, TreeSelectionLi
          * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
          */
         public void actionPerformed(ActionEvent ae) {
-            if (ae.getActionCommand().equals("rename")) {
+            if (ae.getActionCommand().equals("view")) {
+                new ProbeListViewer(p, application);
+            } else if (ae.getActionCommand().equals("distribution")) {
+                new EditingSitesDistributionHistogram(collection.getActiveDataStore());
+            } else if (ae.getActionCommand().equals("rename")) {
                 String name = getNewName(p.name());
                 if (name != null) {
                     p.setName(name);
@@ -445,14 +417,6 @@ public class DataViewer extends JPanel implements MouseListener, TreeSelectionLi
                 new ProbeListCommentEditDialog(p, this);
             } else if (ae.getActionCommand().equals("delete")) {
                 p.delete();
-            } else if (ae.getActionCommand().equals("report")) {
-//				new ProbeListReportCreator(p);
-            } else if (ae.getActionCommand().equals("length")) {
-                new ProbeLengthHistogramPlot(p);
-            } else if (ae.getActionCommand().equals("view")) {
-//				new ProbeListViewer(p, application);
-            } else if (ae.getActionCommand().equals("similar")) {
-//				new SimilarProbeListsDialog(application.dataCollection());
             } else {
                 System.err.println("Unknown menu option '" + ae.getActionCommand() + "'");
             }
@@ -476,6 +440,16 @@ public class DataViewer extends JPanel implements MouseListener, TreeSelectionLi
         public AnnotationPopupMenu(AnnotationSet annotation) {
             this.annotationSet = annotation;
 
+            JCheckBoxMenuItem displayTrack = new JCheckBoxMenuItem("Show Track in Chromosome View");
+            displayTrack.setActionCommand("display_track");
+            displayTrack.addActionListener(this);
+            if (application.chromosomeViewer().getFeatureTrack().isVisible()) {
+                displayTrack.setState(true);
+            } else {
+                displayTrack.setState(false);
+            }
+            add(displayTrack);
+
             JMenuItem properties = new JMenuItem("Properties");
             properties.setActionCommand("properties");
             properties.addActionListener(this);
@@ -485,21 +459,6 @@ public class DataViewer extends JPanel implements MouseListener, TreeSelectionLi
             rename.setActionCommand("rename");
             rename.addActionListener(this);
             add(rename);
-
-            JMenu renameFeature = new JMenu("Rename Feature");
-
-            if (annotation instanceof CoreAnnotationSet) {
-                rename.setEnabled(false);
-                renameFeature.setEnabled(false);
-            } else {
-                JMenuItem renameFeatureItem = new JMenuItem(annotation.name());
-                renameFeatureItem
-                        .setActionCommand("rename_feature_" + annotation.name());
-                renameFeatureItem.addActionListener(this);
-                renameFeature.add(renameFeatureItem);
-            }
-
-            add(renameFeature);
 
             JMenuItem delete = new JMenuItem("Delete");
             delete.setActionCommand("delete");
@@ -514,7 +473,13 @@ public class DataViewer extends JPanel implements MouseListener, TreeSelectionLi
          * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
          */
         public void actionPerformed(ActionEvent ae) {
-            if (ae.getActionCommand().equals("rename")) {
+            if (ae.getActionCommand().equals("display_track")) {
+                if (((JCheckBoxMenuItem) ae.getSource()).getState()) {
+                    application.chromosomeViewer().getFeatureTrack().setVisible(true);
+                } else {
+                    application.chromosomeViewer().getFeatureTrack().setVisible(false);
+                }
+            } else if (ae.getActionCommand().equals("rename")) {
                 String name = getNewName(annotationSet.name());
                 if (name != null) {
                     annotationSet.setName(name);
@@ -523,13 +488,6 @@ public class DataViewer extends JPanel implements MouseListener, TreeSelectionLi
                 annotationSet.delete();
             } else if (ae.getActionCommand().equals("properties")) {
                 new AnnotationSetPropertiesDialog(annotationSet);
-            } else if (ae.getActionCommand().startsWith("rename_feature_")) {
-                String featureName = ae.getActionCommand().replaceFirst("rename_feature_", "");
-
-                String newName = getNewName(featureName);
-                if (newName != null) {
-//					annotationSet.renameFeatures(featureName, newName);
-                }
             } else {
                 System.err.println("Unknown menu option '" + ae.getActionCommand() + "'");
             }

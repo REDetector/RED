@@ -16,7 +16,9 @@ public class MenuUtils {
     public static final String FASTA = "Fasta...";
     public static final String ANNOTATION = "Annotation...";
     public static final String LOAD_GENOME = "Load Genome...";
-    public static final String EXPORT_IMAGE = "Export Image...";
+    public static final String EXPORT_IMAGE = "Export Image";
+    public static final String GENOME_VIEW = "Genome View...";
+    public static final String CHROMOSOME_VIEW = "Chromosome View...";
     public static final String EXIT = "Exit";
 
     /*Edit menu*/
@@ -67,5 +69,8 @@ public class MenuUtils {
     public static final String CHECK_FOR_UPDATES = "Check for Updates...";
     public static final String ABOUT_RED = "About RED...";
 
+    public static final String SHOW_READS_ONLY = "Show Reads only";
+    public static final String SHOW_PROBES_ONLY = "Show Probes only";
+    public static final String SHOW_READS_AND_PROBES = "Show Reads and Probes";
 
 }

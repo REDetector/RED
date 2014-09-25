@@ -54,14 +54,14 @@ public class REDTitlePanel extends JPanel {
         JLabel program = new SmoothJLabel("RED---RNA Editing Detection",
                 JLabel.CENTER);
         program.setFont(new Font("Dialog", Font.BOLD, 18));
-        program.setForeground(ColourScheme.SOFTWARE);
+        program.setForeground(ColourScheme.PROGRAM_NAME);
         jPanel.add(program, gridBagConstraints);
 
         gridBagConstraints.gridy++;
         JLabel version = new SmoothJLabel("Version: " + REDApplication.VERSION,
                 JLabel.CENTER);
         version.setFont(new Font("Dialog", Font.BOLD, 15));
-        version.setForeground(ColourScheme.VERSION);
+        version.setForeground(ColourScheme.PROGRAM_VERSION);
         jPanel.add(version, gridBagConstraints);
 
         gridBagConstraints.gridy++;
