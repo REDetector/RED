@@ -74,7 +74,7 @@ public class ChromosomeSequenceTrack extends JPanel {
         }
         displayWidth = getWidth();
         displayHeight = getHeight();
-        g.setColor(ColourScheme.FEATURE_BACKGROUND_ODD);
+        g.setColor(ColourScheme.REFERENCE_TRACK_BACKGROUND);
         g.fillRect(0, 0, displayWidth, displayHeight);
 
         if (viewer.makingSelection()) {
@@ -110,7 +110,7 @@ public class ChromosomeSequenceTrack extends JPanel {
         g.fillRect(0, 1, nameWidth + 3, nameHeight + 3);
 
         // Lastly draw the name of the track
-        g.setColor(Color.GRAY);
+        g.setColor(ColourScheme.TRACK_NAME);
         g.drawString(sequenceName, 2, nameHeight + 2);
 
     }

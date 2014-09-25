@@ -12,7 +12,7 @@ import com.xl.interfaces.DataChangeListener;
 import com.xl.preferences.DisplayPreferences;
 import com.xl.utils.AsciiUtils;
 import com.xl.utils.ColourScheme;
-import com.xl.utils.Strand;
+import com.xl.utils.FontManager;
 
 import javax.swing.*;
 import java.awt.*;
@@ -88,6 +88,9 @@ public class ChromosomeDataTrack extends JPanel implements DataChangeListener {
 
     private int maxCoverage = 0;
 
+    private boolean drawProbes = true;
+    private boolean drawReads = true;
+
     /**
      * Instantiates a new chromosome data track.
      *
@@ -149,6 +152,16 @@ public class ChromosomeDataTrack extends JPanel implements DataChangeListener {
     public void paint(Graphics g) {
         super.paint(g);
 
+        int displayMode = DisplayPreferences.getInstance().getDisplayMode();
+        drawProbes = true;
+        drawReads = true;
+        if (displayMode == DisplayPreferences.DISPLAY_MODE_PROBES_ONLY) {
+            drawReads = false;
+        }
+        if (displayMode == DisplayPreferences.DISPLAY_MODE_READS_ONLY) {
+            drawProbes = false;
+        }
+
         drawnReads.removeAllElements();
         displayHeight = getHeight();
         displayWidth = getWidth();
@@ -158,7 +171,6 @@ public class ChromosomeDataTrack extends JPanel implements DataChangeListener {
         if (reads != null && reads.length != 0) {
             readPixel = bpToPixel(reads[0].length() + viewerCurrentStart);
         } else {
-//            System.err.println(this.getClass().getName() + ": Can't get the reads of this chromosome.");
             return;
         }
         if (readPixel == 0) {
@@ -185,25 +197,23 @@ public class ChromosomeDataTrack extends JPanel implements DataChangeListener {
             g.fillRect(useStart, 0, selWidth, displayHeight);
         }
 
-        for (int i = 0, readsLength = reads.length; i < readsLength; i++) {
-            if (reads[i].getEnd() > viewerCurrentStart && reads[i].getStart() < viewerCurrentEnd) {
-                drawRead(g, reads[i], bpToPixel(reads[i].getStart()), readsYIndex[i] * readHeight);
+        if (drawReads) {
+            for (int i = 0, readsLength = reads.length; i < readsLength; i++) {
+                if (reads[i].getEnd() > viewerCurrentStart && reads[i].getStart() < viewerCurrentEnd) {
+                    drawRead(g, reads[i], bpToPixel(reads[i].getStart()), readsYIndex[i] * readHeight);
+                }
+            }     //        Always draw the active read last
+            if (activeRead != null) {
+                drawRead(g, activeRead, bpToPixel(activeRead.getStart()), activeReadIndex);
             }
         }
-        for (Probe probe : probes) {
-            if (probe.getStart() > viewerCurrentStart && probe.getStart() < viewerCurrentEnd) {
-                drawProbe(g, probe);
+        if (drawProbes) {
+            for (Probe probe : probes) {
+                if (probe.getStart() > viewerCurrentStart && probe.getStart() < viewerCurrentEnd) {
+                    drawProbe(g, probe);
+                }
             }
         }
-
-//        Always draw the active read last
-        if (activeRead != null) {
-            drawRead(g, activeRead, bpToPixel(activeRead.getStart()), activeReadIndex);
-        }
-
-//        if(activeProbe!=null){
-//
-//        }
 
         // Draw a line across the bottom of the display
         g.setColor(Color.LIGHT_GRAY);
@@ -237,7 +247,7 @@ public class ChromosomeDataTrack extends JPanel implements DataChangeListener {
         g.fillRect(0, 1, nameWidth + 3, nameHeight + 3);
 
         // Finally draw the name of the data track
-        g.setColor(Color.GRAY);
+        g.setColor(ColourScheme.TRACK_NAME);
         g.drawString(name, 2, nameHeight + 2);
     }
 
@@ -253,7 +263,7 @@ public class ChromosomeDataTrack extends JPanel implements DataChangeListener {
             byte[] readBases = r.getReadBases();
             char[] cChar = AsciiUtils.getChars(readBases);
             basePixel = (float) (readPixel) / (readBases.length);
-            g.setFont(new Font("Times New Roman", Font.PLAIN, readHeight));
+            g.setFont(FontManager.defaultFont);
             for (int i = 0; i < cChar.length; i++) {
                 char c = cChar[i];
                 g.setColor(ColourScheme.getBaseColor(c));
@@ -272,18 +282,10 @@ public class ChromosomeDataTrack extends JPanel implements DataChangeListener {
     }
 
     private Color getSequenceColor(SequenceRead read, int pixelYStart) {
-        if (read == activeRead && pixelYStart == activeReadIndex) {
-            return ColourScheme.ACTIVE_FEATURE;
-        } else if (read == activeRead) {
-            return ColourScheme.ACTIVE_FEATURE_MATCH;
+        if (read == activeRead) {
+            return ColourScheme.ACTIVE_READ;
         } else {
-            if (read.getStrand() == Strand.POSITIVE) {
-                return ColourScheme.FORWARD_FEATURE;
-            } else if (read.getStrand() == Strand.NEGATIVE) {
-                return ColourScheme.REVERSE_FEATURE;
-            } else {
-                return ColourScheme.UNKNOWN_FEATURE;
-            }
+            return ColourScheme.DATA_TRACK;
         }
     }
 
@@ -387,7 +389,7 @@ public class ChromosomeDataTrack extends JPanel implements DataChangeListener {
             long lastTime = System.currentTimeMillis();
             while (timing) {
                 if (System.currentTimeMillis() - lastTime > 1000) {
-                    setToolTipText("Double left click to zoom in and double right click to zoom out.");
+                    setToolTipText("Single left click to zoom in and single right click to zoom out.");
                     timing = false;
                 }
             }

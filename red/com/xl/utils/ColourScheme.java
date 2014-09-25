@@ -31,82 +31,94 @@ public class ColourScheme {
     /**
      * The software name in title panel
      */
-    public static final Color SOFTWARE = new Color(220, 0, 0);
+    public static final Color PROGRAM_NAME = new Color(220, 0, 0);
 
     /**
      * The software name in title panel
      */
-    public static final Color VERSION = new Color(0, 0, 220);
+    public static final Color PROGRAM_VERSION = new Color(0, 0, 220);
 
     /**
      * Any feature or read on the top strand
      */
-    public static final Color FORWARD_FEATURE = new Color(198, 43, 158);
+    public static final Color FEATURE_TRACK = Color.BLUE;
+
     /**
-     * The border around a selected chromosome in the genome view
+     * The track name on chromosome view.
      */
-    public static final Color GENOME_SELECTED_CHROMOSOME = FORWARD_FEATURE;
+    public static final Color TRACK_NAME = Color.GRAY;
+
     /**
-     * The list colour for datasets
+     * The background to odd numbered feature tracks
      */
-    public static final Color DATASET_LIST = FORWARD_FEATURE;
-    /**
-     * Any feature or read on the bottom strand
-     */
-    public static final Color REVERSE_FEATURE = new Color(19, 91, 28);
-    /**
-     * The list colour for data groups
-     */
-    public static final Color DATAGROUP_LIST = REVERSE_FEATURE;
-    /**
-     * Any feature or read without an assigned strand
-     */
-    public static final Color UNKNOWN_FEATURE = Color.GRAY;
+    public static final Color FEATURE_TRACK_BACKGROUND = new Color(220, 220, 255);
+
     /**
      * An active feature or read
      */
     public static final Color ACTIVE_FEATURE = Color.YELLOW;
+
+    /**
+     * The background to even numbered feature tracks
+     */
+    public static final Color REFERENCE_TRACK_BACKGROUND = new Color(180, 180, 255);
+
+    /**
+     * The border around a selected chromosome in the genome view
+     */
+    public static final Color GENOME_SELECTED_CHROMOSOME = new Color(220, 0, 0);
+    /**
+     * The list colour for datasets
+     */
+    public static final Color DATASET_LIST = new Color(220, 0, 0);
+    /**
+     * The list colour for data groups
+     */
+    public static final Color DATAGROUP_LIST = new Color(0, 0, 220);
+
     /**
      * The standard color of base 'A' defined by ucsc.
      */
     public static final Color BASE_A = Color.GREEN;
+
     /**
      * The standard color of base 'G' defined by ucsc.
      */
     public static final Color BASE_G = Color.BLACK;
+
     /**
      * The standard color of base 'T' defined by ucsc.
      */
     public static final Color BASE_T = Color.RED;
+
     /**
      * The standard color of base 'C' defined by ucsc.
      */
     public static final Color BASE_C = Color.BLUE;
-    public static final Color BASE_UNKNOWN = Color.DARK_GRAY;
-    /**
-     * A feature at the same position as the active feature
-     */
-    public static final Color ACTIVE_FEATURE_MATCH = new Color(0, 180, 0);
-    /**
-     * The background to odd numbered feature tracks
-     */
-    public static final Color FEATURE_BACKGROUND_ODD = new Color(220, 220, 255);
-    /**
-     * The background to even numbered feature tracks
-     */
-    public static final Color FEATURE_BACKGROUND_EVEN = new Color(180, 180, 255);
-    /**
-     * The background colour for a selection in progress
-     */
-    public static final Color DRAGGED_SELECTION = new Color(100, 255, 100);
+
     /**
      * The background to odd numbered data tracks
      */
     public static final Color DATA_BACKGROUND_ODD = new Color(230, 230, 230);
+
     /**
      * The background to even numbered data tracks
      */
     public static final Color DATA_BACKGROUND_EVEN = new Color(255, 255, 255);
+
+    /**
+     * Shown with block status when the chromosome viewer length is larger than screen pixel.
+     */
+    public static final Color DATA_TRACK = Color.GRAY;
+
+
+    public static final Color ACTIVE_READ = ACTIVE_FEATURE;
+
+    /**
+     * The background colour for a selection in progress
+     */
+    public static final Color DRAGGED_SELECTION = new Color(100, 255, 100);
+
     /**
      * The fill colour for histogram bars
      */
@@ -114,7 +126,7 @@ public class ColourScheme {
     /**
      * The fill colour for histogram bars
      */
-    public static final Color HIGHLIGHTED_HISTOGRAM_BAR = Color.RED;
+    public static final Color HIGHLIGHTED_HISTOGRAM_BAR = Color.YELLOW;
     /**
      * The Chromosome colour in the genome view
      */
@@ -126,15 +138,15 @@ public class ColourScheme {
 
     public static Color getBaseColor(char c) {
         if (c == 'a' || c == 'A') {
-            return ColourScheme.BASE_A;
+            return BASE_A;
         } else if (c == 'g' || c == 'G') {
-            return ColourScheme.BASE_G;
+            return BASE_G;
         } else if (c == 't' || c == 'T') {
-            return ColourScheme.BASE_T;
+            return BASE_T;
         } else if (c == 'c' || c == 'C') {
-            return ColourScheme.BASE_C;
+            return BASE_C;
         } else {
-            return ColourScheme.BASE_UNKNOWN;
+            return DATA_TRACK;
         }
     }
 

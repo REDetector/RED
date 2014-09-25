@@ -6,7 +6,6 @@ import com.xl.display.featureviewer.FeatureViewer;
 import com.xl.preferences.DisplayPreferences;
 import com.xl.utils.ColourScheme;
 import com.xl.utils.PositionFormat;
-import com.xl.utils.Strand;
 
 import javax.swing.*;
 import java.awt.*;
@@ -116,7 +115,7 @@ public class ChromosomeFeatureTrack extends JPanel {
         txYPosition = displayHeight / 2 - 1;
         cdsYPosition = displayHeight / 2 - exonHeight / 4;
         exonYPosition = displayHeight / 2 - exonHeight / 2;
-        g.setColor(ColourScheme.FEATURE_BACKGROUND_EVEN);
+        g.setColor(ColourScheme.FEATURE_TRACK_BACKGROUND);
         g.fillRect(0, 0, displayWidth, displayHeight);
 
         if (viewer.makingSelection()) {
@@ -157,7 +156,7 @@ public class ChromosomeFeatureTrack extends JPanel {
         g.fillRect(0, 1, nameWidth + 3, nameHeight + 3);
 
         // Lastly draw the name of the track
-        g.setColor(Color.GRAY);
+        g.setColor(ColourScheme.TRACK_NAME);
         g.drawString(featureName, 2, nameHeight + 2);
 
     }
@@ -174,14 +173,19 @@ public class ChromosomeFeatureTrack extends JPanel {
     }
 
     private Color getFeatureColor(Feature feature) {
-        if (feature.getStrand() == Strand.POSITIVE) {
-            return ColourScheme.FORWARD_FEATURE;
-        } else if (feature.getStrand() == Strand.NEGATIVE) {
-            return ColourScheme.REVERSE_FEATURE;
-        } else if (feature == activeFeature) {
-            return ColourScheme.ACTIVE_FEATURE;
+//        if (feature.getStrand() == Strand.POSITIVE) {
+//            return ColourScheme.FORWARD_FEATURE;
+//        } else if (feature.getStrand() == Strand.NEGATIVE) {
+//            return ColourScheme.REVERSE_FEATURE;
+//        } else if (feature == activeFeature) {
+//            return ColourScheme.ACTIVE_FEATURE;
+//        } else {
+//            return ColourScheme.UNKNOWN_FEATURE;
+//        }
+        if (feature != activeFeature) {
+            return ColourScheme.FEATURE_TRACK;
         } else {
-            return ColourScheme.UNKNOWN_FEATURE;
+            return ColourScheme.ACTIVE_FEATURE;
         }
 
     }
