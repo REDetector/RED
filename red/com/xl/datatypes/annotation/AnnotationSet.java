@@ -70,7 +70,7 @@ public class AnnotationSet {
      * @return An enumeration of all chromosome names which have data in this
      * set.
      */
-    public Enumeration<String> getChromosomeNames() {
+    public Set<String> getChromosomeNames() {
         return featureSet.getChromosomeNames();
     }
 
@@ -118,15 +118,16 @@ public class AnnotationSet {
 
         Vector<Feature> allFeatures = new Vector<Feature>();
 
-        Enumeration<String> chrs = featureSet.getChromosomeNames();
-        while (chrs.hasMoreElements()) {
-            String c = chrs.nextElement();
+        Set<String> chrs = featureSet.getChromosomeNames();
+        for (String chrName : chrs) {
             Feature[] features = featureSet
-                    .getFeatureTypeCollection(c).getFeatures();
+                    .getFeatureTypeCollection(chrName).getFeatures();
             for (Feature f : features) {
                 allFeatures.add(f);
             }
         }
+
+
         return allFeatures.toArray(new Feature[0]);
     }
 
@@ -216,7 +217,7 @@ public class AnnotationSet {
      */
     protected class FeatureSet {
 
-        private Hashtable<String, FeatureTypeCollection> chrFeatures = new Hashtable<String, FeatureTypeCollection>();
+        private Map<String, FeatureTypeCollection> chrFeatures = new HashMap<String, FeatureTypeCollection>();
 
         /**
          * Adds a feature.
@@ -238,13 +239,13 @@ public class AnnotationSet {
          *
          * @return An enumeration of all chromosome names for which we hold data
          */
-        public Enumeration<String> getChromosomeNames() {
-            return chrFeatures.keys();
+        public Set<String> getChromosomeNames() {
+            return chrFeatures.keySet();
         }
 
 
         public boolean deleteFeature(String chr, Feature feature) {
-            if (chrFeatures.contains(chr)) {
+            if (chrFeatures.containsKey(chr)) {
                 return chrFeatures.get(chr).deleteFeature(feature);
             } else {
                 return false;
@@ -273,11 +274,10 @@ public class AnnotationSet {
          * @return A list of features
          */
         public Feature getFeaturesForName(String name) {
-            Enumeration<String> e = chrFeatures.keys();
+            Set<String> sets = chrFeatures.keySet();
             Feature feature;
-            while (e.hasMoreElements()) {
-                feature = chrFeatures.get(e.nextElement()).getFeatureForName(
-                        name);
+            for (String keySet : sets) {
+                feature = chrFeatures.get(keySet).getFeatureForName(name);
                 if (feature != null) {
                     return feature;
                 }
@@ -286,16 +286,15 @@ public class AnnotationSet {
         }
 
         public Feature getFeaturesForLocation(int location) {
-            Enumeration<String> e = chrFeatures.keys();
-            Feature feature = null;
-            while (e.hasMoreElements()) {
-                feature = chrFeatures.get(e.nextElement())
-                        .getFeatureForLocation(location);
+            Set<String> sets = chrFeatures.keySet();
+            Feature feature;
+            for (String keySet : sets) {
+                feature = chrFeatures.get(keySet).getFeatureForLocation(location);
                 if (feature != null) {
                     return feature;
                 }
             }
-            return feature;
+            return null;
         }
 
         protected FeatureTypeCollection getFeatureTypeCollection(String chr) {

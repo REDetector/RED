@@ -3,15 +3,14 @@ package com.xl.dialog;
 import com.xl.datatypes.annotation.AnnotationSet;
 import com.xl.display.featureviewer.Feature;
 import com.xl.main.REDApplication;
+import com.xl.utils.ChromosomeNameComparator;
 
 import javax.swing.*;
 import javax.swing.table.AbstractTableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.List;
+import java.util.TreeSet;
 
 /**
  * Displays a dialog showing the different types of feature contained
@@ -26,9 +25,9 @@ public class AnnotationSetPropertiesDialog extends JDialog implements Runnable {
 
     private AnnotationSetTableModel model = null;
 
-    private List<Integer> counts = null;
+    private int[] counts = null;
 
-    private Enumeration<String> chrs = null;
+    private String[] chrNames = null;
 
     /**
      * Instantiates a new annotation set properties dialog.
@@ -38,7 +37,10 @@ public class AnnotationSetPropertiesDialog extends JDialog implements Runnable {
     public AnnotationSetPropertiesDialog(AnnotationSet set) {
         super(REDApplication.getInstance(), set.name());
         this.set = set;
-
+        TreeSet<String> treeSet = new TreeSet<String>(ChromosomeNameComparator.getInstance());
+        treeSet.addAll(set.getChromosomeNames());
+        chrNames = treeSet.toArray(new String[0]);
+        counts = new int[chrNames.length];
         model = new AnnotationSetTableModel();
         JTable table = new JTable(model);
         getContentPane().setLayout(new BorderLayout());
@@ -69,15 +71,11 @@ public class AnnotationSetPropertiesDialog extends JDialog implements Runnable {
      * @see java.lang.Runnable#run()
      */
     public void run() {
-        int i = 0;
-        chrs = set.getChromosomeNames();
-        counts = new ArrayList<Integer>();
-        while (chrs.hasMoreElements()) {
-            Feature[] feature = set.getFeaturesForChr(chrs.nextElement());
-            counts.add(feature.length);
-            model.fireTableCellUpdated(i++, 1);
+        for (int i = 0, len = chrNames.length; i < len; i++) {
+            Feature[] feature = set.getFeaturesForChr(chrNames[i]);
+            counts[i] = feature.length;
+            model.fireTableCellUpdated(i, 1);
         }
-
     }
 
     /**
@@ -96,11 +94,7 @@ public class AnnotationSetPropertiesDialog extends JDialog implements Runnable {
          * @see javax.swing.table.TableModel#getRowCount()
          */
         public int getRowCount() {
-            if (counts != null)
-                return counts.size();
-            else {
-                return 0;
-            }
+            return counts.length;
         }
 
         /* (non-Javadoc)
@@ -119,24 +113,14 @@ public class AnnotationSetPropertiesDialog extends JDialog implements Runnable {
          * @see javax.swing.table.TableModel#getValueAt(int, int)
          */
         public Object getValueAt(int rowIndex, int columnIndex) {
+//            System.out.println("rowIndex:"+rowIndex+"\tcolumnIndex:"+columnIndex);
             if (columnIndex == 0) {
-                int index = 0;
-                chrs = set.getChromosomeNames();
-                while (chrs.hasMoreElements()) {
-                    String chr = chrs.nextElement();
-                    if (index == rowIndex) {
-                        return chr;
-                    } else {
-                        index++;
-                    }
-                }
-                System.out.println(this.getClass().getName() + ":" + index);
-                return null;
+                return chrNames[rowIndex];
             } else if (columnIndex == 1) {
-                if (counts == null) {
+                if (counts[rowIndex] == 0) {
                     return "Counting...";
                 } else {
-                    return counts.get(rowIndex);
+                    return counts[rowIndex];
                 }
             }
             return null;
