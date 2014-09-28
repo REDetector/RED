@@ -173,7 +173,8 @@ public class ChromosomeViewer extends JPanel implements DataChangeListener,
             ChromosomeDataTrack cdt = e2.nextElement();
             JScrollPane scroll = new JScrollPane(cdt);
 //            scroll.setPreferredSize(new Dimension(400, 200));
-            scroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+            scroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
+            scroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
             scroll.getVerticalScrollBar().setUnitIncrement(20);
 //            scroll.revalidate();
 //            scroll.repaint();

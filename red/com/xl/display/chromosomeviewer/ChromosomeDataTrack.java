@@ -199,7 +199,7 @@ public class ChromosomeDataTrack extends JPanel implements DataChangeListener {
 
         if (drawReads) {
             for (int i = 0, readsLength = reads.length; i < readsLength; i++) {
-                if (reads[i].getEnd() > viewerCurrentStart && reads[i].getStart() < viewerCurrentEnd) {
+                if (reads[i].getEnd() >= viewerCurrentStart && reads[i].getStart() <= viewerCurrentEnd) {
                     drawRead(g, reads[i], bpToPixel(reads[i].getStart()), readsYIndex[i] * readHeight);
                 }
             }     //        Always draw the active read last
