@@ -11,7 +11,6 @@ import com.xl.preferences.REDPreferences;
 
 import javax.swing.*;
 import java.util.ArrayList;
-import java.util.Iterator;
 
 /**
  * A class representing a generic filter from which all
@@ -146,10 +145,8 @@ public abstract class ProbeFilter implements Runnable, Cancellable {
      * @param total   The progress value at completion
      */
     protected void progressUpdated(String message, int current, int total) {
-
-        Iterator<ProgressListener> i = listeners.iterator();
-        while (i.hasNext()) {
-            i.next().progressUpdated(message, current, total);
+        for (ProgressListener listener : listeners) {
+            listener.progressUpdated(message, current, total);
         }
     }
 
@@ -158,9 +155,8 @@ public abstract class ProbeFilter implements Runnable, Cancellable {
      * Passes on Options changed message to all listeners
      */
     protected void optionsChanged() {
-        Iterator<OptionsListener> i = optionsListeners.iterator();
-        while (i.hasNext()) {
-            i.next().optionsChanged();
+        for (OptionsListener optionsListener : optionsListeners) {
+            optionsListener.optionsChanged();
         }
     }
 
@@ -168,9 +164,8 @@ public abstract class ProbeFilter implements Runnable, Cancellable {
      * Passes on Progress cancelled message to all listeners
      */
     protected void progressCancelled() {
-        Iterator<ProgressListener> i = listeners.iterator();
-        while (i.hasNext()) {
-            i.next().progressCancelled();
+        for (ProgressListener listener : listeners) {
+            listener.progressCancelled();
         }
     }
 
@@ -180,9 +175,8 @@ public abstract class ProbeFilter implements Runnable, Cancellable {
      * @param e The exception
      */
     protected void progressExceptionReceived(Exception e) {
-        Iterator<ProgressListener> i = listeners.iterator();
-        while (i.hasNext()) {
-            i.next().progressExceptionReceived(e);
+        for (ProgressListener listener : listeners) {
+            listener.progressExceptionReceived(e);
         }
     }
 
@@ -194,9 +188,8 @@ public abstract class ProbeFilter implements Runnable, Cancellable {
     protected void filterFinished(ProbeList newList) {
         newList.setName(listName());
         newList.setDescription(listDescription());
-        Iterator<ProgressListener> i = listeners.iterator();
-        while (i.hasNext()) {
-            i.next().progressComplete("new_probe_list", newList);
+        for (ProgressListener listener : listeners) {
+            listener.progressComplete("new_probe_list", newList);
         }
     }
 

@@ -1,9 +1,5 @@
 package com.xl.display.report;
 
-/**
- * Created by Administrator on 2014/9/23.
- */
-
 import com.xl.datatypes.DataStore;
 import com.xl.datatypes.genome.Chromosome;
 import com.xl.datatypes.sequence.SequenceRead;
@@ -37,7 +33,7 @@ public class EditingSitesDistributionHistogram extends JDialog implements Action
      * @param d the data
      */
     public EditingSitesDistributionHistogram(DataStore d) {
-        super(REDApplication.getInstance(), "Read Length Plot [" + d.name() + "]");
+        super(REDApplication.getInstance(), "Editing Sites Distribution [" + d.name() + "]");
         setSize(800, 600);
         setLocationRelativeTo(REDApplication.getInstance());
         setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);

@@ -10,9 +10,7 @@ import com.xl.datatypes.probes.ProbeList;
 import com.xl.datatypes.probes.ProbeSet;
 import com.xl.dialog.CrashReporter;
 import com.xl.exception.REDException;
-import com.xl.gradients.ColourIndexSet;
 import com.xl.interfaces.DataChangeListener;
-import com.xl.main.REDApplication;
 import com.xl.preferences.DisplayPreferences;
 import com.xl.utils.ColourScheme;
 
@@ -135,27 +133,9 @@ public class ChromosomeDisplay extends JPanel implements DataChangeListener {
                         boxWidth, getHeight(), 2, 2);
             }
 
-            // Draw as many probes as we have space for
-
-            Color fixedColour = null;
-
-            if (DisplayPreferences.getInstance().getColourType() == DisplayPreferences.COLOUR_TYPE_INDEXED) {
-                DataStore[] drawnStores = REDApplication.getInstance().drawnDataStores();
-                for (int d = 0; d < drawnStores.length; d++) {
-                    if (drawnStores[d] == activeStore) {
-                        fixedColour = ColourIndexSet.getColour(d);
-                        break;
-                    }
-                }
-
-                if (fixedColour == null)
-                    fixedColour = Color.DARK_GRAY;
-            }
-
             // Now go through all the probes figuring out whether they need to be displayed
             for (Probe probe : probes) {
-                drawProbe(probe, g, width, maxLen, yOffset, xOffset,
-                        height, fixedColour);
+                drawProbe(probe, g, width, maxLen, yOffset, xOffset, height);
             }
 
             if (showView) {
@@ -167,17 +147,17 @@ public class ChromosomeDisplay extends JPanel implements DataChangeListener {
                     scaleX(width, chromosome.getLength(), maxLen), height, 2, 2);
 
             // Draw a box over the selected region if there is one
-            if (showView) {
-                g.setColor(Color.BLACK);
-
-                // Limit how small the box can get so we can always see it
-                int boxWidth = scaleX(width, viewEnd - viewStart, maxLen);
-                if (boxWidth < 4) {
-                    boxWidth = 4;
-                }
-                g.drawRoundRect(xOffset + scaleX(width, viewStart, maxLen), 0,
-                        boxWidth, getHeight(), 2, 2);
-            }
+//            if (showView) {
+//                g.setColor(Color.BLACK);
+//
+//                // Limit how small the box can get so we can always see it
+//                int boxWidth = scaleX(width, viewEnd - viewStart, maxLen);
+//                if (boxWidth < 4) {
+//                    boxWidth = 4;
+//                }
+//                g.drawRoundRect(xOffset + scaleX(width, viewStart, maxLen), 0,
+//                        boxWidth, getHeight(), 2, 2);
+//            }
         } else {
 
             // There's no quantitation to draw so fall back to the old methods
@@ -210,17 +190,11 @@ public class ChromosomeDisplay extends JPanel implements DataChangeListener {
     }
 
     private void drawProbe(Probe p, Graphics g, int chrWidth, int maxLength,
-                           int yOffset, int xOffset, int effectiveHeight, Color color) {
+                           int yOffset, int xOffset, int effectiveHeight) {
 
         int wholeXStart = xOffset + scaleX(chrWidth, p.getStart(), maxLength);
         int wholeXEnd = wholeXStart + 1;
-
-        if (color != null) {
-            g.setColor(color);
-        } else {
-            g.setColor(DisplayPreferences.getInstance().getGradient()
-                    .getColor(p.getStart(), 0, chrWidth));
-        }
+        g.setColor(ColourScheme.getBaseColor(p.getEditingBase()));
 
         int yBoxStart;
         int yBoxEnd;
