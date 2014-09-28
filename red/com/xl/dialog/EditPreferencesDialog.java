@@ -327,15 +327,15 @@ public class EditPreferencesDialog extends JDialog implements ActionListener {
 
         JPanel buttonPanel = new JPanel();
 
-        JButton okButton = new JButton("Save");
-        okButton.setActionCommand("save");
-        okButton.addActionListener(this);
-        buttonPanel.add(okButton);
-
         JButton cancelButton = new JButton("Cancel");
         cancelButton.setActionCommand("cancel");
         cancelButton.addActionListener(this);
         buttonPanel.add(cancelButton);
+
+        JButton okButton = new JButton("Save");
+        okButton.setActionCommand("save");
+        okButton.addActionListener(this);
+        buttonPanel.add(okButton);
 
         getContentPane().add(buttonPanel, BorderLayout.SOUTH);
 

@@ -74,15 +74,15 @@ public class ReportTableDialog extends JDialog implements MouseListener, ActionL
 
         JPanel buttonPanel = new JPanel();
 
-        JButton saveButton = new JButton("Save");
-        saveButton.setActionCommand("save");
-        saveButton.addActionListener(this);
-        buttonPanel.add(saveButton);
-
         JButton cancelButton = new JButton("Close");
         cancelButton.setActionCommand("close");
         cancelButton.addActionListener(this);
         buttonPanel.add(cancelButton);
+
+        JButton saveButton = new JButton("Save");
+        saveButton.setActionCommand("save");
+        saveButton.addActionListener(this);
+        buttonPanel.add(saveButton);
 
         getContentPane().add(buttonPanel, BorderLayout.SOUTH);
 
@@ -117,9 +117,9 @@ public class ReportTableDialog extends JDialog implements MouseListener, ActionL
                     chr = application.dataCollection().genome().getChromosome((String) model.getValueAt(r, i));
                 }
             } else if (model.getColumnName(i).equals("Start")) {
-                start = ((Integer) model.getValueAt(r, i)).intValue();
+                start = (Integer) model.getValueAt(r, i);
             } else if (model.getColumnName(i).equals("End")) {
-                end = ((Integer) model.getValueAt(r, i)).intValue();
+                end = (Integer) model.getValueAt(r, i);
             }
         }
 

@@ -2,6 +2,7 @@ package com.xl.dialog;
 
 import com.xl.main.REDApplication;
 import com.xl.preferences.REDPreferences;
+import com.xl.utils.FontManager;
 import net.xl.crashreport.HTMLDisplayDialog;
 
 import javax.swing.*;
@@ -96,28 +97,28 @@ public class CrashReporter extends JDialog implements ActionListener {
         gbc.gridy++;
 
         JLabel errorClass = new JLabel(e.getClass().getName(), JLabel.CENTER);
-        errorClass.setFont(new Font("default", Font.BOLD, 12));
+        errorClass.setFont(FontManager.reportFont);
         errorClass.setForeground(Color.RED);
         getContentPane().add(errorClass, gbc);
 
         gbc.gridy++;
         JLabel errorMessage = new JLabel(e.getLocalizedMessage(), JLabel.CENTER);
-        errorMessage.setFont(new Font("default", Font.BOLD, 12));
+        errorMessage.setFont(FontManager.reportFont);
         errorMessage.setForeground(Color.RED);
 
         getContentPane().add(errorMessage, gbc);
 
         JPanel buttonPanel = new JPanel();
-        JButton sendButton = new JButton("Report Error And Get Help");
-        sendButton.setActionCommand("send_report");
-        sendButton.addActionListener(this);
-        buttonPanel.add(sendButton);
 
         JButton closeButton = new JButton("Ignore");
         closeButton.setActionCommand("close");
         closeButton.addActionListener(this);
-
         buttonPanel.add(closeButton);
+
+        JButton sendButton = new JButton("Report Error");
+        sendButton.setActionCommand("send_report");
+        sendButton.addActionListener(this);
+        buttonPanel.add(sendButton);
 
         gbc.gridy++;
         gbc.gridwidth = 2;
@@ -256,16 +257,16 @@ public class CrashReporter extends JDialog implements ActionListener {
             getContentPane().add(rememberPanel, gbc);
 
             JPanel buttonPanel = new JPanel();
-            sendButton = new JButton("Send");
-            sendButton.setActionCommand("send_report");
-            sendButton.addActionListener(this);
-            buttonPanel.add(sendButton);
 
             cancelButton = new JButton("Cancel");
             cancelButton.setActionCommand("cancel");
             cancelButton.addActionListener(this);
-
             buttonPanel.add(cancelButton);
+
+            sendButton = new JButton("Send");
+            sendButton.setActionCommand("send_report");
+            sendButton.addActionListener(this);
+            buttonPanel.add(sendButton);
 
             gbc.gridy++;
             getContentPane().add(buttonPanel, gbc);
@@ -337,7 +338,9 @@ public class CrashReporter extends JDialog implements ActionListener {
                     int reply = JOptionPane
                             .showConfirmDialog(
                                     this,
-                                    "<html>This error doesn't appear to come from within RED but is a bug in the core Java classes.<br>You can still submit this report, but the RED authors may not be able to fix it!<br><br>Do you still want to send the report?</html>",
+                                    "<html>This error doesn't appear to come from within RED but is a bug in the core" +
+                                            " Java classes.<br>You can still submit this report, but the RED authors may " +
+                                            "not be able to fix it!<br><br>Do you still want to send the report?</html>",
                                     "Not our fault!",
                                     JOptionPane.YES_NO_OPTION,
                                     JOptionPane.WARNING_MESSAGE);
@@ -428,7 +431,7 @@ public class CrashReporter extends JDialog implements ActionListener {
                     JOptionPane
                             .showMessageDialog(
                                     cr,
-                                    "We found some information which might help solve the probelm you hit",
+                                    "We found some information which might help solve the problem you hit",
                                     "Help found",
                                     JOptionPane.INFORMATION_MESSAGE);
 

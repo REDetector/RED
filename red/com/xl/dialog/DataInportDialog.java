@@ -285,15 +285,16 @@ public class DataInportDialog extends JDialog implements ActionListener {
         getContentPane().add(tabs, BorderLayout.CENTER);
 
         JPanel buttonPanel = new JPanel();
-        JButton okButton = new JButton("Import");
-        okButton.setActionCommand("import");
-        okButton.addActionListener(this);
-        buttonPanel.add(okButton);
 
         JButton cancelButton = new JButton("Cancel");
         cancelButton.setActionCommand("cancel");
         cancelButton.addActionListener(this);
         buttonPanel.add(cancelButton);
+
+        JButton okButton = new JButton("Import");
+        okButton.setActionCommand("import");
+        okButton.addActionListener(this);
+        buttonPanel.add(okButton);
 
         getContentPane().add(buttonPanel, BorderLayout.SOUTH);
 

@@ -114,15 +114,18 @@ public class UserPasswordDialog extends JDialog implements ActionListener {
         add(infoPanel);
 
         JPanel confirmPanel = new JPanel();
+
+        JButton cancelButton = new JButton("Cancel");
+        cancelButton.setActionCommand("cancel");
+        cancelButton.addActionListener(this);
+        confirmPanel.add(cancelButton);
+
         JButton okButton = new JButton("Connect");
         okButton.setActionCommand("connect");
         okButton.addActionListener(this);
         confirmPanel.add(okButton);
         getRootPane().setDefaultButton(okButton);
-        JButton cancelButton = new JButton("Cancel");
-        cancelButton.setActionCommand("cancel");
-        cancelButton.addActionListener(this);
-        confirmPanel.add(cancelButton);
+
         add(confirmPanel);
         setVisible(true);
     }
@@ -144,22 +147,22 @@ public class UserPasswordDialog extends JDialog implements ActionListener {
                     for (int i = 0; i < 1000; i++) {
                         progressUpdated("Connecting to database...", i, 1000);
                     }
+
+                    if (application.dataCollection() == null) {
+                        JOptionPane.showMessageDialog(application, "<html>Connect Successfully. " +
+                                        "<br>You may start a new project before you input your data into database. " +
+                                        "<br>Click 'ok' to the next step.",
+                                "Connect Successfully",
+                                JOptionPane.INFORMATION_MESSAGE);
+                        application.startNewProject();
+                    }
                     if (!REDPreferences.getInstance().isDataLoadedToDatabase()) {
-                        if (application.dataCollection() == null) {
-                            JOptionPane.showMessageDialog(application, "<html>Connect Successfully. " +
-                                            "<br>You may start a new project before you input your data into database. " +
-                                            "<br>Click 'ok' to the next step.",
-                                    "Connect Successfully",
-                                    JOptionPane.INFORMATION_MESSAGE);
-                            application.startNewProject();
-                        } else {
-                            JOptionPane.showMessageDialog(application, "<html>Connect Successfully. " +
-                                            "<br>You may import your data into database before detecting editing " +
-                                            "sites. <br>Click 'ok' to the next step.",
-                                    "Connect Successfully",
-                                    JOptionPane.INFORMATION_MESSAGE);
-                            new DataInportDialog(application);
-                        }
+                        JOptionPane.showMessageDialog(application, "<html>Connect Successfully. " +
+                                        "<br>You may import your data into database before detecting editing " +
+                                        "sites. <br>Click 'ok' to the next step.",
+                                "Connect Successfully",
+                                JOptionPane.INFORMATION_MESSAGE);
+                        new DataInportDialog(application);
                         setVisible(false);
                     } else {
                         JOptionPane.showMessageDialog(application, "<html>Connect Successfully. " +
