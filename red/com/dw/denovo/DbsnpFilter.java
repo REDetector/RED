@@ -17,24 +17,12 @@ import java.util.Date;
 
 public class DbsnpFilter {
     private DatabaseManager databaseManager;
-    private String line = null;
 
     private int count = 0;
     SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
     public DbsnpFilter(DatabaseManager databaseManager) {
         this.databaseManager = databaseManager;
-    }
-
-    public boolean establishDbSNPResultTable(String dbSnpResultTable) {
-        System.out.println("establishDbSNPResultTable start" + " " + df.format(new Date()));
-
-        databaseManager.deleteTable(dbSnpResultTable);
-        databaseManager.createFilterTable(dbSnpResultTable);
-
-        System.out.println("establishDbSNPResultTable end" + " " + df.format(new Date()));
-        return true;
-
     }
 
     public boolean hasEstablishDbSNPTable(String dbSnpTable) {
@@ -54,14 +42,21 @@ public class DbsnpFilter {
         return number > 0;
     }
 
+    public boolean establishDbSNPResultTable(String dbSnpResultTable) {
+        databaseManager.deleteTable(dbSnpResultTable);
+        databaseManager.createFilterTable(dbSnpResultTable);
+        return true;
+    }
+
     public void loadDbSNPTable(String dbSNPTable, String dbSNPPath) {
         try {
-            System.out.println("loaddbsnp start" + " " + df.format(new Date()));
+            System.out.println("Start loading dbSNPTable" + " " + df.format(new Date()));
 
             if (!hasEstablishDbSNPTable(dbSNPTable)) {
                 FileInputStream inputStream = new FileInputStream(dbSNPPath);
                 BufferedReader rin = new BufferedReader(new InputStreamReader(
                         inputStream));
+                String line;
                 while ((line = rin.readLine()) != null) {
                     if (line.startsWith("#")) {
                         count++;
@@ -74,72 +69,29 @@ public class DbsnpFilter {
                         " fields terminated by '\t' lines terminated by '\n' IGNORE " + count + " LINES");
             }
 
-            System.out.println("loaddbsnp end" + " " + df.format(new Date()));
+            System.out.println("End loading dbSNPTable" + " " + df.format(new Date()));
 
         } catch (IOException e) {
             // TODO Auto-generated catch block
             System.err.println("Error load file from " + dbSNPPath + " to file stream");
             e.printStackTrace();
         } catch (SQLException e) {
-            System.err.println("Error execute sql clause in " + DbsnpFilter.class.getName() + ":loadComprehensiveTable()");
+            System.err.println("Error execute sql clause in " + DbsnpFilter.class.getName() + ":loadDbSNPTable()");
             e.printStackTrace();
         }
     }
 
     public void executeDbSNPFilter(String dbSnpTable, String dbSnpResultTable, String refTable) {
-        System.out.println("dbsnpf start" + " " + df.format(new Date()));
+        System.out.println("Start executing DbSNPFilter..." + df.format(new Date()));
         try {
-            databaseManager.executeSQL("insert into " + dbSnpResultTable
-                    + " select * from " + refTable
-                    + " where not exists (select chrom from " + dbSnpTable
-                    + " where (" + dbSnpTable + ".chrom=" + refTable + ".chrom and " + dbSnpTable + ".pos=" + refTable + ".pos))");
+            databaseManager.executeSQL("insert into " + dbSnpResultTable + " select * from " + refTable + " where " +
+                    "not exists (select chrom from " + dbSnpTable + " where (" + dbSnpTable + ".chrom=" + refTable +
+                    ".chrom and " + dbSnpTable + ".pos=" + refTable + ".pos))");
         } catch (SQLException e) {
             System.err.println("Error execute sql clause in" + DbsnpFilter.class.getName() + ":executeDbSNPFilter()");
             e.printStackTrace();
         }
-
-        System.out.println("dbsnpf end" + " " + df.format(new Date()));
+        System.out.println("End executing DbSNPFilter..." + df.format(new Date()));
     }
 
-    // public void snpF(){
-    // System.out.println("snpf start"+" "+df.format(new Date()));// new
-    // try {
-    //
-    // System.out.println("snpf end"+" "+df.format(new Date()));// new
-    // } catch (SQLException e) {
-    // // TODO Auto-generated catch block
-    // e.printStackTrace();
-    // }
-    //
-    // }
-    // public void post() throws SQLException {
-    // sql[0]="insert into snptemp select *from Comphrehensivetemp where not exists (select *FROM dbSnpVcf where (Comphrehensivetemp.chrom=dbSnpVcf.chrom and Comphrehensivetemp.pos=dbSnpVcf.pos))";
-    // db.result = db.stmt.executeUpdate(sql[0]);
-    // db.con.commit();
-    // while (rs.next()) {
-    // coordinate.add(rs.getString(1));
-    // coordinate.add(rs.getString(2));
-    // }
-    // for (int i = 0, len = coordinate.size(); i < len; i++) {
-    // switch (i % 2) {
-    // case 0:
-    // chr = coordinate.get(i);
-    // break;
-    // case 1:
-    // ps = coordinate.get(i);
-    // rs=databaseManager.query(referencedbSnp, "chrom", "(pos="+ ps+
-    // " and chrom='"+ chr + "')");
-    // if(!rs.next())
-    // {
-    // databaseManager.executeSQL("insert into "+dbSnpTable+"  select * from "+comphrehensiveTable+" where chrom='"+chr+"' and pos="+ps+"");
-    // count++;
-    // if(count%10000==0)
-    // databaseManager.commit();
-    // }
-    // break;
-    // }
-    // }
-    // databaseManager.commit();
-    // databaseManager.setAutoCommit(true);
-    // }
 }
