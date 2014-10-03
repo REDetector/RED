@@ -1,15 +1,16 @@
 package com.xl.thread;
 
-import com.dw.denovo.*;
-import com.dw.dnarna.DnaRnaFilter;
-import com.dw.dnarna.DnaRnaVcf;
-import com.dw.dnarna.LLRFilter;
+import com.dw.denovo.DbsnpFilter;
+import com.dw.denovo.PValueFilter;
+import com.dw.denovo.RepeatFilter;
+import com.dw.denovo.SpliceJunctionFilter;
 import com.dw.publicaffairs.DatabaseManager;
 import com.dw.publicaffairs.Query;
 import com.xl.datatypes.DataCollection;
 import com.xl.datatypes.probes.Probe;
 import com.xl.datatypes.probes.ProbeSet;
 import com.xl.interfaces.ProgressListener;
+import com.xl.parsers.dataparsers.VCFParser;
 import com.xl.preferences.LocationPreferences;
 import com.xl.preferences.REDPreferences;
 
@@ -42,15 +43,11 @@ public class ThreadNonDenovoInput implements Runnable {
         manager.useDatabase(DatabaseManager.NON_DENOVO_DATABASE_NAME);
 
         progressUpdated("Importing DNA vcf data...", 2, ALL_STEP);
-        DnaRnaVcf df = new DnaRnaVcf(manager);
-
-        df.establishDnaTable(DatabaseManager.DNA_VCF_RESULT_TABLE_NAME, locationPreferences.getDnaVcfFile());
-        df.loadDnaVcfTable(DatabaseManager.DNA_VCF_RESULT_TABLE_NAME, locationPreferences.getDnaVcfFile());
-
+        VCFParser vcfParser = new VCFParser();
+        vcfParser.parseVCFFile(DatabaseManager.DNA_VCF_RESULT_TABLE_NAME, locationPreferences.getDnaVcfFile());
 
         progressUpdated("Importing RNA vcf data...", 3, ALL_STEP);
-        df.establishRnaTable(DatabaseManager.RNA_VCF_RESULT_TABLE_NAME, locationPreferences.getRnaVcfFile());
-        df.loadRnaVcfTable(DatabaseManager.RNA_VCF_RESULT_TABLE_NAME, locationPreferences.getRnaVcfFile());
+        vcfParser.parseVCFFile(DatabaseManager.RNA_VCF_RESULT_TABLE_NAME, locationPreferences.getRnaVcfFile());
 
         Vector<Probe> probes = Query.queryAllEditingSites(DatabaseManager.RNA_VCF_RESULT_TABLE_NAME);
         Probe[] probeArray = probes.toArray(new Probe[0]);
@@ -58,65 +55,65 @@ public class ThreadNonDenovoInput implements Runnable {
                 DatabaseManager.RNA_VCF_RESULT_TABLE_NAME));
 
         progressUpdated("Filtering sites by quality and coverage...", 4, ALL_STEP);
-        BasicFilter bf = new BasicFilter(manager);
-        bf.establishSpecificTable(DatabaseManager.SPECIFIC_FILTER_RESULT_TABLE_NAME);
-        bf.executeSpecificFilter(DatabaseManager.SPECIFIC_FILTER_RESULT_TABLE_NAME, DatabaseManager.RNA_VCF_RESULT_TABLE_NAME);
-        bf.establishBasicTable(DatabaseManager.BASIC_FILTER_RESULT_TABLE_NAME);
+//        BasicFilter bf = new BasicFilter(manager);
+//        bf.establishSpecificTable(DatabaseManager.SPECIFIC_FILTER_RESULT_TABLE_NAME);
+//        bf.executeSpecificFilter(DatabaseManager.SPECIFIC_FILTER_RESULT_TABLE_NAME, DatabaseManager.RNA_VCF_RESULT_TABLE_NAME);
+//        bf.establishBasicTable(DatabaseManager.BASIC_FILTER_RESULT_TABLE_NAME);
         // The first parameter means quality and the second means depth
-        bf.executeBasicFilter(DatabaseManager.SPECIFIC_FILTER_RESULT_TABLE_NAME,
-                DatabaseManager.BASIC_FILTER_RESULT_TABLE_NAME, 20, 6);
-        DatabaseManager.getInstance().distinctTable(DatabaseManager.BASIC_FILTER_RESULT_TABLE_NAME);
+//        bf.executeBasicFilter(DatabaseManager.SPECIFIC_FILTER_RESULT_TABLE_NAME,
+//                DatabaseManager.BASIC_FILTER_RESULT_TABLE_NAME, 20, 6);
+//        DatabaseManager.getInstance().distinctTable(DatabaseManager.BASIC_FILTER_RESULT_TABLE_NAME);
 
         progressUpdated("Importing repeatmasker data...", 5, ALL_STEP);
         RepeatFilter rf = new RepeatFilter(manager);
         rf.loadRepeatTable(DatabaseManager.REPEAT_FILTER_TABLE_NAME, locationPreferences.getRepeatFile());
-        rf.establishRepeatResultTable(DatabaseManager.REPEAT_FILTER_RESULT_TABLE_NAME);
-        rf.establishAluResultTable(DatabaseManager.ALU_FILTER_RESULT_TABLE_NAME);
-        rf.mysqlRepeatFilter(DatabaseManager.REPEAT_FILTER_TABLE_NAME, DatabaseManager.REPEAT_FILTER_RESULT_TABLE_NAME,
-                DatabaseManager.ALU_FILTER_RESULT_TABLE_NAME,
-                DatabaseManager.BASIC_FILTER_RESULT_TABLE_NAME);
-        DatabaseManager.getInstance().distinctTable(DatabaseManager.REPEAT_FILTER_RESULT_TABLE_NAME);
+//        rf.establishRepeatResultTable(DatabaseManager.REPEAT_FILTER_RESULT_TABLE_NAME);
+//        rf.establishAluResultTable(DatabaseManager.ALU_FILTER_RESULT_TABLE_NAME);
+//        rf.executeRepeatFilter(DatabaseManager.REPEAT_FILTER_TABLE_NAME, DatabaseManager.REPEAT_FILTER_RESULT_TABLE_NAME,
+//                DatabaseManager.ALU_FILTER_RESULT_TABLE_NAME,
+//                DatabaseManager.BASIC_FILTER_RESULT_TABLE_NAME);
+//        DatabaseManager.getInstance().distinctTable(DatabaseManager.REPEAT_FILTER_RESULT_TABLE_NAME);
 
         progressUpdated("Importing RefSeq Genes data...", 6, ALL_STEP);
-        ComprehensiveFilter cf = new ComprehensiveFilter(manager);
-        cf.loadComprehensiveTable(DatabaseManager.COMPREHENSIVE_FILTER_TABLE_NAME, locationPreferences.getRefSeqFile());
-        cf.establishComprehensiveResultTable(DatabaseManager.COMPREHENSIVE_FILTER_RESULT_TABLE_NAME);
-        cf.executeComprehensiveFilter(DatabaseManager.COMPREHENSIVE_FILTER_TABLE_NAME,
-                DatabaseManager.COMPREHENSIVE_FILTER_RESULT_TABLE_NAME, DatabaseManager.REPEAT_FILTER_RESULT_TABLE_NAME
-                , 2);
-        DatabaseManager.getInstance().distinctTable(DatabaseManager.COMPREHENSIVE_FILTER_RESULT_TABLE_NAME);
+        SpliceJunctionFilter cf = new SpliceJunctionFilter(manager);
+        cf.loadSpliceJunctionTable(DatabaseManager.SPLICE_JUNCTION_FILTER_TABLE_NAME, locationPreferences.getRefSeqFile());
+//        cf.establishSpliceJunctionResultTable(DatabaseManager.SPLICE_JUNCTION_FILTER_RESULT_TABLE_NAME);
+//        cf.executeSpliceJunctionFilter(DatabaseManager.SPLICE_JUNCTION_FILTER_TABLE_NAME,
+//                DatabaseManager.SPLICE_JUNCTION_FILTER_RESULT_TABLE_NAME, DatabaseManager.REPEAT_FILTER_RESULT_TABLE_NAME
+//                , 2);
+//        DatabaseManager.getInstance().distinctTable(DatabaseManager.SPLICE_JUNCTION_FILTER_RESULT_TABLE_NAME);
 
         progressUpdated("Importing dbSNP data...", 7, ALL_STEP);
         DbsnpFilter sf = new DbsnpFilter(manager);
         sf.loadDbSNPTable(DatabaseManager.DBSNP_FILTER_TABLE_NAME, locationPreferences.getDbSNPFile());
-        sf.establishDbSNPResultTable(DatabaseManager.DBSNP_FILTER_RESULT_TABLE_NAME);
-        sf.executeDbSNPFilter(DatabaseManager.DBSNP_FILTER_TABLE_NAME,
-                DatabaseManager.DBSNP_FILTER_RESULT_TABLE_NAME, DatabaseManager.COMPREHENSIVE_FILTER_RESULT_TABLE_NAME);
-        DatabaseManager.getInstance().distinctTable(DatabaseManager.DBSNP_FILTER_RESULT_TABLE_NAME);
+//        sf.establishDbSNPResultTable(DatabaseManager.DBSNP_FILTER_RESULT_TABLE_NAME);
+//        sf.executeDbSNPFilter(DatabaseManager.DBSNP_FILTER_TABLE_NAME,
+//                DatabaseManager.DBSNP_FILTER_RESULT_TABLE_NAME, DatabaseManager.SPLICE_JUNCTION_FILTER_RESULT_TABLE_NAME);
+//        DatabaseManager.getInstance().distinctTable(DatabaseManager.DBSNP_FILTER_RESULT_TABLE_NAME);
 
         progressUpdated("Executing DNA & RNA Filter...", 8, ALL_STEP);
-        DnaRnaFilter dr = new DnaRnaFilter(manager);
-        dr.establishDnaRnaTable(DatabaseManager.DNA_RNA_FILTER_RESULT_TABLE_NAME);
-        dr.executeDnaRnaFilter(DatabaseManager.DNA_RNA_FILTER_RESULT_TABLE_NAME, DatabaseManager.DNA_VCF_RESULT_TABLE_NAME,
-                DatabaseManager.DBSNP_FILTER_RESULT_TABLE_NAME);
-        DatabaseManager.getInstance().distinctTable(DatabaseManager.DNA_RNA_FILTER_RESULT_TABLE_NAME);
+//        DnaRnaFilter dr = new DnaRnaFilter(manager);
+//        dr.establishDnaRnaTable(DatabaseManager.DNA_RNA_FILTER_RESULT_TABLE_NAME);
+//        dr.executeDnaRnaFilter(DatabaseManager.DNA_RNA_FILTER_RESULT_TABLE_NAME, DatabaseManager.DNA_VCF_RESULT_TABLE_NAME,
+//                DatabaseManager.DBSNP_FILTER_RESULT_TABLE_NAME);
+//        DatabaseManager.getInstance().distinctTable(DatabaseManager.DNA_RNA_FILTER_RESULT_TABLE_NAME);
 
         progressUpdated("Executing LLR Filter...", 9, ALL_STEP);
-        LLRFilter lf = new LLRFilter(manager);
-        lf.establishLLRResultTable(DatabaseManager.LLR_FILTER_RESULT_TABLE_NAME);
-        lf.executeLLRFilter(DatabaseManager.LLR_FILTER_RESULT_TABLE_NAME,
-                DatabaseManager.DNA_VCF_RESULT_TABLE_NAME, DatabaseManager.DNA_RNA_FILTER_RESULT_TABLE_NAME);
-        DatabaseManager.getInstance().distinctTable(DatabaseManager.LLR_FILTER_RESULT_TABLE_NAME);
+//        LLRFilter lf = new LLRFilter(manager);
+//        lf.establishLLRResultTable(DatabaseManager.LLR_FILTER_RESULT_TABLE_NAME);
+//        lf.executeLLRFilter(DatabaseManager.LLR_FILTER_RESULT_TABLE_NAME,
+//                DatabaseManager.DNA_VCF_RESULT_TABLE_NAME, DatabaseManager.DNA_RNA_FILTER_RESULT_TABLE_NAME);
+//        DatabaseManager.getInstance().distinctTable(DatabaseManager.LLR_FILTER_RESULT_TABLE_NAME);
 
         progressUpdated("Importing DARNED data...", 10, ALL_STEP);
         PValueFilter pv = new PValueFilter(manager);
-        pv.estblishPvTable(DatabaseManager.PVALUE_FILTER_RESULT_TABLE_NAME);
         pv.loadDarnedTable(DatabaseManager.PVALUE_FILTER_TABLE_NAME, locationPreferences.getDarnedFile());
-        if (locationPreferences.getRScriptPath() != null && locationPreferences.getRScriptPath().length() != 0) {
-            pv.executeFDRFilter(DatabaseManager.PVALUE_FILTER_TABLE_NAME,
-                    DatabaseManager.PVALUE_FILTER_RESULT_TABLE_NAME, DatabaseManager.LLR_FILTER_RESULT_TABLE_NAME,
-                    locationPreferences.getRScriptPath());
-        }
+//        pv.estblishPValueTable(DatabaseManager.PVALUE_FILTER_RESULT_TABLE_NAME);
+//        if (locationPreferences.getRScriptPath() != null && locationPreferences.getRScriptPath().length() != 0) {
+//            pv.executeFDRFilter(DatabaseManager.PVALUE_FILTER_TABLE_NAME,
+//                    DatabaseManager.PVALUE_FILTER_RESULT_TABLE_NAME, DatabaseManager.LLR_FILTER_RESULT_TABLE_NAME,
+//                    locationPreferences.getRScriptPath());
+//        }
 
         REDPreferences.getInstance().setDataLoadedToDatabase(true);
         processingComplete();

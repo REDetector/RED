@@ -30,6 +30,7 @@ public class DataParserOptionsPanel extends JPanel implements KeyListener, Actio
 
         commonOptions.add(new JLabel("Remove duplicate reads"), gbc);
         removeDuplicates = new JCheckBox();
+        removeDuplicates.setSelected(true);
         gbc.gridx = 2;
         commonOptions.add(removeDuplicates, gbc);
 

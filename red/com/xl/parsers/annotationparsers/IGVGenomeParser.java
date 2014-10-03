@@ -69,7 +69,7 @@ public class IGVGenomeParser implements Runnable {
         // TODO Auto-generated method stub
         File cacheDirectory = new File(LocationPreferences.getInstance().getCacheDirectory());
         Properties properties = null;
-        List<File> genomeCacheCompleteFiles = FileUtils.researchfile(SuffixUtils.CACHE_GENOME_COMPLETE, cacheDirectory);
+        List<File> genomeCacheCompleteFiles = FileUtils.searchfile(SuffixUtils.CACHE_GENOME_COMPLETE, cacheDirectory);
         String id = genomeFile.getAbsolutePath();
         boolean foundCacheFile = false;
         if (genomeCacheCompleteFiles.size() != 0) {
@@ -126,7 +126,7 @@ public class IGVGenomeParser implements Runnable {
             e.printStackTrace();
         }
 
-        List<File> fastaCacheCompleteFiles = FileUtils.researchfile(SuffixUtils.CACHE_FASTA_COMPLETE, cacheDirectory);
+        List<File> fastaCacheCompleteFiles = FileUtils.searchfile(SuffixUtils.CACHE_FASTA_COMPLETE, cacheDirectory);
         for (File fastaCacheCompleteFile : fastaCacheCompleteFiles) {
             properties = new Properties();
             try {

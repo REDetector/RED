@@ -7,21 +7,19 @@ package com.dw.publicaffairs;
 import com.xl.exception.REDException;
 import com.xl.preferences.REDPreferences;
 
-import java.io.*;
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.List;
 
 public class DatabaseManager {
     private static final DatabaseManager DATABASE_MANAGER = new DatabaseManager();
+    public static final int COMMIT_COUNTS_PER_ONCE = 10000;
     public static final String NON_DENOVO_DATABASE_NAME = "nondenovo";
     public static final String DENOVO_DATABASE_NAME = "denovo";
     public static final String RNA_VCF_RESULT_TABLE_NAME = "rnavcf";
     public static final String DNA_VCF_RESULT_TABLE_NAME = "dnavcf";
     public static final String BASIC_FILTER_RESULT_TABLE_NAME = "basicfilter";
     public static final String SPECIFIC_FILTER_RESULT_TABLE_NAME = "specificfilter";
-    public static final String COMPREHENSIVE_FILTER_TABLE_NAME = "refcomprehensive";
-    public static final String COMPREHENSIVE_FILTER_RESULT_TABLE_NAME = "comprehensivefilter";
+    public static final String SPLICE_JUNCTION_FILTER_TABLE_NAME = "refsplicejunction";
+    public static final String SPLICE_JUNCTION_FILTER_RESULT_TABLE_NAME = "splicejunctionfilter";
     public static final String DBSNP_FILTER_TABLE_NAME = "refdbsnp";
     public static final String DBSNP_FILTER_RESULT_TABLE_NAME = "dbsnpfilter";
     public static final String PVALUE_FILTER_TABLE_NAME = "refpvalue";
@@ -34,8 +32,6 @@ public class DatabaseManager {
 
     private Connection con = null;
     private Statement stmt = null;
-
-    private List<String> columnInfo = null;
 
     private DatabaseManager() {
     }
@@ -54,18 +50,6 @@ public class DatabaseManager {
         return con != null && stmt != null;
     }
 
-    public boolean connectDatabase() throws ClassNotFoundException, SQLException {
-        REDPreferences preferences = REDPreferences.getInstance();
-        String host = preferences.getDatabaseHost();
-        String port = preferences.getDatabasePort();
-        String user = preferences.getDatabaseUser();
-        String password = preferences.getDatabasePassword();
-        Class.forName("com.mysql.jdbc.Driver");
-        String connectionURL = "jdbc:mysql://" + host + ":" + port + "";
-        con = DriverManager.getConnection(connectionURL, user, password);
-        return con != null;
-    }
-
     public void setAutoCommit(boolean autoCommit) {
         try {
             con.setAutoCommit(autoCommit);
@@ -73,20 +57,6 @@ public class DatabaseManager {
             System.err.println("Error set auto commit");
             e.printStackTrace();
         }
-    }
-
-    public StringBuilder getColumnInfo() {
-        if (columnInfo == null) {
-            return null;
-        }
-        StringBuilder stringBuilder = new StringBuilder();
-        for (String column : columnInfo) {
-            stringBuilder.append(column + ",");
-        }
-        if (stringBuilder.length() > 0) {
-            stringBuilder.deleteCharAt(stringBuilder.length() - 1);
-        }
-        return stringBuilder;
     }
 
     public void commit() {
@@ -129,53 +99,6 @@ public class DatabaseManager {
         } catch (SQLException e) {
             System.err.println("Error create table '" + tableName + "'");
             e.printStackTrace();
-        }
-    }
-
-    public void createVCFTable(String tableName, String path) {
-        BufferedReader rin;
-        StringBuilder tableBuilders = new StringBuilder();
-        columnInfo = new ArrayList<String>();
-        try {
-            InputStream inputStream = new FileInputStream(path);
-            rin = new BufferedReader(new InputStreamReader(inputStream));
-            String line;
-            while ((line = rin.readLine()) != null) {
-                String[] section = line.split("\\t");
-                if (line.startsWith("##"))
-                    continue;
-                if (line.startsWith("#")) {
-                    tableBuilders.append(section[0].substring(1) + " " + " varchar(15)");
-                    tableBuilders.append("," + section[1] + " " + "int");
-                    tableBuilders.append("," + section[2] + " " + "varchar(30)");
-                    tableBuilders.append("," + section[3] + " " + "varchar(3)");
-                    tableBuilders.append("," + section[4] + " " + "varchar(5)");
-                    tableBuilders.append("," + section[5] + " " + "float(8,2)");
-                    tableBuilders.append("," + section[6] + " " + "text");
-                    tableBuilders.append("," + section[7] + " " + "text");
-                    columnInfo.add(section[0].substring(1));
-                    for (int i = 1; i < 8; i++)
-                        columnInfo.add(section[i]);
-                    continue;
-                }
-                String[] column8 = section[8].split(":");
-                for (int i = 0, len = column8.length; i < len; i++) {
-                    tableBuilders.append("," + column8[i] + " " + "text");
-                    columnInfo.add(column8[i]);
-                }
-                tableBuilders.append(",index(chrom,pos)");
-                break;
-            }
-            stmt.executeUpdate("create table " + tableName + "(" + tableBuilders + ")");
-            REDPreferences.getInstance().setDatabaseTableBuilder(tableBuilders.toString());
-        } catch (FileNotFoundException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (SQLException e1) {
-            System.err.println("Error create table '" + tableName + "'");
-            e1.printStackTrace();
         }
     }
 

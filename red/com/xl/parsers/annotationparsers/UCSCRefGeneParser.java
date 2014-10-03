@@ -13,8 +13,8 @@ import com.xl.utils.Strand;
 import com.xl.utils.filefilters.FileFilterExt;
 
 import java.io.*;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.Vector;
 import java.util.zip.GZIPInputStream;
 
@@ -32,7 +32,7 @@ public class UCSCRefGeneParser extends AnnotationParser {
     private int exonEndsBufferColumn = 0;
     private int aliasNameColumn = 0;
 
-    private List<String> nameList = new LinkedList<String>();
+    private Set<String> nameList = new HashSet<String>();
 
     public UCSCRefGeneParser(Genome genome) {
         super(genome);
@@ -133,16 +133,18 @@ public class UCSCRefGeneParser extends AnnotationParser {
                     }
                     Feature newFeature = new Feature(name, chr, strand,
                             txLocation, cdsLocation, exonLocations, aliasName);
-                    if (nameList.contains(aliasName) || nameList.contains(name)) {
-                        Feature originFeature = currentAnnotation.getFeaturesForName(chr, aliasName);
-                        if (originFeature != null && newFeature.getTotalLength() > originFeature.getTotalLength()) {
-                            currentAnnotation.deleteFeature(chr, originFeature);
-                        }
+                    if (nameList.add(name) && nameList.add(aliasName)) {
                         currentAnnotation.addFeature(newFeature);
                     } else {
-                        nameList.add(aliasName);
-                        nameList.add(name);
-                        currentAnnotation.addFeature(newFeature);
+                        Feature originFeature = currentAnnotation.getFeaturesForName(chr, aliasName);
+                        if (originFeature != null) {
+                            if (newFeature.getTotalLength() > originFeature.getTotalLength()) {
+                                currentAnnotation.deleteFeature(chr, originFeature);
+                                currentAnnotation.addFeature(newFeature);
+                            }
+                        } else {
+                            currentAnnotation.addFeature(newFeature);
+                        }
                     }
                 }
             } catch (NumberFormatException e) {
@@ -153,9 +155,7 @@ public class UCSCRefGeneParser extends AnnotationParser {
             }
         }
 
-        if (lineCount < 1000000)
-
-        {
+        if (lineCount < 1000000) {
             currentAnnotation.finalise();
             annotationSets.add(currentAnnotation);
         }

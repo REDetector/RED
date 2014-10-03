@@ -2,7 +2,6 @@ package com.dw.publicaffairs;
 
 import com.dw.denovo.*;
 import com.dw.dnarna.DnaRnaFilter;
-import com.dw.dnarna.DnaRnaVcf;
 import com.dw.dnarna.LLRFilter;
 
 import java.sql.SQLException;
@@ -54,7 +53,6 @@ public class Connect {
         // Utilities.getInstance().createCalTable(
         // "D:/TDDOWNLOAD/data/BJ22N_DNA_RNA/BJ22.RNA.chr8.snvs.vcf");
 
-        // DnaRnaVcf df = new DnaRnaVcf(manager,
         // "D:/TDDOWNLOAD/data/BJ22N_DNA_RNA/BJ22.RNA.chr8.snvs.vcf",
         // "D:/TDDOWNLOAD/data/BJ22N_DNA_RNA/BJ22.DNA.chr8.snvs.vcf",
         // "loadRnaVcfTable", "loadDnaVcfTable");
@@ -83,8 +81,8 @@ public class Connect {
 
         // ComphrehensiveFilter cf=new
         // ComphrehensiveFilter(manager,"D:/TDDOWNLOAD/data/genes.gtf","comphrehensivetemp","refcomphrehensive","repeattemp");
-        // cf.establishComprehensiveResultTable();
-        // cf.loadComprehensiveTable();
+        // cf.establishSpliceJunctionResultTable();
+        // cf.loadSpliceJunctionTable();
         // cf.executeComprehensiveFilter(2);
         //
         // dbSnpFilter sf=new
@@ -137,8 +135,8 @@ public class Connect {
         //
         // ComphrehensiveFilter cf=new
         // ComphrehensiveFilter(manager,"D:/TDDOWNLOAD/data/genes.gtf","comphrehensivetemp","refcomphrehensive","repeattemp");
-        // cf.establishComprehensiveResultTable();
-        // cf.loadComprehensiveTable();
+        // cf.establishSpliceJunctionResultTable();
+        // cf.loadSpliceJunctionTable();
         // cf.executeComprehensiveFilter(2);
         //
         // dbSnpFilter sf=new
@@ -171,20 +169,11 @@ public class Connect {
             manager.createDatabase(args[9]);
             manager.useDatabase(args[9]);
 
-            DnaRnaVcf df = new DnaRnaVcf(manager);
-            df.establishDnaTable(DatabaseManager.DNA_VCF_RESULT_TABLE_NAME, args[2]);
-            df.loadDnaVcfTable(DatabaseManager.DNA_VCF_RESULT_TABLE_NAME, args[2],
-                    Integer.parseInt(args[8]));
-
-            df.establishRnaTable(DatabaseManager.RNA_VCF_RESULT_TABLE_NAME, args[1]);
-            df.loadRnaVcfTable(DatabaseManager.RNA_VCF_RESULT_TABLE_NAME, args[1],
-                    Integer.parseInt(args[8]));
-
             BasicFilter bf = new BasicFilter(manager);
-            bf.establishSpecificTable(DatabaseManager.SPECIFIC_FILTER_RESULT_TABLE_NAME);
-            bf.executeSpecificFilter(
-                    DatabaseManager.SPECIFIC_FILTER_RESULT_TABLE_NAME,
-                    DatabaseManager.RNA_VCF_RESULT_TABLE_NAME);
+//            bf.establishSpecificTable(DatabaseManager.SPECIFIC_FILTER_RESULT_TABLE_NAME);
+//            bf.executeSpecificFilter(
+//                    DatabaseManager.SPECIFIC_FILTER_RESULT_TABLE_NAME,
+//                    DatabaseManager.RNA_VCF_RESULT_TABLE_NAME);
             bf.establishBasicTable(DatabaseManager.BASIC_FILTER_RESULT_TABLE_NAME);
             // The first parameter means quality and the second means depth
             bf.executeBasicFilter(
@@ -197,7 +186,7 @@ public class Connect {
             rf.loadRepeatTable(DatabaseManager.REPEAT_FILTER_TABLE_NAME, args[3]);
             rf.establishRepeatResultTable(DatabaseManager.REPEAT_FILTER_RESULT_TABLE_NAME);
             rf.establishAluResultTable(DatabaseManager.ALU_FILTER_RESULT_TABLE_NAME);
-            rf.mysqlRepeatFilter(DatabaseManager.REPEAT_FILTER_TABLE_NAME,
+            rf.executeRepeatFilter(DatabaseManager.REPEAT_FILTER_TABLE_NAME,
                     DatabaseManager.REPEAT_FILTER_RESULT_TABLE_NAME,
                     DatabaseManager.ALU_FILTER_RESULT_TABLE_NAME, DatabaseManager.BASIC_FILTER_RESULT_TABLE_NAME);
 //            rf.rfilter(DatabaseManager.REPEAT_FILTER_TABLE_NAME,
@@ -206,27 +195,27 @@ public class Connect {
             DatabaseManager.getInstance().distinctTable(
                     DatabaseManager.REPEAT_FILTER_RESULT_TABLE_NAME);
 
-            ComprehensiveFilter cf = new ComprehensiveFilter(manager);
-            cf.establishComprehensiveResultTable(DatabaseManager.COMPREHENSIVE_FILTER_RESULT_TABLE_NAME);
-            cf.loadComprehensiveTable(
-                    DatabaseManager.COMPREHENSIVE_FILTER_TABLE_NAME, args[4]);
+            SpliceJunctionFilter cf = new SpliceJunctionFilter(manager);
+            cf.establishSpliceJunctionResultTable(DatabaseManager.SPLICE_JUNCTION_FILTER_RESULT_TABLE_NAME);
+            cf.loadSpliceJunctionTable(
+                    DatabaseManager.SPLICE_JUNCTION_FILTER_TABLE_NAME, args[4]);
 //            cf.executeComprehensiveFilter(
-//                    DatabaseManager.COMPREHENSIVE_FILTER_TABLE_NAME,
-//                    DatabaseManager.COMPREHENSIVE_FILTER_RESULT_TABLE_NAME,
+//                    DatabaseManager.SPLICE_JUNCTION_FILTER_TABLE_NAME,
+//                    DatabaseManager.SPLICE_JUNCTION_FILTER_RESULT_TABLE_NAME,
 //                    DatabaseManager.REPEAT_FILTER_RESULT_TABLE_NAME, 2);
-            cf.mysqlComprehensiveFilter(
-                    DatabaseManager.COMPREHENSIVE_FILTER_TABLE_NAME,
-                    DatabaseManager.COMPREHENSIVE_FILTER_RESULT_TABLE_NAME,
+            cf.executeSpliceJunctionFilter(
+                    DatabaseManager.SPLICE_JUNCTION_FILTER_TABLE_NAME,
+                    DatabaseManager.SPLICE_JUNCTION_FILTER_RESULT_TABLE_NAME,
                     DatabaseManager.REPEAT_FILTER_RESULT_TABLE_NAME, 2);
             DatabaseManager.getInstance().distinctTable(
-                    DatabaseManager.COMPREHENSIVE_FILTER_RESULT_TABLE_NAME);
+                    DatabaseManager.SPLICE_JUNCTION_FILTER_RESULT_TABLE_NAME);
 
             DbsnpFilter sf = new DbsnpFilter(manager);
             sf.establishDbSNPResultTable(DatabaseManager.DBSNP_FILTER_RESULT_TABLE_NAME);
             sf.loadDbSNPTable(DatabaseManager.DBSNP_FILTER_TABLE_NAME, args[5]);
             sf.executeDbSNPFilter(DatabaseManager.DBSNP_FILTER_TABLE_NAME,
                     DatabaseManager.DBSNP_FILTER_RESULT_TABLE_NAME,
-                    DatabaseManager.COMPREHENSIVE_FILTER_RESULT_TABLE_NAME);
+                    DatabaseManager.SPLICE_JUNCTION_FILTER_RESULT_TABLE_NAME);
             DatabaseManager.getInstance().distinctTable(
                     DatabaseManager.DBSNP_FILTER_RESULT_TABLE_NAME);
 
@@ -247,7 +236,7 @@ public class Connect {
                     DatabaseManager.LLR_FILTER_RESULT_TABLE_NAME);
 
             PValueFilter pv = new PValueFilter(manager);
-            pv.estblishPvTable(DatabaseManager.PVALUE_FILTER_RESULT_TABLE_NAME);
+            pv.estblishPValueTable(DatabaseManager.PVALUE_FILTER_RESULT_TABLE_NAME);
             pv.loadDarnedTable(DatabaseManager.PVALUE_FILTER_TABLE_NAME,
                     args[6]);
             pv.executeFDRFilter(DatabaseManager.PVALUE_FILTER_TABLE_NAME,
@@ -258,16 +247,16 @@ public class Connect {
             manager.createDatabase(args[8]);
             manager.useDatabase(args[8]);
 
-            DenovoVcf df = new DenovoVcf(manager);
-            df.establishRnaTable(DatabaseManager.RNA_VCF_RESULT_TABLE_NAME, args[1]);
-            df.loadRnaVcfTable(DatabaseManager.RNA_VCF_RESULT_TABLE_NAME,
-                    args[1], Integer.parseInt(args[7]));
+//            DenovoVcf df = new DenovoVcf(manager);
+//            df.establishRnaTable(DatabaseManager.RNA_VCF_RESULT_TABLE_NAME, args[1]);
+//            df.loadRnaVcfTable(DatabaseManager.RNA_VCF_RESULT_TABLE_NAME,
+//                    args[1], Integer.parseInt(args[7]));
 
             BasicFilter bf = new BasicFilter(manager);
-            bf.establishSpecificTable(DatabaseManager.SPECIFIC_FILTER_RESULT_TABLE_NAME);
-            bf.executeSpecificFilter(
-                    DatabaseManager.SPECIFIC_FILTER_RESULT_TABLE_NAME,
-                    DatabaseManager.RNA_VCF_RESULT_TABLE_NAME);
+//            bf.establishSpecificTable(DatabaseManager.SPECIFIC_FILTER_RESULT_TABLE_NAME);
+//            bf.executeSpecificFilter(
+//                    DatabaseManager.SPECIFIC_FILTER_RESULT_TABLE_NAME,
+//                    DatabaseManager.RNA_VCF_RESULT_TABLE_NAME);
             bf.establishBasicTable(DatabaseManager.BASIC_FILTER_RESULT_TABLE_NAME);
             // The first parameter means quality and the second means depth
             bf.executeBasicFilter(
@@ -281,7 +270,7 @@ public class Connect {
                     args[2]);
             rf.establishRepeatResultTable(DatabaseManager.REPEAT_FILTER_RESULT_TABLE_NAME);
             rf.establishAluResultTable(DatabaseManager.ALU_FILTER_RESULT_TABLE_NAME);
-            rf.mysqlRepeatFilter(DatabaseManager.REPEAT_FILTER_TABLE_NAME,
+            rf.executeRepeatFilter(DatabaseManager.REPEAT_FILTER_TABLE_NAME,
                     DatabaseManager.REPEAT_FILTER_RESULT_TABLE_NAME, DatabaseManager.ALU_FILTER_RESULT_TABLE_NAME,
                     DatabaseManager.BASIC_FILTER_RESULT_TABLE_NAME);
 //            rf.rfilter(DatabaseManager.REPEAT_FILTER_TABLE_NAME,
@@ -290,32 +279,32 @@ public class Connect {
             DatabaseManager.getInstance().distinctTable(
                     DatabaseManager.REPEAT_FILTER_RESULT_TABLE_NAME);
 
-            ComprehensiveFilter cf = new ComprehensiveFilter(manager);
-            cf.establishComprehensiveResultTable(DatabaseManager.COMPREHENSIVE_FILTER_RESULT_TABLE_NAME);
-            cf.loadComprehensiveTable(
-                    DatabaseManager.COMPREHENSIVE_FILTER_TABLE_NAME, args[3]);
+            SpliceJunctionFilter cf = new SpliceJunctionFilter(manager);
+            cf.establishSpliceJunctionResultTable(DatabaseManager.SPLICE_JUNCTION_FILTER_RESULT_TABLE_NAME);
+            cf.loadSpliceJunctionTable(
+                    DatabaseManager.SPLICE_JUNCTION_FILTER_TABLE_NAME, args[3]);
 //            cf.executeComprehensiveFilter(
-//                    DatabaseManager.COMPREHENSIVE_FILTER_TABLE_NAME,
-//                    DatabaseManager.COMPREHENSIVE_FILTER_RESULT_TABLE_NAME,
+//                    DatabaseManager.SPLICE_JUNCTION_FILTER_TABLE_NAME,
+//                    DatabaseManager.SPLICE_JUNCTION_FILTER_RESULT_TABLE_NAME,
 //                    DatabaseManager.REPEAT_FILTER_RESULT_TABLE_NAME, 2);
-            cf.mysqlComprehensiveFilter(
-                    DatabaseManager.COMPREHENSIVE_FILTER_TABLE_NAME,
-                    DatabaseManager.COMPREHENSIVE_FILTER_RESULT_TABLE_NAME,
+            cf.executeSpliceJunctionFilter(
+                    DatabaseManager.SPLICE_JUNCTION_FILTER_TABLE_NAME,
+                    DatabaseManager.SPLICE_JUNCTION_FILTER_RESULT_TABLE_NAME,
                     DatabaseManager.REPEAT_FILTER_RESULT_TABLE_NAME, 2);
             DatabaseManager.getInstance().distinctTable(
-                    DatabaseManager.COMPREHENSIVE_FILTER_RESULT_TABLE_NAME);
+                    DatabaseManager.SPLICE_JUNCTION_FILTER_RESULT_TABLE_NAME);
 
             DbsnpFilter sf = new DbsnpFilter(manager);
             sf.establishDbSNPResultTable(DatabaseManager.DBSNP_FILTER_RESULT_TABLE_NAME);
             sf.loadDbSNPTable(DatabaseManager.DBSNP_FILTER_TABLE_NAME, args[4]);
             sf.executeDbSNPFilter(DatabaseManager.DBSNP_FILTER_TABLE_NAME,
                     DatabaseManager.DBSNP_FILTER_RESULT_TABLE_NAME,
-                    DatabaseManager.COMPREHENSIVE_FILTER_RESULT_TABLE_NAME);
+                    DatabaseManager.SPLICE_JUNCTION_FILTER_RESULT_TABLE_NAME);
             DatabaseManager.getInstance().distinctTable(
                     DatabaseManager.DBSNP_FILTER_RESULT_TABLE_NAME);
 
             PValueFilter pv = new PValueFilter(manager);
-            pv.estblishPvTable(DatabaseManager.PVALUE_FILTER_RESULT_TABLE_NAME);
+            pv.estblishPValueTable(DatabaseManager.PVALUE_FILTER_RESULT_TABLE_NAME);
             pv.loadDarnedTable(DatabaseManager.PVALUE_FILTER_TABLE_NAME,
                     args[5]);
             pv.executeFDRFilter(DatabaseManager.PVALUE_FILTER_TABLE_NAME,

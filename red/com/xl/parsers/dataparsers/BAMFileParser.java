@@ -506,7 +506,7 @@ public class BAMFileParser extends DataParser {
      * @see uk.ac.babraham.SeqMonk.DataParsers.DataParser#name()
      */
     public String parserName() {
-        return "BAM File Importer";
+        return "BAM File Parser";
     }
 
     /*

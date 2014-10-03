@@ -158,7 +158,7 @@ public class ParsingUtils {
     }
 
     public static BufferedReader openBufferedReader(File file) throws IOException {
-        return new BufferedReader(new FileReader(file));
+        return new BufferedReader(new InputStreamReader(new FileInputStream(file)));
     }
 
     public static boolean isFilePath(String path) {

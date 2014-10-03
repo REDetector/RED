@@ -166,13 +166,13 @@ public class FileUtils {
 
     private static List<File> fileList = new ArrayList<File>();
 
-    public static List<File> researchfile(String fileName, File directory) {
+    public static List<File> searchfile(String fileName, File directory) {
         if (directory.isDirectory()) {
             File[] filearry = directory.listFiles();
             if (filearry != null) {
                 for (File f : filearry) {
                     if (f.isDirectory()) {
-                        researchfile(fileName, f);
+                        searchfile(fileName, f);
                     } else {
                         if (f.getAbsolutePath().contains(fileName)) {
                             fileList.add(f);
