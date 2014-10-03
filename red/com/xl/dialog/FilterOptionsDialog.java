@@ -132,7 +132,8 @@ public class FilterOptionsDialog extends JDialog implements OptionsListener, Pro
             break;
         }
         newList.setName(groupName);
-
+        setVisible(false);
+        dispose();
     }
 
 
