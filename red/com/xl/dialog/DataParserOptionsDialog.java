@@ -60,6 +60,7 @@ public class DataParserOptionsDialog extends JDialog implements ActionListener {
         importButton.setActionCommand("import");
         importButton.addActionListener(this);
         buttonPanel.add(importButton);
+        getRootPane().setDefaultButton(importButton);
 
         getContentPane().add(buttonPanel, BorderLayout.SOUTH);
 

@@ -167,7 +167,6 @@ public class ChromosomeDataTrack extends JPanel implements DataChangeListener {
         displayWidth = getWidth();
         viewerCurrentStart = viewer.currentStart();
         viewerCurrentEnd = viewer.currentEnd();
-
         if (reads != null && reads.length != 0) {
             readPixel = bpToPixel(reads[0].length() + viewerCurrentStart);
         } else {

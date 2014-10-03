@@ -368,7 +368,7 @@ public class DataViewer extends JPanel implements MouseListener, TreeSelectionLi
         public ProbePopupMenu(ProbeList p) {
             this.p = p;
 
-            JMenuItem view = new JMenuItem("View List");
+            JMenuItem view = new JMenuItem("Show View List");
             view.setActionCommand("view");
             view.addActionListener(this);
             add(view);
@@ -386,7 +386,7 @@ public class DataViewer extends JPanel implements MouseListener, TreeSelectionLi
             }
             add(rename);
 
-            JMenuItem comments = new JMenuItem("Edit comments");
+            JMenuItem comments = new JMenuItem("Edit Comments");
             comments.setActionCommand("comments");
             comments.addActionListener(this);
             add(comments);

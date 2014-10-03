@@ -1,25 +1,6 @@
-/**
- * Copyright Copyright 2007-13 Simon Andrews
- *
- *    This file is part of SeqMonk.
- *
- *    SeqMonk is free software; you can redistribute it and/or modify
- *    it under the terms of the GNU General Public License as published by
- *    the Free Software Foundation; either version 3 of the License, or
- *    (at your option) any later version.
- *
- *    SeqMonk is distributed in the hope that it will be useful,
- *    but WITHOUT ANY WARRANTY; without even the implied warranty of
- *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *    GNU General Public License for more details.
- *
- *    You should have received a copy of the GNU General Public License
- *    along with SeqMonk; if not, write to the Free Software
- *    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
- */
 package com.xl.filter;
 
-import com.dw.dnarna.DnaRnaFilter;
+import com.dw.denovo.SpecificFilter;
 import com.dw.publicaffairs.DatabaseManager;
 import com.dw.publicaffairs.Query;
 import com.xl.datatypes.DataCollection;
@@ -34,6 +15,8 @@ import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.Vector;
 
 /**
@@ -41,10 +24,12 @@ import java.util.Vector;
  * from quantiation.  Each probe is filtered independently of all
  * other probes.
  */
-public class RnaDnaFilterMenu extends ProbeFilter {
+public class SpecificFilterMenu extends ProbeFilter {
 
     private DataStore[] stores = new DataStore[0];
-    private RnaDnaFilterOptionPanel optionsPanel = new RnaDnaFilterOptionPanel();
+    private JComboBox<Character> refBase = null;
+    private JComboBox<Character> altBase = null;
+    private SpecificFilterOptionPanel optionsPanel = new SpecificFilterOptionPanel();
 
     /**
      * Instantiates a new values filter with default values
@@ -52,26 +37,25 @@ public class RnaDnaFilterMenu extends ProbeFilter {
      * @param collection The dataCollection to filter
      * @throws com.xl.exception.REDException if the dataCollection isn't quantitated.
      */
-    public RnaDnaFilterMenu(DataCollection collection) throws REDException {
+    public SpecificFilterMenu(DataCollection collection) throws REDException {
         super(collection);
     }
 
     @Override
     public String description() {
-        return "Filter editing bases by comparing RNA and DNA.";
+        return "Filter editing bases by editing base information,such as 'A'->'G','C'->'T',etc.";
     }
 
     @Override
     protected void generateProbeList() {
-        DnaRnaFilter dnaRnaFilter = new DnaRnaFilter(databaseManager);
-        dnaRnaFilter.establishDnaRnaTable(DatabaseManager.DNA_RNA_FILTER_RESULT_TABLE_NAME);
-        dnaRnaFilter.executeDnaRnaFilter(DatabaseManager.DNA_RNA_FILTER_RESULT_TABLE_NAME, DatabaseManager.DNA_VCF_RESULT_TABLE_NAME,
-                parentTable);
-        DatabaseManager.getInstance().distinctTable(DatabaseManager.DNA_RNA_FILTER_RESULT_TABLE_NAME);
-
-        Vector<Probe> probes = Query.queryAllEditingSites(DatabaseManager.REPEAT_FILTER_RESULT_TABLE_NAME);
-        ProbeList newList = new ProbeList(parentList, DatabaseManager.REPEAT_FILTER_RESULT_TABLE_NAME, "",
-                DatabaseManager.REPEAT_FILTER_RESULT_TABLE_NAME);
+        SpecificFilter specificFilter = new SpecificFilter(databaseManager);
+        specificFilter.establishSpecificTable(DatabaseManager.SPECIFIC_FILTER_RESULT_TABLE_NAME);
+        specificFilter.executeSpecificFilter(DatabaseManager.SPECIFIC_FILTER_RESULT_TABLE_NAME, parentTable,
+                refBase.getSelectedItem().toString(), altBase.getSelectedItem().toString());
+        DatabaseManager.getInstance().distinctTable(DatabaseManager.SPECIFIC_FILTER_RESULT_TABLE_NAME);
+        Vector<Probe> probes = Query.queryAllEditingSites(DatabaseManager.SPECIFIC_FILTER_RESULT_TABLE_NAME);
+        ProbeList newList = new ProbeList(parentList, DatabaseManager.SPECIFIC_FILTER_RESULT_TABLE_NAME, "",
+                DatabaseManager.SPECIFIC_FILTER_RESULT_TABLE_NAME);
         int index = 0;
         int probesLength = probes.size();
         for (Probe probe : probes) {
@@ -86,47 +70,32 @@ public class RnaDnaFilterMenu extends ProbeFilter {
         filterFinished(newList);
     }
 
-    /* (non-Javadoc)
-     * @see uk.ac.babraham.SeqMonk.Filters.ProbeFilter#getOptionsPanel()
-     */
     @Override
     public JPanel getOptionsPanel() {
         return optionsPanel;
     }
 
-    /* (non-Javadoc)
-     * @see uk.ac.babraham.SeqMonk.Filters.ProbeFilter#hasOptionsPanel()
-     */
     @Override
     public boolean hasOptionsPanel() {
         return true;
     }
 
-    /* (non-Javadoc)
-     * @see uk.ac.babraham.SeqMonk.Filters.ProbeFilter#isReady()
-     */
     @Override
     public boolean isReady() {
         return stores.length != 0;
     }
 
-    /* (non-Javadoc)
-     * @see uk.ac.babraham.SeqMonk.Filters.ProbeFilter#name()
-     */
     @Override
     public String name() {
-        return "RNA&DNA Filter";
+        return "Specific Filter";
     }
 
-    /* (non-Javadoc)
-     * @see uk.ac.babraham.SeqMonk.Filters.ProbeFilter#listDescription()
-     */
     @Override
     protected String listDescription() {
         StringBuilder b = new StringBuilder();
 
         b.append("Filter on probes in ");
-        b.append(collection.probeSet().getActiveList().name() + " ");
+        b.append(collection.probeSet().getActiveList().name()).append(" ");
 
         for (int s = 0; s < stores.length; s++) {
             b.append(stores[s].name());
@@ -137,27 +106,22 @@ public class RnaDnaFilterMenu extends ProbeFilter {
         return b.toString();
     }
 
-    /* (non-Javadoc)
-     * @see uk.ac.babraham.SeqMonk.Filters.ProbeFilter#listName()
-     */
     @Override
     protected String listName() {
-        return "RNA&DNA filter";
+        return "Focus on " + refBase.getSelectedItem() + " to " + altBase.getSelectedItem();
     }
-
 
     /**
      * The ValuesFilterOptionPanel.
      */
-    private class RnaDnaFilterOptionPanel extends JPanel implements ListSelectionListener {
+    private class SpecificFilterOptionPanel extends JPanel implements ListSelectionListener, ActionListener {
 
         private JList<DataStore> dataList;
-        private JTextArea description = null;
 
         /**
          * Instantiates a new values filter option panel.
          */
-        public RnaDnaFilterOptionPanel() {
+        public SpecificFilterOptionPanel() {
             setLayout(new BorderLayout());
             JPanel dataPanel = new JPanel();
             dataPanel.setBorder(BorderFactory.createEmptyBorder(4, 4, 4, 4));
@@ -181,14 +145,29 @@ public class RnaDnaFilterMenu extends ProbeFilter {
             add(dataPanel, BorderLayout.WEST);
 
             JPanel choicePanel = new JPanel();
-            choicePanel.setLayout(new GridBagLayout());
-            choicePanel.setBorder(BorderFactory.createEmptyBorder(4, 4, 4, 4));
-            description = new JTextArea("RNA-editing means editing in RNA while DNA is not snp.\n" +
-                    "So only otherwise, all the difference between DNA and RNA\n" +
-                    "will be selected.");
-//            description.setLineWrap(true);
-            description.setEditable(false);
-            choicePanel.add(description);
+            choicePanel.setLayout(new BoxLayout(choicePanel, BoxLayout.Y_AXIS));
+
+            JPanel choicePanel2 = new JPanel();
+            choicePanel2.add(new JLabel("Focus on editing event from"));
+            choicePanel.add(choicePanel2);
+
+            JPanel choicePanel3 = new JPanel();
+            choicePanel3.add(new JLabel("reference base "));
+            refBase = new JComboBox<Character>(new Character[]{'A', 'G', 'C', 'T'});
+            refBase.setSelectedItem('A');
+            refBase.setActionCommand("ref");
+            refBase.addActionListener(this);
+            choicePanel3.add(refBase);
+            choicePanel.add(choicePanel3);
+
+            JPanel choicePanel4 = new JPanel();
+            choicePanel4.add(new JLabel("to alternative base "));
+            altBase = new JComboBox<Character>(new Character[]{'A', 'G', 'C', 'T'});
+            altBase.setSelectedItem('G');
+            altBase.setActionCommand("alt");
+            altBase.addActionListener(this);
+            choicePanel4.add(altBase);
+            choicePanel.add(choicePanel4);
 
             valueChanged(null);
             add(new JScrollPane(choicePanel), BorderLayout.CENTER);
@@ -205,7 +184,7 @@ public class RnaDnaFilterMenu extends ProbeFilter {
          * @see javax.swing.event.ListSelectionListener#valueChanged(javax.swing.event.ListSelectionEvent)
          */
         public void valueChanged(ListSelectionEvent lse) {
-            System.out.println(RnaDnaFilterMenu.class.getName() + ":valueChanged()");
+            System.out.println(BasicFilterMenu.class.getName() + ":valueChanged()");
             java.util.List<DataStore> lists = dataList.getSelectedValuesList();
             stores = new DataStore[lists.size()];
             for (int i = 0; i < stores.length; i++) {
@@ -214,5 +193,31 @@ public class RnaDnaFilterMenu extends ProbeFilter {
             optionsChanged();
         }
 
+        @Override
+        public void actionPerformed(ActionEvent e) {
+//            String action = e.getActionCommand();
+//            if (action.equals("ref")) {
+//                if ((Character) refBase.getSelectedItem() == 'A') {
+//                    altBase.setSelectedItem('G');
+//                } else if (refBase.getSelectedItem().equals('G')) {
+//                    altBase.setSelectedItem('A');
+//                } else if (refBase.getSelectedItem().equals('C')) {
+//                    altBase.setSelectedItem('T');
+//                } else if (refBase.getSelectedItem().equals('T')) {
+//                    altBase.setSelectedItem('C');
+//                }
+//            } else if (action.equals("alt")) {
+//
+//                if (altBase.getSelectedItem().equals('A')) {
+//                    refBase.setSelectedItem('G');
+//                } else if (altBase.getSelectedItem().equals('G')) {
+//                    refBase.setSelectedItem('A');
+//                } else if (altBase.getSelectedItem().equals('T')) {
+//                    refBase.setSelectedItem('C');
+//                } else if (altBase.getSelectedItem().equals('C')) {
+//                    refBase.setSelectedItem('T');
+//                }
+//            }
+        }
     }
 }

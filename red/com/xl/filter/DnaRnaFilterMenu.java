@@ -19,7 +19,7 @@
  */
 package com.xl.filter;
 
-import com.dw.denovo.ComprehensiveFilter;
+import com.dw.dnarna.DnaRnaFilter;
 import com.dw.publicaffairs.DatabaseManager;
 import com.dw.publicaffairs.Query;
 import com.xl.datatypes.DataCollection;
@@ -34,8 +34,6 @@ import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import java.awt.*;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 import java.util.Vector;
 
 /**
@@ -43,11 +41,10 @@ import java.util.Vector;
  * from quantiation.  Each probe is filtered independently of all
  * other probes.
  */
-public class ComprehensiveFilterMenu extends ProbeFilter {
+public class DnaRnaFilterMenu extends ProbeFilter {
 
     private DataStore[] stores = new DataStore[0];
-    private ComprehensiveFilterOptionPanel optionsPanel = new ComprehensiveFilterOptionPanel();
-    private int sequenceEdge = -1;
+    private DnaRnaFilterOptionPanel optionsPanel = new DnaRnaFilterOptionPanel();
 
     /**
      * Instantiates a new values filter with default values
@@ -55,25 +52,26 @@ public class ComprehensiveFilterMenu extends ProbeFilter {
      * @param collection The dataCollection to filter
      * @throws com.xl.exception.REDException if the dataCollection isn't quantitated.
      */
-    public ComprehensiveFilterMenu(DataCollection collection) throws REDException {
+    public DnaRnaFilterMenu(DataCollection collection) throws REDException {
         super(collection);
     }
 
     @Override
     public String description() {
-        return "Filter editing bases by sequence edge.";
+        return "Filter editing bases by comparing RNA and DNA.";
     }
 
     @Override
     protected void generateProbeList() {
-        ComprehensiveFilter cf = new ComprehensiveFilter(databaseManager);
-        cf.establishComprehensiveResultTable(DatabaseManager.COMPREHENSIVE_FILTER_RESULT_TABLE_NAME);
-        cf.executeComprehensiveFilter(DatabaseManager.COMPREHENSIVE_FILTER_TABLE_NAME,
-                DatabaseManager.COMPREHENSIVE_FILTER_RESULT_TABLE_NAME, parentTable, sequenceEdge);
-        DatabaseManager.getInstance().distinctTable(DatabaseManager.COMPREHENSIVE_FILTER_RESULT_TABLE_NAME);
-        Vector<Probe> probes = Query.queryAllEditingSites(DatabaseManager.COMPREHENSIVE_FILTER_RESULT_TABLE_NAME);
-        ProbeList newList = new ProbeList(parentList, DatabaseManager.COMPREHENSIVE_FILTER_RESULT_TABLE_NAME, "",
-                DatabaseManager.COMPREHENSIVE_FILTER_RESULT_TABLE_NAME);
+        DnaRnaFilter dnaRnaFilter = new DnaRnaFilter(databaseManager);
+        dnaRnaFilter.establishDnaRnaTable(DatabaseManager.DNA_RNA_FILTER_RESULT_TABLE_NAME);
+        dnaRnaFilter.executeDnaRnaFilter(DatabaseManager.DNA_RNA_FILTER_RESULT_TABLE_NAME, DatabaseManager.DNA_VCF_RESULT_TABLE_NAME,
+                parentTable);
+        DatabaseManager.getInstance().distinctTable(DatabaseManager.DNA_RNA_FILTER_RESULT_TABLE_NAME);
+
+        Vector<Probe> probes = Query.queryAllEditingSites(DatabaseManager.DNA_RNA_FILTER_RESULT_TABLE_NAME);
+        ProbeList newList = new ProbeList(parentList, DatabaseManager.DNA_RNA_FILTER_RESULT_TABLE_NAME, "",
+                DatabaseManager.DNA_RNA_FILTER_RESULT_TABLE_NAME);
         int index = 0;
         int probesLength = probes.size();
         for (Probe probe : probes) {
@@ -86,7 +84,6 @@ public class ComprehensiveFilterMenu extends ProbeFilter {
             newList.addProbe(probe);
         }
         filterFinished(newList);
-
     }
 
     /* (non-Javadoc)
@@ -110,7 +107,7 @@ public class ComprehensiveFilterMenu extends ProbeFilter {
      */
     @Override
     public boolean isReady() {
-        return stores.length != 0 && sequenceEdge != -1;
+        return stores.length != 0;
     }
 
     /* (non-Javadoc)
@@ -118,7 +115,7 @@ public class ComprehensiveFilterMenu extends ProbeFilter {
      */
     @Override
     public String name() {
-        return "Basic Filter";
+        return "RNA&DNA Filter";
     }
 
     /* (non-Javadoc)
@@ -129,7 +126,7 @@ public class ComprehensiveFilterMenu extends ProbeFilter {
         StringBuilder b = new StringBuilder();
 
         b.append("Filter on probes in ");
-        b.append(collection.probeSet().getActiveList().name() + " ");
+        b.append(collection.probeSet().getActiveList().name()).append(" ");
 
         for (int s = 0; s < stores.length; s++) {
             b.append(stores[s].name());
@@ -145,21 +142,22 @@ public class ComprehensiveFilterMenu extends ProbeFilter {
      */
     @Override
     protected String listName() {
-        return "Sequence edge length = " + sequenceEdge;
+        return "RNA&DNA filter";
     }
+
 
     /**
      * The ValuesFilterOptionPanel.
      */
-    private class ComprehensiveFilterOptionPanel extends JPanel implements ListSelectionListener, KeyListener {
+    private class DnaRnaFilterOptionPanel extends JPanel implements ListSelectionListener {
 
         private JList<DataStore> dataList;
-        private JTextField edgeField;
+        private JTextArea description = null;
 
         /**
          * Instantiates a new values filter option panel.
          */
-        public ComprehensiveFilterOptionPanel() {
+        public DnaRnaFilterOptionPanel() {
             setLayout(new BorderLayout());
             JPanel dataPanel = new JPanel();
             dataPanel.setBorder(BorderFactory.createEmptyBorder(4, 4, 4, 4));
@@ -185,19 +183,12 @@ public class ComprehensiveFilterMenu extends ProbeFilter {
             JPanel choicePanel = new JPanel();
             choicePanel.setLayout(new GridBagLayout());
             choicePanel.setBorder(BorderFactory.createEmptyBorder(4, 4, 4, 4));
-            GridBagConstraints c = new GridBagConstraints();
-
-            c.gridy = 0;
-            c.gridx = 0;
-            c.weightx = 0.5;
-            c.weighty = 0.5;
-            c.fill = GridBagConstraints.HORIZONTAL;
-            choicePanel.add(new JLabel("Edge = "), c);
-            c.gridx = 1;
-            c.weightx = 0.1;
-            edgeField = new JTextField(3);
-            edgeField.addKeyListener(this);
-            choicePanel.add(edgeField, c);
+            description = new JTextArea("RNA-editing means editing in RNA while DNA is not snp.\n" +
+                    "So only otherwise, all the difference between DNA and RNA\n" +
+                    "will be selected.");
+//            description.setLineWrap(true);
+            description.setEditable(false);
+            choicePanel.add(description);
 
             valueChanged(null);
             add(new JScrollPane(choicePanel), BorderLayout.CENTER);
@@ -214,7 +205,7 @@ public class ComprehensiveFilterMenu extends ProbeFilter {
          * @see javax.swing.event.ListSelectionListener#valueChanged(javax.swing.event.ListSelectionEvent)
          */
         public void valueChanged(ListSelectionEvent lse) {
-            System.out.println(ComprehensiveFilterMenu.class.getName() + ":valueChanged()");
+            System.out.println(DnaRnaFilterMenu.class.getName() + ":valueChanged()");
             java.util.List<DataStore> lists = dataList.getSelectedValuesList();
             stores = new DataStore[lists.size()];
             for (int i = 0; i < stores.length; i++) {
@@ -223,28 +214,5 @@ public class ComprehensiveFilterMenu extends ProbeFilter {
             optionsChanged();
         }
 
-        @Override
-        public void keyTyped(KeyEvent e) {
-            int keyChar = e.getKeyChar();
-            if (!(keyChar >= KeyEvent.VK_0 && keyChar <= KeyEvent.VK_9))
-                e.consume();
-        }
-
-        @Override
-        public void keyPressed(KeyEvent e) {
-
-        }
-
-        @Override
-        public void keyReleased(KeyEvent e) {
-            JTextField f = (JTextField) e.getSource();
-            if (f.getText().length() == 0) {
-                return;
-            }
-            if (f == edgeField) {
-                sequenceEdge = Integer.parseInt(edgeField.getText());
-            }
-            optionsChanged();
-        }
     }
 }

@@ -70,7 +70,7 @@ public class PValueFilterMenu extends ProbeFilter {
     @Override
     protected void generateProbeList() {
         PValueFilter pv = new PValueFilter(databaseManager);
-        pv.estblishPvTable(DatabaseManager.PVALUE_FILTER_RESULT_TABLE_NAME);
+        pv.estblishPValueTable(DatabaseManager.PVALUE_FILTER_RESULT_TABLE_NAME);
         pv.executeFDRFilter(DatabaseManager.PVALUE_FILTER_TABLE_NAME,
                 DatabaseManager.PVALUE_FILTER_RESULT_TABLE_NAME, parentTable,
                 LocationPreferences.getInstance().getRScriptPath());

@@ -66,7 +66,7 @@ public class RepeatFilterMenu extends ProbeFilter {
         RepeatFilter rf = new RepeatFilter(databaseManager);
         rf.establishRepeatResultTable(DatabaseManager.REPEAT_FILTER_RESULT_TABLE_NAME);
         rf.establishAluResultTable(DatabaseManager.ALU_FILTER_RESULT_TABLE_NAME);
-        rf.mysqlRepeatFilter(DatabaseManager.REPEAT_FILTER_TABLE_NAME, DatabaseManager.REPEAT_FILTER_RESULT_TABLE_NAME,
+        rf.executeRepeatFilter(DatabaseManager.REPEAT_FILTER_TABLE_NAME, DatabaseManager.REPEAT_FILTER_RESULT_TABLE_NAME,
                 DatabaseManager.ALU_FILTER_RESULT_TABLE_NAME, parentTable);
         DatabaseManager.getInstance().distinctTable(DatabaseManager.REPEAT_FILTER_RESULT_TABLE_NAME);
 

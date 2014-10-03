@@ -117,7 +117,6 @@ public class ChromosomeSequenceTrack extends JPanel {
 
     public byte[] getSequenceForChr(RandomAccessFile raf, int start, int end) {
         byte[] sequence = new byte[end - start];
-        System.out.println("sequence length:" + sequence.length);
         try {
             raf.seek(start - 1);
             int len = raf.read(sequence);
@@ -144,6 +143,7 @@ public class ChromosomeSequenceTrack extends JPanel {
     }
 
     private void drawSequence(byte[] sequence, Graphics g) {
+//        System.out.println("sequence length:"+sequence.length);
         char[] cChar = AsciiUtils.getChars(sequence);
         double pixelForEachBase = (double) displayWidth / (sequence.length);
         for (int i = 0, len = cChar.length; i < len; i++) {

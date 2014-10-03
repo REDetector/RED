@@ -127,7 +127,7 @@ public class DbSNPFilterMenu extends ProbeFilter {
         StringBuilder b = new StringBuilder();
 
         b.append("Filter on probes in ");
-        b.append(collection.probeSet().getActiveList().name() + " ");
+        b.append(collection.probeSet().getActiveList().name()).append(" ");
 
         for (int s = 0; s < stores.length; s++) {
             b.append(stores[s].name());

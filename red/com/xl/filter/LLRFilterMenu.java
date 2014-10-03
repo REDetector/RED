@@ -44,7 +44,7 @@ import java.util.Vector;
 public class LLRFilterMenu extends ProbeFilter {
 
     private DataStore[] stores = new DataStore[0];
-    private RepeatFilterOptionPanel optionsPanel = new RepeatFilterOptionPanel();
+    private LLRFilterMenuOptionPanel optionsPanel = new LLRFilterMenuOptionPanel();
 
     /**
      * Instantiates a new values filter with default values
@@ -149,7 +149,7 @@ public class LLRFilterMenu extends ProbeFilter {
     /**
      * The ValuesFilterOptionPanel.
      */
-    private class RepeatFilterOptionPanel extends JPanel implements ListSelectionListener {
+    private class LLRFilterMenuOptionPanel extends JPanel implements ListSelectionListener {
 
         private JList<DataStore> dataList;
         private JTextArea description = null;
@@ -157,7 +157,7 @@ public class LLRFilterMenu extends ProbeFilter {
         /**
          * Instantiates a new values filter option panel.
          */
-        public RepeatFilterOptionPanel() {
+        public LLRFilterMenuOptionPanel() {
             setLayout(new BorderLayout());
             JPanel dataPanel = new JPanel();
             dataPanel.setBorder(BorderFactory.createEmptyBorder(4, 4, 4, 4));
