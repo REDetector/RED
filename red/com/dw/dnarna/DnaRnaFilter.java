@@ -13,10 +13,6 @@ import java.util.Date;
 public class DnaRnaFilter {
     private DatabaseManager databaseManager;
 
-    private String chr = null;
-    private String ps = null;
-    private String chrom = null;
-    private int count = 0;
     SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
     public DnaRnaFilter(DatabaseManager databaseManager) {
@@ -32,13 +28,9 @@ public class DnaRnaFilter {
         System.out.println("Start executing DnaRnaFilter..." + df.format(new Date()));
 
         try {
-            System.out.println("insert into " + dnaRnaResultTable + " select * from " + refTable + " where " +
-                    "exists (select chrom from " + dnaVcfTable + " where (" + dnaVcfTable + ".chrom=" + refTable +
-                    ".chrom and " + dnaVcfTable + ".pos=" + refTable + ".pos))");
             databaseManager.executeSQL("insert into " + dnaRnaResultTable + " select * from " + refTable + " where " +
                     "exists (select chrom from " + dnaVcfTable + " where (" + dnaVcfTable + ".chrom=" + refTable +
                     ".chrom and " + dnaVcfTable + ".pos=" + refTable + ".pos))");
-
         } catch (SQLException e) {
             // TODO Auto-generated catch block
             System.err.println("Error execute sql clause in " + DnaRnaFilter.class.getName() + ":executeDnaRnaFilter()");
