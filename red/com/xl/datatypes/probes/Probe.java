@@ -15,23 +15,31 @@ public class Probe implements Location {
 
     private int position = 0;
 
-    private char editingBase;
+
+    private char refBase;
+
+    private char altBase;
 
     /**
      * Instantiates a new probe.
      *
-     * @param chr         the chr
-     * @param position    the position
-     * @param editingBase the editing base
+     * @param chr      the chr
+     * @param position the position
+     * @param altBase  the editing base
      */
-    public Probe(String chr, int position, char editingBase) {
+    public Probe(String chr, int position, char refBase, char altBase) {
         this.chr = chr;
         this.position = position;
-        this.editingBase = editingBase;
+        this.refBase = refBase;
+        this.altBase = altBase;
     }
 
-    public char getEditingBase() {
-        return editingBase;
+    public char getRefBase() {
+        return refBase;
+    }
+
+    public char getAltBase() {
+        return altBase;
     }
 
     @Override
