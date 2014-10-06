@@ -760,7 +760,7 @@ public class REDParser implements Runnable, ProgressListener {
                 }
             }
             sections = line.split("\\t");
-            if (sections.length != 3) {
+            if (sections.length != 4) {
                 throw new REDException("Line " + i + "does not contain three sections. We need chr/position/editing " +
                         "base to create the Probe now.");
             }
@@ -769,7 +769,8 @@ public class REDParser implements Runnable, ProgressListener {
                 throw new REDException("Couldn't find a chromosome called "
                         + sections[1]);
             }
-            Probe p = new Probe(chr, Integer.parseInt(sections[1]), sections[2].toCharArray()[0]);
+            // Chr, Position, Reference, Alternative
+            Probe p = new Probe(chr, Integer.parseInt(sections[1]), sections[2].charAt(0), sections[3].charAt(0));
             probeSet.addProbe(p);
         }
         application.dataCollection().activeProbeListChanged(probeSet);
@@ -892,7 +893,7 @@ public class REDParser implements Runnable, ProgressListener {
                     throw new REDException("Couldn't find probe line for list data");
                 }
                 sections = line.split("\\t");
-                if (sections.length != 3) {
+                if (sections.length != 4) {
                     throw new REDException("Line " + i + "does not contain three sections. We need chr/position/editing " +
                             "base to create the new Probe.");
                 }
@@ -901,7 +902,7 @@ public class REDParser implements Runnable, ProgressListener {
                     throw new REDException("Couldn't find a chromosome called "
                             + sections[0]);
                 }
-                Probe p = new Probe(chr, Integer.parseInt(sections[1]), sections[2].toCharArray()[0]);
+                Probe p = new Probe(chr, Integer.parseInt(sections[1]), sections[2].toCharArray()[0], sections[3].toCharArray()[0]);
                 lists[i].addProbe(p);
             }
         }

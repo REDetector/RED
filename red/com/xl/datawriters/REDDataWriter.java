@@ -556,7 +556,7 @@ public class REDDataWriter implements Runnable, Cancellable {
                 }
             }
 
-            p.println(probes[i].getChr() + "\t" + probes[i].getStart() + "\t" + probes[i].getEditingBase());
+            p.println(probes[i].getChr() + "\t" + probes[i].getStart() + "\t" + probes[i].getRefBase() + "\t" + probes[i].getAltBase());
         }
         return true;
     }
@@ -634,8 +634,8 @@ public class REDDataWriter implements Runnable, Cancellable {
                                         + probeLength, j, probeLength);
                     }
                 }
-                p.println(currentListProbes[j].getChr() + "\t" + currentListProbes[j].getStart() + "\t" +
-                        currentListProbes[j].getEditingBase());
+                p.println(currentListProbes[j].getChr() + "\t" + currentListProbes[j].getStart() + "\t" + currentListProbes[j].getRefBase() + "\t" +
+                        currentListProbes[j].getAltBase());
             }
         }
 
