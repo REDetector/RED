@@ -5,6 +5,7 @@ package com.dw.denovo;
  */
 
 import com.dw.publicaffairs.DatabaseManager;
+import com.xl.datatypes.probes.ProbeBean;
 import rcaller.RCaller;
 import rcaller.RCode;
 
@@ -47,18 +48,18 @@ public class PValueFilter {
         return number > 0;
     }
 
-    public void estblishPValueTable(String darnedResultTable) {
-        databaseManager.deleteTable(darnedResultTable);
-        databaseManager.createPValueTable(darnedResultTable);
+    public void estblishPValueTable(String pvalueResultTable) {
+        databaseManager.deleteTable(pvalueResultTable);
+        databaseManager.createPValueTable(pvalueResultTable);
     }
 
-    public void loadDarnedTable(String darnedTable, String darnedPath) {
+    public void loadDarnedTable(String pvalueTable, String pvaluePath) {
         System.out.println("Start loading DarnedTable..." + df.format(new Date()));
-        if (!hasEstablishedDarnedTable(darnedTable)) {
+        if (!hasEstablishedDarnedTable(pvalueTable)) {
             try {
                 int count_ts = 0;
                 databaseManager.setAutoCommit(false);
-                FileInputStream inputStream = new FileInputStream(darnedPath);
+                FileInputStream inputStream = new FileInputStream(pvaluePath);
                 BufferedReader rin = new BufferedReader(new InputStreamReader(
                         inputStream));
                 String line;
@@ -67,7 +68,7 @@ public class PValueFilter {
                 while ((line = rin.readLine()) != null) {
                     String[] sections = line.trim().split("\\t");
                     StringBuilder stringBuilder = new StringBuilder("insert into ");
-                    stringBuilder.append(darnedTable);
+                    stringBuilder.append(pvalueTable);
                     stringBuilder.append("(chrom,coordinate,strand,inchr,inrna) values(");
                     for (int i = 0; i < 5; i++) {
                         if (i == 0) {
@@ -88,7 +89,7 @@ public class PValueFilter {
                 databaseManager.setAutoCommit(true);
             } catch (IOException e) {
                 // TODO Auto-generated catch block
-                System.err.println("Error load file from " + darnedPath + " to file stream");
+                System.err.println("Error load file from " + pvaluePath + " to file stream");
                 e.printStackTrace();
             } catch (SQLException e) {
                 System.err.println("Error execute sql clause in " + PValueFilter.class.getName() + ":loadDarnedTable()");
@@ -98,28 +99,30 @@ public class PValueFilter {
         System.out.println("End loading DarnedTable..." + df.format(new Date()));
     }
 
-    private List<PValueInfo> getExpectedInfo(String darnedTable, String refTable) {
+    private List<PValueInfo> getExpectedInfo(String pvalueTable, String refTable) {
         List<PValueInfo> valueInfos = new ArrayList<PValueInfo>();
         try {
-            ResultSet rs = databaseManager.query(refTable, "chrom,pos,AD", "1");
+            ResultSet rs = databaseManager.query(refTable, "*", "1");
             while (rs.next()) {
-                String[] sections = rs.getString(3).split("/");
-                PValueInfo info = new PValueInfo(rs.getString(1), rs.getInt(2), Integer.parseInt(sections[0]),
-                        Integer.parseInt(sections[1]));
+                //1.CHROM varchar(15),2.POS int,3.ID varchar(30),4.REF varchar(3),5.ALT varchar(5),6.QUAL float(8,2),7.FILTER text,8.INFO text,9.GT text,
+                // 10.AD text,11.DP text,12.GQ text,13.PL text
+                PValueInfo info = new PValueInfo(rs.getString(1), rs.getInt(2), rs.getString(3), rs.getString(4).charAt(0), rs.getString(5).charAt(0),
+                        rs.getFloat(6), rs.getString(7), rs.getString(8), rs.getString(9), rs.getString(10), rs.getString(11), rs.getString(12),
+                        rs.getString(13));
+                String[] sections = info.getAd().split("/");
+                info.altCount = Integer.parseInt(sections[0]);
+                info.refCount = Integer.parseInt(sections[1]);
                 info.setInDarnedDB(false);
                 valueInfos.add(info);
             }
-            rs = databaseManager.query(refTable + "," + darnedTable, refTable + ".chrom," + refTable + ".pos," +
-                    "" + refTable + ".AD", refTable + ".chrom=" + darnedTable + ".chrom and " + refTable + "" +
-                    ".pos=" + darnedTable + ".coordinate");
+            //select refTable.* from refTable INNER JOIN pvalueTable ON refTable.chrom=pvalueTable.chrom and refTable.pos=pvalueTable.coordinate
+            rs = databaseManager.query(refTable + "," + pvalueTable, refTable + ".*", refTable + ".chrom=" + pvalueTable + ".chrom and " + refTable + "" +
+                    ".pos=" + pvalueTable + ".coordinate");
             while (rs.next()) {
-                String[] sections = rs.getString(3).split("/");
-                PValueInfo valueInfo = new PValueInfo(rs.getString(1), rs.getInt(2), Integer.parseInt(sections[0]),
-                        Integer.parseInt(sections[1]));
-                if (valueInfos.contains(valueInfo)) {
-                    valueInfos.get(valueInfos.indexOf(valueInfo)).setInDarnedDB(true);
+                PValueInfo info = new PValueInfo(rs.getString(1), rs.getInt(2));
+                if (valueInfos.contains(info)) {
+                    valueInfos.get(valueInfos.indexOf(info)).setInDarnedDB(true);
                 }
-
             }
             return valueInfos;
 
@@ -130,47 +133,8 @@ public class PValueFilter {
         }
     }
 
-
-//    private void Exp_num(String darnedTable, String refTable) {
-//        try {
-//            ResultSet rs = databaseManager.query(refTable, "chrom,pos", "1");
-//
-//            while (rs.next()) {
-//                coordinate.add(rs.getString(1));
-//                coordinate.add(rs.getString(2));
-//            }
-//            for (int i = 0, len = coordinate.size(); i < len; i++) {
-//                if (i % 2 == 0) {
-//                    chr = coordinate.get(i);
-//                } else {
-//                    ps = coordinate.get(i);
-//                    queryCoverage(refTable, chr, ps);
-//                    rs = databaseManager.query(darnedTable, "strand", "chrom='"
-//                            + chr + "' and coordinate='" + ps + "'");
-//                    fd_alt.add(alt_n);
-//                    fd_ref.add(ref_n);
-//                    if (rs.next()) {
-//                        known_alt += alt_n;
-//                        known_ref += ref_n;
-//                    } else {
-//                        known_alt += 0;
-//                        known_ref += (alt_n + ref_n);
-//                    }
-//                }
-//
-//            }
-//            known_alt /= (coordinate.size() / 2);
-//            known_ref /= (coordinate.size() / 2);
-//            known_alt = Math.round(known_alt);
-//            known_ref = Math.round(known_ref);
-//        } catch (SQLException e) {
-//            // TODO Auto-generated catch block
-//            e.printStackTrace();
-//        }
-//    }
-
-    public static double calPValue(double found_ref, double found_alt,
-                                   double known_ref, double known_alt, RCaller caller, RCode code) {
+    public double calPValue(double found_ref, double found_alt,
+                            double known_ref, double known_alt, RCaller caller, RCode code) {
         try {
             double[][] data = new double[][]{{found_ref, found_alt}, {known_ref, known_alt}};
             code.addDoubleMatrix("mydata", data);
@@ -185,45 +149,43 @@ public class PValueFilter {
         }
     }
 
-    private List<PValueInfo> executePValueFilter(String darnedTable, String darnedResultTable, String refTable,
-                                                 RCaller caller, RCode code) {
+    private List<PValueInfo> executePValueFilter(String pvalueTable, String pvalueResultTable, String refTable, RCaller caller, RCode code) {
         System.out.println("Start executing PValueFilter..." + df.format(new Date()));
-        List<PValueInfo> valueInfos = getExpectedInfo(darnedTable, refTable);
+        List<PValueInfo> valueInfos = getExpectedInfo(pvalueTable, refTable);
         double known_alt = 0;
         double known_ref = 0;
         for (PValueInfo info : valueInfos) {
             if (info.isInDarnedDB) {
-                known_alt += info.alt;
-                known_ref += info.ref;
+                known_alt += info.altCount;
+                known_ref += info.refCount;
             } else {
-                known_ref += info.alt + info.ref;
+                known_ref += info.altCount + info.refCount;
             }
         }
         known_alt /= valueInfos.size();
         known_ref /= valueInfos.size();
         DecimalFormat dF = new DecimalFormat("#.###");
-        for (int i = 0, len = valueInfos.size(); i < len; i++) {
-            String chr = valueInfos.get(i).chr;
-            int pos = valueInfos.get(i).pos;
-            int alt = valueInfos.get(i).alt;
-            int ref = valueInfos.get(i).ref;
+        List<PValueInfo> rest = new ArrayList<PValueInfo>();
+        for (PValueInfo pValueInfo : valueInfos) {
+            int alt = pValueInfo.altCount;
+            int ref = pValueInfo.refCount;
             double pValue = calPValue(ref, alt, known_ref, known_alt, caller, code);
             if (pValue < 0.05) {
                 double level = (double) alt / (alt + ref);
-                valueInfos.get(i).setpValue(pValue);
+                pValueInfo.setPValue(pValue);
+                pValueInfo.setLevel(level);
+                rest.add(pValueInfo);
                 try {
-                    databaseManager.executeSQL("insert into " + darnedResultTable + "(chrom,pos,ref,alt,level,p_value) values('" + chr
-                            + "'," + pos + "," + ref + "," + alt + "," + dF.format(level) + "," + pValue + ")");
+                    databaseManager.executeSQL("insert into " + pvalueResultTable + "(chrom,pos,id,ref,alt,qual,filter,info,gt,ad,dp,gq,pl,level," +
+                            "pvalue) values( " + pValueInfo.toString() + "," + dF.format(level) + "," + pValue + ")");
                 } catch (SQLException e) {
                     System.err.println("Error execute sql clause in " + PValueFilter.class.getName() + ":executePValueFilter()");
                     e.printStackTrace();
                 }
-            } else {
-                valueInfos.remove(i);
             }
         }
         System.out.println("End executing PValueFilter..." + df.format(new Date()));
-        return valueInfos;
+        return rest;
     }
 
     public void executeFDRFilter(String darnedTable, String darnedResultTable, String refTable, String rExecutable) {
@@ -235,7 +197,7 @@ public class PValueFilter {
             List<PValueInfo> pValueList = executePValueFilter(darnedTable, darnedResultTable, refTable, caller, code);
             double[] pValueArray = new double[pValueList.size()];
             for (int i = 0, len = pValueList.size(); i < len; i++) {
-                pValueArray[i] = pValueList.get(i).pValue;
+                pValueArray[i] = pValueList.get(i).getPvalue();
             }
             code.addDoubleArray("parray", pValueArray);
 //            code.addRCode("qobj <- qvalue(parray)");
@@ -250,8 +212,8 @@ public class PValueFilter {
                 double fdr = results[i];
                 if (fdr < 0.05) {
                     databaseManager.executeSQL("update " + darnedResultTable
-                            + " set fdr=" + fdr + " where chrom='" + pValueList.get(i).chr
-                            + "' and pos=" + pValueList.get(i).pos);
+                            + " set fdr=" + fdr + " where chrom='" + pValueList.get(i).getChr()
+                            + "' and pos=" + pValueList.get(i).getPos());
                 }
             }
             // clear insert data
@@ -261,27 +223,28 @@ public class PValueFilter {
         System.out.println("End executing FDRFilter..." + df.format(new Date()));
     }
 
-    private class PValueInfo {
-        public String chr;
-        public int pos;
-        public int alt;
-        public int ref;
-        public double pValue;
+    private class PValueInfo extends ProbeBean {
         public boolean isInDarnedDB;
+        public int refCount = 0;
+        public int altCount = 0;
 
-        public PValueInfo(String chr, int pos, int alt, int ref) {
-            this.chr = chr;
-            this.pos = pos;
-            this.alt = alt;
-            this.ref = ref;
+        public PValueInfo(String chr, int pos) {
+            super(chr, pos);
+        }
+
+        public PValueInfo(String chr, int pos, String id, char ref, char alt, float qual, String filter, String info, String gt, String ad, String dp, String gq,
+                          String pl) {
+            super(chr, pos, id, ref, alt, qual, filter, info, gt, ad, dp, gq, pl);
         }
 
         public void setInDarnedDB(boolean isInDarnedDB) {
             this.isInDarnedDB = isInDarnedDB;
         }
 
-        public void setpValue(double pValue) {
-            this.pValue = pValue;
+        @Override
+        public String toString() {
+            return "'" + getChr() + "'," + getPos() + ",'" + getId() + "','" + getRef() + "','" + getAlt() + "'," + getQual() + ",'" + getFilter() + "'," +
+                    "'" + getInfo() + "','" + getGt() + "','" + getAd() + "','" + getDp() + "','" + getGq() + "','" + getPl() + "'";
         }
 
         @Override
@@ -289,13 +252,13 @@ public class PValueFilter {
             if (this == o) return true;
             if (!(o instanceof PValueInfo)) return false;
             PValueInfo that = (PValueInfo) o;
-            return pos != that.pos && chr.equals(that.chr);
+            return getPos() != that.getPos() && getChr().equals(that.getChr());
         }
 
         @Override
         public int hashCode() {
-            int result = chr.hashCode();
-            result = 31 * result + pos;
+            int result = getChr().hashCode();
+            result = 31 * result + getPos();
             return result;
         }
     }
