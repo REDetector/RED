@@ -194,7 +194,7 @@ public class ChromosomeDisplay extends JPanel implements DataChangeListener {
 
         int wholeXStart = xOffset + scaleX(chrWidth, p.getStart(), maxLength);
         int wholeXEnd = wholeXStart + 1;
-        g.setColor(ColourScheme.getBaseColor(p.getEditingBase()));
+        g.setColor(ColourScheme.getBaseColor(p.getAltBase()));
 
         int yBoxStart;
         int yBoxEnd;

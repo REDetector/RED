@@ -96,6 +96,9 @@ public class REDPreferences {
     private boolean isDenovo = false;
 
 
+    private boolean databaseConnected = false;
+
+
     /**
      * Instantiates a redPreferences object. Only ever called once from inside this
      * class. External access is via the getInstnace() method.
@@ -346,4 +349,13 @@ public class REDPreferences {
     public void setDatabaseTableBuilder(String databaseTableBuilder) {
         this.databaseTableBuilder = databaseTableBuilder;
     }
+
+    public boolean isDatabaseConnected() {
+        return databaseConnected;
+    }
+
+    public void setDatabaseConnected(boolean databaseConnected) {
+        this.databaseConnected = databaseConnected;
+    }
+
 }

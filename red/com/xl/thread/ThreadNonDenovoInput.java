@@ -115,7 +115,6 @@ public class ThreadNonDenovoInput implements Runnable {
 //                    locationPreferences.getRScriptPath());
 //        }
 
-        REDPreferences.getInstance().setDataLoadedToDatabase(true);
         processingComplete();
     }
 

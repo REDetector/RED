@@ -70,8 +70,7 @@ public class BasicFilterMenu extends ProbeFilter {
         BasicFilter bf = new BasicFilter(databaseManager);
         bf.establishBasicTable(DatabaseManager.BASIC_FILTER_RESULT_TABLE_NAME);
         // The first parameter means quality and the second means depth
-        bf.executeBasicFilter(parentTable,
-                DatabaseManager.BASIC_FILTER_RESULT_TABLE_NAME, qualityInt, coverageInt);
+        bf.executeBasicFilter(parentTable, DatabaseManager.BASIC_FILTER_RESULT_TABLE_NAME, qualityInt, coverageInt);
         DatabaseManager.getInstance().distinctTable(DatabaseManager.BASIC_FILTER_RESULT_TABLE_NAME);
         Vector<Probe> probes = Query.queryAllEditingSites(DatabaseManager.BASIC_FILTER_RESULT_TABLE_NAME);
         ProbeList newList = new ProbeList(parentList, DatabaseManager.BASIC_FILTER_RESULT_TABLE_NAME, "",
@@ -146,7 +145,7 @@ public class BasicFilterMenu extends ProbeFilter {
      */
     @Override
     protected String listName() {
-        return "Quality >= " + qualityInt + ",coverage >= " + coverageInt;
+        return "Filter by Q>=" + qualityInt + " & Cov>=" + coverageInt;
     }
 
     /**

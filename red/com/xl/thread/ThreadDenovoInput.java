@@ -75,7 +75,6 @@ public class ThreadDenovoInput implements Runnable {
 
         progressUpdated("Importing RefSeq Genes data...", 5, ALL_STEP);
         SpliceJunctionFilter cf = new SpliceJunctionFilter(manager);
-        cf.establishSpliceJunctionResultTable(DatabaseManager.SPLICE_JUNCTION_FILTER_RESULT_TABLE_NAME);
         cf.loadSpliceJunctionTable(DatabaseManager.SPLICE_JUNCTION_FILTER_TABLE_NAME, locationPreferences.getRefSeqFile());
 //        cf.executeComprehensiveFilter(DatabaseManager.SPLICE_JUNCTION_FILTER_TABLE_NAME,
 //                DatabaseManager.SPLICE_JUNCTION_FILTER_RESULT_TABLE_NAME, DatabaseManager.REPEAT_FILTER_RESULT_TABLE_NAME
@@ -87,22 +86,11 @@ public class ThreadDenovoInput implements Runnable {
 
         progressUpdated("Importing dbSNP data...", 6, ALL_STEP);
         DbsnpFilter sf = new DbsnpFilter(manager);
-        sf.establishDbSNPResultTable(DatabaseManager.DBSNP_FILTER_RESULT_TABLE_NAME);
         sf.loadDbSNPTable(DatabaseManager.DBSNP_FILTER_TABLE_NAME, locationPreferences.getDbSNPFile());
-//        sf.executeDbSNPFilter(DatabaseManager.DBSNP_FILTER_TABLE_NAME,
-//                DatabaseManager.DBSNP_FILTER_RESULT_TABLE_NAME, DatabaseManager.SPLICE_JUNCTION_FILTER_RESULT_TABLE_NAME);
-//        DatabaseManager.getInstance().distinctTable(DatabaseManager.DBSNP_FILTER_RESULT_TABLE_NAME);
 
         progressUpdated("Importing DARNED data...", 7, ALL_STEP);
         PValueFilter pv = new PValueFilter(manager);
-        pv.estblishPValueTable(DatabaseManager.PVALUE_FILTER_RESULT_TABLE_NAME);
         pv.loadDarnedTable(DatabaseManager.PVALUE_FILTER_TABLE_NAME, locationPreferences.getDarnedFile());
-//        if (locationPreferences.getRScriptPath() != null && locationPreferences.getRScriptPath().length() != 0) {
-//            pv.executeFDRFilter(DatabaseManager.PVALUE_FILTER_TABLE_NAME,
-//                    DatabaseManager.PVALUE_FILTER_RESULT_TABLE_NAME, DatabaseManager.DBSNP_FILTER_RESULT_TABLE_NAME,
-//                    locationPreferences.getRScriptPath());
-//        }
-        REDPreferences.getInstance().setDataLoadedToDatabase(true);
         processingComplete();
     }
 

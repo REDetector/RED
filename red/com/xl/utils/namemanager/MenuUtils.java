@@ -51,7 +51,7 @@ public class MenuUtils {
     public static final String SPECIFIC_FILTER = "Specific Filter...";
     public static final String KNOWN_SNVS_FILTER = "Known SNVs Filter...";
     public static final String REPEATED_FILTER = "Repeated Filter...";
-    public static final String RNA_DNA_FILTER = "RNA-DNA Filter...";
+    public static final String DNA_RNA_FILTER = "DNA-RNA Filter...";
     public static final String COMPREHENSIVE_FILTER = "Comprehensive Filter...";
     public static final String STATISTICAL_FILTER = "Statistical Filter";
     public static final String PVALUE_FILTER = "P-Value Filter...";
@@ -60,7 +60,7 @@ public class MenuUtils {
     /*Reports menu*/
     public static final String REPORTS_MENU = "Reports";
     public static final String VARIANT_DISTRIBUTION = "Variant Distribution...";
-    public static final String BAR_CHART = "BarChart...";
+    public static final String RNA_EDITING_SITES_DISTRIBUTION = "Sites Distribution...";
     public static final String FILTER_REPORTS = "Filter Reports...";
 
     /*Help menu*/

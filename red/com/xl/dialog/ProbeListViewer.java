@@ -6,6 +6,7 @@ import com.xl.datatypes.probes.ProbeList;
 import com.xl.main.REDApplication;
 import com.xl.preferences.DisplayPreferences;
 import com.xl.preferences.LocationPreferences;
+import com.xl.utils.FontManager;
 import com.xl.utils.filefilters.FileFilterExt;
 
 import javax.swing.*;
@@ -49,15 +50,68 @@ public class ProbeListViewer extends JDialog implements MouseListener, ActionLis
         description.setWrapStyleWord(true);
         getContentPane().add(new JScrollPane(description, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER), BorderLayout.NORTH);
 
-        String[] headers = new String[]{"Chr", "Position", "Editing Base"};
-        Class[] classes = new Class[]{String.class, Integer.class, Character.class};
+        String[] headers = new String[]{"Chr", "Position", "Refefence Base", "Alternative Base"};
+        Class[] classes = new Class[]{String.class, Integer.class, Character.class, Character.class};
 
         Object[][] rowData = new Object[probes.length][headers.length];
 
         for (int i = 0; i < probes.length; i++) {
             rowData[i][0] = probes[i].getChr();
             rowData[i][1] = probes[i].getStart();
-            rowData[i][2] = probes[i].getEditingBase();
+            rowData[i][2] = probes[i].getRefBase();
+            rowData[i][3] = probes[i].getAltBase();
+        }
+
+        TableSorter sorter = new TableSorter(new ProbeTableModel(rowData, headers, classes));
+        table = new JTable(sorter);
+//		table.setDefaultRenderer(Double.class, new SmallDoubleCellRenderer());
+        table.addMouseListener(this);
+        sorter.setTableHeader(table.getTableHeader());
+
+        getContentPane().add(new JScrollPane(table), BorderLayout.CENTER);
+
+        JPanel buttonPanel = new JPanel();
+        JButton cancelButton = new JButton("Close");
+        cancelButton.setActionCommand("close");
+        cancelButton.addActionListener(this);
+        buttonPanel.add(cancelButton);
+
+        JButton saveButton = new JButton("Save");
+        saveButton.setActionCommand("save");
+        saveButton.addActionListener(this);
+        buttonPanel.add(saveButton);
+
+        getContentPane().add(buttonPanel, BorderLayout.SOUTH);
+
+        setSize(500, 350);
+        setLocationRelativeTo(application);
+        setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+        setVisible(true);
+
+    }
+
+    public ProbeListViewer(Probe[] probes, String probeName, String descriptions, REDApplication application) {
+        super(application, probeName + " (" + probes.length + " probes)");
+
+        getContentPane().setLayout(new BorderLayout());
+
+        JTextArea description = new JTextArea("Description:\n\n" + descriptions, 5, 0);
+        description.setEditable(false);
+        description.setFont(FontManager.defaultFont);
+        description.setLineWrap(true);
+        description.setWrapStyleWord(true);
+        getContentPane().add(new JScrollPane(description, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER), BorderLayout.NORTH);
+
+        String[] headers = new String[]{"Chr", "Position", "Refefence Base", "Alternative Base"};
+        Class[] classes = new Class[]{String.class, Integer.class, Character.class, Character.class};
+
+        Object[][] rowData = new Object[probes.length][headers.length];
+
+        for (int i = 0; i < probes.length; i++) {
+            rowData[i][0] = probes[i].getChr();
+            rowData[i][1] = probes[i].getStart();
+            rowData[i][2] = probes[i].getRefBase();
+            rowData[i][3] = probes[i].getAltBase();
         }
 
         TableSorter sorter = new TableSorter(new ProbeTableModel(rowData, headers, classes));

@@ -190,7 +190,7 @@ public class PValueFilterMenu extends ProbeFilter {
             GridBagConstraints c = new GridBagConstraints();
             c.gridy = 0;
             rScriptField = new JTextField();
-            JLabel rScriptLable = new JLabel(LocationPreferences.RSCRIPT_PATH);
+            JLabel rScriptLable = new JLabel(LocationPreferences.R_EXECUTABALE_PATH);
             rScriptPath = LocationPreferences.getInstance().getRScriptPath();
             if (rScriptPath != null) {
                 rScriptField.setText(rScriptPath);
@@ -199,7 +199,7 @@ public class PValueFilterMenu extends ProbeFilter {
             }
             rScriptField.setEditable(false);
             JButton rScriptButton = new JButton("Browse");
-            rScriptButton.setActionCommand(LocationPreferences.RSCRIPT_PATH);
+            rScriptButton.setActionCommand(LocationPreferences.R_EXECUTABALE_PATH);
             rScriptButton.addActionListener(this);
             c.gridx = 0;
             c.weightx = 0.1;
@@ -240,7 +240,7 @@ public class PValueFilterMenu extends ProbeFilter {
         @Override
         public void actionPerformed(ActionEvent e) {
             String action = e.getActionCommand();
-            if (action.equals(LocationPreferences.RSCRIPT_PATH)) {
+            if (action.equals(LocationPreferences.R_EXECUTABALE_PATH)) {
                 getFile(action, rScriptField);
                 LocationPreferences.getInstance().setRScriptPath(rScriptField.getText());
                 rScriptPath = rScriptField.getText();

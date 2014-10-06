@@ -272,7 +272,7 @@ public class ChromosomeDataTrack extends JPanel implements DataChangeListener {
     }
 
     private void drawProbe(Graphics g, Probe b) {
-        g.setColor(ColourScheme.getBaseColor(b.getEditingBase()));
+        g.setColor(ColourScheme.getBaseColor(b.getAltBase()));
         int position = b.getStart();
         int left = Math.round(bpToPixel(position));
         int right = Math.round(bpToPixel(position) + basePixel);

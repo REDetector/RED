@@ -8,7 +8,10 @@ import com.xl.dialog.*;
 import com.xl.dialog.gotodialog.GotoDialog;
 import com.xl.dialog.gotodialog.GotoWindowDialog;
 import com.xl.display.chromosomeviewer.ChromosomeDataTrack;
-import com.xl.display.report.EditingSitesDistributionHistogram;
+import com.xl.display.report.FilterReports;
+import com.xl.display.report.ReportOptions;
+import com.xl.display.report.SitesDistributionHistogram;
+import com.xl.display.report.VariantDistributionHistogram;
 import com.xl.exception.REDException;
 import com.xl.filter.*;
 import com.xl.help.HelpDialog;
@@ -97,7 +100,7 @@ public class REDMenu extends JMenuBar implements ActionListener {
 
     private JMenu reportsMenu;
     private JMenuItem variantDistribution;
-    private JMenuItem barChart;
+    private JMenuItem sitesDistribution;
     private JMenuItem filterReports;
 
     private JMenu helpMenu;
@@ -176,7 +179,7 @@ public class REDMenu extends JMenuBar implements ActionListener {
 
         reportsMenu = new JMenu();
         variantDistribution = new JMenuItem();
-        barChart = new JMenuItem();
+        sitesDistribution = new JMenuItem();
         filterReports = new JMenuItem();
         helpMenu = new JMenu();
         welcome = new JMenuItem();
@@ -279,7 +282,7 @@ public class REDMenu extends JMenuBar implements ActionListener {
             addJMenuItem(filterMenu, basicFilter, MenuUtils.BASIC_FILTER, -1);
             addJMenuItem(filterMenu, specificFilter, MenuUtils.SPECIFIC_FILTER, -1);
             addJMenuItem(filterMenu, knownSNVsFilter, MenuUtils.KNOWN_SNVS_FILTER, -1);
-            addJMenuItem(filterMenu, rnadnaFilter, MenuUtils.RNA_DNA_FILTER, -1);
+            addJMenuItem(filterMenu, rnadnaFilter, MenuUtils.DNA_RNA_FILTER, -1);
             addJMenuItem(filterMenu, repetitiveFilter, MenuUtils.REPEATED_FILTER, -1);
             addJMenuItem(filterMenu, comprehensiveFilter, MenuUtils.COMPREHENSIVE_FILTER, -1);
             {
@@ -296,7 +299,7 @@ public class REDMenu extends JMenuBar implements ActionListener {
         {
             reportsMenu.setText(MenuUtils.REPORTS_MENU);
             addJMenuItem(reportsMenu, variantDistribution, MenuUtils.VARIANT_DISTRIBUTION, -1);
-            addJMenuItem(reportsMenu, barChart, MenuUtils.BAR_CHART, -1);
+            addJMenuItem(reportsMenu, sitesDistribution, MenuUtils.RNA_EDITING_SITES_DISTRIBUTION, -1);
             addJMenuItem(reportsMenu, filterReports, MenuUtils.FILTER_REPORTS, -1);
         }
         add(reportsMenu);
@@ -459,7 +462,7 @@ public class REDMenu extends JMenuBar implements ActionListener {
             new GotoWindowDialog(redApplication);
         }
         // --------------------FilterMenu--------------------
-        else if (action.contains("Filter")) {
+        else if (action.endsWith("Filter...")) {
             try {
                 if (action.equals(MenuUtils.BASIC_FILTER)) {
                     new FilterOptionsDialog(redApplication.dataCollection(), new BasicFilterMenu(redApplication
@@ -473,7 +476,7 @@ public class REDMenu extends JMenuBar implements ActionListener {
                 } else if (action.equals(MenuUtils.REPEATED_FILTER)) {
                     new FilterOptionsDialog(redApplication.dataCollection(), new RepeatFilterMenu(redApplication
                             .dataCollection()));
-                } else if (action.equals(MenuUtils.RNA_DNA_FILTER)) {
+                } else if (action.equals(MenuUtils.DNA_RNA_FILTER)) {
                     new FilterOptionsDialog(redApplication.dataCollection(), new DnaRnaFilterMenu(redApplication
                             .dataCollection()));
                 } else if (action.equals(MenuUtils.COMPREHENSIVE_FILTER)) {
@@ -495,12 +498,16 @@ public class REDMenu extends JMenuBar implements ActionListener {
             if (redApplication.dataCollection().getActiveDataStore() == null) {
                 JOptionPane.showMessageDialog(redApplication, "You need to select a data store in the Data panel before viewing this plot", "No data selected...", JOptionPane.INFORMATION_MESSAGE);
             } else {
-                new EditingSitesDistributionHistogram(redApplication.dataCollection().getActiveDataStore());
+                new VariantDistributionHistogram(redApplication.dataCollection().getActiveDataStore());
             }
-        } else if (action.equals(MenuUtils.BAR_CHART)) {
-
+        } else if (action.equals(MenuUtils.RNA_EDITING_SITES_DISTRIBUTION)) {
+            if (redApplication.dataCollection().getActiveDataStore() == null) {
+                JOptionPane.showMessageDialog(redApplication, "You need to select a data store in the Data panel before viewing this plot", "No data selected...", JOptionPane.INFORMATION_MESSAGE);
+            } else {
+                new SitesDistributionHistogram(redApplication.dataCollection().getActiveDataStore());
+            }
         } else if (action.equals(MenuUtils.FILTER_REPORTS)) {
-
+            new ReportOptions(redApplication, new FilterReports(redApplication.dataCollection()));
         }
         // --------------------HelpMenu---------------------
         else if (action.equals(MenuUtils.WELCOME)) {
@@ -545,6 +552,11 @@ public class REDMenu extends JMenuBar implements ActionListener {
 
     public void databaseLoaded() {
         filterMenu.setEnabled(true);
+    }
+
+    public void setDenovo(boolean isDenovo) {
+        llrFilter.setEnabled(!isDenovo);
+        rnadnaFilter.setEnabled(!isDenovo);
     }
 
     /**

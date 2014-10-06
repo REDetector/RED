@@ -337,7 +337,7 @@ public class REDInfoPanel extends JPanel implements Runnable, ActionListener {
         } catch (Exception e) {
             programUpdateLabel.setIcon(IconUtils.ERRORICON);
             programUpdateLabelText
-                    .setText("Failed to check for SeqMonk updates");
+                    .setText("Failed to check for RED updates");
             e.printStackTrace();
         }
 

@@ -97,7 +97,7 @@ public class Connect {
         // dr.executeDnaRnaFilter();
         // Vector<Probe> probes=bf.queryEditingSite();
         // for(Probe probe:probes){
-        // System.out.println(probe.getChr()+" "+probe.getStart()+" "+probe.getEditingBase());
+        // System.out.println(probe.getChr()+" "+probe.getStart()+" "+probe.getAltBase());
         // }
         // llrFilter lf = new llrFilter(manager, "loadDnaVcfTable", "executeLLRFilter",
         // "DnaRnatemp");

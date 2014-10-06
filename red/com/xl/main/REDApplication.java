@@ -902,17 +902,23 @@ public class REDApplication extends JFrame implements ProgressListener,
             resetChangesWereMade();
         } else if (command.equals("database_connected")) {
             System.out.println(REDApplication.class.getName() + ":database_connected");
+            REDPreferences.getInstance().setDatabaseConnected(true);
             menu.databaseConnected();
             changesWereMade();
         } else if (command.equals("database_loaded")) {
             System.out.println(REDApplication.class.getName() + ":database_loaded");
+            REDPreferences.getInstance().setDatabaseConnected(true);
+            REDPreferences.getInstance().setDataLoadedToDatabase(true);
             menu.databaseConnected();
             menu.databaseLoaded();
-            Vector<Probe> probes = Query.queryAllEditingSites(DatabaseManager.RNA_VCF_RESULT_TABLE_NAME);
-            Probe[] probeArray = probes.toArray(new Probe[0]);
-            dataCollection.setProbeSet(new ProbeSet("Original RNA editing sites by RNA vcf file", probeArray,
-                    DatabaseManager.RNA_VCF_RESULT_TABLE_NAME));
-            changesWereMade();
+            menu.setDenovo(REDPreferences.getInstance().isDenovo());
+            if (dataCollection.probeSet() == null) {
+                Vector<Probe> probes = Query.queryAllEditingSites(DatabaseManager.RNA_VCF_RESULT_TABLE_NAME);
+                Probe[] probeArray = probes.toArray(new Probe[0]);
+                dataCollection.setProbeSet(new ProbeSet("Original RNA editing sites by RNA vcf file", probeArray,
+                        DatabaseManager.RNA_VCF_RESULT_TABLE_NAME));
+                changesWereMade();
+            }
         } else if (command.equals("fasta_loaded")) {
             DisplayPreferences.getInstance().setFastaEnable(true);
             JOptionPane.showMessageDialog(this, "The fasta file has been loaded. Please zoom out to make it visible" +
