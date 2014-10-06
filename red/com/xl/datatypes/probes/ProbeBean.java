@@ -4,7 +4,22 @@ package com.xl.datatypes.probes;
  * Created by Administrator on 2014/10/1.
  */
 public class ProbeBean {
-
+    public ProbeBean(String chr, int pos, String id, char ref, char alt, float qual, String filter, String info, String gt, String ad, String dp, String gq,
+                     String pl) {
+        this.chr = chr;
+        this.pos = pos;
+        this.id = id;
+        this.ref = ref;
+        this.alt = alt;
+        this.qual = qual;
+        this.filter = filter;
+        this.info = info;
+        this.gt = gt;
+        this.ad = ad;
+        this.dp = dp;
+        this.gq = gq;
+        this.pl = pl;
+    }
 
     private String chr;
     private int pos;
@@ -19,6 +34,10 @@ public class ProbeBean {
     private String dp;
     private String gq;
     private String pl;
+
+    private double level = -1;
+    private double pvalue = -1;
+    private double fdr = -1;
 
     public ProbeBean(String chr, int pos) {
         this.chr = chr;
@@ -121,5 +140,28 @@ public class ProbeBean {
         this.pl = pl;
     }
 
+    public double getPvalue() {
+        return pvalue;
+    }
+
+    public void setPValue(double pvalue) {
+        this.pvalue = pvalue;
+    }
+
+    public double getFdr() {
+        return fdr;
+    }
+
+    public void setFdr(double fdr) {
+        this.fdr = fdr;
+    }
+
+    public double getLevel() {
+        return level;
+    }
+
+    public void setLevel(double level) {
+        this.level = level;
+    }
 
 }
