@@ -9,7 +9,8 @@ import com.xl.datatypes.annotation.CoreAnnotationSet;
 import com.xl.datatypes.probes.ProbeList;
 import com.xl.datatypes.probes.ProbeSet;
 import com.xl.dialog.*;
-import com.xl.display.report.EditingSitesDistributionHistogram;
+import com.xl.display.report.SitesDistributionHistogram;
+import com.xl.display.report.VariantDistributionHistogram;
 import com.xl.exception.REDException;
 import com.xl.main.REDApplication;
 
@@ -368,15 +369,20 @@ public class DataViewer extends JPanel implements MouseListener, TreeSelectionLi
         public ProbePopupMenu(ProbeList p) {
             this.p = p;
 
-            JMenuItem view = new JMenuItem("Show View List");
+            JMenuItem view = new JMenuItem("Show Sites List");
             view.setActionCommand("view");
             view.addActionListener(this);
             add(view);
 
-            JMenuItem length = new JMenuItem("Show Probe Distribution");
-            length.setActionCommand("distribution");
-            length.addActionListener(this);
-            add(length);
+            JMenuItem sitesDistribution = new JMenuItem("Show Sites Distribution");
+            sitesDistribution.setActionCommand("sites distribution");
+            sitesDistribution.addActionListener(this);
+            add(sitesDistribution);
+
+            JMenuItem variantDistribution = new JMenuItem("Show Variant Distribution");
+            variantDistribution.setActionCommand("variant distribution");
+            variantDistribution.addActionListener(this);
+            add(variantDistribution);
 
             JMenuItem rename = new JMenuItem("Rename");
             rename.setActionCommand("rename");
@@ -406,8 +412,10 @@ public class DataViewer extends JPanel implements MouseListener, TreeSelectionLi
         public void actionPerformed(ActionEvent ae) {
             if (ae.getActionCommand().equals("view")) {
                 new ProbeListViewer(p, application);
-            } else if (ae.getActionCommand().equals("distribution")) {
-                new EditingSitesDistributionHistogram(collection.getActiveDataStore());
+            } else if (ae.getActionCommand().equals("sites distribution")) {
+                new SitesDistributionHistogram(collection.getActiveDataStore());
+            } else if (ae.getActionCommand().equals("variant distribution")) {
+                new VariantDistributionHistogram(collection.getActiveDataStore());
             } else if (ae.getActionCommand().equals("rename")) {
                 String name = getNewName(p.name());
                 if (name != null) {
