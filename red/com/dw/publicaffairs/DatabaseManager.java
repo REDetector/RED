@@ -104,8 +104,8 @@ public class DatabaseManager {
 
     public void createPValueTable(String darnedResultTable) {
         try {
-            stmt.executeUpdate("create table " + darnedResultTable + "(chrom varchar(15),pos int,ref smallint," +
-                    "alt smallint,level varchar(10),p_value double,fdr double)");
+            stmt.executeUpdate("create table " + darnedResultTable + "(CHROM varchar(15),POS int,ID varchar(30),REF varchar(3),ALT varchar(5)," +
+                    "QUAL float(8,2), FILTER text,INFO text,GT text,AD text,DP text,GQ text,PL text ,level float,pvalue float,fdr float,index(chrom,pos))");
         } catch (SQLException e) {
             System.err.println("Error create table '" + darnedResultTable + "'");
             e.printStackTrace();
@@ -150,8 +150,7 @@ public class DatabaseManager {
             return stmt.executeQuery("select " + columns + " from " + table
                     + " where " + whereArgs);
         } catch (SQLException e) {
-            System.err.println("Error execute query clause: '" + "select "
-                    + columns + " from " + table + "'");
+            System.err.println("Error execute query clause: '" + "select " + columns + " from " + table + "'");
             e.printStackTrace();
             return null;
         }
