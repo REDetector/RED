@@ -79,10 +79,7 @@ public class UpdateChecker {
                 return true;
             } else if (thisNumber > remoteNumber) {
                 // This version is higher
-                System.err
-                        .println("Local version (" + thisVersion
-                                + ") is higher than the remote ("
-                                + remoteVersion + ")");
+                System.err.println("Local version (" + thisVersion + ") is higher than the remote (" + remoteVersion + ")");
                 return false;
             }
         }
@@ -121,7 +118,7 @@ public class UpdateChecker {
 
         try {
 
-            URL updateURL = new URL("http", "www.bioinformatics.babraham.ac.uk", "/projects/seqmonk/current_version.txt");
+            URL updateURL = new URL("http", "bellatangtang.github.io", "/version.txt");
 
             URLConnection connection = updateURL.openConnection();
             connection.setUseCaches(false);
