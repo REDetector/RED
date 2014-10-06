@@ -1,8 +1,8 @@
-package com.xl.dialog;
+package com.xl.display.report;
 
 import com.sun.java.TableSorter;
 import com.xl.datatypes.genome.Chromosome;
-import com.xl.display.report.Report;
+import com.xl.dialog.CrashReporter;
 import com.xl.main.REDApplication;
 import com.xl.preferences.DisplayPreferences;
 import com.xl.preferences.LocationPreferences;
@@ -175,10 +175,6 @@ public class ReportTableDialog extends JDialog implements MouseListener, ActionL
                 if (!file.getPath().toLowerCase().endsWith(".txt")) {
                     file = new File(file.getPath() + ".txt");
                 }
-            } else if (filter instanceof GFFFileFilter) {
-                if (!file.getPath().toLowerCase().endsWith(".gff")) {
-                    file = new File(file.getPath() + ".gff");
-                }
             } else {
                 System.err.println("Unknown file filter type " + filter + " when saving image");
                 return;
@@ -196,8 +192,6 @@ public class ReportTableDialog extends JDialog implements MouseListener, ActionL
             try {
                 if (filter instanceof TxtFileFilter) {
                     saveTextReport(file);
-                } else if (filter instanceof GFFFileFilter) {
-                    saveGFFReport(file);
                 } else {
                     System.err.println("Unknown file filter type " + filter + " when saving image");
                 }
@@ -239,77 +233,5 @@ public class ReportTableDialog extends JDialog implements MouseListener, ActionL
         }
         p.close();
     }
-
-    private void saveGFFReport(File file) throws IOException {
-
-        PrintWriter p = new PrintWriter(new FileWriter(file));
-
-        int chrColumn = report.chromosomeColumn();
-        int startColumn = report.startColumn();
-        int endColumn = report.endColumn();
-        int strandColumn = report.strandColumn();
-
-
-        if (startColumn < 0 || endColumn < 0 || chrColumn < 0) {
-            throw new IllegalStateException("Couldn't find chr start or end in report");
-        }
-
-
-        int rowCount = model.getRowCount();
-        int colCount = model.getColumnCount();
-
-        StringBuffer b;
-
-        for (int r = 0; r < rowCount; r++) {
-
-            b = new StringBuffer();
-
-            b.append(model.getValueAt(r, chrColumn));
-            b.append("\t");
-            b.append("seqmonk");
-            b.append("\t");
-            b.append("probe");
-            b.append("\t");
-            b.append(model.getValueAt(r, startColumn));
-            b.append("\t");
-            b.append(model.getValueAt(r, endColumn));
-            b.append("\t");
-            b.append(".");
-            b.append("\t");
-
-            if (strandColumn >= 0) {
-                String strand = model.getValueAt(r, strandColumn).toString();
-                if (strand.equals("+") || strand.equals("-")) {
-                    b.append(strand);
-                } else {
-                    b.append(".");
-                }
-            } else {
-                b.append(".");
-            }
-            b.append("\t");
-            b.append(".");
-            b.append("\t");
-            b.append(".");
-            b.append("\t");
-
-            b.append("ID=");
-            b.append(r + 1);
-
-            for (int c = 0; c < colCount; c++) {
-
-                if (model.getColumnName(c).equals("No value")) continue;
-
-                b.append(";");
-                b.append(model.getColumnName(c));
-                b.append("=");
-                b.append(model.getValueAt(r, c));
-            }
-            p.println(b);
-
-        }
-        p.close();
-    }
-
 
 }

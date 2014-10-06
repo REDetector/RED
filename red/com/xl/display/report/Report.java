@@ -5,7 +5,6 @@ package com.xl.display.report;
  */
 
 import com.xl.datatypes.DataCollection;
-import com.xl.datatypes.DataStore;
 import com.xl.interfaces.Cancellable;
 import com.xl.interfaces.OptionsListener;
 import com.xl.interfaces.ProgressListener;
@@ -23,11 +22,6 @@ public abstract class Report implements Runnable, Cancellable {
     protected DataCollection collection;
 
     /**
-     * The set of dataStores whose data should be added to the report
-     */
-    protected DataStore[] storesToAnnotate;
-
-    /**
      * A flag to say if we should cancel the report generation
      */
     protected boolean cancel = false;
@@ -42,16 +36,13 @@ public abstract class Report implements Runnable, Cancellable {
      */
     private ArrayList<OptionsListener> optionsListeners = new ArrayList<OptionsListener>();
 
-
     /**
      * Instantiates a new report.
      *
-     * @param collection       Data Collection to use for the report
-     * @param storesToAnnotate The dataStores to include in the report.  These must be part of the supplied collection.
+     * @param collection Data Collection to use for the report
      */
-    public Report(DataCollection collection, DataStore[] storesToAnnotate) {
+    public Report(DataCollection collection) {
         this.collection = collection;
-        this.storesToAnnotate = storesToAnnotate;
     }
 
     /**
@@ -231,8 +222,6 @@ public abstract class Report implements Runnable, Cancellable {
 
     /**
      * Passes on a report completion message to all listeners
-     *
-     * @param report The completed report
      */
     protected void reportComplete(TableModel report) {
         Iterator<ProgressListener> i = listeners.iterator();

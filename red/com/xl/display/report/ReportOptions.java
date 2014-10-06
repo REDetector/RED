@@ -6,10 +6,10 @@ package com.xl.display.report;
 
 import com.xl.dialog.CrashReporter;
 import com.xl.dialog.ProgressDialog;
-import com.xl.dialog.ReportTableDialog;
 import com.xl.interfaces.OptionsListener;
 import com.xl.interfaces.ProgressListener;
 import com.xl.main.REDApplication;
+import com.xl.preferences.REDPreferences;
 import com.xl.utils.FontManager;
 
 import javax.swing.*;
@@ -76,15 +76,15 @@ public class ReportOptions extends JDialog implements ActionListener, ProgressLi
 
         JPanel buttonPanel = new JPanel();
 
-        okButton = new JButton("OK");
-        okButton.setActionCommand("ok");
-        okButton.addActionListener(this);
-        buttonPanel.add(okButton);
-
         JButton cancelButton = new JButton("Cancel");
         cancelButton.setActionCommand("cancel");
         cancelButton.addActionListener(this);
         buttonPanel.add(cancelButton);
+
+        okButton = new JButton("OK");
+        okButton.setActionCommand("ok");
+        okButton.addActionListener(this);
+        buttonPanel.add(okButton);
 
         getContentPane().add(buttonPanel, BorderLayout.SOUTH);
 
@@ -102,6 +102,11 @@ public class ReportOptions extends JDialog implements ActionListener, ProgressLi
         // only once the whole dialog is laid out.
         okButton.setEnabled(report.isReady());
 
+        if (!REDPreferences.getInstance().isDatabaseConnected()) {
+            dispose();
+            JOptionPane.showMessageDialog(this, "<html>The reports are based on data from database, which hes not been connected</br>Please try again after " +
+                    "connecting to dabatase.", "Database has not been connected.", JOptionPane.ERROR_MESSAGE);
+        }
     }
 
     /* (non-Javadoc)

@@ -18,7 +18,7 @@ import java.io.PrintWriter;
  * The Class HistogramPanel displays an interactive histogram from
  * any linear set of data.
  */
-public class HistogramPanel extends JPanel implements Runnable {
+public class SitesHistogramPanel extends JPanel implements Runnable {
 
     /**
      * The data.
@@ -39,11 +39,6 @@ public class HistogramPanel extends JPanel implements Runnable {
     private StatusPanel statusPanel;
 
     /**
-     * The calculating categories.
-     */
-    private boolean calculatingCategories = false;
-
-    /**
      * The stop calculating.
      */
     private boolean stopCalculating = false;
@@ -53,20 +48,17 @@ public class HistogramPanel extends JPanel implements Runnable {
      */
     private int maxCount;
 
+    private double interval = 0;
+
     /**
      * Instantiates a new histogram panel.
      *
      * @param probes the probes
      */
-    public HistogramPanel(Genome genome, Probe[] probes) {
-
-//        if (probes.length < 2) {
-//            throw new IllegalArgumentException("At least two data points are needed to draw a histogram");
-//        }
+    public SitesHistogramPanel(Genome genome, Probe[] probes) {
 
         this.genome = genome;
         this.probes = probes;
-
 
         setLayout(new BorderLayout());
         JPanel textPanel = new JPanel();
@@ -102,26 +94,8 @@ public class HistogramPanel extends JPanel implements Runnable {
      * Calcuate categories.
      */
     private void calcuateCategories() {
-
-        // If we're already calculating then stop and do it
-        // again with the new value
-
-        if (calculatingCategories) {
-//			System.out.println("Waiting for previous calculation to finish");
-            stopCalculating = true;
-            while (calculatingCategories) {
-//				System.out.println("Still waiting");
-                try {
-                    Thread.sleep(50);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-
         Thread t = new Thread(this);
         t.start();
-
     }
 
 
@@ -129,10 +103,7 @@ public class HistogramPanel extends JPanel implements Runnable {
      * @see java.lang.Runnable#run()
      */
     public void run() {
-
 //		System.out.println("Calculating "+currentCategoryCount+" categories");
-
-        calculatingCategories = true;
 
         String[] chromosomeNames = genome.getAllChromosomeNames();
         histogramCategories = new HistogramCategory[chromosomeNames.length];
@@ -143,7 +114,6 @@ public class HistogramPanel extends JPanel implements Runnable {
         for (Probe probe : probes) {
             if (stopCalculating) {
                 stopCalculating = false;
-                calculatingCategories = false;
                 return;
             }
             String chr = probe.getChr();
@@ -159,7 +129,6 @@ public class HistogramPanel extends JPanel implements Runnable {
                 maxCount = histogramCategory.count;
             }
         }
-        calculatingCategories = false;
 //		System.out.println("Finished counting");
     }
 
@@ -180,7 +149,6 @@ public class HistogramPanel extends JPanel implements Runnable {
          * Instantiates a new main histogram panel.
          */
         public MainHistogramPanel() {
-
             addMouseListener(this);
             addMouseMotionListener(this);
         }
@@ -245,8 +213,9 @@ public class HistogramPanel extends JPanel implements Runnable {
             while (currentXValue < maxCount) {
 
                 double xWidth = currentXValue * xScale;
-                g.drawString(xAxisScale.format(currentXValue), (int) (X_AXIS_SPACE + xWidth + g
-                        .getFontMetrics().getAscent() / 2), getHeight() - Y_AXIS_SPACE + 15);
+                String currentXString = xAxisScale.format(currentXValue);
+                g.drawString(currentXString, (int) (X_AXIS_SPACE + xWidth + xScale / 2 - g.getFontMetrics().stringWidth(currentXString) / 2),
+                        getHeight() - Y_AXIS_SPACE + 15);
 
                 // Put a line across the plot
                 if (currentXValue != 0) {
@@ -261,21 +230,19 @@ public class HistogramPanel extends JPanel implements Runnable {
             // Now draw the scale on the x axis
             int categoriesLength = histogramCategories.length;
             if (categoriesLength > 0) {
-                double interval = (double) (getHeight() - Y_AXIS_SPACE) / categoriesLength;
+                interval = (double) (getHeight() - Y_AXIS_SPACE) / (categoriesLength + 1);
                 for (int i = 0; i < categoriesLength; i++) {
                     g.setColor(Color.BLACK);
-                    g.drawString(histogramCategories[i].chr, 2, (int) (interval * i + g.getFontMetrics().getAscent()));
+                    g.drawString(histogramCategories[i].chr, 2, (int) (interval * (i + 1.5) - g.getFontMetrics().getAscent() / 2));
                     if (histogramCategories[i] == selectedCategory) {
                         g.setColor(ColourScheme.HIGHLIGHTED_HISTOGRAM_BAR);
                     } else {
                         g.setColor(ColourScheme.HISTOGRAM_BAR);
                     }
-                    g.fillRect(X_AXIS_SPACE, (int) (interval * i), getXWidth(histogramCategories[i].count),
-                            (int) interval);
+                    g.fillRect(X_AXIS_SPACE, (int) (interval * (i + 0.5)), getXWidth(histogramCategories[i].count), (int) interval);
                     // Draw a box around it
                     g.setColor(Color.BLACK);
-                    g.drawRect(X_AXIS_SPACE, (int) (interval * i), getXWidth(histogramCategories[i].count),
-                            (int) interval);
+                    g.drawRect(X_AXIS_SPACE, (int) (interval * (i + 0.5)), getXWidth(histogramCategories[i].count), (int) interval);
 
                 }
             }
@@ -291,8 +258,7 @@ public class HistogramPanel extends JPanel implements Runnable {
         }
 
         private HistogramCategory getHistogram(int yPosition) {
-            return histogramCategories[(int) ((double) yPosition / (getHeight() - Y_AXIS_SPACE) * histogramCategories
-                    .length)];
+            return histogramCategories[(int) ((yPosition - interval / 2) / (getHeight() - Y_AXIS_SPACE - interval) * histogramCategories.length)];
         }
 
         @Override
@@ -306,8 +272,7 @@ public class HistogramPanel extends JPanel implements Runnable {
         public void mouseMoved(MouseEvent me) {
 
             // If we're outside the main plot area we don't need to worry about it
-            if (me.getX() < 5 || me.getX() > getWidth() - 5 || me.getY() < 5 || me.getY() > getHeight() - Y_AXIS_SPACE
-                    - 5) {
+            if (me.getX() < 5 || me.getX() > getWidth() - 5 || me.getY() < interval / 2 || me.getY() > getHeight() - Y_AXIS_SPACE - interval / 2) {
                 if (selectedCategory != null) {
                     selectedCategory = null;
                     statusPanel.setSelectedCategory(null);
@@ -351,34 +316,6 @@ public class HistogramPanel extends JPanel implements Runnable {
          * @see java.awt.event.MouseListener#mouseReleased(java.awt.event.MouseEvent)
          */
         public void mouseReleased(MouseEvent me) {
-
-            // Zoom out if they pressed the right mouse button
-//            if ((me.getModifiers() & InputEvent.BUTTON3_MASK) == InputEvent.BUTTON3_MASK) {
-//                double interval = currentMaxValue - currentMinValue;
-//                double midPoint = currentMinValue + (interval / 2);
-//
-//                currentMinValue = Math.max(midPoint - interval, minDataValue);
-//                currentMaxValue = Math.min(midPoint + interval, maxDataValue);
-//
-//                calcuateCategories();
-//
-//            }
-//
-//            // If we're selecting then make the new selection
-//            if (isSelecting) {
-//                isSelecting = false;
-//                if (Math.abs(selectionStart - selectionEnd) <= 3) {
-//                    // Don't make a selection from a really small region
-//                    return;
-//                }
-//
-//                currentMinValue = getXValue(Math.min(selectionStart, selectionEnd));
-//                currentMaxValue = getXValue(Math.max(selectionStart, selectionEnd));
-//
-//                calcuateCategories();
-//
-//            }
-
 
         }
 

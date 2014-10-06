@@ -1,8 +1,6 @@
 package com.xl.display.report;
 
 import com.xl.datatypes.DataStore;
-import com.xl.datatypes.genome.Chromosome;
-import com.xl.datatypes.sequence.SequenceRead;
 import com.xl.dialog.CrashReporter;
 import com.xl.main.REDApplication;
 import com.xl.preferences.LocationPreferences;
@@ -20,24 +18,24 @@ import java.io.IOException;
  * The Class EditingSitesDistributionHistogram shows the distribution of read lengths
  * in a data store.
  */
-public class EditingSitesDistributionHistogram extends JDialog implements ActionListener {
+public class SitesDistributionHistogram extends JDialog implements ActionListener {
 
     /**
      * The plot panel.
      */
-    private HistogramPanel plotPanel;
+    private SitesHistogramPanel plotPanel;
 
     /**
      * Instantiates a new read length histogram plot.
      *
      * @param d the data
      */
-    public EditingSitesDistributionHistogram(DataStore d) {
+    public SitesDistributionHistogram(DataStore d) {
         super(REDApplication.getInstance(), "Editing Sites Distribution [" + d.name() + "]");
         setSize(800, 600);
         setLocationRelativeTo(REDApplication.getInstance());
         setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-        plotPanel = new HistogramPanel(d.collection().genome(), d.collection().probeSet().getActiveList().getAllProbes());
+        plotPanel = new SitesHistogramPanel(d.collection().genome(), d.collection().probeSet().getActiveList().getAllProbes());
         getContentPane().setLayout(new BorderLayout());
         getContentPane().add(plotPanel, BorderLayout.CENTER);
 
@@ -60,31 +58,6 @@ public class EditingSitesDistributionHistogram extends JDialog implements Action
         getContentPane().add(buttonPanel, BorderLayout.SOUTH);
         setVisible(true);
 
-    }
-
-    /**
-     * Gets the read lengths.
-     *
-     * @param d the d
-     * @return the read lengths
-     */
-    private double[] getReadLengths(DataStore d) {
-        double[] data = new double[d.getTotalReadCount()];
-
-        int offset = 0;
-
-        Chromosome[] chrs = d.collection().genome().getAllChromosomes();
-
-        for (int c = 0; c < chrs.length; c++) {
-            SequenceRead[] reads = d.getReadsForChromosome(chrs[c].getName());
-
-            for (int r = 0; r < reads.length; r++) {
-                data[offset + r] = reads[r].length();
-            }
-            offset += reads.length;
-        }
-
-        return data;
     }
 
     /* (non-Javadoc)
