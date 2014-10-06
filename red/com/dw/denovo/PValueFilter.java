@@ -133,10 +133,10 @@ public class PValueFilter {
         }
     }
 
-    public double calPValue(double found_ref, double found_alt,
-                            double known_ref, double known_alt, RCaller caller, RCode code) {
+    public double calPValue(double foundRef, double foundAlt,
+                            double knownRef, double knownAlt, RCaller caller, RCode code) {
         try {
-            double[][] data = new double[][]{{found_ref, found_alt}, {known_ref, known_alt}};
+            double[][] data = new double[][]{{foundRef, foundAlt}, {knownRef, knownAlt}};
             code.addDoubleMatrix("mydata", data);
             code.addRCode("result <- fisher.test(mydata)");
             code.addRCode("mylist <- list(pval = result$p.value)");
