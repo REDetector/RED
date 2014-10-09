@@ -184,4 +184,15 @@ public class FileUtils {
         return fileList;
     }
 
+    public static void main(String[] args) throws IOException {
+//        BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream("E:\\Master\\ChongQing\\Data\\BJ22N_DNA_RNA\\BJ22_sites.hard" +
+//                ".filtered.vcf")));
+//        String line;
+//        int count = 0;
+//        while ((line = br.readLine()) != null) {
+//            if (line.startsWith("##")) continue;
+//            if (count++ < 1000) continue;
+//            if (count++ < 2000) System.out.println(line);
+//        }
+    }
 }

@@ -125,7 +125,7 @@ public class DataViewer extends JPanel implements MouseListener, TreeSelectionLi
             } else if (clickedItem instanceof DataGroup) {
                 new GroupPopupMenu((DataGroup) clickedItem).actionPerformed(new ActionEvent(this, 0, "properties"));
             } else if (clickedItem instanceof ProbeList) {
-                new ProbePopupMenu((ProbeList) clickedItem).actionPerformed(new ActionEvent(this, 0, "view"));
+//                new ProbePopupMenu((ProbeList) clickedItem).actionPerformed(new ActionEvent(this, 0, "view"));
             } else if (clickedItem instanceof AnnotationSet) {
                 new AnnotationPopupMenu((AnnotationSet) clickedItem).actionPerformed(new ActionEvent(this, 0, "properties"));
             }

@@ -24,6 +24,7 @@ import com.xl.parsers.dataparsers.BAMFileParser;
 import com.xl.parsers.dataparsers.FastaFileParser;
 import com.xl.preferences.DisplayPreferences;
 import com.xl.preferences.LocationPreferences;
+import com.xl.preferences.REDPreferences;
 import com.xl.utils.imagemanager.ImageSaver;
 import com.xl.utils.namemanager.MenuUtils;
 
@@ -496,18 +497,31 @@ public class REDMenu extends JMenuBar implements ActionListener {
         // --------------------ReportsMenu------------------
         else if (action.equals(MenuUtils.VARIANT_DISTRIBUTION)) {
             if (redApplication.dataCollection().getActiveDataStore() == null) {
-                JOptionPane.showMessageDialog(redApplication, "You need to select a data store in the Data panel before viewing this plot", "No data selected...", JOptionPane.INFORMATION_MESSAGE);
+                JOptionPane.showMessageDialog(redApplication, "You need to select a data store in the Data panel before viewing this plot",
+                        "No data selected...", JOptionPane.INFORMATION_MESSAGE);
+            } else if (redApplication.dataCollection().probeSet() == null) {
+                JOptionPane.showMessageDialog(redApplication, "You need to select a probeset/probelist in the Data panel before viewing this plot",
+                        "No data selected...", JOptionPane.INFORMATION_MESSAGE);
             } else {
                 new VariantDistributionHistogram(redApplication.dataCollection().getActiveDataStore());
             }
         } else if (action.equals(MenuUtils.RNA_EDITING_SITES_DISTRIBUTION)) {
             if (redApplication.dataCollection().getActiveDataStore() == null) {
-                JOptionPane.showMessageDialog(redApplication, "You need to select a data store in the Data panel before viewing this plot", "No data selected...", JOptionPane.INFORMATION_MESSAGE);
+                JOptionPane.showMessageDialog(redApplication, "You need to select a data store in the Data panel before viewing this plot",
+                        "No data selected...", JOptionPane.INFORMATION_MESSAGE);
+            } else if (redApplication.dataCollection().probeSet() == null) {
+                JOptionPane.showMessageDialog(redApplication, "You need to select a probeset/probelist in the Data panel before viewing this plot",
+                        "No data selected...", JOptionPane.INFORMATION_MESSAGE);
             } else {
                 new SitesDistributionHistogram(redApplication.dataCollection().getActiveDataStore());
             }
         } else if (action.equals(MenuUtils.FILTER_REPORTS)) {
-            new ReportOptions(redApplication, new FilterReports(redApplication.dataCollection()));
+            if (!REDPreferences.getInstance().isDatabaseConnected()) {
+                JOptionPane.showMessageDialog(this, "<html>The reports are based on data from database, which has not been connected<br>Please try again " +
+                        "after connecting to the dabatase.", "Database not connected.", JOptionPane.INFORMATION_MESSAGE);
+            } else {
+                new ReportOptions(redApplication, new FilterReports(redApplication.dataCollection()));
+            }
         }
         // --------------------HelpMenu---------------------
         else if (action.equals(MenuUtils.WELCOME)) {

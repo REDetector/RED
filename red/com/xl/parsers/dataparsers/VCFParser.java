@@ -33,7 +33,7 @@ public class VCFParser {
 //    private int posColumn = 1;
 //    private int idColumn = 2;
 //    private int refColumn = 3;
-//    private int altColumn = 4;
+    private int altColumn = 4;
 //    private int qualColumn = 5;
 //    private int filterColumn = 6;
 //    private int infoColumn = 7;
@@ -83,6 +83,10 @@ public class VCFParser {
                     continue;
                 }
                 String[] sections = line.split("\\t");
+
+                if (sections[altColumn].equals(".")) {
+                    continue;
+                }
 
                 String[] formatColumns = sections[formatColumnIndex].split(":");
                 int formatLength = formatColumns.length;
@@ -162,7 +166,7 @@ public class VCFParser {
                 sqlClause.append(")");
                 databaseManager.executeSQL(sqlClause.toString());
 
-                if (++lineCount % 20000 == 0)
+                if (++lineCount % DatabaseManager.COMMIT_COUNTS_PER_ONCE == 0)
                     databaseManager.commit();
             }
             databaseManager.commit();
@@ -183,7 +187,6 @@ public class VCFParser {
                 }
             }
         }
-
         System.out.println("End Parsing VCF file..." + df.format(new Date()));
     }
 

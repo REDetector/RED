@@ -128,7 +128,7 @@ public class RepeatFilter {
                     + ".begin<=" + refTable + ".pos and " + repeatTable
                     + ".end>=" + refTable + ".pos)) ");
 
-            System.out.println("esrepeat alu start " + " " + df.format(new Date()));
+            System.out.println("Start executing AluFilter..." + df.format(new Date()));
 
             databaseManager.executeSQL("insert into " + aluResultTable + " SELECT * from "
                     + refTable + " where exists (select chrom from "
@@ -137,7 +137,8 @@ public class RepeatFilter {
                     + ".begin<=" + refTable + ".pos and " + repeatTable
                     + ".end>=" + refTable + ".pos and " + repeatTable + ".type='SINE/Alu')");
 
-            System.out.println("esrepeat final start " + " " + df.format(new Date()));
+            System.out.println("End executing AluFilter..." + df.format(new Date()));
+
             databaseManager.executeSQL("insert into " + repeatResultTable
                     + " select * from " + aluResultTable);
         } catch (SQLException e) {

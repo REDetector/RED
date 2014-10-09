@@ -170,14 +170,14 @@ public class Connect {
             manager.useDatabase(args[9]);
 
             BasicFilter bf = new BasicFilter(manager);
-//            bf.establishSpecificTable(DatabaseManager.SPECIFIC_FILTER_RESULT_TABLE_NAME);
+//            bf.establishSpecificTable(DatabaseManager.EDITING_TYPE_FILTER_RESULT_TABLE_NAME);
 //            bf.executeSpecificFilter(
-//                    DatabaseManager.SPECIFIC_FILTER_RESULT_TABLE_NAME,
+//                    DatabaseManager.EDITING_TYPE_FILTER_RESULT_TABLE_NAME,
 //                    DatabaseManager.RNA_VCF_RESULT_TABLE_NAME);
             bf.establishBasicTable(DatabaseManager.BASIC_FILTER_RESULT_TABLE_NAME);
             // The first parameter means quality and the second means depth
             bf.executeBasicFilter(
-                    DatabaseManager.SPECIFIC_FILTER_RESULT_TABLE_NAME,
+                    DatabaseManager.EDITING_TYPE_FILTER_RESULT_TABLE_NAME,
                     DatabaseManager.BASIC_FILTER_RESULT_TABLE_NAME, 20, 6);
             DatabaseManager.getInstance().distinctTable(
                     DatabaseManager.BASIC_FILTER_RESULT_TABLE_NAME);
@@ -253,14 +253,14 @@ public class Connect {
 //                    args[1], Integer.parseInt(args[7]));
 
             BasicFilter bf = new BasicFilter(manager);
-//            bf.establishSpecificTable(DatabaseManager.SPECIFIC_FILTER_RESULT_TABLE_NAME);
+//            bf.establishSpecificTable(DatabaseManager.EDITING_TYPE_FILTER_RESULT_TABLE_NAME);
 //            bf.executeSpecificFilter(
-//                    DatabaseManager.SPECIFIC_FILTER_RESULT_TABLE_NAME,
+//                    DatabaseManager.EDITING_TYPE_FILTER_RESULT_TABLE_NAME,
 //                    DatabaseManager.RNA_VCF_RESULT_TABLE_NAME);
             bf.establishBasicTable(DatabaseManager.BASIC_FILTER_RESULT_TABLE_NAME);
             // The first parameter means quality and the second means depth
             bf.executeBasicFilter(
-                    DatabaseManager.SPECIFIC_FILTER_RESULT_TABLE_NAME,
+                    DatabaseManager.EDITING_TYPE_FILTER_RESULT_TABLE_NAME,
                     DatabaseManager.BASIC_FILTER_RESULT_TABLE_NAME, 20, 6);
             DatabaseManager.getInstance().distinctTable(
                     DatabaseManager.BASIC_FILTER_RESULT_TABLE_NAME);

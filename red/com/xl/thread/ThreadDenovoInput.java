@@ -54,11 +54,11 @@ public class ThreadDenovoInput implements Runnable {
 
 //        progressUpdated("Filtering sites by quality and coverage...", 3, ALL_STEP);
 //        BasicFilter bf = new BasicFilter(manager);
-//        bf.establishSpecificTable(DatabaseManager.SPECIFIC_FILTER_RESULT_TABLE_NAME);
-//        bf.executeSpecificFilter(DatabaseManager.SPECIFIC_FILTER_RESULT_TABLE_NAME, DatabaseManager.RNA_VCF_RESULT_TABLE_NAME);
+//        bf.establishSpecificTable(DatabaseManager.EDITING_TYPE_FILTER_RESULT_TABLE_NAME);
+//        bf.executeSpecificFilter(DatabaseManager.EDITING_TYPE_FILTER_RESULT_TABLE_NAME, DatabaseManager.RNA_VCF_RESULT_TABLE_NAME);
 //        bf.establishBasicTable(DatabaseManager.BASIC_FILTER_RESULT_TABLE_NAME);
         // The first parameter means quality and the second means depth
-//        bf.executeBasicFilter(DatabaseManager.SPECIFIC_FILTER_RESULT_TABLE_NAME,
+//        bf.executeBasicFilter(DatabaseManager.EDITING_TYPE_FILTER_RESULT_TABLE_NAME,
 //                DatabaseManager.BASIC_FILTER_RESULT_TABLE_NAME, 20, 6);
 //        DatabaseManager.getInstance().distinctTable(DatabaseManager.BASIC_FILTER_RESULT_TABLE_NAME);
 

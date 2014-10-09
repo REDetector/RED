@@ -17,7 +17,7 @@ public class DatabaseManager {
     public static final String RNA_VCF_RESULT_TABLE_NAME = "rnavcf";
     public static final String DNA_VCF_RESULT_TABLE_NAME = "dnavcf";
     public static final String BASIC_FILTER_RESULT_TABLE_NAME = "basicfilter";
-    public static final String SPECIFIC_FILTER_RESULT_TABLE_NAME = "specificfilter";
+    public static final String EDITING_TYPE_FILTER_RESULT_TABLE_NAME = "editingtypefilter";
     public static final String SPLICE_JUNCTION_FILTER_TABLE_NAME = "refsplicejunction";
     public static final String SPLICE_JUNCTION_FILTER_RESULT_TABLE_NAME = "splicejunctionfilter";
     public static final String DBSNP_FILTER_TABLE_NAME = "refdbsnp";

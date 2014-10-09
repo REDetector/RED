@@ -1,6 +1,6 @@
 package com.xl.filter;
 
-import com.dw.denovo.SpecificFilter;
+import com.dw.denovo.EditingTypeFilter;
 import com.dw.publicaffairs.DatabaseManager;
 import com.dw.publicaffairs.Query;
 import com.xl.datatypes.DataCollection;
@@ -48,14 +48,14 @@ public class SpecificFilterMenu extends ProbeFilter {
 
     @Override
     protected void generateProbeList() {
-        SpecificFilter specificFilter = new SpecificFilter(databaseManager);
-        specificFilter.establishSpecificTable(DatabaseManager.SPECIFIC_FILTER_RESULT_TABLE_NAME);
-        specificFilter.executeSpecificFilter(DatabaseManager.SPECIFIC_FILTER_RESULT_TABLE_NAME, parentTable,
+        EditingTypeFilter editingTypeFilter = new EditingTypeFilter(databaseManager);
+        editingTypeFilter.establishSpecificTable(DatabaseManager.EDITING_TYPE_FILTER_RESULT_TABLE_NAME);
+        editingTypeFilter.executeSpecificFilter(DatabaseManager.EDITING_TYPE_FILTER_RESULT_TABLE_NAME, parentTable,
                 refBase.getSelectedItem().toString(), altBase.getSelectedItem().toString());
-        DatabaseManager.getInstance().distinctTable(DatabaseManager.SPECIFIC_FILTER_RESULT_TABLE_NAME);
-        Vector<Probe> probes = Query.queryAllEditingSites(DatabaseManager.SPECIFIC_FILTER_RESULT_TABLE_NAME);
-        ProbeList newList = new ProbeList(parentList, DatabaseManager.SPECIFIC_FILTER_RESULT_TABLE_NAME, "",
-                DatabaseManager.SPECIFIC_FILTER_RESULT_TABLE_NAME);
+        DatabaseManager.getInstance().distinctTable(DatabaseManager.EDITING_TYPE_FILTER_RESULT_TABLE_NAME);
+        Vector<Probe> probes = Query.queryAllEditingSites(DatabaseManager.EDITING_TYPE_FILTER_RESULT_TABLE_NAME);
+        ProbeList newList = new ProbeList(parentList, DatabaseManager.EDITING_TYPE_FILTER_RESULT_TABLE_NAME, "",
+                DatabaseManager.EDITING_TYPE_FILTER_RESULT_TABLE_NAME);
         int index = 0;
         int probesLength = probes.size();
         for (Probe probe : probes) {

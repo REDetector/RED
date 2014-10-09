@@ -8,11 +8,11 @@ import java.util.Date;
 /**
  * Created by Administrator on 2014/9/29.
  */
-public class SpecificFilter {
+public class EditingTypeFilter {
     private DatabaseManager databaseManager;
     private SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
-    public SpecificFilter(DatabaseManager databaseManager) {
+    public EditingTypeFilter(DatabaseManager databaseManager) {
         this.databaseManager = databaseManager;
     }
 

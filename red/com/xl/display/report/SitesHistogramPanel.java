@@ -2,6 +2,8 @@ package com.xl.display.report;
 
 import com.xl.datatypes.genome.Genome;
 import com.xl.datatypes.probes.Probe;
+import com.xl.dialog.ProbeListViewer;
+import com.xl.main.REDApplication;
 import com.xl.utils.AxisScale;
 import com.xl.utils.ColourScheme;
 
@@ -13,6 +15,7 @@ import java.awt.event.MouseMotionListener;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.ArrayList;
 
 /**
  * The Class HistogramPanel displays an interactive histogram from
@@ -289,6 +292,17 @@ public class SitesHistogramPanel extends JPanel implements Runnable {
          * @see java.awt.event.MouseListener#mouseClicked(java.awt.event.MouseEvent)
          */
         public void mouseClicked(MouseEvent arg0) {
+            if (arg0.getClickCount() == 2 && selectedCategory != null) {
+                String chr = selectedCategory.chr;
+                java.util.List<Probe> probeList = new ArrayList<Probe>();
+                for (Probe probe : probes) {
+                    if (probe.getChr().equals(chr)) {
+                        probeList.add(probe);
+                    }
+                }
+                new ProbeListViewer(probeList.toArray(new Probe[0]), "RNA-editing sites in " + chr, "RNA-editing sites in " + chr,
+                        REDApplication.getInstance());
+            }
         }
 
         @Override
