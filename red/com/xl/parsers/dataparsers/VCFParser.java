@@ -105,6 +105,7 @@ public class VCFParser {
                     for (String formatColumn : formatColumns) {
                         tableBuilders.append(formatColumn).append(" text,");
                     }
+                    tableBuilders.append("alu varchar(1) default 'F',");
                     tableBuilders.append("index(" + VCF_CHROM + "," + VCF_POS + ")");
                     databaseManager.deleteTable(vcfTable);
                     databaseManager.executeSQL("create table " + vcfTable + "(" + tableBuilders + ")");

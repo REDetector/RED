@@ -137,6 +137,9 @@ public class RepeatFilter {
                     + ".begin<=" + refTable + ".pos and " + repeatTable
                     + ".end>=" + refTable + ".pos and " + repeatTable + ".type='SINE/Alu')");
 
+            databaseManager.executeSQL("update " + aluResultTable + " set alu = 'T'");
+            databaseManager.executeSQL("insert into " + repeatResultTable + " select * from " + aluResultTable);
+
             System.out.println("End executing AluFilter..." + df.format(new Date()));
 
             databaseManager.executeSQL("insert into " + repeatResultTable

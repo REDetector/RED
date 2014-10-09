@@ -48,11 +48,11 @@ public class MenuUtils {
     /*Filter menu*/
     public static final String FILTER_MENU = "Filter";
     public static final String BASIC_FILTER = "Basic Filter...";
-    public static final String SPECIFIC_FILTER = "Specific Filter...";
+    public static final String SPECIFIC_FILTER = "Editing-Type Filter...";
     public static final String KNOWN_SNVS_FILTER = "Known SNVs Filter...";
     public static final String REPEATED_FILTER = "Repeated Filter...";
     public static final String DNA_RNA_FILTER = "DNA-RNA Filter...";
-    public static final String COMPREHENSIVE_FILTER = "Comprehensive Filter...";
+    public static final String COMPREHENSIVE_FILTER = "Splice-Junction Filter...";
     public static final String STATISTICAL_FILTER = "Statistical Filter";
     public static final String PVALUE_FILTER = "P-Value Filter...";
     public static final String LLR_FILTER = "LLR Filter...";
