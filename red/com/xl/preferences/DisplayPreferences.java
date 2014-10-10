@@ -42,26 +42,24 @@ public class DisplayPreferences {
 	 */
     public static final int DISPLAY_MODE_READS_AND_PROBES = 1;
     public static final int DISPLAY_MODE_READS_ONLY = 2;
-    public static final int DISPLAY_MODE_PROBES_ONLY = 3;
     private int currentDisplayMode = DISPLAY_MODE_READS_ONLY;
-
+    public static final int DISPLAY_MODE_PROBES_ONLY = 3;
     /**
      * The options for which gradient to use *
      */
     public static final int GRADIENT_HOT_COLD = 2001;
+    private int currentGradientValue = GRADIENT_HOT_COLD;
     public static final int GRADIENT_RED_GREEN = 2002;
     public static final int GRADIENT_GREYSCALE = 2003;
     public static final int GRADIENT_MAGENTA_GREEN = 2004;
     public static final int GRADIENT_RED_WHITE = 2005;
-    private int currentGradientValue = GRADIENT_HOT_COLD;
     /**
      * The options for the type of graph drawn *
      */
     public static final int GRAPH_TYPE_BAR = 3001;
+    private int currentGraphType = GRAPH_TYPE_BAR;
     public static final int GRAPH_TYPE_LINE = 3002;
     public static final int GRAPH_TYPE_POINT = 3003;
-    private int currentGraphType = GRAPH_TYPE_BAR;
-
     /**
      * The single instance of this class *
      */

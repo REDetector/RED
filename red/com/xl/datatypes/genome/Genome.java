@@ -49,37 +49,6 @@ public class Genome {
 
     }
 
-    public void setSequence(Sequence sequence, boolean chromosOrdered) {
-        this.sequence = sequence;
-        if (sequence != null) {
-            chromosomeNames = sequence.getChromosomeNames();
-            int chromosomeLength = chromosomeNames.size();
-            int maxLength = -1;
-            if (chromosOrdered) {
-                for (String chrName : chromosomeNames) {
-                    int length = sequence.getChromosomeLength(chrName);
-                    maxLength = Math.max(maxLength, length);
-                    addChromosome(new Chromosome(chrName, length));
-                }
-            } else {
-                List<Chromosome> tmpChromosomes = new ArrayList<Chromosome>(chromosomeLength);
-                for (String chrName : chromosomeNames) {
-                    int length = sequence.getChromosomeLength(chrName);
-                    maxLength = Math.max(maxLength, length);
-                    Chromosome chrom = new Chromosome(chrName, length);
-                    tmpChromosomes.add(chrom);
-                }
-                ChromosomeComparator.sortChromosomeList(tmpChromosomes,
-                        maxLength / 10, chromosomeMap);
-                chromosomeNames = new ArrayList<String>(chromosomeMap.keySet());
-            }
-        }
-    }
-
-    public void setSequence(Sequence sequence) {
-        setSequence(sequence, false);
-    }
-
     private static synchronized String getSpeciesForID(String id) {
         if (ucscSpeciesMap == null) {
             ucscSpeciesMap = new HashMap<String, String>();
@@ -119,6 +88,37 @@ public class Genome {
             }
         }
         return null;
+    }
+
+    public void setSequence(Sequence sequence, boolean chromosOrdered) {
+        this.sequence = sequence;
+        if (sequence != null) {
+            chromosomeNames = sequence.getChromosomeNames();
+            int chromosomeLength = chromosomeNames.size();
+            int maxLength = -1;
+            if (chromosOrdered) {
+                for (String chrName : chromosomeNames) {
+                    int length = sequence.getChromosomeLength(chrName);
+                    maxLength = Math.max(maxLength, length);
+                    addChromosome(new Chromosome(chrName, length));
+                }
+            } else {
+                List<Chromosome> tmpChromosomes = new ArrayList<Chromosome>(chromosomeLength);
+                for (String chrName : chromosomeNames) {
+                    int length = sequence.getChromosomeLength(chrName);
+                    maxLength = Math.max(maxLength, length);
+                    Chromosome chrom = new Chromosome(chrName, length);
+                    tmpChromosomes.add(chrom);
+                }
+                ChromosomeComparator.sortChromosomeList(tmpChromosomes,
+                        maxLength / 10, chromosomeMap);
+                chromosomeNames = new ArrayList<String>(chromosomeMap.keySet());
+            }
+        }
+    }
+
+    public void setSequence(Sequence sequence) {
+        setSequence(sequence, false);
     }
 
     public void addChromosome(Chromosome chromosome) {

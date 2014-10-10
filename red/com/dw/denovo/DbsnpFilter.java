@@ -16,10 +16,9 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class DbsnpFilter {
-    private DatabaseManager databaseManager;
-
-    private int count = 0;
     SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    private DatabaseManager databaseManager;
+    private int count = 0;
 
     public DbsnpFilter(DatabaseManager databaseManager) {
         this.databaseManager = databaseManager;

@@ -22,9 +22,8 @@ import java.util.Date;
 import java.util.List;
 
 public class PValueFilter {
-    private DatabaseManager databaseManager;
-
     SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    private DatabaseManager databaseManager;
 
     public PValueFilter(DatabaseManager databaseManager) {
         this.databaseManager = databaseManager;

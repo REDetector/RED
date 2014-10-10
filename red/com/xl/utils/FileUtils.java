@@ -15,6 +15,8 @@ import java.util.List;
 
 public class FileUtils {
 
+    private static List<File> fileList = new ArrayList<File>();
+
     public static void writeData(String path, String content) {
         File file = new File(path);
         if (!file.getParentFile().exists()) {
@@ -74,7 +76,6 @@ public class FileUtils {
             }
         }
     }
-
 
     /**
      * @param path
@@ -163,8 +164,6 @@ public class FileUtils {
         }
         return flag;
     }
-
-    private static List<File> fileList = new ArrayList<File>();
 
     public static List<File> searchfile(String fileName, File directory) {
         if (directory.isDirectory()) {

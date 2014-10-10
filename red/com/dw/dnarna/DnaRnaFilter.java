@@ -11,9 +11,8 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class DnaRnaFilter {
-    private DatabaseManager databaseManager;
-
     SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    private DatabaseManager databaseManager;
 
     public DnaRnaFilter(DatabaseManager databaseManager) {
         this.databaseManager = databaseManager;

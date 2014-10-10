@@ -269,15 +269,13 @@ public class DataTrackSelector extends JDialog implements ActionListener, ListSe
                 usedModel.addElement(add);
                 availableGroupModel.removeElement(add);
             }
-            for (int i = 0; i < adds.length; i++) {
-                usedModel.addElement(adds[i]);
-                availableGroupModel.removeElement(adds[i]);
-            }
+
             adds = availableSetList.getSelectedValues();
-            for (int i = 0; i < adds.length; i++) {
-                usedModel.addElement(adds[i]);
-                availableSetModel.removeElement(adds[i]);
+            for (Object add : adds) {
+                usedModel.addElement(add);
+                availableSetModel.removeElement(add);
             }
+
         } else if (c.equals("remove")) {
             Object[] removes = usedList.getSelectedValues();
             for (int i = 0; i < removes.length; i++) {

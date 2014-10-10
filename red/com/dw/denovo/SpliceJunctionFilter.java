@@ -13,9 +13,8 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class SpliceJunctionFilter {
-    private DatabaseManager databaseManager;
-
     SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    private DatabaseManager databaseManager;
 
     public SpliceJunctionFilter(DatabaseManager databaseManager) {
         this.databaseManager = databaseManager;

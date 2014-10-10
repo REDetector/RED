@@ -10,7 +10,6 @@ import com.xl.preferences.REDPreferences;
 import java.sql.*;
 
 public class DatabaseManager {
-    private static final DatabaseManager DATABASE_MANAGER = new DatabaseManager();
     public static final int COMMIT_COUNTS_PER_ONCE = 10000;
     public static final String NON_DENOVO_DATABASE_NAME = "nondenovo";
     public static final String DENOVO_DATABASE_NAME = "denovo";
@@ -29,7 +28,7 @@ public class DatabaseManager {
     public static final String DNA_RNA_FILTER_RESULT_TABLE_NAME = "dnarnafilter";
     public static final String LLR_FILTER_RESULT_TABLE_NAME = "llrfilter";
     public static final String ALU_FILTER_RESULT_TABLE_NAME = "alufilter";
-
+    private static final DatabaseManager DATABASE_MANAGER = new DatabaseManager();
     private Connection con = null;
     private Statement stmt = null;
 

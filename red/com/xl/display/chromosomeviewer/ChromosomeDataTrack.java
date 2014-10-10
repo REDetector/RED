@@ -370,6 +370,67 @@ public class ChromosomeDataTrack extends JPanel implements DataChangeListener {
         return new Dimension(displayWidth, maxCoverage * readHeight);
     }
 
+    @Override
+    public void dataSetAdded(DataSet d) {
+
+    }
+
+    @Override
+    public void dataSetsRemoved(DataSet[] d) {
+
+    }
+
+    @Override
+    public void dataGroupAdded(DataGroup g) {
+
+    }
+
+    @Override
+    public void dataGroupsRemoved(DataGroup[] g) {
+
+    }
+
+    @Override
+    public void dataSetRenamed(DataSet d) {
+
+    }
+
+    @Override
+    public void dataGroupRenamed(DataGroup g) {
+
+    }
+
+    @Override
+    public void dataGroupSamplesChanged(DataGroup g) {
+
+    }
+
+    @Override
+    public void probeSetReplaced(ProbeSet p) {
+        if (p == null) {
+            probes = null;
+        } else {
+            probes = p.getProbesForChromosome(DisplayPreferences.getInstance().getCurrentChromosome().getName());
+            Arrays.sort(probes);
+        }
+    }
+
+    @Override
+    public void activeDataStoreChanged(DataStore s) {
+
+    }
+
+    @Override
+    public void activeProbeListChanged(ProbeList l) {
+        if (l == null) {
+            probes = null;
+        } else {
+            probes = l.getProbesForChromosome(DisplayPreferences.getInstance().getCurrentChromosome().getName());
+            Arrays.sort(probes);
+        }
+        repaint();
+    }
+
     private class SequenceListner implements MouseListener, MouseMotionListener {
 
         @Override
@@ -502,66 +563,5 @@ public class ChromosomeDataTrack extends JPanel implements DataChangeListener {
         public boolean isInFeature(int x, int y) {
             return x >= left && x <= right && y >= bottom && y <= top;
         }
-    }
-
-    @Override
-    public void dataSetAdded(DataSet d) {
-
-    }
-
-    @Override
-    public void dataSetsRemoved(DataSet[] d) {
-
-    }
-
-    @Override
-    public void dataGroupAdded(DataGroup g) {
-
-    }
-
-    @Override
-    public void dataGroupsRemoved(DataGroup[] g) {
-
-    }
-
-    @Override
-    public void dataSetRenamed(DataSet d) {
-
-    }
-
-    @Override
-    public void dataGroupRenamed(DataGroup g) {
-
-    }
-
-    @Override
-    public void dataGroupSamplesChanged(DataGroup g) {
-
-    }
-
-    @Override
-    public void probeSetReplaced(ProbeSet p) {
-        if (p == null) {
-            probes = null;
-        } else {
-            probes = p.getProbesForChromosome(DisplayPreferences.getInstance().getCurrentChromosome().getName());
-            Arrays.sort(probes);
-        }
-    }
-
-    @Override
-    public void activeDataStoreChanged(DataStore s) {
-
-    }
-
-    @Override
-    public void activeProbeListChanged(ProbeList l) {
-        if (l == null) {
-            probes = null;
-        } else {
-            probes = l.getProbesForChromosome(DisplayPreferences.getInstance().getCurrentChromosome().getName());
-            Arrays.sort(probes);
-        }
-        repaint();
     }
 }

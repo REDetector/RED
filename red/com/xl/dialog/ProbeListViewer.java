@@ -142,86 +142,6 @@ public class ProbeListViewer extends JDialog implements MouseListener, ActionLis
 
     }
 
-    /**
-     * The Class ProbeTableModel.
-     */
-    private class ProbeTableModel extends AbstractTableModel {
-
-        /**
-         * The data.
-         */
-        private Object[][] data;
-
-        /**
-         * The headers.
-         */
-        private String[] headers;
-
-        /**
-         * The classes.
-         */
-        private Class[] classes;
-
-        /**
-         * Instantiates a new probe table model.
-         *
-         * @param data    the data
-         * @param headers the headers
-         * @param classes the classes
-         */
-        public ProbeTableModel(Object[][] data, String[] headers, Class[] classes) {
-            super();
-            this.data = data;
-            this.headers = headers;
-            this.classes = classes;
-        }
-
-        /* (non-Javadoc)
-         * @see javax.swing.table.TableModel#getRowCount()
-         */
-        public int getRowCount() {
-            return data.length;
-        }
-
-        /* (non-Javadoc)
-         * @see javax.swing.table.TableModel#getColumnCount()
-         */
-        public int getColumnCount() {
-            if (data.length > 0) {
-                return data[0].length;
-            }
-            return 0;
-        }
-
-        /* (non-Javadoc)
-         * @see javax.swing.table.TableModel#getValueAt(int, int)
-         */
-        public Object getValueAt(int r, int c) {
-            return data[r][c];
-        }
-
-        /* (non-Javadoc)
-         * @see javax.swing.table.AbstractTableModel#getColumnName(int)
-         */
-        public String getColumnName(int c) {
-            return headers[c];
-        }
-
-        /* (non-Javadoc)
-         * @see javax.swing.table.AbstractTableModel#getColumnClass(int)
-         */
-        public Class getColumnClass(int c) {
-            return classes[c];
-        }
-
-        /* (non-Javadoc)
-         * @see javax.swing.table.AbstractTableModel#isCellEditable(int, int)
-         */
-        public boolean isCellEditable(int r, int c) {
-            return false;
-        }
-    }
-
     /* (non-Javadoc)
      * @see java.awt.event.MouseListener#mouseClicked(java.awt.event.MouseEvent)
      */
@@ -343,5 +263,85 @@ public class ProbeListViewer extends JDialog implements MouseListener, ActionLis
 
         }
 
+    }
+
+    /**
+     * The Class ProbeTableModel.
+     */
+    private class ProbeTableModel extends AbstractTableModel {
+
+        /**
+         * The data.
+         */
+        private Object[][] data;
+
+        /**
+         * The headers.
+         */
+        private String[] headers;
+
+        /**
+         * The classes.
+         */
+        private Class[] classes;
+
+        /**
+         * Instantiates a new probe table model.
+         *
+         * @param data    the data
+         * @param headers the headers
+         * @param classes the classes
+         */
+        public ProbeTableModel(Object[][] data, String[] headers, Class[] classes) {
+            super();
+            this.data = data;
+            this.headers = headers;
+            this.classes = classes;
+        }
+
+        /* (non-Javadoc)
+         * @see javax.swing.table.TableModel#getRowCount()
+         */
+        public int getRowCount() {
+            return data.length;
+        }
+
+        /* (non-Javadoc)
+         * @see javax.swing.table.TableModel#getColumnCount()
+         */
+        public int getColumnCount() {
+            if (data.length > 0) {
+                return data[0].length;
+            }
+            return 0;
+        }
+
+        /* (non-Javadoc)
+         * @see javax.swing.table.TableModel#getValueAt(int, int)
+         */
+        public Object getValueAt(int r, int c) {
+            return data[r][c];
+        }
+
+        /* (non-Javadoc)
+         * @see javax.swing.table.AbstractTableModel#getColumnName(int)
+         */
+        public String getColumnName(int c) {
+            return headers[c];
+        }
+
+        /* (non-Javadoc)
+         * @see javax.swing.table.AbstractTableModel#getColumnClass(int)
+         */
+        public Class getColumnClass(int c) {
+            return classes[c];
+        }
+
+        /* (non-Javadoc)
+         * @see javax.swing.table.AbstractTableModel#isCellEditable(int, int)
+         */
+        public boolean isCellEditable(int r, int c) {
+            return false;
+        }
     }
 }

@@ -4,6 +4,23 @@ package com.xl.datatypes.probes;
  * Created by Administrator on 2014/10/1.
  */
 public class ProbeBean {
+    private String chr;
+    private int pos;
+    private String id;
+    private char ref;
+    private char alt;
+    private float qual;
+    private String filter;
+    private String info;
+    private String gt;
+    private String ad;
+    private String dp;
+    private String gq;
+    private String pl;
+    private double level = -1;
+    private double pvalue = -1;
+    private double fdr = -1;
+
     public ProbeBean(String chr, int pos, String id, char ref, char alt, float qual, String filter, String info, String gt, String ad, String dp, String gq,
                      String pl) {
         this.chr = chr;
@@ -20,24 +37,6 @@ public class ProbeBean {
         this.gq = gq;
         this.pl = pl;
     }
-
-    private String chr;
-    private int pos;
-    private String id;
-    private char ref;
-    private char alt;
-    private float qual;
-    private String filter;
-    private String info;
-    private String gt;
-    private String ad;
-    private String dp;
-    private String gq;
-    private String pl;
-
-    private double level = -1;
-    private double pvalue = -1;
-    private double fdr = -1;
 
     public ProbeBean(String chr, int pos) {
         this.chr = chr;

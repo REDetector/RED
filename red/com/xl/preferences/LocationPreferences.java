@@ -40,62 +40,50 @@ public class LocationPreferences {
      */
     private String projectDirectory = new File("").getAbsolutePath();
     private String projectDataDirectory = projectDirectory + File.separator + DATA_DIRECTORY;
-
-    /**
-     * The network address from where we can download new genomes
-     */
-    private String genomeDownloadLists = "http://igv.broadinstitute.org/genomes/";
-
     /**
      * The fasta directory, which is associated with the relevent genome.
      */
     private String fastaDirectory = projectDataDirectory + File.separator + FASTA_DIRECTORY;
-
     /**
      * The genome directory, mainly contains the genome features from 'refGene.txt'
      */
     private String genomeDirectory = projectDataDirectory + File.separator + GENOME_DIRECTORY;
-
     /**
      * The RNA directory, we save all RNA data or their cache file here.
      */
     private String rnaDirectory = projectDataDirectory + File.separator + RNA_DIRECTORY;
-
     /**
      * The DNA directory, we save all DNA data or their cache file here.
      */
     private String dnaDirectory = projectDataDirectory + File.separator + DNA_DIRECTORY;
-
     /**
      * The annotation directory, we save all annotation data or their cache file here.
      */
     private String annotationDirectory = projectDataDirectory + File.separator + ANNOTATION_DIRECTORY;
-
     /**
      * The directory in which to save temporary cache files
      */
     private String tempDirectory = projectDataDirectory + File.separator + TEMP_DIRECTORY;
-
     /**
      * The directory in which to save cache files to make all data load faster
      */
     private String cacheDirectory = projectDataDirectory + File.separator + CACHE_DIRECTORY;
-
     /**
      * The directory in which to save some fragmentary files like 'cytoband.txt'
      */
     private String othersDirectory = projectDataDirectory + File.separator + OTHERS_DIRECTORY;
-
-    /**
-     * It depends on whether the '.genome' file has the cytoband property.
-     */
-    private String cytobandFile = "";
-
     /**
      * The default save location.
      */
     private String projectSaveLocation = projectDirectory;
-
+    /**
+     * The network address from where we can download new genomes
+     */
+    private String genomeDownloadLists = "http://igv.broadinstitute.org/genomes/";
+    /**
+     * It depends on whether the '.genome' file has the cytoband property.
+     */
+    private String cytobandFile = "";
     private String dnaVcfFile = "";
     private String rnaVcfFile = "";
     private String repeatFile = "";
@@ -111,12 +99,12 @@ public class LocationPreferences {
 
     private Map<String, String> directories = new HashMap<String, String>();
 
-    public static LocationPreferences getInstance() {
-        return locationPreferences;
-    }
-
     private LocationPreferences() {
         initialDirectories();
+    }
+
+    public static LocationPreferences getInstance() {
+        return locationPreferences;
     }
 
     public void initialDirectories() {
@@ -235,16 +223,20 @@ public class LocationPreferences {
         this.tempDirectory = tempDirectory;
     }
 
-    public void setCytobandFile(String cytobandFile) {
-        this.cytobandFile = cytobandFile;
-    }
-
     public String getCytobandFile() {
         return cytobandFile;
     }
 
+    public void setCytobandFile(String cytobandFile) {
+        this.cytobandFile = cytobandFile;
+    }
+
     public String getOthersDirectory() {
         return othersDirectory;
+    }
+
+    public void setOthersDirectory(String othersDirectory) {
+        this.othersDirectory = othersDirectory;
     }
 
     public String getCacheDirectory() {
@@ -253,10 +245,6 @@ public class LocationPreferences {
 
     public void setCacheDirectory(String cacheDirectory) {
         this.cacheDirectory = cacheDirectory;
-    }
-
-    public void setOthersDirectory(String othersDirectory) {
-        this.othersDirectory = othersDirectory;
     }
 
     public String getProjectSaveLocation() {

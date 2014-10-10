@@ -53,20 +53,6 @@ public class DataInportDialog extends JDialog implements ActionListener {
 
     private JTabbedPane tabs = new JTabbedPane();
 
-    private void addItem(GridBagConstraints c, JPanel filePanel, JLabel jLable, JTextField jTextField, JButton jButton) {
-        c.gridx = 0;
-        c.weightx = 0.1;
-        c.weighty = 0.5;
-        c.fill = GridBagConstraints.HORIZONTAL;
-        filePanel.add(jLable, c);
-        c.gridx = 1;
-        c.weightx = 0.5;
-        filePanel.add(jTextField, c);
-        c.gridx = 2;
-        c.weightx = 0.1;
-        filePanel.add(jButton, c);
-    }
-
     /**
      * Instantiates a new edits the preferences dialog.
      */
@@ -299,6 +285,20 @@ public class DataInportDialog extends JDialog implements ActionListener {
         getContentPane().add(buttonPanel, BorderLayout.SOUTH);
 
         setVisible(true);
+    }
+
+    private void addItem(GridBagConstraints c, JPanel filePanel, JLabel jLable, JTextField jTextField, JButton jButton) {
+        c.gridx = 0;
+        c.weightx = 0.1;
+        c.weighty = 0.5;
+        c.fill = GridBagConstraints.HORIZONTAL;
+        filePanel.add(jLable, c);
+        c.gridx = 1;
+        c.weightx = 0.5;
+        filePanel.add(jTextField, c);
+        c.gridx = 2;
+        c.weightx = 0.1;
+        filePanel.add(jButton, c);
     }
 
     /**

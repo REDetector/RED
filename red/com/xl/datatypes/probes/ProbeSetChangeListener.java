@@ -28,7 +28,6 @@ package com.xl.datatypes.probes;
  * component's <code>addProbeSetChangeListener<code> method. When
  * the probeSetChange event occurs, that object's appropriate
  * method is invoked.
- *
  */
 public interface ProbeSetChangeListener {
 

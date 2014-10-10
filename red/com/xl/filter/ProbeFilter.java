@@ -22,9 +22,9 @@ public abstract class ProbeFilter implements Runnable, Cancellable {
     protected final ProbeList parentList;
     protected final String parentTable;
     protected final DatabaseManager databaseManager;
+    protected boolean cancel = false;
     private ArrayList<ProgressListener> listeners = new ArrayList<ProgressListener>();
     private ArrayList<OptionsListener> optionsListeners = new ArrayList<OptionsListener>();
-    protected boolean cancel = false;
 
     /**
      * Instantiates a new probe filter.

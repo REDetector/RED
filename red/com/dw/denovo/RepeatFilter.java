@@ -16,8 +16,8 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class RepeatFilter {
-    private DatabaseManager databaseManager;
     SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    private DatabaseManager databaseManager;
 
     public RepeatFilter(DatabaseManager databaseManager) {
         this.databaseManager = databaseManager;
