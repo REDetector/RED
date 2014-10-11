@@ -46,33 +46,33 @@ public class DataTrackSelector extends JDialog implements ActionListener, ListSe
     /**
      * The available group model.
      */
-    private DefaultListModel<Object> availableGroupModel = new DefaultListModel<Object>();
+    private DefaultListModel availableGroupModel = new DefaultListModel();
 
     /**
      * The available set model.
      */
-    private DefaultListModel<Object> availableSetModel = new DefaultListModel<Object>();
+    private DefaultListModel availableSetModel = new DefaultListModel();
 
 
     /**
      * The available group list.
      */
-    private JList<Object> availableGroupList;
+    private JList availableGroupList;
 
     /**
      * The available set list.
      */
-    private JList<Object> availableSetList;
+    private JList availableSetList;
 
     /**
      * The used model.
      */
-    private DefaultListModel<Object> usedModel = new DefaultListModel<Object>();
+    private DefaultListModel usedModel = new DefaultListModel();
 
     /**
      * The used list.
      */
-    private JList<Object> usedList;
+    private JList usedList;
 
     /**
      * The add button.
@@ -137,7 +137,7 @@ public class DataTrackSelector extends JDialog implements ActionListener, ListSe
         c2.weighty = 1;
         c2.fill = GridBagConstraints.BOTH;
 
-        availableSetList = new JList<Object>(availableSetModel);
+        availableSetList = new JList(availableSetModel);
         availableSetList.addListSelectionListener(this);
         availableSetList.setCellRenderer(renderer);
         availablePanel.add(new JScrollPane(availableSetList), c2);
@@ -151,7 +151,7 @@ public class DataTrackSelector extends JDialog implements ActionListener, ListSe
         c2.weighty = 1;
         c2.fill = GridBagConstraints.BOTH;
 
-        availableGroupList = new JList<Object>(availableGroupModel);
+        availableGroupList = new JList(availableGroupModel);
         availableGroupList.addListSelectionListener(this);
         availableGroupList.setCellRenderer(renderer);
         availablePanel.add(new JScrollPane(availableGroupList), c2);
@@ -197,7 +197,7 @@ public class DataTrackSelector extends JDialog implements ActionListener, ListSe
         JPanel usedPanel = new JPanel();
         usedPanel.setLayout(new BorderLayout());
         usedPanel.add(new JLabel("Displayed Tracks", JLabel.CENTER), BorderLayout.NORTH);
-        usedList = new JList<Object>(usedModel);
+        usedList = new JList(usedModel);
         usedList.addListSelectionListener(this);
         usedList.setCellRenderer(renderer);
         usedPanel.add(new JScrollPane(usedList), BorderLayout.CENTER);

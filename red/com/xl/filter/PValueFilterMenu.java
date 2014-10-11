@@ -48,7 +48,6 @@ import java.util.Vector;
  */
 public class PValueFilterMenu extends ProbeFilter {
 
-    private DataStore[] stores = new DataStore[0];
     private String rScriptPath = null;
     private PValueFilterOptionPanel optionsPanel = new PValueFilterOptionPanel();
 
@@ -154,67 +153,15 @@ public class PValueFilterMenu extends ProbeFilter {
     /**
      * The ValuesFilterOptionPanel.
      */
-    private class PValueFilterOptionPanel extends JPanel implements ListSelectionListener, ActionListener {
+    private class PValueFilterOptionPanel extends AbstractOptionPanel implements ActionListener {
 
-        private JList<DataStore> dataList;
         private JTextField rScriptField = null;
 
         /**
          * Instantiates a new values filter option panel.
          */
         public PValueFilterOptionPanel() {
-            setLayout(new BorderLayout());
-            JPanel dataPanel = new JPanel();
-            dataPanel.setBorder(BorderFactory.createEmptyBorder(4, 4, 4, 4));
-            dataPanel.setLayout(new BorderLayout());
-            dataPanel.add(new JLabel("Data Sets/Groups", JLabel.CENTER), BorderLayout.NORTH);
-
-            DefaultListModel<DataStore> dataModel = new DefaultListModel<DataStore>();
-            DataStore[] stores = collection.getAllDataStores();
-
-            for (DataStore store : stores) {
-                dataModel.addElement(store);
-            }
-            dataList = new JList<DataStore>(dataModel);
-            ListDefaultSelector.selectDefaultStores(dataList);
-            dataList.setCellRenderer(new TypeColourRenderer());
-            dataList.addListSelectionListener(this);
-            dataPanel.add(new JScrollPane(dataList), BorderLayout.CENTER);
-
-            add(dataPanel, BorderLayout.WEST);
-
-            JPanel choicePanel = new JPanel();
-            choicePanel.setLayout(new GridBagLayout());
-            choicePanel.setBorder(BorderFactory.createEmptyBorder(4, 4, 4, 4));
-
-            GridBagConstraints c = new GridBagConstraints();
-            c.gridy = 0;
-            rScriptField = new JTextField();
-            JLabel rScriptLable = new JLabel(LocationPreferences.R_EXECUTABALE_PATH);
-            rScriptPath = LocationPreferences.getInstance().getRScriptPath();
-            if (rScriptPath != null) {
-                rScriptField.setText(rScriptPath);
-            } else {
-                rScriptField.setText("");
-            }
-            rScriptField.setEditable(false);
-            JButton rScriptButton = new JButton("Browse");
-            rScriptButton.setActionCommand(LocationPreferences.R_EXECUTABALE_PATH);
-            rScriptButton.addActionListener(this);
-            c.gridx = 0;
-            c.weightx = 0.1;
-            c.weighty = 0.5;
-            c.fill = GridBagConstraints.HORIZONTAL;
-            choicePanel.add(rScriptLable, c);
-            c.gridx = 1;
-            c.weightx = 0.5;
-            choicePanel.add(rScriptField, c);
-            c.gridx = 2;
-            c.weightx = 0.1;
-            choicePanel.add(rScriptButton, c);
-
-            valueChanged(null);
-            add(new JScrollPane(choicePanel), BorderLayout.CENTER);
+            super(collection);
         }
 
         /* (non-Javadoc)
@@ -229,10 +176,10 @@ public class PValueFilterMenu extends ProbeFilter {
          */
         public void valueChanged(ListSelectionEvent lse) {
             System.out.println(PValueFilterMenu.class.getName() + ":valueChanged()");
-            java.util.List<DataStore> lists = dataList.getSelectedValuesList();
-            stores = new DataStore[lists.size()];
+            Object[] objects = dataList.getSelectedValues();
+            stores = new DataStore[objects.length];
             for (int i = 0; i < stores.length; i++) {
-                stores[i] = lists.get(i);
+                stores[i] = (DataStore) objects[i];
             }
             optionsChanged();
         }
@@ -263,6 +210,40 @@ public class PValueFilterMenu extends ProbeFilter {
             if (chooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
                 f.setText(chooser.getSelectedFile().getAbsolutePath().replaceAll("\\\\", "/"));
             }
+        }
+
+        @Override
+        protected JPanel getOptionPanel() {
+            JPanel choicePanel = new JPanel();
+            choicePanel.setLayout(new GridBagLayout());
+            choicePanel.setBorder(BorderFactory.createEmptyBorder(4, 4, 4, 4));
+
+            GridBagConstraints c = new GridBagConstraints();
+            c.gridy = 0;
+            rScriptField = new JTextField();
+            JLabel rScriptLable = new JLabel(LocationPreferences.R_EXECUTABALE_PATH);
+            rScriptPath = LocationPreferences.getInstance().getRScriptPath();
+            if (rScriptPath != null) {
+                rScriptField.setText(rScriptPath);
+            } else {
+                rScriptField.setText("");
+            }
+            rScriptField.setEditable(false);
+            JButton rScriptButton = new JButton("Browse");
+            rScriptButton.setActionCommand(LocationPreferences.R_EXECUTABALE_PATH);
+            rScriptButton.addActionListener(this);
+            c.gridx = 0;
+            c.weightx = 0.1;
+            c.weighty = 0.5;
+            c.fill = GridBagConstraints.HORIZONTAL;
+            choicePanel.add(rScriptLable, c);
+            c.gridx = 1;
+            c.weightx = 0.5;
+            choicePanel.add(rScriptField, c);
+            c.gridx = 2;
+            c.weightx = 0.1;
+            choicePanel.add(rScriptButton, c);
+            return choicePanel;
         }
     }
 

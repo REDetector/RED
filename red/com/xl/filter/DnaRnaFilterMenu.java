@@ -26,13 +26,10 @@ import com.xl.datatypes.DataCollection;
 import com.xl.datatypes.DataStore;
 import com.xl.datatypes.probes.Probe;
 import com.xl.datatypes.probes.ProbeList;
-import com.xl.dialog.TypeColourRenderer;
 import com.xl.exception.REDException;
-import com.xl.utils.ListDefaultSelector;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
 import java.awt.*;
 import java.util.Vector;
 
@@ -41,10 +38,9 @@ import java.util.Vector;
  * from quantiation.  Each probe is filtered independently of all
  * other probes.
  */
-public class DnaRnaFilterMenu extends ProbeFilter {
+public class DNARNAFilterMenu extends ProbeFilter {
 
-    private DataStore[] stores = new DataStore[0];
-    private DnaRnaFilterOptionPanel optionsPanel = new DnaRnaFilterOptionPanel();
+    private DNARNAFilterOptionPanel optionsPanel = new DNARNAFilterOptionPanel();
 
     /**
      * Instantiates a new values filter with default values
@@ -52,7 +48,7 @@ public class DnaRnaFilterMenu extends ProbeFilter {
      * @param collection The dataCollection to filter
      * @throws com.xl.exception.REDException if the dataCollection isn't quantitated.
      */
-    public DnaRnaFilterMenu(DataCollection collection) throws REDException {
+    public DNARNAFilterMenu(DataCollection collection) throws REDException {
         super(collection);
     }
 
@@ -149,49 +145,15 @@ public class DnaRnaFilterMenu extends ProbeFilter {
     /**
      * The ValuesFilterOptionPanel.
      */
-    private class DnaRnaFilterOptionPanel extends JPanel implements ListSelectionListener {
+    private class DNARNAFilterOptionPanel extends AbstractOptionPanel {
 
-        private JList<DataStore> dataList;
         private JTextArea description = null;
 
         /**
          * Instantiates a new values filter option panel.
          */
-        public DnaRnaFilterOptionPanel() {
-            setLayout(new BorderLayout());
-            JPanel dataPanel = new JPanel();
-            dataPanel.setBorder(BorderFactory.createEmptyBorder(4, 4, 4, 4));
-            dataPanel.setLayout(new BorderLayout());
-            dataPanel.add(new JLabel("Data Sets/Groups", JLabel.CENTER), BorderLayout.NORTH);
-
-            DefaultListModel<DataStore> dataModel = new DefaultListModel<DataStore>();
-
-            DataStore[] stores = collection.getAllDataStores();
-
-            for (DataStore store : stores) {
-                dataModel.addElement(store);
-            }
-
-            dataList = new JList<DataStore>(dataModel);
-            ListDefaultSelector.selectDefaultStores(dataList);
-            dataList.setCellRenderer(new TypeColourRenderer());
-            dataList.addListSelectionListener(this);
-            dataPanel.add(new JScrollPane(dataList), BorderLayout.CENTER);
-
-            add(dataPanel, BorderLayout.WEST);
-
-            JPanel choicePanel = new JPanel();
-            choicePanel.setLayout(new GridBagLayout());
-            choicePanel.setBorder(BorderFactory.createEmptyBorder(4, 4, 4, 4));
-            description = new JTextArea("RNA-editing means editing in RNA while DNA is not snp.\n" +
-                    "So only otherwise, all the difference between DNA and RNA\n" +
-                    "will be selected.");
-//            description.setLineWrap(true);
-            description.setEditable(false);
-            choicePanel.add(description);
-
-            valueChanged(null);
-            add(new JScrollPane(choicePanel), BorderLayout.CENTER);
+        public DNARNAFilterOptionPanel() {
+            super(collection);
         }
 
         /* (non-Javadoc)
@@ -205,14 +167,27 @@ public class DnaRnaFilterMenu extends ProbeFilter {
          * @see javax.swing.event.ListSelectionListener#valueChanged(javax.swing.event.ListSelectionEvent)
          */
         public void valueChanged(ListSelectionEvent lse) {
-            System.out.println(DnaRnaFilterMenu.class.getName() + ":valueChanged()");
-            java.util.List<DataStore> lists = dataList.getSelectedValuesList();
-            stores = new DataStore[lists.size()];
+            System.out.println(DNARNAFilterMenu.class.getName() + ":valueChanged()");
+            Object[] objects = dataList.getSelectedValues();
+            stores = new DataStore[objects.length];
             for (int i = 0; i < stores.length; i++) {
-                stores[i] = lists.get(i);
+                stores[i] = (DataStore) objects[i];
             }
             optionsChanged();
         }
 
+        @Override
+        protected JPanel getOptionPanel() {
+            JPanel choicePanel = new JPanel();
+            choicePanel.setLayout(new GridBagLayout());
+            choicePanel.setBorder(BorderFactory.createEmptyBorder(4, 4, 4, 4));
+            description = new JTextArea("RNA-editing means editing in RNA while DNA is not snp.\n" +
+                    "So only otherwise, all the difference between DNA and RNA\n" +
+                    "will be selected.");
+//            description.setLineWrap(true);
+            description.setEditable(false);
+            choicePanel.add(description);
+            return choicePanel;
+        }
     }
 }

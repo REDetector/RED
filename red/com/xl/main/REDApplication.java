@@ -64,7 +64,7 @@ public class REDApplication extends JFrame implements ProgressListener,
     /**
      * The version of RED
      */
-    public static final String VERSION = "0.0.5";
+    public static final String VERSION = "0.0.1";
     private static final String WELCOME_CONTENT = "<html>Welcome to RED.<br><br> "
             + "To allow the program to work you need to configure a temporary cache directory.<br><br>"
             + "Use the button on the welcome screen to set this and you can get started";
@@ -164,6 +164,7 @@ public class REDApplication extends JFrame implements ProgressListener,
         setJMenuBar(menu);
 
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        setIconImage(new ImageIcon(ClassLoader.getSystemResource("resources/logo.png")).getImage());
 
         mainPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
 

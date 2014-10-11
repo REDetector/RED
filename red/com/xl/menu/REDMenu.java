@@ -469,7 +469,7 @@ public class REDMenu extends JMenuBar implements ActionListener {
                     new FilterOptionsDialog(redApplication.dataCollection(), new BasicFilterMenu(redApplication
                             .dataCollection()));
                 } else if (action.equals(MenuUtils.SPECIFIC_FILTER)) {
-                    new FilterOptionsDialog(redApplication.dataCollection(), new SpecificFilterMenu(redApplication
+                    new FilterOptionsDialog(redApplication.dataCollection(), new EditingTypeFilterMenu(redApplication
                             .dataCollection()));
                 } else if (action.equals(MenuUtils.KNOWN_SNVS_FILTER)) {
                     new FilterOptionsDialog(redApplication.dataCollection(), new DbSNPFilterMenu(redApplication
@@ -478,7 +478,7 @@ public class REDMenu extends JMenuBar implements ActionListener {
                     new FilterOptionsDialog(redApplication.dataCollection(), new RepeatFilterMenu(redApplication
                             .dataCollection()));
                 } else if (action.equals(MenuUtils.DNA_RNA_FILTER)) {
-                    new FilterOptionsDialog(redApplication.dataCollection(), new DnaRnaFilterMenu(redApplication
+                    new FilterOptionsDialog(redApplication.dataCollection(), new DNARNAFilterMenu(redApplication
                             .dataCollection()));
                 } else if (action.equals(MenuUtils.COMPREHENSIVE_FILTER)) {
                     new FilterOptionsDialog(redApplication.dataCollection(),

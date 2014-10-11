@@ -26,13 +26,10 @@ import com.xl.datatypes.DataCollection;
 import com.xl.datatypes.DataStore;
 import com.xl.datatypes.probes.Probe;
 import com.xl.datatypes.probes.ProbeList;
-import com.xl.dialog.TypeColourRenderer;
 import com.xl.exception.REDException;
-import com.xl.utils.ListDefaultSelector;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
@@ -45,7 +42,6 @@ import java.util.Vector;
  */
 public class DbSNPFilterMenu extends ProbeFilter {
 
-    private DataStore[] stores = new DataStore[0];
     private DbSNPFilterOptionPanel optionsPanel = new DbSNPFilterOptionPanel();
 
     /**
@@ -150,46 +146,15 @@ public class DbSNPFilterMenu extends ProbeFilter {
     /**
      * The ValuesFilterOptionPanel.
      */
-    private class DbSNPFilterOptionPanel extends JPanel implements ListSelectionListener, KeyListener {
+    private class DbSNPFilterOptionPanel extends AbstractOptionPanel implements KeyListener {
 
-        private JList<DataStore> dataList;
         private JTextArea description = null;
 
         /**
          * Instantiates a new values filter option panel.
          */
         public DbSNPFilterOptionPanel() {
-            setLayout(new BorderLayout());
-            JPanel dataPanel = new JPanel();
-            dataPanel.setBorder(BorderFactory.createEmptyBorder(4, 4, 4, 4));
-            dataPanel.setLayout(new BorderLayout());
-            dataPanel.add(new JLabel("Data Sets/Groups", JLabel.CENTER), BorderLayout.NORTH);
-
-            DefaultListModel<DataStore> dataModel = new DefaultListModel<DataStore>();
-
-            DataStore[] stores = collection.getAllDataStores();
-
-            for (DataStore store : stores) {
-                dataModel.addElement(store);
-            }
-
-            dataList = new JList<DataStore>(dataModel);
-            ListDefaultSelector.selectDefaultStores(dataList);
-            dataList.setCellRenderer(new TypeColourRenderer());
-            dataList.addListSelectionListener(this);
-            dataPanel.add(new JScrollPane(dataList), BorderLayout.CENTER);
-
-            add(dataPanel, BorderLayout.WEST);
-
-            JPanel choicePanel = new JPanel();
-            choicePanel.setLayout(new GridBagLayout());
-            choicePanel.setBorder(BorderFactory.createEmptyBorder(4, 4, 4, 4));
-            description = new JTextArea("DnSNP Filter will filter out bases which are already \nsnp in DNA level.");
-            description.setEditable(false);
-            choicePanel.add(description);
-
-            valueChanged(null);
-            add(new JScrollPane(choicePanel), BorderLayout.CENTER);
+            super(collection);
         }
 
         /* (non-Javadoc)
@@ -204,10 +169,10 @@ public class DbSNPFilterMenu extends ProbeFilter {
          */
         public void valueChanged(ListSelectionEvent lse) {
             System.out.println(DbSNPFilterMenu.class.getName() + ":valueChanged()");
-            java.util.List<DataStore> lists = dataList.getSelectedValuesList();
-            stores = new DataStore[lists.size()];
+            Object[] objects = dataList.getSelectedValues();
+            stores = new DataStore[objects.length];
             for (int i = 0; i < stores.length; i++) {
-                stores[i] = lists.get(i);
+                stores[i] = (DataStore) objects[i];
             }
             optionsChanged();
         }
@@ -231,6 +196,17 @@ public class DbSNPFilterMenu extends ProbeFilter {
                 return;
             }
             optionsChanged();
+        }
+
+        @Override
+        protected JPanel getOptionPanel() {
+            JPanel choicePanel = new JPanel();
+            choicePanel.setLayout(new GridBagLayout());
+            choicePanel.setBorder(BorderFactory.createEmptyBorder(4, 4, 4, 4));
+            description = new JTextArea("DnSNP Filter will filter out bases which are already \nsnp in DNA level.");
+            description.setEditable(false);
+            choicePanel.add(description);
+            return choicePanel;
         }
     }
 }

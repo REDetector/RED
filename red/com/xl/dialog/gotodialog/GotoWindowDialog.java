@@ -42,7 +42,7 @@ public class GotoWindowDialog extends JDialog implements ActionListener,
     /**
      * The chromosome.
      */
-    private JComboBox<Chromosome> chromosome;
+    private JComboBox chromosome;
 
     /**
      * The centre position.
@@ -92,7 +92,7 @@ public class GotoWindowDialog extends JDialog implements ActionListener,
         Chromosome[] chrs = application.dataCollection().genome()
                 .getAllChromosomes();
 
-        chromosome = new JComboBox<Chromosome>(chrs);
+        chromosome = new JComboBox(chrs);
 
         choicePanel.add(chromosome, gbc);
 

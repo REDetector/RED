@@ -58,7 +58,7 @@ public class FindFeatureDialog extends JDialog implements ActionListener,
     /**
      * The search in.
      */
-    private JComboBox<String> searchIn;
+    private JComboBox searchIn;
 
     /**
      * The search button.
@@ -118,7 +118,7 @@ public class FindFeatureDialog extends JDialog implements ActionListener,
         search = new JTextField(15);
         choicePanel.add(search);
         choicePanel.add(new JLabel(" in "));
-        searchIn = new JComboBox<String>(new String[]{"name", "location"});
+        searchIn = new JComboBox(new String[]{"name", "location"});
 
         choicePanel.add(searchIn);
 

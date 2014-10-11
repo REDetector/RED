@@ -55,7 +55,7 @@ public class ParsingUtils {
                 URL url = new URL(path);
                 HttpURLConnection urlConn = (HttpURLConnection) url
                         .openConnection();
-                contentLength = urlConn.getContentLengthLong();
+                contentLength = urlConn.getContentLength();
 
             } else if (path.startsWith("ftp:")) {
                 // Use JDK url

@@ -43,7 +43,7 @@ public class GotoDialog extends JDialog implements ActionListener, KeyListener,
     /**
      * The chromosome.
      */
-    private JComboBox<String> chromosome;
+    private JComboBox chromosome;
     /**
      * The start.
      */
@@ -56,7 +56,7 @@ public class GotoDialog extends JDialog implements ActionListener, KeyListener,
      * The ok button.
      */
     private JButton okButton;
-    private JList<RecentLocation> recentList;
+    private JList recentList;
 
     /**
      * Instantiates a new goto dialog.
@@ -91,7 +91,7 @@ public class GotoDialog extends JDialog implements ActionListener, KeyListener,
         String[] chrs = application.dataCollection().genome()
                 .getAllChromosomeNames();
 
-        chromosome = new JComboBox<String>(chrs);
+        chromosome = new JComboBox(chrs);
 
         choicePanel.add(chromosome, gbc);
 
@@ -140,7 +140,7 @@ public class GotoDialog extends JDialog implements ActionListener, KeyListener,
 
         choicePanel.add(new JLabel("Recent Locations", JLabel.CENTER), gbc);
 
-        recentList = new JList<RecentLocation>(recentLocations);
+        recentList = new JList(recentLocations);
         recentList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         recentList.getSelectionModel().addListSelectionListener(this);
         gbc.gridy++;

@@ -2,6 +2,7 @@ package com.xl.filter;
 
 import com.dw.publicaffairs.DatabaseManager;
 import com.xl.datatypes.DataCollection;
+import com.xl.datatypes.DataStore;
 import com.xl.datatypes.probes.ProbeList;
 import com.xl.exception.REDException;
 import com.xl.interfaces.Cancellable;
@@ -10,6 +11,7 @@ import com.xl.interfaces.ProgressListener;
 import com.xl.preferences.REDPreferences;
 
 import javax.swing.*;
+import javax.swing.event.ListSelectionListener;
 import java.util.ArrayList;
 
 /**
@@ -25,6 +27,7 @@ public abstract class ProbeFilter implements Runnable, Cancellable {
     protected boolean cancel = false;
     private ArrayList<ProgressListener> listeners = new ArrayList<ProgressListener>();
     private ArrayList<OptionsListener> optionsListeners = new ArrayList<OptionsListener>();
+    protected DataStore[] stores = new DataStore[0];
 
     /**
      * Instantiates a new probe filter.
@@ -46,6 +49,8 @@ public abstract class ProbeFilter implements Runnable, Cancellable {
             databaseManager.useDatabase(DatabaseManager.NON_DENOVO_DATABASE_NAME);
         }
     }
+
+
 
     /* (non-Javadoc)
      * @see uk.ac.babraham.SeqMonk.Dialogs.Cancellable#cancel()

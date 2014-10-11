@@ -49,12 +49,12 @@ public class HelpSearchPanel extends JPanel implements ActionListener, ListSelec
     /**
      * The result list.
      */
-    private JList<Object> resultList;
+    private JList resultList;
 
     /**
      * The list model.
      */
-    private DefaultListModel<Object> listModel;
+    private DefaultListModel listModel;
 
     /**
      * The search button.
@@ -96,9 +96,9 @@ public class HelpSearchPanel extends JPanel implements ActionListener, ListSelec
         queryPanel.add(searchButton, BorderLayout.EAST);
         add(queryPanel, BorderLayout.NORTH);
 
-        listModel = new DefaultListModel<Object>();
+        listModel = new DefaultListModel();
         listModel.addElement("[No search results]");
-        resultList = new JList<Object>(listModel);
+        resultList = new JList(listModel);
         resultList.addListSelectionListener(this);
         resultList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         resultsScrollPane = new JScrollPane(resultList);
@@ -140,8 +140,8 @@ public class HelpSearchPanel extends JPanel implements ActionListener, ListSelec
                 return;
             }
             if (results.length > 0) {
-                for (int r = 0; r < results.length; r++) {
-                    listModel.addElement(results[r]);
+                for (HelpPage helpPage : results) {
+                    listModel.addElement(helpPage);
                 }
             } else {
                 listModel.addElement("[No search results]");
@@ -156,7 +156,7 @@ public class HelpSearchPanel extends JPanel implements ActionListener, ListSelec
         // to replace the entire JList.  Aaargh!
         remove(resultsScrollPane);
         revalidate();
-        resultList = new JList<Object>(listModel);
+        resultList = new JList(listModel);
         resultList.addListSelectionListener(this);
         resultsScrollPane = new JScrollPane(resultList);
         add(resultsScrollPane, BorderLayout.CENTER);

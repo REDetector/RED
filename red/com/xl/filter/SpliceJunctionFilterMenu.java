@@ -45,9 +45,8 @@ import java.util.Vector;
  */
 public class SpliceJunctionFilterMenu extends ProbeFilter {
 
-    private DataStore[] stores = new DataStore[0];
-    private SpliceJunctionFilterOptionPanel optionsPanel = new SpliceJunctionFilterOptionPanel();
     private int sequenceEdge = -1;
+    private SpliceJunctionFilterOptionPanel optionsPanel = new SpliceJunctionFilterOptionPanel();
 
     /**
      * Instantiates a new values filter with default values
@@ -150,56 +149,15 @@ public class SpliceJunctionFilterMenu extends ProbeFilter {
     /**
      * The ValuesFilterOptionPanel.
      */
-    private class SpliceJunctionFilterOptionPanel extends JPanel implements ListSelectionListener, KeyListener {
+    private class SpliceJunctionFilterOptionPanel extends AbstractOptionPanel implements KeyListener {
 
-        private JList<DataStore> dataList;
         private JTextField edgeField;
 
         /**
          * Instantiates a new values filter option panel.
          */
         public SpliceJunctionFilterOptionPanel() {
-            setLayout(new BorderLayout());
-            JPanel dataPanel = new JPanel();
-            dataPanel.setBorder(BorderFactory.createEmptyBorder(4, 4, 4, 4));
-            dataPanel.setLayout(new BorderLayout());
-            dataPanel.add(new JLabel("Data Sets/Groups", JLabel.CENTER), BorderLayout.NORTH);
-
-            DefaultListModel<DataStore> dataModel = new DefaultListModel<DataStore>();
-
-            DataStore[] stores = collection.getAllDataStores();
-
-            for (DataStore store : stores) {
-                dataModel.addElement(store);
-            }
-
-            dataList = new JList<DataStore>(dataModel);
-            ListDefaultSelector.selectDefaultStores(dataList);
-            dataList.setCellRenderer(new TypeColourRenderer());
-            dataList.addListSelectionListener(this);
-            dataPanel.add(new JScrollPane(dataList), BorderLayout.CENTER);
-
-            add(dataPanel, BorderLayout.WEST);
-
-            JPanel choicePanel = new JPanel();
-            choicePanel.setLayout(new GridBagLayout());
-            choicePanel.setBorder(BorderFactory.createEmptyBorder(4, 4, 4, 4));
-            GridBagConstraints c = new GridBagConstraints();
-
-            c.gridy = 0;
-            c.gridx = 0;
-            c.weightx = 0.5;
-            c.weighty = 0.5;
-            c.fill = GridBagConstraints.HORIZONTAL;
-            choicePanel.add(new JLabel("Edge = "), c);
-            c.gridx = 1;
-            c.weightx = 0.1;
-            edgeField = new JTextField(3);
-            edgeField.addKeyListener(this);
-            choicePanel.add(edgeField, c);
-
-            valueChanged(null);
-            add(new JScrollPane(choicePanel), BorderLayout.CENTER);
+            super(collection);
         }
 
         /* (non-Javadoc)
@@ -214,10 +172,10 @@ public class SpliceJunctionFilterMenu extends ProbeFilter {
          */
         public void valueChanged(ListSelectionEvent lse) {
             System.out.println(SpliceJunctionFilterMenu.class.getName() + ":valueChanged()");
-            java.util.List<DataStore> lists = dataList.getSelectedValuesList();
-            stores = new DataStore[lists.size()];
+            Object[] objects = dataList.getSelectedValues();
+            stores = new DataStore[objects.length];
             for (int i = 0; i < stores.length; i++) {
-                stores[i] = lists.get(i);
+                stores[i] = (DataStore) objects[i];
             }
             optionsChanged();
         }
@@ -244,6 +202,27 @@ public class SpliceJunctionFilterMenu extends ProbeFilter {
                 sequenceEdge = Integer.parseInt(edgeField.getText());
             }
             optionsChanged();
+        }
+
+        @Override
+        protected JPanel getOptionPanel() {
+            JPanel choicePanel = new JPanel();
+            choicePanel.setLayout(new GridBagLayout());
+            choicePanel.setBorder(BorderFactory.createEmptyBorder(4, 4, 4, 4));
+            GridBagConstraints c = new GridBagConstraints();
+
+            c.gridy = 0;
+            c.gridx = 0;
+            c.weightx = 0.5;
+            c.weighty = 0.5;
+            c.fill = GridBagConstraints.HORIZONTAL;
+            choicePanel.add(new JLabel("Edge = "), c);
+            c.gridx = 1;
+            c.weightx = 0.1;
+            edgeField = new JTextField(3);
+            edgeField.addKeyListener(this);
+            choicePanel.add(edgeField, c);
+            return choicePanel;
         }
     }
 }

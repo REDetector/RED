@@ -28,7 +28,7 @@ import java.awt.*;
 
 public class TypeColourRenderer extends DefaultListCellRenderer {
 
-    public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean selected, boolean hasFocus) {
+    public Component getListCellRendererComponent(JList list, Object value, int index, boolean selected, boolean hasFocus) {
         JLabel l = new JLabel(value.toString());
 
         if (value instanceof DataSet) {

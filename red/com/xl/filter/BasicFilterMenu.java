@@ -26,13 +26,10 @@ import com.xl.datatypes.DataCollection;
 import com.xl.datatypes.DataStore;
 import com.xl.datatypes.probes.Probe;
 import com.xl.datatypes.probes.ProbeList;
-import com.xl.dialog.TypeColourRenderer;
 import com.xl.exception.REDException;
-import com.xl.utils.ListDefaultSelector;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
@@ -45,10 +42,10 @@ import java.util.Vector;
  */
 public class BasicFilterMenu extends ProbeFilter {
 
-    private DataStore[] stores = new DataStore[0];
-    private BasicFilterOptionPanel optionsPanel = new BasicFilterOptionPanel();
+
     private int qualityInt = -1;
     private int coverageInt = -1;
+    private BasicFilterOptionPanel optionsPanel = new BasicFilterOptionPanel();
 
     /**
      * Instantiates a new values filter with default values
@@ -129,7 +126,7 @@ public class BasicFilterMenu extends ProbeFilter {
         StringBuilder b = new StringBuilder();
 
         b.append("Filter on probes in ");
-        b.append(collection.probeSet().getActiveList().name() + " ");
+        b.append(collection.probeSet().getActiveList().name()).append(" ");
 
         for (int s = 0; s < stores.length; s++) {
             b.append(stores[s].name());
@@ -151,9 +148,8 @@ public class BasicFilterMenu extends ProbeFilter {
     /**
      * The ValuesFilterOptionPanel.
      */
-    private class BasicFilterOptionPanel extends JPanel implements ListSelectionListener, KeyListener {
+    private class BasicFilterOptionPanel extends AbstractOptionPanel implements KeyListener {
 
-        private JList<DataStore> dataList;
         private JTextField quality;
         private JTextField coverage;
 
@@ -161,58 +157,7 @@ public class BasicFilterMenu extends ProbeFilter {
          * Instantiates a new values filter option panel.
          */
         public BasicFilterOptionPanel() {
-            setLayout(new BorderLayout());
-            JPanel dataPanel = new JPanel();
-            dataPanel.setBorder(BorderFactory.createEmptyBorder(4, 4, 4, 4));
-            dataPanel.setLayout(new BorderLayout());
-            dataPanel.add(new JLabel("Data Sets/Groups", JLabel.CENTER), BorderLayout.NORTH);
-
-            DefaultListModel<DataStore> dataModel = new DefaultListModel<DataStore>();
-
-            DataStore[] stores = collection.getAllDataStores();
-
-            for (DataStore store : stores) {
-                dataModel.addElement(store);
-            }
-
-            dataList = new JList<DataStore>(dataModel);
-            ListDefaultSelector.selectDefaultStores(dataList);
-            dataList.setCellRenderer(new TypeColourRenderer());
-            dataList.addListSelectionListener(this);
-            dataPanel.add(new JScrollPane(dataList), BorderLayout.CENTER);
-
-            add(dataPanel, BorderLayout.WEST);
-
-            JPanel choicePanel = new JPanel();
-            choicePanel.setLayout(new GridBagLayout());
-            choicePanel.setBorder(BorderFactory.createEmptyBorder(4, 4, 4, 4));
-            GridBagConstraints c = new GridBagConstraints();
-
-            c.gridy = 0;
-            c.gridx = 0;
-            c.weightx = 0.2;
-            c.weighty = 0.5;
-            c.fill = GridBagConstraints.HORIZONTAL;
-            choicePanel.add(new JLabel("Quality >= "), c);
-            c.gridx = 1;
-            c.weightx = 0.1;
-            quality = new JTextField(3);
-            quality.addKeyListener(this);
-            choicePanel.add(quality, c);
-
-            c.gridy++;
-            c.gridx = 0;
-            c.weightx = 0.2;
-            c.weighty = 0.5;
-            c.fill = GridBagConstraints.HORIZONTAL;
-            choicePanel.add(new JLabel("Coverage >= "), c);
-            c.gridx = 1;
-            c.weightx = 0.1;
-            coverage = new JTextField(3);
-            coverage.addKeyListener(this);
-            choicePanel.add(coverage, c);
-            valueChanged(null);
-            add(new JScrollPane(choicePanel), BorderLayout.CENTER);
+            super(collection);
         }
 
         /* (non-Javadoc)
@@ -227,10 +172,10 @@ public class BasicFilterMenu extends ProbeFilter {
          */
         public void valueChanged(ListSelectionEvent lse) {
             System.out.println(BasicFilterMenu.class.getName() + ":valueChanged()");
-            java.util.List<DataStore> lists = dataList.getSelectedValuesList();
-            stores = new DataStore[lists.size()];
+            Object[] objects = dataList.getSelectedValues();
+            stores = new DataStore[objects.length];
             for (int i = 0; i < stores.length; i++) {
-                stores[i] = lists.get(i);
+                stores[i] = (DataStore) objects[i];
             }
             optionsChanged();
         }
@@ -244,7 +189,6 @@ public class BasicFilterMenu extends ProbeFilter {
 
         @Override
         public void keyPressed(KeyEvent e) {
-
         }
 
         @Override
@@ -259,6 +203,37 @@ public class BasicFilterMenu extends ProbeFilter {
                 coverageInt = Integer.parseInt(coverage.getText());
             }
             optionsChanged();
+        }
+
+        @Override
+        protected JPanel getOptionPanel() {
+            JPanel choicePanel = new JPanel();
+            choicePanel.setLayout(new GridBagLayout());
+            choicePanel.setBorder(BorderFactory.createEmptyBorder(4, 4, 4, 4));
+            GridBagConstraints c = new GridBagConstraints();
+            c.gridy = 0;
+            c.gridx = 0;
+            c.weightx = 0.2;
+            c.weighty = 0.5;
+            c.fill = GridBagConstraints.HORIZONTAL;
+            choicePanel.add(new JLabel("Quality >= "), c);
+            c.gridx = 1;
+            c.weightx = 0.1;
+            quality = new JTextField(3);
+            quality.addKeyListener(this);
+            choicePanel.add(quality, c);
+            c.gridy++;
+            c.gridx = 0;
+            c.weightx = 0.2;
+            c.weighty = 0.5;
+            c.fill = GridBagConstraints.HORIZONTAL;
+            choicePanel.add(new JLabel("Coverage >= "), c);
+            c.gridx = 1;
+            c.weightx = 0.1;
+            coverage = new JTextField(3);
+            coverage.addKeyListener(this);
+            choicePanel.add(coverage, c);
+            return choicePanel;
         }
     }
 }
