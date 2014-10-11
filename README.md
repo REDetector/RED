@@ -37,7 +37,7 @@ To get started, check out <http://iluhcm.github.io>!
 
 Before making RED work properly, the following software or programs are **demanded**:
 
-- Java Runtime Environment (jdk 1.7.0_21 or later)
+- Java Runtime Environment (jdk 1.6.0_43 or later)
 - MySQL Database Management System (MySQL 5.6.19 or later)
 - R Environment (R 3.1.1 or later) 
 
@@ -53,11 +53,8 @@ Within the download you'll find the following directories and files, logically g
 ```
 ./
 ├──lib
-├──out
 ├──red
 ```
-
-We have a compiled software edition under `/out` directory, while the source code is under `/red` directory.It is more convenient if there is any IDE installed on your device.
 
 ## Bugs and feature requests
 
