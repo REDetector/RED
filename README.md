@@ -16,7 +16,7 @@ The main characteristics of this software are:
   - Splice-junction Filter;
   - Known SNPs Filter;
   - Repeated Regions Filter;
-  - DNA-RNA Filter;
+  - DNA/RNA Filter;
   - Fisher's Exact Test Filter;
   - Likelihood Ratio Test Filter;
 6. Visualization of editing sites with each step’s filter.
@@ -54,6 +54,7 @@ Within the download you'll find the following directories and files, logically g
 ./
 ├──lib
 ├──red
+
 ```
 
 ## Bugs and feature requests
