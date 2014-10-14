@@ -133,8 +133,7 @@ public class DisplayPreferences {
             currentDisplayMode = displayMode;
             optionsChanged();
         } else {
-            throw new IllegalArgumentException("Value " + displayMode
-                    + " is not a valid display mode");
+            throw new IllegalArgumentException("Value " + displayMode + " is not a valid display mode");
         }
     }
 

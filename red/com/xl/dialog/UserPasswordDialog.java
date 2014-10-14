@@ -35,7 +35,6 @@ public class UserPasswordDialog extends JDialog implements ActionListener {
         String host = preferences.getDatabaseHost();
         String port = preferences.getDatabasePort();
         String user = preferences.getDatabaseUser();
-        String password = preferences.getDatabasePassword();
         setLocationRelativeTo(application);
         getContentPane().setLayout(new GridLayout(4, 1));
 
@@ -105,11 +104,7 @@ public class UserPasswordDialog extends JDialog implements ActionListener {
         infoPanel.add(new JLabel("    Password:"), c);
         c.gridx = 1;
         c.weightx = 0.8;
-        if (password != null) {
-            passwordField = new JPasswordField(password);
-        } else {
-            passwordField = new JPasswordField();
-        }
+        passwordField = new JPasswordField();
         infoPanel.add(passwordField, c);
         add(infoPanel);
 
@@ -141,7 +136,6 @@ public class UserPasswordDialog extends JDialog implements ActionListener {
             preferences.setDatabaseHost(host);
             preferences.setDatabasePort(port);
             preferences.setDatabaseUser(user);
-            preferences.setDatabasePassword(pwd);
             try {
                 if (DatabaseManager.getInstance().connectDatabase(host, port, user, pwd)) {
                     for (int i = 0; i < 1000; i++) {
