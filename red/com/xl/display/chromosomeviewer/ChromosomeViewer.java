@@ -1,5 +1,6 @@
 package com.xl.display.chromosomeviewer;
 
+import com.xl.datatypes.DataCollection;
 import com.xl.datatypes.DataGroup;
 import com.xl.datatypes.DataSet;
 import com.xl.datatypes.DataStore;
@@ -7,7 +8,6 @@ import com.xl.datatypes.genome.Chromosome;
 import com.xl.datatypes.genome.GenomeDescriptor;
 import com.xl.datatypes.probes.ProbeList;
 import com.xl.datatypes.probes.ProbeSet;
-import com.xl.display.featureviewer.Feature;
 import com.xl.interfaces.DataChangeListener;
 import com.xl.interfaces.DisplayPreferencesListener;
 import com.xl.main.REDApplication;
@@ -18,9 +18,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
-import java.io.RandomAccessFile;
-import java.util.Enumeration;
-import java.util.Vector;
+import java.util.ArrayList;
 
 /**
  * The ChromosomeViewer represents all of the tracks contained in the chromosome
@@ -30,8 +28,7 @@ import java.util.Vector;
  * In general the rest of the program shouldn't deal with anything below the
  * chromosome viewer.
  */
-public class ChromosomeViewer extends JPanel implements DataChangeListener,
-        DisplayPreferencesListener, MouseWheelListener {
+public class ChromosomeViewer extends JPanel implements DataChangeListener, DisplayPreferencesListener, MouseWheelListener {
 
 	/*
      * DO NOT CHANGE THESE CONSTANTS.
@@ -41,18 +38,18 @@ public class ChromosomeViewer extends JPanel implements DataChangeListener,
 	 * correctly and we'll probably get errors.
 	 */
 
+    java.util.List<AbstractTrack> tracks = new ArrayList<AbstractTrack>();
     private REDApplication application;
     private Chromosome chromosome;
-    private ChromosomeFeatureTrack featureTrack = null;
-    private ChromosomeSequenceTrack sequenceTrack = null;
-    private Vector<ChromosomeDataTrack> dataTracks = new Vector<ChromosomeDataTrack>();
     private JPanel featurePanel;
     private JLabel titleLabel; // Tried using a TextField to get Copy/Paste, but this broke SVG export
     private int selectionStart = 0;
     private int selectionEnd = 0;
     private boolean makingSelection = false;
-    private int currentStart = 1;
+    private int currentStart = 0;
     private int currentEnd = 1;
+
+    private JScrollPane sequenceScrollPane = null;
 
     /**
      * Instantiates a new chromosome viewer.
@@ -64,29 +61,18 @@ public class ChromosomeViewer extends JPanel implements DataChangeListener,
         this.application = application;
         this.chromosome = chromosome;
 
-        DisplayPreferences displayPrefs = DisplayPreferences.getInstance();
-
-        displayPreferencesUpdated(displayPrefs);
-
-        // System.err.println("New viewer for chr "+chromosome);
-
         setLayout(new BorderLayout());
-        // Although this is a TextField we alter it to look like a normal label
-        // just one you can copy from.
-
-        // Xing Li: On the top of the chromosome view
-        titleLabel = new JLabel(application.dataCollection().genome().getDisplayName()
-                + " " + chromosome.getName() + ":", JLabel.CENTER);
+        // Although this is a TextField we alter it to look like a normal label just one you can copy from.
+        titleLabel = new JLabel(application.dataCollection().genome().getDisplayName() + " " + chromosome.getName() + ":", JLabel.CENTER);
         add(titleLabel, BorderLayout.NORTH);
 
         featurePanel = new JPanel();
         featurePanel.setLayout(new GridBagLayout());
-
         add(featurePanel, BorderLayout.CENTER);
+
         addMouseWheelListener(this);
 
         tracksUpdated();
-
     }
 
     /**
@@ -96,26 +82,15 @@ public class ChromosomeViewer extends JPanel implements DataChangeListener,
      * @param chromosome The new chromosome to display.
      */
     private void setChromosome(Chromosome chromosome) {
-        System.out.println(this.getClass().getName()
-                + ":setChr(Chromosome chromosome)");
+        System.out.println(this.getClass().getName() + ":setChr(Chromosome chromosome)");
         if (chromosome == null)
             throw new IllegalArgumentException("Chromosome can't be null");
         if (chromosome != this.chromosome) {
             this.chromosome = chromosome;
-
-            Enumeration<ChromosomeDataTrack> en = dataTracks.elements();
-            while (en.hasMoreElements()) {
-                en.nextElement().updateReads();
-            }
-            Feature[] features = application.dataCollection().genome()
-                    .getAnnotationCollection()
-                    .getFeaturesForChr(chromosome);
-            featureTrack.updateFeature(features);
-            RandomAccessFile raf = application.dataCollection().genome()
-                    .getAnnotationCollection().getFastaForChr(chromosome);
-            sequenceTrack.updateSequence(raf);
         }
-        DisplayPreferences.getInstance().setChromosome(chromosome);
+        for (AbstractTrack track : tracks) {
+            track.updateTrack(chromosome);
+        }
     }
 
     /**
@@ -125,7 +100,8 @@ public class ChromosomeViewer extends JPanel implements DataChangeListener,
      * changes, selection changes etc). Only use this when the actual data has
      * changed.
      */
-    public void tracksUpdated() {
+    public synchronized void tracksUpdated() {
+        System.out.println(this.getClass().getName() + "\ttracksUpdated()");
 
         if (featurePanel == null)
             return;
@@ -134,60 +110,52 @@ public class ChromosomeViewer extends JPanel implements DataChangeListener,
         if (currentFeatureTrackName == null) {
             currentFeatureTrackName = "Feature Track";
         }
-        Feature[] features = application.dataCollection().genome()
-                .getAnnotationCollection().getFeaturesForChr(chromosome);
-        RandomAccessFile raf = application.dataCollection().genome().getAnnotationCollection().getFastaForChr
-                (chromosome);
-        featureTrack = new ChromosomeFeatureTrack(this, currentFeatureTrackName, features);
-        sequenceTrack = new ChromosomeSequenceTrack(this, application.dataCollection().genome().getDisplayName(), raf);
+        tracks.clear();
+        DataCollection collection = application.dataCollection();
+        AbstractTrack featureTrack = new ChromosomeFeatureTrack(this, collection, currentFeatureTrackName);
+        tracks.add(featureTrack);
+        AbstractTrack sequenceTrack = new ChromosomeSequenceTrack(this, collection, application.dataCollection().genome().getDisplayName());
+        tracks.add(sequenceTrack);
 
         DataStore[] dataStores = application.drawnDataStores();
-        System.out.println(this.getClass().getName() + ":dataStores\t"
-                + dataStores.length);
-        dataTracks.removeAllElements();
-        for (int i = 0; i < dataStores.length; i++) {
-            ChromosomeDataTrack csdt = new ChromosomeDataTrack(
-                    this, application.dataCollection(), dataStores[i]);
-            dataTracks.add(csdt);
+        for (DataStore dataStore : dataStores) {
+            tracks.add(new ChromosomeDataTrack(this, application.dataCollection(), dataStore));
         }
-
+        for (AbstractTrack track : tracks) {
+            track.updateTrack(chromosome);
+        }
         featurePanel.removeAll();
         GridBagConstraints gridBagConstraints = new GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 0;
-        gridBagConstraints.fill = GridBagConstraints.BOTH;
         gridBagConstraints.weightx = 1;
-        gridBagConstraints.weighty = 0.1;
-        featurePanel.add(featureTrack, gridBagConstraints);
-
-        gridBagConstraints.gridy++;
-        gridBagConstraints.weighty = 0.02;
-        featurePanel.add(sequenceTrack, gridBagConstraints);
-        sequenceTrack.setVisible(false);
-        gridBagConstraints.gridy++;
-        // We weight the data tracks six times as heavily as the feature tracks
-        gridBagConstraints.weighty = 1;
-        Enumeration<ChromosomeDataTrack> e2 = dataTracks.elements();
-
-        while (e2.hasMoreElements()) {
-            ChromosomeDataTrack cdt = e2.nextElement();
-            JScrollPane scroll = new JScrollPane(cdt);
-//            scroll.setPreferredSize(new Dimension(400, 200));
-            scroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
-            scroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-            scroll.getVerticalScrollBar().setUnitIncrement(20);
-//            scroll.revalidate();
-//            scroll.repaint();
-            featurePanel.add(scroll, gridBagConstraints);
+        gridBagConstraints.fill = GridBagConstraints.BOTH;
+        for (AbstractTrack abstractTrack : tracks) {
+            if (gridBagConstraints.gridy == 0) {
+                gridBagConstraints.weighty = 0.1;
+                featurePanel.add(abstractTrack, gridBagConstraints);
+            } else if (gridBagConstraints.gridy == 1) {
+                gridBagConstraints.weighty = 0.1;
+                sequenceScrollPane = new JScrollPane(abstractTrack);
+                sequenceScrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+                sequenceScrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+                featurePanel.add(sequenceScrollPane, gridBagConstraints);
+                sequenceScrollPane.setVisible(false);
+            } else {
+                gridBagConstraints.weighty = 1;
+                JScrollPane scrollCDT = new JScrollPane(abstractTrack);
+                scrollCDT.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+                scrollCDT.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+                scrollCDT.getVerticalScrollBar().setUnitIncrement(20);
+                featurePanel.add(scrollCDT, gridBagConstraints);
+            }
             gridBagConstraints.gridy++;
-            System.out.println(ChromosomeViewer.class.getName() + ":ChromosomeDataTrack: featurePanel.add(e.nextElement(), c)");
         }
 
         // Finally add a scale track, which we weigh very lightly
         gridBagConstraints.weighty = 0.001;
         featurePanel.add(new ChromosomeScaleTrack(this), gridBagConstraints);
         gridBagConstraints.gridy++;
-
         featurePanel.validate();
         featurePanel.repaint();
     }
@@ -207,13 +175,13 @@ public class ChromosomeViewer extends JPanel implements DataChangeListener,
             start = end;
             end = temp;
         }
-
         currentStart = start;
         currentEnd = end;
+
         if (currentEnd - currentStart < getWidth() && DisplayPreferences.getInstance().isFastaEnable()) {
-            sequenceTrack.setVisible(true);
+            sequenceScrollPane.setVisible(true);
         } else {
-            sequenceTrack.setVisible(false);
+            sequenceScrollPane.setVisible(false);
         }
         repaint();
     }
@@ -250,7 +218,6 @@ public class ChromosomeViewer extends JPanel implements DataChangeListener,
 
         int newEnd = newStart + (currentWidth / 2);
 
-        // TODO: Set limits on this.
         DisplayPreferences.getInstance().setLocation(newStart, newEnd);
         currentStart = newStart;
         currentEnd = newEnd;
@@ -306,11 +273,9 @@ public class ChromosomeViewer extends JPanel implements DataChangeListener,
         int max = findMax(new int[]{selectionStart, selectionEnd, x});
         Rectangle r = new Rectangle(min, 0, (max - min) + 1, getHeight());
         selectionStart = x;
-        Enumeration<ChromosomeDataTrack> e = dataTracks.elements();
-        while (e.hasMoreElements()) {
-            e.nextElement().repaint(r);
+        for (AbstractTrack track : tracks) {
+            track.repaint(r);
         }
-        featureTrack.repaint(r);
     }
 
     /**
@@ -323,11 +288,9 @@ public class ChromosomeViewer extends JPanel implements DataChangeListener,
         int max = findMax(new int[]{selectionStart, selectionEnd, x});
         Rectangle r = new Rectangle(min, 0, (max - min) + 1, getHeight());
         selectionEnd = x;
-        Enumeration<ChromosomeDataTrack> e = dataTracks.elements();
-        while (e.hasMoreElements()) {
-            e.nextElement().repaint(r);
+        for (AbstractTrack track : tracks) {
+            track.repaint(r);
         }
-        featureTrack.repaint(r);
     }
 
     /**
@@ -375,18 +338,17 @@ public class ChromosomeViewer extends JPanel implements DataChangeListener,
         return application;
     }
 
-    /**
-     * Gets the positional index of a feature track
-     *
-     * @return The position of this track in the current set of displayed
-     * feature tracks.
-     */
     public ChromosomeFeatureTrack getFeatureTrack() {
-        return featureTrack;
+        for (AbstractTrack track : tracks) {
+            if (track instanceof ChromosomeFeatureTrack) {
+                return (ChromosomeFeatureTrack) track;
+            }
+        }
+        return null;
     }
 
-    public Vector<ChromosomeDataTrack> getChromosomeDataTrack() {
-        return dataTracks;
+    public java.util.List<AbstractTrack> getTrackSets() {
+        return tracks;
     }
 
     /**
@@ -396,8 +358,15 @@ public class ChromosomeViewer extends JPanel implements DataChangeListener,
      * @return The position of this track in the current set of displayed data
      * tracks.
      */
-    public int getIndex(ChromosomeDataTrack t) {
-        return dataTracks.indexOf(t);
+    public int getIndex(AbstractTrack t) {
+        int index = 0;
+        for (AbstractTrack track : tracks) {
+            if (t == track) {
+                return index;
+            }
+            index++;
+        }
+        return -1;
     }
 
     /**
@@ -414,8 +383,9 @@ public class ChromosomeViewer extends JPanel implements DataChangeListener,
     }
 
     public void activeProbeListChanged(ProbeList l) {
-        for (ChromosomeDataTrack cdt : dataTracks) {
-            cdt.activeProbeListChanged(l);
+        for (AbstractTrack abstractTrack : tracks) {
+            if (abstractTrack instanceof ChromosomeDataTrack)
+                ((ChromosomeDataTrack) abstractTrack).activeProbeListChanged(l);
         }
     }
 
@@ -445,8 +415,9 @@ public class ChromosomeViewer extends JPanel implements DataChangeListener,
     public void probeSetReplaced(ProbeSet p) {
         // TODO: Do we need to do anything here? Probably not as active probe
         // list replaced will be called
-        for (ChromosomeDataTrack cdt : dataTracks) {
-            cdt.probeSetReplaced(p);
+        for (AbstractTrack abstractTrack : tracks) {
+            if (abstractTrack instanceof ChromosomeDataTrack)
+                ((ChromosomeDataTrack) abstractTrack).probeSetReplaced(p);
         }
     }
 
@@ -481,27 +452,16 @@ public class ChromosomeViewer extends JPanel implements DataChangeListener,
     }
 
     public void displayPreferencesUpdated(DisplayPreferences displayPrefs) {
-
-        if (displayPrefs.getCurrentChromosome() != null
-                && !chromosome.getName().equals(displayPrefs.getCurrentChromosome().getName())) {
+        if (displayPrefs.getCurrentChromosome() != null && !chromosome.equals(displayPrefs.getCurrentChromosome())) {
             setChromosome(displayPrefs.getCurrentChromosome());
         }
         if (featurePanel != null) {
-            setView(displayPrefs.getCurrentStartLocation(),
-                    displayPrefs.getCurrentEndLocation());
+            setView(displayPrefs.getCurrentStartLocation(), displayPrefs.getCurrentEndLocation());
             int currentLength = (currentEnd - currentStart) + 1;
-//            MessageUtils.showInfo(ChromosomeViewer.class,"currentStart:"+displayPrefs.getCurrentStartLocation()+"\tcurrentEnd:"+displayPrefs.getCurrentEndLocation());
-            String currentLengthString = PositionFormat
-                    .formatLength(currentLength, PositionFormat.UNIT_BASEPAIR);
+            String currentLengthString = PositionFormat.formatLength(currentLength, PositionFormat.UNIT_BASEPAIR);
 
-            titleLabel.setText(application.dataCollection().genome()
-                    .getDisplayName()
-                    + "  "
-                    + chromosome.getName()
-                    + ":"
-                    + currentStart
-                    + "-"
-                    + currentEnd + " (" + currentLengthString + ")");
+            titleLabel.setText(application.dataCollection().genome().getDisplayName() + "  " + chromosome.getName() + ":" + currentStart + "-" + currentEnd +
+                    " (" + currentLengthString + ")");
         }
     }
 
