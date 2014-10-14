@@ -7,7 +7,6 @@ package com.xl.menu;
 import com.xl.dialog.*;
 import com.xl.dialog.gotodialog.GotoDialog;
 import com.xl.dialog.gotodialog.GotoWindowDialog;
-import com.xl.display.chromosomeviewer.ChromosomeDataTrack;
 import com.xl.display.report.FilterReports;
 import com.xl.display.report.ReportOptions;
 import com.xl.display.report.SitesDistributionHistogram;
@@ -27,6 +26,7 @@ import com.xl.preferences.LocationPreferences;
 import com.xl.preferences.REDPreferences;
 import com.xl.utils.imagemanager.ImageSaver;
 import com.xl.utils.namemanager.MenuUtils;
+import net.xl.genomes.UpdateChecker;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -69,7 +69,6 @@ public class REDMenu extends JMenuBar implements ActionListener {
     private JMenu editMenu;
     private JCheckBoxMenuItem showToolbar;
     private JCheckBoxMenuItem showDirectoryPanel;
-    private JCheckBoxMenuItem showDataPanel;
     private JCheckBoxMenuItem showGenomePanel;
     private JCheckBoxMenuItem showChromosomePanel;
     private JCheckBoxMenuItem showFeaturePanel;
@@ -110,13 +109,6 @@ public class REDMenu extends JMenuBar implements ActionListener {
     private JMenuItem checkForUpdates;
     private JMenuItem aboutRED;
 
-    private boolean toolbarVisible = true;
-    private boolean dataViewerVisible = true;
-    private boolean genomeViewerVisible = true;
-    private boolean featurePanelVisible = true;
-    private boolean chromosomeViewerVisible = true;
-    private boolean statusBarVisible = true;
-
 
     public REDMenu(REDApplication redApplication) {
         this.redApplication = redApplication;
@@ -151,7 +143,6 @@ public class REDMenu extends JMenuBar implements ActionListener {
         showGenomePanel = new JCheckBoxMenuItem(MenuUtils.SHOW_GENOME_PANEL, true);
         showChromosomePanel = new JCheckBoxMenuItem(MenuUtils.SHOW_CHROMOSOME_PANEL, true);
         showFeaturePanel = new JCheckBoxMenuItem(MenuUtils.SHOW_FEATURE_PANEL, true);
-        showDataPanel = new JCheckBoxMenuItem(MenuUtils.SHOW_DATA_PANEL, true);
         showStatusPanel = new JCheckBoxMenuItem(MenuUtils.SHOW_STATUS_PANEL, true);
 
         gotoMenu = new JMenu();
@@ -243,7 +234,6 @@ public class REDMenu extends JMenuBar implements ActionListener {
             addJMenuItem(editMenu, showGenomePanel, MenuUtils.SHOW_GENOME_PANEL, -1, false);
             addJMenuItem(editMenu, showChromosomePanel, MenuUtils.SHOW_CHROMOSOME_PANEL, -1, false);
             addJMenuItem(editMenu, showFeaturePanel, MenuUtils.SHOW_FEATURE_PANEL, -1, false);
-            addJMenuItem(editMenu, showDataPanel, MenuUtils.SHOW_DATA_PANEL, -1, false);
             addJMenuItem(editMenu, showStatusPanel, MenuUtils.SHOW_STATUS_PANEL, -1);
 
             editMenu.addSeparator();
@@ -405,40 +395,27 @@ public class REDMenu extends JMenuBar implements ActionListener {
         }
         // --------------------EditMenu--------------------
         else if (action.equals(MenuUtils.SHOW_TOOLBAR)) {
-            toolbarVisible = showToolbar.isSelected();
-            toolbarPanel.setVisible(toolbarVisible);
+            toolbarPanel.setVisible(showToolbar.isSelected());
         } else if (action.equals(MenuUtils.SHOW_DIRECTORY_PANEL)) {
-            dataViewerVisible = showDirectoryPanel.isSelected();
-            genomeViewerVisible = showGenomePanel.isSelected();
-            if (dataViewerVisible && genomeViewerVisible) {
+            if (showDirectoryPanel.isSelected() && showGenomePanel.isSelected()) {
                 redApplication.topPane().setDividerLocation(0.125);
             } else {
                 redApplication.topPane().setDividerLocation(0);
             }
-            redApplication.dataViewer().setVisible(dataViewerVisible);
+            redApplication.dataViewer().setVisible(showDirectoryPanel.isSelected());
         } else if (action.equals(MenuUtils.SHOW_GENOME_PANEL)) {
-            genomeViewerVisible = showGenomePanel.isSelected();
-            dataViewerVisible = showDirectoryPanel.isSelected();
-            if (dataViewerVisible && genomeViewerVisible) {
+            if (showDirectoryPanel.isSelected() && showGenomePanel.isSelected()) {
                 redApplication.topPane().setDividerLocation(0.125);
             } else {
                 redApplication.topPane().setDividerLocation(0);
             }
-            redApplication.genomeViewer().setVisible(genomeViewerVisible);
+            redApplication.genomeViewer().setVisible(showGenomePanel.isSelected());
         } else if (action.equals(MenuUtils.SHOW_CHROMOSOME_PANEL)) {
-            chromosomeViewerVisible = showChromosomePanel.isSelected();
-            redApplication.chromosomeViewer().setVisible(chromosomeViewerVisible);
+            redApplication.chromosomeViewer().setVisible(showChromosomePanel.isSelected());
         } else if (action.equals(MenuUtils.SHOW_FEATURE_PANEL)) {
-            featurePanelVisible = showFeaturePanel.isSelected();
-            redApplication.chromosomeViewer().getFeatureTrack().setVisible(featurePanelVisible);
-        } else if (action.equals(MenuUtils.SHOW_DATA_PANEL)) {
-            Vector<ChromosomeDataTrack> dataTracks = redApplication.chromosomeViewer().getChromosomeDataTrack();
-            for (ChromosomeDataTrack cdt : dataTracks) {
-                cdt.setVisible(!cdt.isVisible());
-            }
+            redApplication.chromosomeViewer().getFeatureTrack().setVisible(showFeaturePanel.isSelected());
         } else if (action.equals(MenuUtils.SHOW_STATUS_PANEL)) {
-            statusBarVisible = showStatusPanel.isSelected();
-            redApplication.statusPanel().setVisible(statusBarVisible);
+            redApplication.statusPanel().setVisible(showStatusPanel.isSelected());
         } else if (action.equals(MenuUtils.SET_DATA_TRACKS)) {
             new DataTrackSelector(redApplication);
         } else if (action.equals(MenuUtils.FIND)) {
@@ -517,7 +494,7 @@ public class REDMenu extends JMenuBar implements ActionListener {
             }
         } else if (action.equals(MenuUtils.FILTER_REPORTS)) {
             if (!REDPreferences.getInstance().isDatabaseConnected()) {
-                JOptionPane.showMessageDialog(this, "<html>The reports are based on data from database, which has not been connected<br>Please try again " +
+                JOptionPane.showMessageDialog(redApplication, "<html>The reports are based on data from database, which has not been connected<br>Please try again " +
                         "after connecting to the dabatase.", "Database not connected.", JOptionPane.INFORMATION_MESSAGE);
             } else {
                 new ReportOptions(redApplication, new FilterReports(redApplication.dataCollection()));
@@ -530,7 +507,19 @@ public class REDMenu extends JMenuBar implements ActionListener {
             new HelpDialog(new File(ClassLoader.getSystemResource("Help")
                     .getFile().replaceAll("%20", " ")));
         } else if (action.equals(MenuUtils.CHECK_FOR_UPDATES)) {
-            new UserPasswordDialog(redApplication);
+            try {
+                if (UpdateChecker.isUpdateAvailable()) {
+                    String latestVersion = UpdateChecker.getLatestVersionNumber();
+                    JOptionPane.showMessageDialog(redApplication, "<html>A newer version of RED (v" + latestVersion + ") is available, " +
+                                    "<br>please go to  <a href=\"https://github.com/iluhcm/RED\">https://github.com/iluhcm/RED</a> for the latest version",
+                            "Update available", JOptionPane.INFORMATION_MESSAGE);
+                } else {
+                    JOptionPane.showMessageDialog(redApplication, "<html>You are running the latest version of RED.", "Latest version of RED",
+                            JOptionPane.INFORMATION_MESSAGE);
+                }
+            } catch (REDException e) {
+                e.printStackTrace();
+            }
         } else if (action.equals(MenuUtils.ABOUT_RED)) {
             new AboutDialog();
         }
@@ -557,7 +546,6 @@ public class REDMenu extends JMenuBar implements ActionListener {
         viewMenu.setEnabled(true);
         setDataTracks.setEnabled(true);
         reportsMenu.setEnabled(true);
-        showDataPanel.setEnabled(true);
     }
 
     public void databaseConnected() {
