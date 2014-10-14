@@ -106,8 +106,7 @@ public class Chromosome implements Comparable<Chromosome>, Serializable {
      */
     public int compareTo(Chromosome o) {
         try {
-            return (new Integer(Integer.parseInt(name)).compareTo(new Integer(
-                    Integer.parseInt(o.getName()))));
+            return (new Integer(Integer.parseInt(name)).compareTo(Integer.parseInt(o.getName())));
         } catch (Exception e) {
             return name.compareTo(o.getName());
         }

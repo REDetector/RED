@@ -49,12 +49,8 @@ public class RepeatFilter {
 //    }
 
     public void establishRepeatResultTable(String repeatResultTable) {
-        System.out.println("Start establishing RepeatResultTable..." + df.format(new Date()));
-
         databaseManager.deleteTable(repeatResultTable);
         databaseManager.createFilterTable(repeatResultTable);
-
-        System.out.println("End establishing RepeatResultTable..." + df.format(new Date()));
     }
 
 //    public void loadRepeatTable2(String repeatTable, String repeatPath) {
@@ -142,8 +138,6 @@ public class RepeatFilter {
 
             System.out.println("End executing AluFilter..." + df.format(new Date()));
 
-            databaseManager.executeSQL("insert into " + repeatResultTable
-                    + " select * from " + aluResultTable);
         } catch (SQLException e) {
             e.printStackTrace();
         }

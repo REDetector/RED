@@ -130,7 +130,7 @@ public class FastaFileParser extends DataParser {
                 } else {
                     if (fos != null) {
                         fos.write(nextLine.trim().getBytes());
-                        if (line++ % 100000 == 0) {
+                        if (++line % 100000 == 0) {
                             progressUpdated("Read " + line + " lines from " + currentChr + ", " + genome.getDisplayName(), chr, 24);
                         }
                     }

@@ -278,15 +278,7 @@ public class DataSet extends DataStore implements Runnable {
         return seq;
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see
-     * uk.ac.babraham.SeqMonk.DataTypes.DataStore#getReadsForChromsome(uk.ac
-     * .babraham.SeqMonk.DataTypes.Genome.Chromosome)
-     */
     public synchronized SequenceRead[] getReadsForChromosome(String c) {
-
         if (!isFinalised)
             finalise();
 
@@ -294,8 +286,7 @@ public class DataSet extends DataStore implements Runnable {
         // We need to do this even if we're not caching since we use
         // this to determine whether the cached index we're holding
         // is valid.
-        boolean needToUpdate = lastCachedChromosome == null
-                || lastCachedChromosome.equals(c);
+        boolean needToUpdate = lastCachedChromosome == null || lastCachedChromosome.equals(c);
         if (needToUpdate) {
             lastCachedChromosome = c;
         }
@@ -351,8 +342,7 @@ public class DataSet extends DataStore implements Runnable {
             File f = readData.get(c).tempFile;
             if (f != null) {
                 if (!f.delete())
-                    System.err.println("Failed to delete cache file "
-                            + f.getAbsolutePath());
+                    System.err.println("Failed to delete cache file " + f.getAbsolutePath());
             }
         }
     }
@@ -453,16 +443,13 @@ public class DataSet extends DataStore implements Runnable {
         }
 
         public void run() {
-            // This method is only run when the store is being finalised. It
-            // allows
-            // us to process all of the chromosomes for a data store in parallel
-            // which is quicker given that the processing is constrained by CPU
+            // This method is only run when the store is being finalised. It allows us to process all of the chromosomes for a data store in parallel which
+            // is quicker given that the processing is constrained by CPU
 
             if (needsSorting) {
                 // System.err.println("Sorting unsorted reads");
                 Collections.sort(sequenceReads);
             }
-
 
             if (removeDuplicates()) {
                 List<SequenceRead> seqTmp = new ArrayList<SequenceRead>();
@@ -478,9 +465,6 @@ public class DataSet extends DataStore implements Runnable {
                 sequenceReads.clear();
                 sequenceReads = seqTmp;
             }
-
-            // Work out the cached values for total length,count and
-            // for/rev/unknown counts
 
             // We keep local counts here so we only have to do one update of the
             // synchronised counters
@@ -536,10 +520,8 @@ public class DataSet extends DataStore implements Runnable {
             totalReadLength.incrementBy(readLengths);
 
             try {
-                tempFile = File.createTempFile("data_set", ".temp",
-                        new File(LocationPreferences.getInstance().getTempDirectory()));
-                ObjectOutputStream oos = new ObjectOutputStream(
-                        new BufferedOutputStream(new FileOutputStream(tempFile)));
+                tempFile = File.createTempFile("data_set", ".temp", new File(LocationPreferences.getInstance().getTempDirectory()));
+                ObjectOutputStream oos = new ObjectOutputStream(new BufferedOutputStream(new FileOutputStream(tempFile)));
                 oos.writeObject(sequenceReads);
                 oos.close();
             } catch (IOException ioe) {

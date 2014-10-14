@@ -51,17 +51,17 @@ public class ColourScheme {
     /**
      * The background to odd numbered feature tracks
      */
-    public static final Color FEATURE_TRACK_BACKGROUND = new Color(220, 220, 255);
+    public static final Color ODD_TRACK_BACKGROUND = new Color(220, 220, 255);
 
+    /**
+     * The background to even numbered feature tracks
+     */
+    public static final Color EVEN_TRACK_BACKGROUND = new Color(180, 180, 255);
     /**
      * An active feature or read
      */
     public static final Color ACTIVE_FEATURE = Color.YELLOW;
     public static final Color ACTIVE_READ = ACTIVE_FEATURE;
-    /**
-     * The background to even numbered feature tracks
-     */
-    public static final Color REFERENCE_TRACK_BACKGROUND = new Color(180, 180, 255);
     /**
      * The border around a selected chromosome in the genome view
      */
@@ -93,11 +93,11 @@ public class ColourScheme {
     /**
      * The background to odd numbered data tracks
      */
-    public static final Color DATA_BACKGROUND_ODD = new Color(230, 230, 230);
+    public static final Color DATA_BACKGROUND_ODD = new Color(230, 185, 181);
     /**
      * The background to even numbered data tracks
      */
-    public static final Color DATA_BACKGROUND_EVEN = new Color(255, 255, 255);
+    public static final Color DATA_BACKGROUND_EVEN = new Color(195, 200, 255);
     /**
      * Shown with block status when the chromosome viewer length is larger than screen pixel.
      */

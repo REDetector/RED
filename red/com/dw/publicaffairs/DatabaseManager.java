@@ -171,13 +171,12 @@ public class DatabaseManager {
             executeSQL("create temporary table newtable select distinct * from "
                     + resultTable);
             executeSQL("truncate table " + resultTable);
-            executeSQL("insert into " + resultTable +
-                    " select * from  newtable");
+            executeSQL("insert into " + resultTable + " select * from  newtable");
+            deleteTable("newtable");
         } catch (SQLException e) {
             System.err.println("Error execute sql clause in " + DatabaseManager.class.getName() + ":distinctTable()");
             e.printStackTrace();
         }
-        deleteTable("newTable");
     }
 
     @Override

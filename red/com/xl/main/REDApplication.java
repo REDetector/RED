@@ -252,24 +252,16 @@ public class REDApplication extends JFrame implements ProgressListener,
      */
     private void addNewLoadedGenome(Genome genome) {
         System.out.println(this.getClass().getName() + ":addNewLoadedGenome(Genome genome)");
-        if (DisplayPreferences.getInstance().getCurrentChromosome() != null) {
-            DisplayPreferences.getInstance().setChromosome(null);
-        }
-        // We've had a trace where the imported genome contained no
-        // chromosomes. No idea how that happened but we can check that
-        // here.
-        if (genome.getAllChromosomes() == null
-                || genome.getAllChromosomes().length == 0) {
-            JOptionPane.showMessageDialog(this,
-                    "No data was present in the imported genome",
-                    "Genome import error", JOptionPane.ERROR_MESSAGE);
+
+        // We've had a trace where the imported genome contained no chromosomes. No idea how that happened but we can check that here.
+        if (genome.getAllChromosomes() == null || genome.getAllChromosomes().length == 0) {
+            JOptionPane.showMessageDialog(this, "No data was present in the imported genome", "Genome import error", JOptionPane.ERROR_MESSAGE);
             return;
         }
 
         dataCollection = new DataCollection(genome);
         dataCollection.addDataChangeListener(this);
-        dataCollection.genome().getAnnotationCollection()
-                .addAnnotationCollectionListener(this);
+        dataCollection.genome().getAnnotationCollection().addAnnotationCollectionListener(this);
         // We need to get rid of the welcome panel if that's still showing
         // and replace it with the proper RED display.
         remove(welcomePanel);
@@ -280,14 +272,14 @@ public class REDApplication extends JFrame implements ProgressListener,
         DisplayPreferences.getInstance().addListener(genomeViewer);
         dataCollection.addDataChangeListener(genomeViewer);
         topPane.setRightComponent(genomeViewer);
+
         dataViewer = new DataViewer(this);
         topPane.setLeftComponent(new JScrollPane(dataViewer));
         topPane.setDividerLocation(0.25d);
 
         validate();
 
-        chromosomeViewer = new ChromosomeViewer(this, dataCollection.genome()
-                .getAllChromosomes()[0]);
+        chromosomeViewer = new ChromosomeViewer(this, dataCollection.genome().getAllChromosomes()[0]);
         DisplayPreferences.getInstance().addListener(chromosomeViewer);
         dataCollection.addDataChangeListener(chromosomeViewer);
 
@@ -297,11 +289,10 @@ public class REDApplication extends JFrame implements ProgressListener,
         bottomPanel.add(chromosomeViewer, BorderLayout.CENTER);
         bottomPanel.add(new ChromosomePositionScrollBar(), BorderLayout.SOUTH);
         mainPane.setBottomComponent(bottomPanel);
-        mainPane.setDividerLocation(0.25d);
-        DisplayPreferences.getInstance().setChromosome(
-                dataCollection.genome().getAllChromosomes()[0]);
+        mainPane.setDividerLocation(0.4d);
         validate();
 
+        DisplayPreferences.getInstance().setChromosome(dataCollection.genome().getAllChromosomes()[0]);
         menu.genomeLoadedMenu();
 
     }

@@ -51,7 +51,7 @@ public class REDTitlePanel extends JPanel {
         gridBagConstraints.insets = new Insets(6, 6, 0, 0);
         gridBagConstraints.fill = GridBagConstraints.NONE;
 
-        JLabel program = new SmoothJLabel("RED---RNA Editing Detection",
+        JLabel program = new SmoothJLabel("RED: RNA Editing Detector",
                 JLabel.CENTER);
         program.setFont(new Font("Dialog", Font.BOLD, 18));
         program.setForeground(ColourScheme.PROGRAM_NAME);

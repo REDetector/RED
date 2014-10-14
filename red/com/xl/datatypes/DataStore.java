@@ -139,13 +139,6 @@ public abstract class DataStore implements Comparable<DataStore> {
     }
 
     /**
-     * Reset all probe values.
-     */
-    public void resetAllProbeValues() {
-        probeData = null;
-    }
-
-    /**
      * Probe set replaced.
      *
      * @param probes the probes
@@ -172,5 +165,25 @@ public abstract class DataStore implements Comparable<DataStore> {
     public int compareTo(DataStore s) {
         // Sort alphabetically
         return name().toLowerCase().compareTo(s.name().toLowerCase());
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof DataStore)) return false;
+
+        DataStore dataStore = (DataStore) o;
+
+        if (!collection.equals(dataStore.collection)) return false;
+        if (!name.equals(dataStore.name)) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = name.hashCode();
+        result = 31 * result + collection.hashCode();
+        return result;
     }
 }

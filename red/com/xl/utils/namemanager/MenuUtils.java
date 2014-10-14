@@ -28,7 +28,6 @@ public class MenuUtils {
     public static final String SHOW_GENOME_PANEL = "Genome Panel";
     public static final String SHOW_CHROMOSOME_PANEL = "Chromosome Panel";
     public static final String SHOW_FEATURE_PANEL = "Feature Panel";
-    public static final String SHOW_DATA_PANEL = "Data Panel";
     public static final String SHOW_STATUS_PANEL = "Status Panel";
     public static final String SET_DATA_TRACKS = "Set Data Tracks...";
     public static final String FIND = "Find...";
