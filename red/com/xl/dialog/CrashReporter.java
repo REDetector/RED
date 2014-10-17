@@ -128,12 +128,6 @@ public class CrashReporter extends JDialog implements ActionListener {
 
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see
-     * java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
-     */
     public void actionPerformed(ActionEvent ae) {
 
         if (ae.getActionCommand().equals("close")) {
@@ -321,13 +315,6 @@ public class CrashReporter extends JDialog implements ActionListener {
             return sb.toString();
         }
 
-        /*
-         * (non-Javadoc)
-         *
-         * @see
-         * java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent
-         * )
-         */
         public void actionPerformed(ActionEvent ae) {
             if (ae.getActionCommand().equals("cancel")) {
                 setVisible(false);
@@ -380,11 +367,6 @@ public class CrashReporter extends JDialog implements ActionListener {
             }
         }
 
-        /*
-         * (non-Javadoc)
-         *
-         * @see java.lang.Runnable#run()
-         */
         public void run() {
 
             sendButton.setEnabled(false);

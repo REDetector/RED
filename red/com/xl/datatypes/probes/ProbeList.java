@@ -324,11 +324,6 @@ public class ProbeList {
         return tableName;
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see java.lang.Object#toString()
-     */
     public String toString() {
         return name + " (" + sortedProbes.size() + ")";
     }

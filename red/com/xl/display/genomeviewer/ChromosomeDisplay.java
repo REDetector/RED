@@ -78,8 +78,7 @@ public class ChromosomeDisplay extends JPanel implements DataChangeListener {
      * @param chromosome the chromosome
      * @param viewer     the viewer
      */
-    public ChromosomeDisplay(Genome genome, Chromosome chromosome,
-                             GenomeViewer viewer) {
+    public ChromosomeDisplay(Genome genome, Chromosome chromosome, GenomeViewer viewer) {
         maxLen = genome.getLongestChromosomeLength();
         this.chromosome = chromosome;
         this.viewer = viewer;
@@ -88,11 +87,6 @@ public class ChromosomeDisplay extends JPanel implements DataChangeListener {
         addMouseMotionListener(pl);
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see javax.swing.JComponent#paintComponent(java.awt.Graphics)
-     */
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
         xOffset = getWidth() / 80;

@@ -152,16 +152,10 @@ public abstract class DataStore implements Comparable<DataStore> {
         }
     }
 
-    /* (non-Javadoc)
-     * @see java.lang.Object#toString()
-     */
     public String toString() {
         return name();
     }
 
-    /* (non-Javadoc)
-     * @see java.lang.Comparable#compareTo(java.lang.Object)
-     */
     public int compareTo(DataStore s) {
         // Sort alphabetically
         return name().toLowerCase().compareTo(s.name().toLowerCase());

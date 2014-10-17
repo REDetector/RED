@@ -166,6 +166,7 @@ public class ReportTableDialog extends JDialog implements MouseListener, ActionL
             if (result == JFileChooser.CANCEL_OPTION) return;
 
             File file = chooser.getSelectedFile();
+            LocationPreferences.getInstance().setProjectSaveLocation(file.getParent());
 
             if (file.isDirectory()) return;
 

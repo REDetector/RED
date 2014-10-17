@@ -56,9 +56,9 @@ public class ThreadDenovoInput implements Runnable {
 //        BasicFilter bf = new BasicFilter(manager);
 //        bf.establishSpecificTable(DatabaseManager.EDITING_TYPE_FILTER_RESULT_TABLE_NAME);
 //        bf.executeSpecificFilter(DatabaseManager.EDITING_TYPE_FILTER_RESULT_TABLE_NAME, DatabaseManager.RNA_VCF_RESULT_TABLE_NAME);
-//        bf.establishBasicTable(DatabaseManager.BASIC_FILTER_RESULT_TABLE_NAME);
+//        bf.establishQCTable(DatabaseManager.BASIC_FILTER_RESULT_TABLE_NAME);
         // The first parameter means quality and the second means depth
-//        bf.executeBasicFilter(DatabaseManager.EDITING_TYPE_FILTER_RESULT_TABLE_NAME,
+//        bf.executeQCFilter(DatabaseManager.EDITING_TYPE_FILTER_RESULT_TABLE_NAME,
 //                DatabaseManager.BASIC_FILTER_RESULT_TABLE_NAME, 20, 6);
 //        DatabaseManager.getInstance().distinctTable(DatabaseManager.BASIC_FILTER_RESULT_TABLE_NAME);
 

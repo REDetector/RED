@@ -46,7 +46,7 @@ public class MenuUtils {
 
     /*Filter menu*/
     public static final String FILTER_MENU = "Filter";
-    public static final String BASIC_FILTER = "Basic Filter...";
+    public static final String QC_FILTER = "QC Filter...";
     public static final String SPECIFIC_FILTER = "Editing-Type Filter...";
     public static final String KNOWN_SNVS_FILTER = "Known SNVs Filter...";
     public static final String REPEATED_FILTER = "Repeated Filter...";

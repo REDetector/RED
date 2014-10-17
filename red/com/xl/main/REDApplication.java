@@ -487,9 +487,7 @@ public class REDApplication extends JFrame implements ProgressListener,
                 return;
             }
 
-            LocationPreferences.getInstance().setProjectSaveLocation(
-                    chooser.getSelectedFile().getAbsolutePath());
-
+            LocationPreferences.getInstance().setProjectSaveLocation(chooser.getSelectedFile().getParent());
             parser.setFiles(chooser.getSelectedFiles());
         }
 
@@ -505,8 +503,7 @@ public class REDApplication extends JFrame implements ProgressListener,
             }
         }
 
-        ProgressDialog progressDialog = new ProgressDialog(this,
-                "Loading data...", parser);
+        ProgressDialog progressDialog = new ProgressDialog(this, "Loading data...", parser);
         parser.addProgressListener(progressDialog);
 
         try {
@@ -552,7 +549,7 @@ public class REDApplication extends JFrame implements ProgressListener,
             return;
 
         File file = chooser.getSelectedFile();
-        LocationPreferences.getInstance().setProjectSaveLocation(file.getAbsolutePath());
+        LocationPreferences.getInstance().setProjectSaveLocation(file.getParent());
 
         loadProject(file);
     }
@@ -694,6 +691,7 @@ public class REDApplication extends JFrame implements ProgressListener,
         if (result == JFileChooser.CANCEL_OPTION)
             return;
         File file = chooser.getSelectedFile();
+        LocationPreferences.getInstance().setProjectSaveLocation(file.getParent());
         if (!file.getPath().toLowerCase().endsWith(".red")) {
             file = new File(file.getPath() + ".red");
         }

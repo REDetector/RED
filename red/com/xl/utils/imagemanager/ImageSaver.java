@@ -32,17 +32,17 @@ public class ImageSaver {
     public static void saveImage(Component c) {
         JFileChooser chooser = new JFileChooser(LocationPreferences.getInstance().getProjectSaveLocation());
         chooser.setMultiSelectionEnabled(false);
+        EPSFileFilter epsFileFilter = new EPSFileFilter();
         chooser.addChoosableFileFilter(new SVGFileFilter());
-        chooser.addChoosableFileFilter(new EPSFileFilter());
-        PNGFileFilter pff = new PNGFileFilter();
-        chooser.addChoosableFileFilter(pff);
-        chooser.setFileFilter(pff);
+        chooser.addChoosableFileFilter(epsFileFilter);
+        chooser.addChoosableFileFilter(new PNGFileFilter());
+        chooser.setFileFilter(epsFileFilter);
 
         int result = chooser.showSaveDialog(c);
         if (result == JFileChooser.CANCEL_OPTION) return;
 
         File file = chooser.getSelectedFile();
-        LocationPreferences.getInstance().setProjectSaveLocation(file.getAbsolutePath());
+        LocationPreferences.getInstance().setProjectSaveLocation(file.getParent());
 
         if (file.isDirectory()) return;
 
@@ -65,9 +65,9 @@ public class ImageSaver {
             return;
         }
 
-        // Check if we're stepping on anyone's toes...
         if (file.exists()) {
-            int answer = JOptionPane.showOptionDialog(c, file.getName() + " exists.  Do you want to overwrite the existing file?", "Overwrite file?", 0, JOptionPane.QUESTION_MESSAGE, null, new String[]{"Overwrite and Save", "Cancel"}, "Overwrite and Save");
+            int answer = JOptionPane.showOptionDialog(c, file.getName() + " exists.  Do you want to overwrite the existing file?", "Overwrite file?",
+                    JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, new String[]{"Overwrite and Save", "Cancel"}, "Overwrite and Save");
 
             if (answer > 0) {
                 return;

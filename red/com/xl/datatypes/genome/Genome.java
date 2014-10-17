@@ -234,11 +234,6 @@ public class Genome {
         return chromosomeMap.containsValue(c);
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see java.lang.Object#toString()
-     */
     public String toString() {
         return displayName;
     }

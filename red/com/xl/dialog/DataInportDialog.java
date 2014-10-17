@@ -308,7 +308,7 @@ public class DataInportDialog extends JDialog implements ActionListener {
      * @param f        the TextFild from which to take the starting directory
      */
     private void getFile(String dataType, JTextField f) {
-        JFileChooser chooser = new JFileChooser();
+        JFileChooser chooser = new JFileChooser(preferences.getProjectSaveLocation());
         chooser.setCurrentDirectory(new File(f.getText()));
         chooser.setAccessory(new DataIntroductionPanel(dataType));
         chooser.setDialogTitle("Select Directory");
@@ -316,6 +316,8 @@ public class DataInportDialog extends JDialog implements ActionListener {
         if (chooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
             f.setText(chooser.getSelectedFile().getAbsolutePath().replaceAll("\\\\", "/"));
         }
+        File file = chooser.getSelectedFile();
+        LocationPreferences.getInstance().setProjectSaveLocation(file.getParent());
     }
 
     /* (non-Javadoc)

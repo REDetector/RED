@@ -66,7 +66,7 @@ public class Connect {
         // "basictemp");
         // bf.establishSpecificTable();
         // bf.executeSpecificFilter();
-        // bf.establishBasicTable();
+        // bf.establishQCTable();
         // // The first parameter means quality and the second means depth
         // bf.executeComprehensiveFilter(20, 6);
         // bf.distinctTable();
@@ -169,18 +169,18 @@ public class Connect {
             manager.createDatabase(args[9]);
             manager.useDatabase(args[9]);
 
-            BasicFilter bf = new BasicFilter(manager);
+            QCFilter bf = new QCFilter(manager);
 //            bf.establishSpecificTable(DatabaseManager.EDITING_TYPE_FILTER_RESULT_TABLE_NAME);
 //            bf.executeSpecificFilter(
 //                    DatabaseManager.EDITING_TYPE_FILTER_RESULT_TABLE_NAME,
 //                    DatabaseManager.RNA_VCF_RESULT_TABLE_NAME);
-            bf.establishBasicTable(DatabaseManager.BASIC_FILTER_RESULT_TABLE_NAME);
+            bf.establishQCTable(DatabaseManager.QC_FILTER_RESULT_TABLE_NAME);
             // The first parameter means quality and the second means depth
-            bf.executeBasicFilter(
+            bf.executeQCFilter(
                     DatabaseManager.EDITING_TYPE_FILTER_RESULT_TABLE_NAME,
-                    DatabaseManager.BASIC_FILTER_RESULT_TABLE_NAME, 20, 6);
+                    DatabaseManager.QC_FILTER_RESULT_TABLE_NAME, 20, 6);
             DatabaseManager.getInstance().distinctTable(
-                    DatabaseManager.BASIC_FILTER_RESULT_TABLE_NAME);
+                    DatabaseManager.QC_FILTER_RESULT_TABLE_NAME);
 
             RepeatFilter rf = new RepeatFilter(manager);
             rf.loadRepeatTable(DatabaseManager.REPEAT_FILTER_TABLE_NAME, args[3]);
@@ -188,10 +188,10 @@ public class Connect {
             rf.establishAluResultTable(DatabaseManager.ALU_FILTER_RESULT_TABLE_NAME);
             rf.executeRepeatFilter(DatabaseManager.REPEAT_FILTER_TABLE_NAME,
                     DatabaseManager.REPEAT_FILTER_RESULT_TABLE_NAME,
-                    DatabaseManager.ALU_FILTER_RESULT_TABLE_NAME, DatabaseManager.BASIC_FILTER_RESULT_TABLE_NAME);
+                    DatabaseManager.ALU_FILTER_RESULT_TABLE_NAME, DatabaseManager.QC_FILTER_RESULT_TABLE_NAME);
 //            rf.rfilter(DatabaseManager.REPEAT_FILTER_TABLE_NAME,
 //                    DatabaseManager.REPEAT_FILTER_RESULT_TABLE_NAME,
-//                    DatabaseManager.BASIC_FILTER_RESULT_TABLE_NAME);
+//                    DatabaseManager.QC_FILTER_RESULT_TABLE_NAME);
             DatabaseManager.getInstance().distinctTable(
                     DatabaseManager.REPEAT_FILTER_RESULT_TABLE_NAME);
 
@@ -252,18 +252,18 @@ public class Connect {
 //            df.loadRnaVcfTable(DatabaseManager.RNA_VCF_RESULT_TABLE_NAME,
 //                    args[1], Integer.parseInt(args[7]));
 
-            BasicFilter bf = new BasicFilter(manager);
+            QCFilter bf = new QCFilter(manager);
 //            bf.establishSpecificTable(DatabaseManager.EDITING_TYPE_FILTER_RESULT_TABLE_NAME);
 //            bf.executeSpecificFilter(
 //                    DatabaseManager.EDITING_TYPE_FILTER_RESULT_TABLE_NAME,
 //                    DatabaseManager.RNA_VCF_RESULT_TABLE_NAME);
-            bf.establishBasicTable(DatabaseManager.BASIC_FILTER_RESULT_TABLE_NAME);
+            bf.establishQCTable(DatabaseManager.QC_FILTER_RESULT_TABLE_NAME);
             // The first parameter means quality and the second means depth
-            bf.executeBasicFilter(
+            bf.executeQCFilter(
                     DatabaseManager.EDITING_TYPE_FILTER_RESULT_TABLE_NAME,
-                    DatabaseManager.BASIC_FILTER_RESULT_TABLE_NAME, 20, 6);
+                    DatabaseManager.QC_FILTER_RESULT_TABLE_NAME, 20, 6);
             DatabaseManager.getInstance().distinctTable(
-                    DatabaseManager.BASIC_FILTER_RESULT_TABLE_NAME);
+                    DatabaseManager.QC_FILTER_RESULT_TABLE_NAME);
 
             RepeatFilter rf = new RepeatFilter(manager);
             rf.loadRepeatTable(DatabaseManager.REPEAT_FILTER_TABLE_NAME,
@@ -272,10 +272,10 @@ public class Connect {
             rf.establishAluResultTable(DatabaseManager.ALU_FILTER_RESULT_TABLE_NAME);
             rf.executeRepeatFilter(DatabaseManager.REPEAT_FILTER_TABLE_NAME,
                     DatabaseManager.REPEAT_FILTER_RESULT_TABLE_NAME, DatabaseManager.ALU_FILTER_RESULT_TABLE_NAME,
-                    DatabaseManager.BASIC_FILTER_RESULT_TABLE_NAME);
+                    DatabaseManager.QC_FILTER_RESULT_TABLE_NAME);
 //            rf.rfilter(DatabaseManager.REPEAT_FILTER_TABLE_NAME,
 //                    DatabaseManager.REPEAT_FILTER_RESULT_TABLE_NAME,
-//                    DatabaseManager.BASIC_FILTER_RESULT_TABLE_NAME);
+//                    DatabaseManager.QC_FILTER_RESULT_TABLE_NAME);
             DatabaseManager.getInstance().distinctTable(
                     DatabaseManager.REPEAT_FILTER_RESULT_TABLE_NAME);
 

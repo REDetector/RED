@@ -346,7 +346,7 @@ public class REDInfoPanel extends JPanel implements Runnable, ActionListener {
     public void actionPerformed(ActionEvent e) {
 
         if (e.getActionCommand().equals(InfoPanelUtils.CACHE_DIRECTORY_SET)) {
-            JFileChooser chooser = new JFileChooser();
+            JFileChooser chooser = new JFileChooser(LocationPreferences.getInstance().getCacheDirectory());
             chooser.setDialogTitle("Select a Cache Directory");
             chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
             if (chooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
@@ -360,9 +360,8 @@ public class REDInfoPanel extends JPanel implements Runnable, ActionListener {
                 }
             }
         }
-        if (e.getActionCommand().equals(
-                InfoPanelUtils.GENOMES_CUSTOM_FOLDER_SET)) {
-            JFileChooser chooser = new JFileChooser();
+        if (e.getActionCommand().equals(InfoPanelUtils.GENOMES_CUSTOM_FOLDER_SET)) {
+            JFileChooser chooser = new JFileChooser(LocationPreferences.getInstance().getGenomeDirectory());
             chooser.setDialogTitle("Select a Genomes Directory");
             chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
             if (chooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {

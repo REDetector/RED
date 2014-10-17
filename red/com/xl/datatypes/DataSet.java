@@ -118,11 +118,6 @@ public class DataSet extends DataStore implements Runnable {
         Runtime.getRuntime().addShutdownHook(new Thread(this));
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see uk.ac.babraham.SeqMonk.DataTypes.DataStore#setDisplayName(java.lang.String)
-     */
     public void setName(String name) {
         super.setName(name);
         if (collection() != null) {
@@ -234,13 +229,6 @@ public class DataSet extends DataStore implements Runnable {
     }
 
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see
-     * uk.ac.babraham.SeqMonk.DataTypes.DataStore#getReadsForProbe(uk.ac.babraham
-     * .SeqMonk.DataTypes.Probes.Probe)
-     */
     @Override
     public SequenceRead[] getReadsForProbe(Probe p) {
         if (!isFinalised)
@@ -327,11 +315,6 @@ public class DataSet extends DataStore implements Runnable {
         }
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see java.lang.Runnable#run()
-     */
     public void run() {
         // We need to delete any cache files we're still holding
 
@@ -347,13 +330,6 @@ public class DataSet extends DataStore implements Runnable {
         }
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see
-     * uk.ac.babraham.SeqMonk.DataTypes.DataStore#getReadCountForChromosome(
-     * uk.ac.babraham.SeqMonk.DataTypes.Genome.Chromosome)
-     */
     public int getReadCountForChromosome(String chr) {
 
         if (!isFinalised)
@@ -366,11 +342,6 @@ public class DataSet extends DataStore implements Runnable {
         }
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see uk.ac.babraham.SeqMonk.DataTypes.DataStore#getTotalReadCount()
-     */
     public int getTotalReadCount() {
 //		System.out.println(this.getClass().getDisplayName() + ":getTotalReadCount()");
         if (!isFinalised)
@@ -387,12 +358,6 @@ public class DataSet extends DataStore implements Runnable {
         return minMaxLength.min();
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see uk.ac.babraham.SeqMonk.DataTypes.DataStore#getReadCountForStrand(int
-     * strand)
-     */
     public int getReadCountForStrand(Strand strand) {
 
         if (!isFinalised)
@@ -407,11 +372,6 @@ public class DataSet extends DataStore implements Runnable {
         }
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see uk.ac.babraham.SeqMonk.DataTypes.DataStore#getTotalReadLength()
-     */
     public long getTotalReadLength() {
 
         if (!isFinalised)

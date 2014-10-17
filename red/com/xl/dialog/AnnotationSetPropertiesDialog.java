@@ -67,9 +67,6 @@ public class AnnotationSetPropertiesDialog extends JDialog implements Runnable {
 
     }
 
-    /* (non-Javadoc)
-     * @see java.lang.Runnable#run()
-     */
     public void run() {
         for (int i = 0, len = chrNames.length; i < len; i++) {
             Feature[] feature = set.getFeaturesForChr(chrNames[i]);
@@ -83,23 +80,14 @@ public class AnnotationSetPropertiesDialog extends JDialog implements Runnable {
      */
     private class AnnotationSetTableModel extends AbstractTableModel {
 
-        /* (non-Javadoc)
-         * @see javax.swing.table.TableModel#getColumnCount()
-         */
         public int getColumnCount() {
             return 2;
         }
 
-        /* (non-Javadoc)
-         * @see javax.swing.table.TableModel#getRowCount()
-         */
         public int getRowCount() {
             return counts.length;
         }
 
-        /* (non-Javadoc)
-         * @see javax.swing.table.AbstractTableModel#getColumnName(int)
-         */
         public String getColumnName(int column) {
             if (column == 0) {
                 return "Chromosome";
@@ -109,11 +97,7 @@ public class AnnotationSetPropertiesDialog extends JDialog implements Runnable {
                 return null;
         }
 
-        /* (non-Javadoc)
-         * @see javax.swing.table.TableModel#getValueAt(int, int)
-         */
         public Object getValueAt(int rowIndex, int columnIndex) {
-//            System.out.println("rowIndex:"+rowIndex+"\tcolumnIndex:"+columnIndex);
             if (columnIndex == 0) {
                 return chrNames[rowIndex];
             } else if (columnIndex == 1) {

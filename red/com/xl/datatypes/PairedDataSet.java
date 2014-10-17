@@ -100,11 +100,6 @@ public class PairedDataSet extends DataSet implements HiCDataStore {
         this.ignoreTrans = ignoreTrans;
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see uk.ac.babraham.SeqMonk.DataTypes.DataStore#isHiC()
-     */
     public boolean isHiC() {
         return true;
     }
@@ -681,13 +676,6 @@ public class PairedDataSet extends DataSet implements HiCDataStore {
         }
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see
-     * uk.ac.babraham.SeqMonk.DataTypes.HiCDataStore#getCisCountForChromosome
-     * (uk.ac.babraham.SeqMonk.DataTypes.Genome.Chromosome)
-     */
     public int getCisCountForChromosome(String c) {
         if (cisChromosomeCounts.containsKey(c)) {
             return cisChromosomeCounts.get(c);
@@ -695,13 +683,6 @@ public class PairedDataSet extends DataSet implements HiCDataStore {
         return 0;
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see
-     * uk.ac.babraham.SeqMonk.DataTypes.HiCDataStore#getTransCountForChromosome
-     * (uk.ac.babraham.SeqMonk.DataTypes.Genome.Chromosome)
-     */
     public int getTransCountForChromosome(String c) {
         if (transChromosomeCounts.containsKey(c)) {
             return transChromosomeCounts.get(c);
@@ -709,20 +690,10 @@ public class PairedDataSet extends DataSet implements HiCDataStore {
         return 0;
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see uk.ac.babraham.SeqMonk.DataTypes.HiCDataStore#getCisCount()
-     */
     public int getCisCount() {
         return cisCount;
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see uk.ac.babraham.SeqMonk.DataTypes.HiCDataStore#getTransCount()
-     */
     public int getTransCount() {
         return transCount;
     }

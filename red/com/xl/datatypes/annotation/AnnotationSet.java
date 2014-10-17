@@ -181,11 +181,6 @@ public class AnnotationSet {
         }
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see java.lang.Object#toString()
-     */
     public String toString() {
         return name();
     }
@@ -454,11 +449,6 @@ public class AnnotationSet {
 //            }
         }
 
-        /*
-         * (non-Javadoc)
-         *
-         * @see java.lang.Runnable#run()
-         */
         public void run() {
             // Clean up any temp files.
             if (cacheFile != null) {

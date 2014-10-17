@@ -90,20 +90,10 @@ public class Chromosome implements Comparable<Chromosome>, Serializable {
         this.cytobands = cytobands;
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see java.lang.Object#toString()
-     */
     public String toString() {
         return name;
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see java.lang.Comparable#compareTo(java.lang.Object)
-     */
     public int compareTo(Chromosome o) {
         try {
             return (new Integer(Integer.parseInt(name)).compareTo(Integer.parseInt(o.getName())));

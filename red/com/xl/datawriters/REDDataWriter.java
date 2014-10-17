@@ -165,16 +165,9 @@ public class REDDataWriter implements Runnable, Cancellable {
         }
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see java.lang.Runnable#run()
-     */
     public void run() {
         try {
-            // System.out.println("run:"+file.getAbsolutePath());
-            // Generate a temp file in the same directory as the final
-            // destination
+            // Generate a temp file in the same directory as the final destination
             tempFile = File
                     .createTempFile("red", ".temp", file.getParentFile());
 

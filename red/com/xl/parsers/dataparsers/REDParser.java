@@ -404,9 +404,9 @@ public class REDParser implements Runnable, ProgressListener {
                         Integer.parseInt(exonLoc[1]));
             }
             String aliasName = sections[6];
-            Feature basicFeature = new Feature(name, chr, strand,
+            Feature feature = new Feature(name, chr, strand,
                     txLocation, cdsLocation, exonLocations, aliasName);
-            set.addFeature(basicFeature);
+            set.addFeature(feature);
         }
 
         set.finalise();

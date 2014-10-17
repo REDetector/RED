@@ -58,11 +58,11 @@ public class ThreadNonDenovoInput implements Runnable {
 //        BasicFilter bf = new BasicFilter(manager);
 //        bf.establishSpecificTable(DatabaseManager.EDITING_TYPE_FILTER_RESULT_TABLE_NAME);
 //        bf.executeSpecificFilter(DatabaseManager.EDITING_TYPE_FILTER_RESULT_TABLE_NAME, DatabaseManager.RNA_VCF_RESULT_TABLE_NAME);
-//        bf.establishBasicTable(DatabaseManager.BASIC_FILTER_RESULT_TABLE_NAME);
+//        bf.establishQCTable(DatabaseManager.QC_FILTER_RESULT_TABLE_NAME);
         // The first parameter means quality and the second means depth
-//        bf.executeBasicFilter(DatabaseManager.EDITING_TYPE_FILTER_RESULT_TABLE_NAME,
-//                DatabaseManager.BASIC_FILTER_RESULT_TABLE_NAME, 20, 6);
-//        DatabaseManager.getInstance().distinctTable(DatabaseManager.BASIC_FILTER_RESULT_TABLE_NAME);
+//        bf.executeQCFilter(DatabaseManager.EDITING_TYPE_FILTER_RESULT_TABLE_NAME,
+//                DatabaseManager.QC_FILTER_RESULT_TABLE_NAME, 20, 6);
+//        DatabaseManager.getInstance().distinctTable(DatabaseManager.QC_FILTER_RESULT_TABLE_NAME);
 
         progressUpdated("Importing repeatmasker data...", 5, ALL_STEP);
         RepeatFilter rf = new RepeatFilter(manager);
@@ -71,7 +71,7 @@ public class ThreadNonDenovoInput implements Runnable {
 //        rf.establishAluResultTable(DatabaseManager.ALU_FILTER_RESULT_TABLE_NAME);
 //        rf.executeRepeatFilter(DatabaseManager.REPEAT_FILTER_TABLE_NAME, DatabaseManager.REPEAT_FILTER_RESULT_TABLE_NAME,
 //                DatabaseManager.ALU_FILTER_RESULT_TABLE_NAME,
-//                DatabaseManager.BASIC_FILTER_RESULT_TABLE_NAME);
+//                DatabaseManager.QC_FILTER_RESULT_TABLE_NAME);
 //        DatabaseManager.getInstance().distinctTable(DatabaseManager.REPEAT_FILTER_RESULT_TABLE_NAME);
 
         progressUpdated("Importing RefSeq Genes data...", 6, ALL_STEP);

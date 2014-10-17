@@ -78,7 +78,7 @@ public class VariantDistributionHistogram extends JDialog implements ActionListe
             if (result == JFileChooser.CANCEL_OPTION) return;
 
             File file = chooser.getSelectedFile();
-            LocationPreferences.getInstance().setProjectSaveLocation(file.getAbsolutePath());
+            LocationPreferences.getInstance().setProjectSaveLocation(file.getParent());
 
             if (file.isDirectory()) return;
 

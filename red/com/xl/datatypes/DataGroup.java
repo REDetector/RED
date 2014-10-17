@@ -70,9 +70,6 @@ public class DataGroup extends DataStore {
         }
     }
 
-    /* (non-Javadoc)
-     * @see uk.ac.babraham.SeqMonk.DataTypes.DataStore#setDisplayName(java.lang.String)
-     */
     public void setName(String name) {
         super.setName(name);
         if (collection() != null) {
@@ -118,9 +115,6 @@ public class DataGroup extends DataStore {
         }
     }
 
-    /* (non-Javadoc)
-     * @see uk.ac.babraham.SeqMonk.DataTypes.DataStore#getReadCountForChromosome(uk.ac.babraham.SeqMonk.DataTypes.Genome.Chromosome)
-     */
     public int getReadCountForChromosome(String chr) {
         int count = 0;
         for (int i = 0; i < dataSets.length; i++) {
@@ -129,9 +123,6 @@ public class DataGroup extends DataStore {
         return count;
     }
 
-    /* (non-Javadoc)
-     * @see uk.ac.babraham.SeqMonk.DataTypes.DataStore#getReadsForChromsome(uk.ac.babraham.SeqMonk.DataTypes.Genome.Chromosome)
-     */
     public SequenceRead[] getReadsForChromosome(String chr) {
 
         SequenceRead[][] readsFromAllChrs = new SequenceRead[dataSets.length][];
@@ -168,9 +159,6 @@ public class DataGroup extends DataStore {
 //		return returnedReads;
     }
 
-    /* (non-Javadoc)
-     * @see uk.ac.babraham.SeqMonk.DataTypes.DataStore#getTotalReadCount()
-     */
     public int getTotalReadCount() {
         int count = 0;
         for (int i = 0; i < dataSets.length; i++) {
@@ -179,9 +167,6 @@ public class DataGroup extends DataStore {
         return count;
     }
 
-    /* (non-Javadoc)
-     * @see uk.ac.babraham.SeqMonk.DataTypes.DataStore#getReadCountForStrand()
-     */
     public int getReadCountForStrand(Strand strand) {
         int count = 0;
         for (int i = 0; i < dataSets.length; i++) {
@@ -190,9 +175,6 @@ public class DataGroup extends DataStore {
         return count;
     }
 
-    /* (non-Javadoc)
-     * @see uk.ac.babraham.SeqMonk.DataTypes.DataStore#getTotalReadLength()
-     */
     public long getTotalReadLength() {
         long count = 0;
         for (int i = 0; i < dataSets.length; i++) {
@@ -224,9 +206,6 @@ public class DataGroup extends DataStore {
         return getTotalReadCount() / 2;
     }
 
-    /* (non-Javadoc)
-     * @see uk.ac.babraham.SeqMonk.DataTypes.DataStore#getReadsForProbe(uk.ac.babraham.SeqMonk.DataTypes.Probes.Probe)
-     */
     public SequenceRead[] getReadsForProbe(Probe p) {
         SequenceRead[][] returnReads = new SequenceRead[dataSets.length][];
         for (int i = 0; i < dataSets.length; i++) {

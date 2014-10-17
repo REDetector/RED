@@ -32,7 +32,7 @@ public class AnnotationParserRunner {
             if (result == JFileChooser.CANCEL_OPTION) return;
 
             files = chooser.getSelectedFiles();
-            LocationPreferences.getInstance().setProjectSaveLocation(files[0].getAbsolutePath());
+            LocationPreferences.getInstance().setProjectSaveLocation(files[0].getParent());
         }
 
         parser.addProgressListener(new ProgressDialog(application, parser.name(), parser));

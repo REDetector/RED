@@ -88,7 +88,7 @@ public class REDMenu extends JMenuBar implements ActionListener {
     private JMenuItem gotoWindow;
 
     private JMenu filterMenu;
-    private JMenuItem basicFilter;
+    private JMenuItem qcFilter;
     private JMenuItem specificFilter;
     private JMenuItem knownSNVsFilter;
     private JMenuItem rnadnaFilter;
@@ -159,7 +159,7 @@ public class REDMenu extends JMenuBar implements ActionListener {
         moveRight = new JMenuItem();
 
         filterMenu = new JMenu();
-        basicFilter = new JMenuItem();
+        qcFilter = new JMenuItem();
         specificFilter = new JMenuItem();
         knownSNVsFilter = new JMenuItem();
         rnadnaFilter = new JMenuItem();
@@ -270,7 +270,7 @@ public class REDMenu extends JMenuBar implements ActionListener {
         // ======== filterMenu ========
         {
             filterMenu.setText(MenuUtils.FILTER_MENU);
-            addJMenuItem(filterMenu, basicFilter, MenuUtils.BASIC_FILTER, -1);
+            addJMenuItem(filterMenu, qcFilter, MenuUtils.QC_FILTER, -1);
             addJMenuItem(filterMenu, specificFilter, MenuUtils.SPECIFIC_FILTER, -1);
             addJMenuItem(filterMenu, knownSNVsFilter, MenuUtils.KNOWN_SNVS_FILTER, -1);
             addJMenuItem(filterMenu, rnadnaFilter, MenuUtils.DNA_RNA_FILTER, -1);
@@ -442,8 +442,8 @@ public class REDMenu extends JMenuBar implements ActionListener {
         // --------------------FilterMenu--------------------
         else if (action.endsWith("Filter...")) {
             try {
-                if (action.equals(MenuUtils.BASIC_FILTER)) {
-                    new FilterOptionsDialog(redApplication.dataCollection(), new BasicFilterMenu(redApplication
+                if (action.equals(MenuUtils.QC_FILTER)) {
+                    new FilterOptionsDialog(redApplication.dataCollection(), new QCFilterMenu(redApplication
                             .dataCollection()));
                 } else if (action.equals(MenuUtils.SPECIFIC_FILTER)) {
                     new FilterOptionsDialog(redApplication.dataCollection(), new EditingTypeFilterMenu(redApplication

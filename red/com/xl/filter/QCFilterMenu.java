@@ -19,7 +19,7 @@
  */
 package com.xl.filter;
 
-import com.dw.denovo.BasicFilter;
+import com.dw.denovo.QCFilter;
 import com.dw.publicaffairs.DatabaseManager;
 import com.dw.publicaffairs.Query;
 import com.xl.datatypes.DataCollection;
@@ -40,12 +40,12 @@ import java.util.Vector;
  * from quantiation.  Each probe is filtered independently of all
  * other probes.
  */
-public class BasicFilterMenu extends ProbeFilter {
+public class QCFilterMenu extends ProbeFilter {
 
 
     private int qualityInt = -1;
     private int coverageInt = -1;
-    private BasicFilterOptionPanel optionsPanel = new BasicFilterOptionPanel();
+    private QCFilterOptionPanel optionsPanel = new QCFilterOptionPanel();
 
     /**
      * Instantiates a new values filter with default values
@@ -53,7 +53,7 @@ public class BasicFilterMenu extends ProbeFilter {
      * @param collection The dataCollection to filter
      * @throws REDException if the dataCollection isn't quantitated.
      */
-    public BasicFilterMenu(DataCollection collection) throws REDException {
+    public QCFilterMenu(DataCollection collection) throws REDException {
         super(collection);
     }
 
@@ -64,14 +64,14 @@ public class BasicFilterMenu extends ProbeFilter {
 
     @Override
     protected void generateProbeList() {
-        BasicFilter bf = new BasicFilter(databaseManager);
-        bf.establishBasicTable(DatabaseManager.BASIC_FILTER_RESULT_TABLE_NAME);
+        QCFilter bf = new QCFilter(databaseManager);
+        bf.establishQCTable(DatabaseManager.QC_FILTER_RESULT_TABLE_NAME);
         // The first parameter means quality and the second means depth
-        bf.executeBasicFilter(parentTable, DatabaseManager.BASIC_FILTER_RESULT_TABLE_NAME, qualityInt, coverageInt);
-        DatabaseManager.getInstance().distinctTable(DatabaseManager.BASIC_FILTER_RESULT_TABLE_NAME);
-        Vector<Probe> probes = Query.queryAllEditingSites(DatabaseManager.BASIC_FILTER_RESULT_TABLE_NAME);
-        ProbeList newList = new ProbeList(parentList, DatabaseManager.BASIC_FILTER_RESULT_TABLE_NAME, "",
-                DatabaseManager.BASIC_FILTER_RESULT_TABLE_NAME);
+        bf.executeQCFilter(parentTable, DatabaseManager.QC_FILTER_RESULT_TABLE_NAME, qualityInt, coverageInt);
+        DatabaseManager.getInstance().distinctTable(DatabaseManager.QC_FILTER_RESULT_TABLE_NAME);
+        Vector<Probe> probes = Query.queryAllEditingSites(DatabaseManager.QC_FILTER_RESULT_TABLE_NAME);
+        ProbeList newList = new ProbeList(parentList, DatabaseManager.QC_FILTER_RESULT_TABLE_NAME, "",
+                DatabaseManager.QC_FILTER_RESULT_TABLE_NAME);
         int index = 0;
         int probesLength = probes.size();
         for (Probe probe : probes) {
@@ -86,41 +86,26 @@ public class BasicFilterMenu extends ProbeFilter {
         filterFinished(newList);
     }
 
-    /* (non-Javadoc)
-     * @see uk.ac.babraham.SeqMonk.Filters.ProbeFilter#getOptionsPanel()
-     */
     @Override
     public JPanel getOptionsPanel() {
         return optionsPanel;
     }
 
-    /* (non-Javadoc)
-     * @see uk.ac.babraham.SeqMonk.Filters.ProbeFilter#hasOptionsPanel()
-     */
     @Override
     public boolean hasOptionsPanel() {
         return true;
     }
 
-    /* (non-Javadoc)
-     * @see uk.ac.babraham.SeqMonk.Filters.ProbeFilter#isReady()
-     */
     @Override
     public boolean isReady() {
         return stores.length != 0 && qualityInt != -1 && coverageInt != -1;
     }
 
-    /* (non-Javadoc)
-     * @see uk.ac.babraham.SeqMonk.Filters.ProbeFilter#name()
-     */
     @Override
     public String name() {
-        return "Basic Filter";
+        return "QC Filter";
     }
 
-    /* (non-Javadoc)
-     * @see uk.ac.babraham.SeqMonk.Filters.ProbeFilter#listDescription()
-     */
     @Override
     protected String listDescription() {
         StringBuilder b = new StringBuilder();
@@ -137,18 +122,15 @@ public class BasicFilterMenu extends ProbeFilter {
         return b.toString();
     }
 
-    /* (non-Javadoc)
-     * @see uk.ac.babraham.SeqMonk.Filters.ProbeFilter#listName()
-     */
     @Override
     protected String listName() {
-        return "Filter by Q>=" + qualityInt + " & Cov>=" + coverageInt;
+        return "Q>=" + qualityInt + " & C>=" + coverageInt;
     }
 
     /**
      * The ValuesFilterOptionPanel.
      */
-    private class BasicFilterOptionPanel extends AbstractOptionPanel implements KeyListener {
+    private class QCFilterOptionPanel extends AbstractOptionPanel implements KeyListener {
 
         private JTextField quality;
         private JTextField coverage;
@@ -156,22 +138,18 @@ public class BasicFilterMenu extends ProbeFilter {
         /**
          * Instantiates a new values filter option panel.
          */
-        public BasicFilterOptionPanel() {
+        public QCFilterOptionPanel() {
             super(collection);
         }
 
-        /* (non-Javadoc)
-         * @see javax.swing.JComponent#getPreferredSize()
-         */
+        @Override
         public Dimension getPreferredSize() {
             return new Dimension(600, 250);
         }
 
-        /* (non-Javadoc)
-         * @see javax.swing.event.ListSelectionListener#valueChanged(javax.swing.event.ListSelectionEvent)
-         */
+        @Override
         public void valueChanged(ListSelectionEvent lse) {
-            System.out.println(BasicFilterMenu.class.getName() + ":valueChanged()");
+            System.out.println(QCFilterMenu.class.getName() + ":valueChanged()");
             Object[] objects = dataList.getSelectedValues();
             stores = new DataStore[objects.length];
             for (int i = 0; i < stores.length; i++) {

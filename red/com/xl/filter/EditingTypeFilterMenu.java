@@ -7,13 +7,10 @@ import com.xl.datatypes.DataCollection;
 import com.xl.datatypes.DataStore;
 import com.xl.datatypes.probes.Probe;
 import com.xl.datatypes.probes.ProbeList;
-import com.xl.dialog.TypeColourRenderer;
 import com.xl.exception.REDException;
-import com.xl.utils.ListDefaultSelector;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -133,7 +130,7 @@ public class EditingTypeFilterMenu extends ProbeFilter {
          * @see javax.swing.event.ListSelectionListener#valueChanged(javax.swing.event.ListSelectionEvent)
          */
         public void valueChanged(ListSelectionEvent lse) {
-            System.out.println(BasicFilterMenu.class.getName() + ":valueChanged()");
+            System.out.println(QCFilterMenu.class.getName() + ":valueChanged()");
             Object[] objects = dataList.getSelectedValues();
             stores = new DataStore[objects.length];
             for (int i = 0; i < stores.length; i++) {

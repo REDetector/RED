@@ -204,7 +204,7 @@ public class ProbeListViewer extends JDialog implements MouseListener, ActionLis
             if (result == JFileChooser.CANCEL_OPTION) return;
 
             File file = chooser.getSelectedFile();
-            LocationPreferences.getInstance().setProjectSaveLocation(file.getAbsolutePath());
+            LocationPreferences.getInstance().setProjectSaveLocation(file.getParent());
 
             if (!file.getPath().toLowerCase().endsWith(".txt")) {
                 file = new File(file.getPath() + ".txt");

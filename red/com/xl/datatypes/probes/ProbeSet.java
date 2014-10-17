@@ -61,13 +61,6 @@ public class ProbeSet extends ProbeList {
         expectedTotalCount = expectedSize;
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see
-     * uk.ac.babraham.SeqMonk.DataTypes.Probes.ProbeList#addProbe(uk.ac.babraham
-     * .SeqMonk.DataTypes.Probes.Probe, java.lang.Double)
-     */
     public void addProbe(Probe p) {
 
         /**
@@ -167,11 +160,6 @@ public class ProbeSet extends ProbeList {
         }
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see uk.ac.babraham.SeqMonk.DataTypes.Probes.ProbeList#delete()
-     */
     synchronized public void delete() {
         // This is overridden from ProbeList and is called as the
         // list is removed.
@@ -185,13 +173,6 @@ public class ProbeSet extends ProbeList {
     // These methods propogate up through the tree of probe lists
     // to here where we override them to pass the messages on to
     // any listeners we have
-    /*
-     * (non-Javadoc)
-	 * 
-	 * @see
-	 * uk.ac.babraham.SeqMonk.DataTypes.Probes.ProbeList#probeListAdded(uk.ac
-	 * .babraham.SeqMonk.DataTypes.Probes.ProbeList)
-	 */
     protected void probeListAdded(ProbeList l) {
         if (listeners == null)
             return;
@@ -202,13 +183,6 @@ public class ProbeSet extends ProbeList {
         }
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see
-     * uk.ac.babraham.SeqMonk.DataTypes.Probes.ProbeList#probeListRemoved(uk
-     * .ac.babraham.SeqMonk.DataTypes.Probes.ProbeList)
-     */
     protected void probeListRemoved(ProbeList l) {
         Enumeration<ProbeSetChangeListener> e = listeners.elements();
         while (e.hasMoreElements()) {
@@ -216,13 +190,6 @@ public class ProbeSet extends ProbeList {
         }
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see
-     * uk.ac.babraham.SeqMonk.DataTypes.Probes.ProbeList#probeListRenamed(uk
-     * .ac.babraham.SeqMonk.DataTypes.Probes.ProbeList)
-     */
     protected void probeListRenamed(ProbeList l) {
         Enumeration<ProbeSetChangeListener> e = listeners.elements();
         while (e.hasMoreElements()) {

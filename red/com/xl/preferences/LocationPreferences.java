@@ -38,7 +38,7 @@ public class LocationPreferences {
     /**
      * The project root directory
      */
-    private String projectDirectory = new File("").getAbsolutePath();
+    private final String projectDirectory = new File("").getAbsolutePath();
     private String projectDataDirectory = projectDirectory + File.separator + DATA_DIRECTORY;
     /**
      * The fasta directory, which is associated with the relevent genome.

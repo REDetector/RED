@@ -24,7 +24,16 @@ import com.xl.utils.ColourScheme;
 import com.xl.utils.namemanager.IconUtils;
 
 import javax.swing.*;
+import javax.swing.text.Style;
+import javax.swing.text.StyleConstants;
+import javax.swing.text.StyleContext;
+import javax.swing.text.StyledDocument;
 import java.awt.*;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 
 /**
  * The Class SeqMonkTitlePanel.
@@ -51,8 +60,7 @@ public class REDTitlePanel extends JPanel {
         gridBagConstraints.insets = new Insets(6, 6, 0, 0);
         gridBagConstraints.fill = GridBagConstraints.NONE;
 
-        JLabel program = new SmoothJLabel("RED: RNA Editing Detector",
-                JLabel.CENTER);
+        JLabel program = new SmoothJLabel("RED: A Java-based RNA Editing Sites Identification and Visualization Program", JLabel.CENTER);
         program.setFont(new Font("Dialog", Font.BOLD, 18));
         program.setForeground(ColourScheme.PROGRAM_NAME);
         jPanel.add(program, gridBagConstraints);
@@ -66,37 +74,72 @@ public class REDTitlePanel extends JPanel {
 
         gridBagConstraints.gridy++;
 
-        // Use a text field so they can copy this
-        JTextField buptWebsite = new JTextField(" http://www.bupt.edu.cn/ ");
-        buptWebsite.setFont(new Font("Dialog", Font.PLAIN, 14));
-        buptWebsite.setEditable(false);
-        buptWebsite.setBorder(null);
-        buptWebsite.setOpaque(false);
-        buptWebsite.setHorizontalAlignment(JTextField.CENTER);
-        jPanel.add(buptWebsite, gridBagConstraints);
+        JTextPane webPane = new JTextPane();
+        webPane.setText("https://github.com/iluhcm/RED");
+        webPane.setEditable(false);
+        StyledDocument doc = (StyledDocument) webPane.getDocument();
+        Style s = new StyleContext().getStyle(StyleContext.DEFAULT_STYLE);
+        StyleConstants.setUnderline(s, true);
+        doc.setCharacterAttributes(0, webPane.getText().length(), s, false);
+        webPane.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        webPane.addMouseListener(new MouseListener() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+            }
+
+            @Override
+            public void mousePressed(MouseEvent e) {
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                URI uri = null;
+                try {
+                    uri = new URI("https://github.com/iluhcm/RED");
+                } catch (URISyntaxException e1) {
+                    e1.printStackTrace();
+                }
+                try {
+                    Desktop.getDesktop().browse(uri);
+                } catch (IOException e1) {
+                    e1.printStackTrace();
+                }
+            }
+
+            @Override
+            public void mouseEntered(MouseEvent e) {
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+            }
+        });
+        jPanel.add(webPane, gridBagConstraints);
         gridBagConstraints.gridy++;
-        JLabel buptCopyright = new JLabel(
-                "\u00a9 Xing Li, Di Wu, Yongmei Sun, Internet of Things, BUPT, 2012-14",
+
+        JLabel buptCopyright = new JLabel("\u00a9Xing Li, Di Wu, Yongmei Sun, Internet of Things, Beijing University of Posts and Telecommunications",
                 JLabel.CENTER);
         buptCopyright.setFont(new Font("Dialog", Font.PLAIN, 14));
         jPanel.add(buptCopyright, gridBagConstraints);
         gridBagConstraints.gridy++;
 
-        // Use a text field so they can copy this
-        JTextField website = new JTextField(" http://www.cqmu.edu.cn/ ");
-        website.setFont(new Font("Dialog", Font.PLAIN, 14));
-        website.setEditable(false);
-        website.setBorder(null);
-        website.setOpaque(false);
-        website.setHorizontalAlignment(JTextField.CENTER);
-        jPanel.add(website, gridBagConstraints);
-        gridBagConstraints.gridy++;
-
         JLabel cqmuCopyright = new JLabel(
-                "\u00a9 Keyue Ding, Qi Pan, Liver Cancer Research Center, CQMU, 2013-14",
-                JLabel.CENTER);
+                "\u00a9Qi Pan, Keyue Ding, Key Laboratory of Molecular Biology for Infectious Diseases, Ministry of Education of China", JLabel.CENTER);
         cqmuCopyright.setFont(new Font("Dialog", Font.PLAIN, 14));
         jPanel.add(cqmuCopyright, gridBagConstraints);
+        gridBagConstraints.gridy++;
+
+        JLabel cqmuCopyright2 = new JLabel("The Second Affiliated Hospital of Chongqing Medical University, Chongqing, P. R. China ", JLabel.CENTER);
+        cqmuCopyright2.setFont(new Font("Dialog", Font.PLAIN, 14));
+        jPanel.add(cqmuCopyright2, gridBagConstraints);
+        gridBagConstraints.gridy++;
+
+        JLabel copyright = new JLabel("Distributed under the GNU General Public License, Version 3", JLabel.CENTER);
+        copyright.setFont(new Font("Dialog", Font.PLAIN, 14));
+        copyright.setForeground(ColourScheme.PROGRAM_VERSION);
+        jPanel.add(copyright, gridBagConstraints);
+
+
         gridBagConstraints.gridy++;
         add(jPanel, BorderLayout.CENTER);
     }

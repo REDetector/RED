@@ -81,14 +81,14 @@ public class ChromosomeFeatureTrack extends AbstractTrack {
             if (isFeatureVisible(feature, currentViewerStart, currentViewerEnd)) {
                 // We always draw the active feature last so skip it here.
                 if (feature != activeFeature) {
-                    drawBasicFeature(feature, g);
+                    drawFeature(feature, g);
                 }
             }
         }
 
         if (activeFeature != null) {
             g.setColor(ColourScheme.ACTIVE_FEATURE);
-            drawBasicFeature(activeFeature, g);
+            drawFeature(activeFeature, g);
             g.setColor(ColourScheme.FEATURE_TRACK);
         }
     }
@@ -103,7 +103,7 @@ public class ChromosomeFeatureTrack extends AbstractTrack {
      * @param feature the feature to draw
      * @param g       the graphics object to use for drawing
      */
-    private void drawBasicFeature(Feature feature, Graphics g) {
+    private void drawFeature(Feature feature, Graphics g) {
         // If there's space we'll put a label on the track as well as the feature.
         boolean drawLabel = false;
         if (displayHeight > 25) {

@@ -26,15 +26,12 @@ import com.xl.datatypes.DataCollection;
 import com.xl.datatypes.DataStore;
 import com.xl.datatypes.probes.Probe;
 import com.xl.datatypes.probes.ProbeList;
-import com.xl.dialog.TypeColourRenderer;
 import com.xl.exception.REDException;
 import com.xl.panel.DataIntroductionPanel;
 import com.xl.preferences.LocationPreferences;
-import com.xl.utils.ListDefaultSelector;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -202,13 +199,15 @@ public class PValueFilterMenu extends ProbeFilter {
          * @param f        the TextFild from which to take the starting directory
          */
         private void getFile(String dataType, JTextField f) {
-            JFileChooser chooser = new JFileChooser();
+            JFileChooser chooser = new JFileChooser(LocationPreferences.getInstance().getProjectSaveLocation());
             chooser.setCurrentDirectory(new File(f.getText()));
             chooser.setAccessory(new DataIntroductionPanel(dataType));
             chooser.setDialogTitle("Select Directory");
             chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
             if (chooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
                 f.setText(chooser.getSelectedFile().getAbsolutePath().replaceAll("\\\\", "/"));
+                File file = chooser.getSelectedFile();
+                LocationPreferences.getInstance().setProjectSaveLocation(file.getParent());
             }
         }
 
