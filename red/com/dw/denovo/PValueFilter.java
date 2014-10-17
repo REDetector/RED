@@ -132,8 +132,7 @@ public class PValueFilter {
         }
     }
 
-    public double calPValue(double foundRef, double foundAlt,
-                            double knownRef, double knownAlt, RCaller caller, RCode code) {
+    public double calPValue(double foundRef, double foundAlt, double knownRef, double knownAlt, RCaller caller, RCode code) {
         try {
             double[][] data = new double[][]{{foundRef, foundAlt}, {knownRef, knownAlt}};
             code.addDoubleMatrix("mydata", data);
@@ -164,27 +163,23 @@ public class PValueFilter {
         known_alt /= valueInfos.size();
         known_ref /= valueInfos.size();
         DecimalFormat dF = new DecimalFormat("#.###");
-        List<PValueInfo> rest = new ArrayList<PValueInfo>();
         for (PValueInfo pValueInfo : valueInfos) {
             int alt = pValueInfo.altCount;
             int ref = pValueInfo.refCount;
             double pValue = calPValue(ref, alt, known_ref, known_alt, caller, code);
-            if (pValue < 0.05) {
-                double level = (double) alt / (alt + ref);
-                pValueInfo.setPValue(pValue);
-                pValueInfo.setLevel(level);
-                rest.add(pValueInfo);
-                try {
-                    databaseManager.executeSQL("insert into " + pvalueResultTable + "(chrom,pos,id,ref,alt,qual,filter,info,gt,ad,dp,gq,pl,level," +
-                            "pvalue) values( " + pValueInfo.toString() + "," + dF.format(level) + "," + pValue + ")");
-                } catch (SQLException e) {
-                    System.err.println("Error execute sql clause in " + PValueFilter.class.getName() + ":executePValueFilter()");
-                    e.printStackTrace();
-                }
+            double level = (double) alt / (alt + ref);
+            pValueInfo.setPValue(pValue);
+            pValueInfo.setLevel(level);
+            try {
+                databaseManager.executeSQL("insert into " + pvalueResultTable + "(chrom,pos,id,ref,alt,qual,filter,info,gt,ad,dp,gq,pl,level," +
+                        "pvalue) values( " + pValueInfo.toString() + "," + dF.format(level) + "," + pValue + ")");
+            } catch (SQLException e) {
+                System.err.println("Error execute sql clause in " + PValueFilter.class.getName() + ":executePValueFilter()");
+                e.printStackTrace();
             }
         }
         System.out.println("End executing PValueFilter..." + df.format(new Date()));
-        return rest;
+        return valueInfos;
     }
 
     public void executeFDRFilter(String darnedTable, String darnedResultTable, String refTable, String rExecutable) {
@@ -199,23 +194,19 @@ public class PValueFilter {
                 pValueArray[i] = pValueList.get(i).getPvalue();
             }
             code.addDoubleArray("parray", pValueArray);
-//            code.addRCode("qobj <- qvalue(parray)");
-//            code.addRCode("mylist<-list(qval=qobj$qvalues");
             code.addRCode("result<-p.adjust(parray,method='fdr',length(parray))");
-            // code.addRCode("mylist <- list(qval = result$q.value)");
             caller.setRCode(code);
             caller.runAndReturnResultOnline("result");
 
             double[] results = caller.getParser().getAsDoubleArray("result");
+            databaseManager.setAutoCommit(false);
             for (int i = 0, len = results.length; i < len; i++) {
-                double fdr = results[i];
-                if (fdr < 0.05) {
-                    databaseManager.executeSQL("update " + darnedResultTable
-                            + " set fdr=" + fdr + " where chrom='" + pValueList.get(i).getChr()
-                            + "' and pos=" + pValueList.get(i).getPos());
-                }
+                databaseManager.executeSQL("update " + darnedResultTable + " set fdr=" + results[i] + " where chrom='" + pValueList.get(i).getChr() + "' " +
+                        "and pos=" + pValueList.get(i).getPos());
             }
-            // clear insert data
+            databaseManager.commit();
+            databaseManager.setAutoCommit(true);
+            databaseManager.executeSQL("delete from " + darnedResultTable + " where (pvalue>=0.05)||(fdr>=0.05)");
         } catch (Exception e) {
             e.printStackTrace();
         }
