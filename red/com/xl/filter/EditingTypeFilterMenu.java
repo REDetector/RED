@@ -120,16 +120,10 @@ public class EditingTypeFilterMenu extends ProbeFilter {
             super(collection);
         }
 
-        /* (non-Javadoc)
-         * @see javax.swing.JComponent#getPreferredSize()
-         */
         public Dimension getPreferredSize() {
             return new Dimension(600, 250);
         }
 
-        /* (non-Javadoc)
-         * @see javax.swing.event.ListSelectionListener#valueChanged(javax.swing.event.ListSelectionEvent)
-         */
         public void valueChanged(ListSelectionEvent lse) {
             System.out.println(QCFilterMenu.class.getName() + ":valueChanged()");
             Object[] objects = dataList.getSelectedValues();

@@ -19,7 +19,7 @@
  */
 package com.xl.filter;
 
-import com.dw.denovo.DBSNPFilter;
+import com.dw.denovo.DbSNPFilter;
 import com.dw.publicaffairs.DatabaseManager;
 import com.dw.publicaffairs.Query;
 import com.xl.datatypes.DataCollection;
@@ -62,7 +62,7 @@ public class DbSNPFilterMenu extends ProbeFilter {
     @Override
     protected void generateProbeList() {
         progressUpdated("Filtering RNA-editing sites by dbSNP filter, please wait...", 0, 0);
-        DBSNPFilter dbsnpFilter = new DBSNPFilter(databaseManager);
+        DbSNPFilter dbsnpFilter = new DbSNPFilter(databaseManager);
         dbsnpFilter.establishDbSNPResultTable(DatabaseManager.DBSNP_FILTER_RESULT_TABLE_NAME);
 //        new Thread(new ThreadCountRow(this,DatabaseManager.DBSNP_FILTER_RESULT_TABLE_NAME)).start();
         dbsnpFilter.executeDbSNPFilter(DatabaseManager.DBSNP_FILTER_TABLE_NAME, DatabaseManager.DBSNP_FILTER_RESULT_TABLE_NAME, parentTable);

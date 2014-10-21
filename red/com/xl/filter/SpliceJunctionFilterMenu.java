@@ -42,7 +42,7 @@ import java.util.Vector;
  */
 public class SpliceJunctionFilterMenu extends ProbeFilter {
 
-    private int sequenceEdge = -1;
+    private int sequenceEdge = 4;
     private SpliceJunctionFilterOptionPanel optionsPanel = new SpliceJunctionFilterOptionPanel();
 
     /**
@@ -124,7 +124,7 @@ public class SpliceJunctionFilterMenu extends ProbeFilter {
 
     @Override
     protected String listName() {
-        return "Splice-juncion=" + sequenceEdge;
+        return "Splice-juncion length:" + sequenceEdge;
     }
 
     /**
@@ -193,10 +193,11 @@ public class SpliceJunctionFilterMenu extends ProbeFilter {
             c.weightx = 0.5;
             c.weighty = 0.5;
             c.fill = GridBagConstraints.HORIZONTAL;
-            choicePanel.add(new JLabel("Edge = "), c);
+            choicePanel.add(new JLabel("Splice-junction length: "), c);
             c.gridx = 1;
             c.weightx = 0.1;
             edgeField = new JTextField(3);
+            edgeField.setText(sequenceEdge + "");
             edgeField.addKeyListener(this);
             choicePanel.add(edgeField, c);
             return choicePanel;

@@ -38,14 +38,15 @@ public class PValueFilter {
     public static void main(String[] args) {
         RCaller caller = new RCaller();
 //        Globals.detect_current_rscript();
-        caller.setRExecutable("C:\\R\\R-3.1.1\\bin\\R.exe");
+//        caller.setRExecutable("C:\\R\\R-3.1.1\\bin\\R.exe");
+        caller.setRscriptExecutable("C:\\R\\R-3.1.1\\bin\\Rscript.exe");
         RCode code = new RCode();
         double[][] data = new double[][]{{233, 21}, {32, 12}};
         code.addDoubleMatrix("mydata", data);
         code.addRCode("result <- fisher.test(mydata)");
         code.addRCode("mylist <- list(pval = result$p.value)");
         caller.setRCode(code);
-        caller.runAndReturnResultOnline("mylist");
+        caller.runAndReturnResult("mylist");
         double pValue = caller.getParser().getAsDoubleArray("pval")[0];
         System.out.println(pValue + "\t");
 
@@ -54,10 +55,12 @@ public class PValueFilter {
 
         double[] datas = new double[]{0.02, 0.2343, 0.0005, 1.006, 0.4327, 0.2238, 0.43};
 
+        caller = new RCaller();
+        caller.setRscriptExecutable("C:\\R\\R-3.1.1\\bin\\Rscript.exe");
         code.addDoubleArray("parray", datas);
         code.addRCode("result<-p.adjust(parray,method='fdr',length(parray))");
         caller.setRCode(code);
-        caller.runAndReturnResultOnline("result");
+        caller.runAndReturnResult("result");
         double[] result = caller.getParser().getAsDoubleArray("result");
         System.out.println("Calling FDR from R:");
         for (double re : result) {
@@ -109,8 +112,7 @@ public class PValueFilter {
                 int count = 0;
                 databaseManager.setAutoCommit(false);
                 FileInputStream inputStream = new FileInputStream(pvaluePath);
-                BufferedReader rin = new BufferedReader(new InputStreamReader(
-                        inputStream));
+                BufferedReader rin = new BufferedReader(new InputStreamReader(inputStream));
                 String line;
                 // Skip the first row.
                 rin.readLine();

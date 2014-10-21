@@ -1,6 +1,6 @@
 package com.xl.thread;
 
-import com.dw.denovo.DBSNPFilter;
+import com.dw.denovo.DbSNPFilter;
 import com.dw.denovo.PValueFilter;
 import com.dw.denovo.RepeatFilter;
 import com.dw.denovo.SpliceJunctionFilter;
@@ -50,7 +50,7 @@ public class ThreadDenovoInput implements Runnable {
         SpliceJunctionFilter cf = new SpliceJunctionFilter(manager);
         cf.loadSpliceJunctionTable(DatabaseManager.SPLICE_JUNCTION_FILTER_TABLE_NAME, locationPreferences.getRefSeqFile());
 
-        DBSNPFilter sf = new DBSNPFilter(manager);
+        DbSNPFilter sf = new DbSNPFilter(manager);
         sf.loadDbSNPTable(DatabaseManager.DBSNP_FILTER_TABLE_NAME, locationPreferences.getDbSNPFile());
 
         PValueFilter pv = new PValueFilter(manager);

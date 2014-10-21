@@ -83,41 +83,26 @@ public class DNARNAFilterMenu extends ProbeFilter {
         filterFinished(newList);
     }
 
-    /* (non-Javadoc)
-     * @see uk.ac.babraham.SeqMonk.Filters.ProbeFilter#getOptionsPanel()
-     */
     @Override
     public JPanel getOptionsPanel() {
         return optionsPanel;
     }
 
-    /* (non-Javadoc)
-     * @see uk.ac.babraham.SeqMonk.Filters.ProbeFilter#hasOptionsPanel()
-     */
     @Override
     public boolean hasOptionsPanel() {
         return true;
     }
 
-    /* (non-Javadoc)
-     * @see uk.ac.babraham.SeqMonk.Filters.ProbeFilter#isReady()
-     */
     @Override
     public boolean isReady() {
         return stores.length != 0;
     }
 
-    /* (non-Javadoc)
-     * @see uk.ac.babraham.SeqMonk.Filters.ProbeFilter#name()
-     */
     @Override
     public String name() {
         return "RNA&DNA Filter";
     }
 
-    /* (non-Javadoc)
-     * @see uk.ac.babraham.SeqMonk.Filters.ProbeFilter#listDescription()
-     */
     @Override
     protected String listDescription() {
         StringBuilder b = new StringBuilder();
@@ -134,18 +119,12 @@ public class DNARNAFilterMenu extends ProbeFilter {
         return b.toString();
     }
 
-    /* (non-Javadoc)
-     * @see uk.ac.babraham.SeqMonk.Filters.ProbeFilter#listName()
-     */
     @Override
     protected String listName() {
-        return "RNA&DNA filter";
+        return "RNA/DNA filter";
     }
 
 
-    /**
-     * The ValuesFilterOptionPanel.
-     */
     private class DNARNAFilterOptionPanel extends AbstractOptionPanel {
 
         private JTextArea description = null;
@@ -157,16 +136,10 @@ public class DNARNAFilterMenu extends ProbeFilter {
             super(collection);
         }
 
-        /* (non-Javadoc)
-         * @see javax.swing.JComponent#getPreferredSize()
-         */
         public Dimension getPreferredSize() {
             return new Dimension(600, 250);
         }
 
-        /* (non-Javadoc)
-         * @see javax.swing.event.ListSelectionListener#valueChanged(javax.swing.event.ListSelectionEvent)
-         */
         public void valueChanged(ListSelectionEvent lse) {
             System.out.println(DNARNAFilterMenu.class.getName() + ":valueChanged()");
             Object[] objects = dataList.getSelectedValues();
@@ -185,7 +158,6 @@ public class DNARNAFilterMenu extends ProbeFilter {
             description = new JTextArea("RNA-editing means editing in RNA while DNA is not snp.\n" +
                     "So only otherwise, all the difference between DNA and RNA\n" +
                     "will be selected.");
-//            description.setLineWrap(true);
             description.setEditable(false);
             choicePanel.add(description);
             return choicePanel;

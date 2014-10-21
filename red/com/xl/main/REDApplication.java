@@ -232,14 +232,14 @@ public class REDApplication extends JFrame implements ProgressListener,
      * the chromosome view. If any data store is already visible it won't be
      * added again.
      *
-     * @param dataStore An array of dataStores to add
+     * @param dataStores An array of dataStores to add
      */
-    public void addToDrawnDataStores(DataStore[] dataStore) {
-        System.out.println(this.getClass().getName() + ":addToDrawnDataStores(DataStore[] dataStore)\t" + dataStore.length);
+    public void addToDrawnDataStores(DataStore[] dataStores) {
+        System.out.println(this.getClass().getName() + ":addToDrawnDataStores(DataStore[] dataStore)\t" + dataStores.length);
         changesWereMade();
-        for (int i = 0; i < dataStore.length; i++) {
-            if (dataStore[i] != null && !drawnDataStores.contains(dataStore[i])) {
-                drawnDataStores.add(dataStore[i]);
+        for (DataStore dataStore : dataStores) {
+            if (dataStore != null && !drawnDataStores.contains(dataStore)) {
+                drawnDataStores.add(dataStore);
             }
         }
         chromosomeViewer.tracksUpdated();
@@ -311,12 +311,11 @@ public class REDApplication extends JFrame implements ProgressListener,
         System.out.println(this.getClass().getName() + ":addNewDataSets(DataSet[] newData)\t" + newData.length);
         ArrayList<DataStore> storesToAdd = new ArrayList<DataStore>();
 
-        for (int i = 0; i < newData.length; i++) {
-            if (newData[i].getTotalReadCount() > 0) {
-                // Can we leave this out as this should be handled by the
-                // data collection listener?
-                dataCollection.addDataSet(newData[i]);
-                storesToAdd.add(newData[i]);
+        for (DataSet dataset : newData) {
+            if (dataset.getTotalReadCount() > 0) {
+                // Can we leave this out as this should be handled by the data collection listener?
+                dataCollection.addDataSet(dataset);
+                storesToAdd.add(dataset);
             }
         }
 
@@ -899,6 +898,7 @@ public class REDApplication extends JFrame implements ProgressListener,
             System.out.println(REDApplication.class.getName() + ":database_loaded");
             REDPreferences.getInstance().setDatabaseConnected(true);
             REDPreferences.getInstance().setDataLoadedToDatabase(true);
+            DisplayPreferences.getInstance().setDisplayMode(DisplayPreferences.DISPLAY_MODE_READS_AND_PROBES);
             menu.databaseConnected();
             menu.databaseLoaded();
             menu.setDenovo(REDPreferences.getInstance().isDenovo());

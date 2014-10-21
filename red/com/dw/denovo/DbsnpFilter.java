@@ -17,13 +17,13 @@ import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class DBSNPFilter {
+public class DbSNPFilter {
     SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     private DatabaseManager databaseManager;
     private int count = 0;
     private REDProgressBar progressBar = REDProgressBar.getInstance();
 
-    public DBSNPFilter(DatabaseManager databaseManager) {
+    public DbSNPFilter(DatabaseManager databaseManager) {
         this.databaseManager = databaseManager;
     }
 
@@ -77,7 +77,7 @@ public class DBSNPFilter {
             System.err.println("Error load file from " + dbSNPPath + " to file stream");
             e.printStackTrace();
         } catch (SQLException e) {
-            System.err.println("Error execute sql clause in " + DBSNPFilter.class.getName() + ":loadDbSNPTable()");
+            System.err.println("Error execute sql clause in " + DbSNPFilter.class.getName() + ":loadDbSNPTable()");
             e.printStackTrace();
         }
         progressBar.progressComplete("dbsnp_loaded", null);
@@ -91,7 +91,7 @@ public class DBSNPFilter {
                     "not exists (select chrom from " + dbSnpTable + " where (" + dbSnpTable + ".chrom=" + refTable +
                     ".chrom and " + dbSnpTable + ".pos=" + refTable + ".pos))");
         } catch (SQLException e) {
-            System.err.println("Error execute sql clause in" + DBSNPFilter.class.getName() + ":executeDbSNPFilter()");
+            System.err.println("Error execute sql clause in" + DbSNPFilter.class.getName() + ":executeDbSNPFilter()");
             e.printStackTrace();
         }
         System.out.println("End executing DbSNPFilter..." + df.format(new Date()));
