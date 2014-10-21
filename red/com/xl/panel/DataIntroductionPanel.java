@@ -45,7 +45,7 @@ public class DataIntroductionPanel extends JPanel {
             sb.append("<br>");
             sb.append("Default R script path is  'X:/Program Files/R/R-3.x.x/bin/RScript.exe'");
             sb.append("<br>");
-            sb.append("For <b>Linux/MAC OSX</b>,");
+            sb.append("For <b>Linux/Mac OSX</b>,");
             sb.append("<br>");
             sb.append("Default R executable path is  '/usr/bin/R'");
             sb.append("<br>");
