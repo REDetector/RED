@@ -9,6 +9,7 @@ import com.dw.publicaffairs.Query;
 import com.xl.datatypes.DataCollection;
 import com.xl.datatypes.probes.Probe;
 import com.xl.datatypes.probes.ProbeSet;
+import com.xl.main.REDApplication;
 import com.xl.parsers.dataparsers.DNAVCFParser;
 import com.xl.parsers.dataparsers.RNAVCFParser;
 import com.xl.preferences.LocationPreferences;
@@ -20,7 +21,6 @@ import java.util.Vector;
  * Created by Administrator on 2014/7/22.
  */
 public class ThreadNonDenovoInput implements Runnable {
-    private final int ALL_STEP = 6;
     protected boolean cancel = false;
     private DataCollection dataCollection;
 
@@ -59,6 +59,8 @@ public class ThreadNonDenovoInput implements Runnable {
 
         PValueFilter pv = new PValueFilter(manager);
         pv.loadDarnedTable(DatabaseManager.PVALUE_FILTER_TABLE_NAME, locationPreferences.getDarnedFile());
+
+        REDApplication.getInstance().progressComplete("database_loaded", null);
 
     }
 }
