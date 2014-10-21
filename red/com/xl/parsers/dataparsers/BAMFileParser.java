@@ -57,9 +57,7 @@ public class BAMFileParser extends DataParser {
                 SAMFileReader inputSam = new SAMFileReader(samFiles[f]);
 
 
-                newData[f] = new DataSet(samFiles[f].getName(),
-                        samFiles[f].getCanonicalPath(),
-                        prefs.removeDuplicates());
+                newData[f] = new DataSet(samFiles[f].getName(), samFiles[f].getCanonicalPath(), prefs.removeDuplicates());
 
                 int lineCount = 0;
                 // Now process the file
