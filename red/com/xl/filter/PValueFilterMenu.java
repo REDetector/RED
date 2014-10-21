@@ -65,6 +65,7 @@ public class PValueFilterMenu extends ProbeFilter {
 
     @Override
     protected void generateProbeList() {
+        progressUpdated("Filtering RNA-editing sites by statistic method (P-Value), please wait...", 0, 0);
         PValueFilter pv = new PValueFilter(databaseManager);
         pv.estblishPValueTable(DatabaseManager.PVALUE_FILTER_RESULT_TABLE_NAME);
         pv.executeFDRFilter(DatabaseManager.PVALUE_FILTER_TABLE_NAME,
@@ -87,41 +88,31 @@ public class PValueFilterMenu extends ProbeFilter {
         filterFinished(newList);
     }
 
-    /* (non-Javadoc)
-     * @see uk.ac.babraham.SeqMonk.Filters.ProbeFilter#getOptionsPanel()
-     */
+
     @Override
     public JPanel getOptionsPanel() {
         return optionsPanel;
     }
 
-    /* (non-Javadoc)
-     * @see uk.ac.babraham.SeqMonk.Filters.ProbeFilter#hasOptionsPanel()
-     */
+
     @Override
     public boolean hasOptionsPanel() {
         return true;
     }
 
-    /* (non-Javadoc)
-     * @see uk.ac.babraham.SeqMonk.Filters.ProbeFilter#isReady()
-     */
+
     @Override
     public boolean isReady() {
         return stores.length != 0 && rScriptPath != null && rScriptPath.length() != 0;
     }
 
-    /* (non-Javadoc)
-     * @see uk.ac.babraham.SeqMonk.Filters.ProbeFilter#name()
-     */
+
     @Override
     public String name() {
         return "P-Value Filter";
     }
 
-    /* (non-Javadoc)
-     * @see uk.ac.babraham.SeqMonk.Filters.ProbeFilter#listDescription()
-     */
+
     @Override
     protected String listDescription() {
         StringBuilder b = new StringBuilder();
@@ -138,9 +129,6 @@ public class PValueFilterMenu extends ProbeFilter {
         return b.toString();
     }
 
-    /* (non-Javadoc)
-     * @see uk.ac.babraham.SeqMonk.Filters.ProbeFilter#listName()
-     */
     @Override
     protected String listName() {
         return "P-Value filter";
@@ -161,16 +149,12 @@ public class PValueFilterMenu extends ProbeFilter {
             super(collection);
         }
 
-        /* (non-Javadoc)
-         * @see javax.swing.JComponent#getPreferredSize()
-         */
+
         public Dimension getPreferredSize() {
             return new Dimension(600, 250);
         }
 
-        /* (non-Javadoc)
-         * @see javax.swing.event.ListSelectionListener#valueChanged(javax.swing.event.ListSelectionEvent)
-         */
+
         public void valueChanged(ListSelectionEvent lse) {
             System.out.println(PValueFilterMenu.class.getName() + ":valueChanged()");
             Object[] objects = dataList.getSelectedValues();

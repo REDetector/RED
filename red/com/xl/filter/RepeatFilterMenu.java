@@ -26,9 +26,7 @@ import com.xl.datatypes.DataCollection;
 import com.xl.datatypes.DataStore;
 import com.xl.datatypes.probes.Probe;
 import com.xl.datatypes.probes.ProbeList;
-import com.xl.dialog.TypeColourRenderer;
 import com.xl.exception.REDException;
-import com.xl.utils.ListDefaultSelector;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
@@ -61,6 +59,7 @@ public class RepeatFilterMenu extends ProbeFilter {
 
     @Override
     protected void generateProbeList() {
+        progressUpdated("Filtering RNA-editing sites by repeatmasker database, please wait...", 0, 0);
         RepeatFilter rf = new RepeatFilter(databaseManager);
         rf.establishRepeatResultTable(DatabaseManager.REPEAT_FILTER_RESULT_TABLE_NAME);
         rf.establishAluResultTable(DatabaseManager.ALU_FILTER_RESULT_TABLE_NAME);

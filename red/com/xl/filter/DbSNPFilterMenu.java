@@ -19,7 +19,7 @@
  */
 package com.xl.filter;
 
-import com.dw.denovo.DbsnpFilter;
+import com.dw.denovo.DBSNPFilter;
 import com.dw.publicaffairs.DatabaseManager;
 import com.dw.publicaffairs.Query;
 import com.xl.datatypes.DataCollection;
@@ -56,15 +56,16 @@ public class DbSNPFilterMenu extends ProbeFilter {
 
     @Override
     public String description() {
-        return "Filter editing bases by dbSNP database.";
+        return "Filter RNA-editing sites by dbSNP database.";
     }
 
     @Override
     protected void generateProbeList() {
-        DbsnpFilter dbsnpFilter = new DbsnpFilter(databaseManager);
+        progressUpdated("Filtering RNA-editing sites by dbSNP filter, please wait...", 0, 0);
+        DBSNPFilter dbsnpFilter = new DBSNPFilter(databaseManager);
         dbsnpFilter.establishDbSNPResultTable(DatabaseManager.DBSNP_FILTER_RESULT_TABLE_NAME);
-        dbsnpFilter.executeDbSNPFilter(DatabaseManager.DBSNP_FILTER_TABLE_NAME,
-                DatabaseManager.DBSNP_FILTER_RESULT_TABLE_NAME, parentTable);
+//        new Thread(new ThreadCountRow(this,DatabaseManager.DBSNP_FILTER_RESULT_TABLE_NAME)).start();
+        dbsnpFilter.executeDbSNPFilter(DatabaseManager.DBSNP_FILTER_TABLE_NAME, DatabaseManager.DBSNP_FILTER_RESULT_TABLE_NAME, parentTable);
         DatabaseManager.getInstance().distinctTable(DatabaseManager.DBSNP_FILTER_RESULT_TABLE_NAME);
         Vector<Probe> probes = Query.queryAllEditingSites(DatabaseManager.DBSNP_FILTER_RESULT_TABLE_NAME);
         ProbeList newList = new ProbeList(parentList, DatabaseManager.DBSNP_FILTER_RESULT_TABLE_NAME, "",
@@ -83,41 +84,26 @@ public class DbSNPFilterMenu extends ProbeFilter {
         filterFinished(newList);
     }
 
-    /* (non-Javadoc)
-     * @see uk.ac.babraham.SeqMonk.Filters.ProbeFilter#getOptionsPanel()
-     */
     @Override
     public JPanel getOptionsPanel() {
         return optionsPanel;
     }
 
-    /* (non-Javadoc)
-     * @see uk.ac.babraham.SeqMonk.Filters.ProbeFilter#hasOptionsPanel()
-     */
     @Override
     public boolean hasOptionsPanel() {
         return true;
     }
 
-    /* (non-Javadoc)
-     * @see uk.ac.babraham.SeqMonk.Filters.ProbeFilter#isReady()
-     */
     @Override
     public boolean isReady() {
         return stores.length != 0;
     }
 
-    /* (non-Javadoc)
-     * @see uk.ac.babraham.SeqMonk.Filters.ProbeFilter#name()
-     */
     @Override
     public String name() {
         return "dbSNP Filter";
     }
 
-    /* (non-Javadoc)
-     * @see uk.ac.babraham.SeqMonk.Filters.ProbeFilter#listDescription()
-     */
     @Override
     protected String listDescription() {
         StringBuilder b = new StringBuilder();
@@ -134,9 +120,6 @@ public class DbSNPFilterMenu extends ProbeFilter {
         return b.toString();
     }
 
-    /* (non-Javadoc)
-     * @see uk.ac.babraham.SeqMonk.Filters.ProbeFilter#listName()
-     */
     @Override
     protected String listName() {
         return "dbSNP Filter";
@@ -157,16 +140,10 @@ public class DbSNPFilterMenu extends ProbeFilter {
             super(collection);
         }
 
-        /* (non-Javadoc)
-         * @see javax.swing.JComponent#getPreferredSize()
-         */
         public Dimension getPreferredSize() {
             return new Dimension(600, 250);
         }
 
-        /* (non-Javadoc)
-         * @see javax.swing.event.ListSelectionListener#valueChanged(javax.swing.event.ListSelectionEvent)
-         */
         public void valueChanged(ListSelectionEvent lse) {
             System.out.println(DbSNPFilterMenu.class.getName() + ":valueChanged()");
             Object[] objects = dataList.getSelectedValues();

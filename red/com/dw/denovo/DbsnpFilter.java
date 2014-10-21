@@ -5,6 +5,8 @@ package com.dw.denovo;
  */
 
 import com.dw.publicaffairs.DatabaseManager;
+import com.xl.dialog.ProgressDialog;
+import com.xl.dialog.REDProgressBar;
 
 import java.io.BufferedReader;
 import java.io.FileInputStream;
@@ -15,20 +17,20 @@ import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class DbsnpFilter {
+public class DBSNPFilter {
     SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     private DatabaseManager databaseManager;
     private int count = 0;
+    private REDProgressBar progressBar = REDProgressBar.getInstance();
 
-    public DbsnpFilter(DatabaseManager databaseManager) {
+    public DBSNPFilter(DatabaseManager databaseManager) {
         this.databaseManager = databaseManager;
     }
 
     public boolean hasEstablishDbSNPTable(String dbSnpTable) {
         databaseManager.createRefTable(dbSnpTable,
                 "(chrom varchar(15),pos int,index(chrom,pos))");
-        ResultSet rs = databaseManager.query(dbSnpTable, "count(*)",
-                "1 limit 0,100");
+        ResultSet rs = databaseManager.query(dbSnpTable, "count(*)", "1 limit 0,100");
         int number = 0;
         try {
             if (rs.next()) {
@@ -48,9 +50,10 @@ public class DbsnpFilter {
     }
 
     public void loadDbSNPTable(String dbSNPTable, String dbSNPPath) {
+        System.out.println("Start loading dbSNPTable" + " " + df.format(new Date()));
+        progressBar.addProgressListener(new ProgressDialog("Import dbsnp data"));
         try {
-            System.out.println("Start loading dbSNPTable" + " " + df.format(new Date()));
-
+            progressBar.progressUpdated("Start loading dbSNP data from " + dbSNPPath + " to " + dbSNPTable, 0, 0);
             if (!hasEstablishDbSNPTable(dbSNPTable)) {
                 FileInputStream inputStream = new FileInputStream(dbSNPPath);
                 BufferedReader rin = new BufferedReader(new InputStreamReader(
@@ -64,20 +67,21 @@ public class DbsnpFilter {
                     }
                 }
                 rin.close();
+                progressBar.progressUpdated("Importing dbSNP data from " + dbSNPPath + " to " + dbSNPTable, 0, 0);
                 databaseManager.executeSQL("load data local infile '" + dbSNPPath + "' into table " + dbSNPTable + "" +
                         " fields terminated by '\t' lines terminated by '\n' IGNORE " + count + " LINES");
             }
-
-            System.out.println("End loading dbSNPTable" + " " + df.format(new Date()));
 
         } catch (IOException e) {
             // TODO Auto-generated catch block
             System.err.println("Error load file from " + dbSNPPath + " to file stream");
             e.printStackTrace();
         } catch (SQLException e) {
-            System.err.println("Error execute sql clause in " + DbsnpFilter.class.getName() + ":loadDbSNPTable()");
+            System.err.println("Error execute sql clause in " + DBSNPFilter.class.getName() + ":loadDbSNPTable()");
             e.printStackTrace();
         }
+        progressBar.progressComplete("dbsnp_loaded", null);
+        System.out.println("End loading dbSNPTable" + " " + df.format(new Date()));
     }
 
     public void executeDbSNPFilter(String dbSnpTable, String dbSnpResultTable, String refTable) {
@@ -87,7 +91,7 @@ public class DbsnpFilter {
                     "not exists (select chrom from " + dbSnpTable + " where (" + dbSnpTable + ".chrom=" + refTable +
                     ".chrom and " + dbSnpTable + ".pos=" + refTable + ".pos))");
         } catch (SQLException e) {
-            System.err.println("Error execute sql clause in" + DbsnpFilter.class.getName() + ":executeDbSNPFilter()");
+            System.err.println("Error execute sql clause in" + DBSNPFilter.class.getName() + ":executeDbSNPFilter()");
             e.printStackTrace();
         }
         System.out.println("End executing DbSNPFilter..." + df.format(new Date()));

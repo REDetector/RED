@@ -59,6 +59,7 @@ public class LLRFilterMenu extends ProbeFilter {
 
     @Override
     protected void generateProbeList() {
+        progressUpdated("Filtering RNA-editing sites by statistic method (LLR), please wait...", 0, 0);
         LLRFilter lf = new LLRFilter(databaseManager);
         lf.establishLLRResultTable(DatabaseManager.LLR_FILTER_RESULT_TABLE_NAME);
         lf.executeLLRFilter(DatabaseManager.LLR_FILTER_RESULT_TABLE_NAME,
@@ -82,41 +83,31 @@ public class LLRFilterMenu extends ProbeFilter {
         filterFinished(newList);
     }
 
-    /* (non-Javadoc)
-     * @see uk.ac.babraham.SeqMonk.Filters.ProbeFilter#getOptionsPanel()
-     */
+
     @Override
     public JPanel getOptionsPanel() {
         return optionsPanel;
     }
 
-    /* (non-Javadoc)
-     * @see uk.ac.babraham.SeqMonk.Filters.ProbeFilter#hasOptionsPanel()
-     */
+
     @Override
     public boolean hasOptionsPanel() {
         return true;
     }
 
-    /* (non-Javadoc)
-     * @see uk.ac.babraham.SeqMonk.Filters.ProbeFilter#isReady()
-     */
+
     @Override
     public boolean isReady() {
         return stores.length != 0;
     }
 
-    /* (non-Javadoc)
-     * @see uk.ac.babraham.SeqMonk.Filters.ProbeFilter#name()
-     */
+
     @Override
     public String name() {
         return "LLR Filter";
     }
 
-    /* (non-Javadoc)
-     * @see uk.ac.babraham.SeqMonk.Filters.ProbeFilter#listDescription()
-     */
+
     @Override
     protected String listDescription() {
         StringBuilder b = new StringBuilder();
@@ -133,9 +124,7 @@ public class LLRFilterMenu extends ProbeFilter {
         return b.toString();
     }
 
-    /* (non-Javadoc)
-     * @see uk.ac.babraham.SeqMonk.Filters.ProbeFilter#listName()
-     */
+
     @Override
     protected String listName() {
         return "LLR filter";
@@ -156,16 +145,12 @@ public class LLRFilterMenu extends ProbeFilter {
             super(collection);
         }
 
-        /* (non-Javadoc)
-         * @see javax.swing.JComponent#getPreferredSize()
-         */
+
         public Dimension getPreferredSize() {
             return new Dimension(600, 250);
         }
 
-        /* (non-Javadoc)
-         * @see javax.swing.event.ListSelectionListener#valueChanged(javax.swing.event.ListSelectionEvent)
-         */
+
         public void valueChanged(ListSelectionEvent lse) {
             System.out.println(LLRFilterMenu.class.getName() + ":valueChanged()");
             Object[] objects = dataList.getSelectedValues();
@@ -185,7 +170,6 @@ public class LLRFilterMenu extends ProbeFilter {
                     "compare the fit of two models, one of which (the null \n" +
                     "model) is a special case of the other (the alternative \n" +
                     "model).");
-//            description.setLineWrap(true);
             description.setEditable(false);
             choicePanel.add(description);
             return choicePanel;

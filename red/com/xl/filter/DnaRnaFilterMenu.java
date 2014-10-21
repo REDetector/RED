@@ -54,11 +54,12 @@ public class DNARNAFilterMenu extends ProbeFilter {
 
     @Override
     public String description() {
-        return "Filter editing bases by comparing RNA and DNA.";
+        return "Filter RNA-editing sites by comparing RNA and DNA.";
     }
 
     @Override
     protected void generateProbeList() {
+        progressUpdated("Filtering RNA-editing sites by DNA/RNA filter, please wait...", 0, 0);
         DnaRnaFilter dnaRnaFilter = new DnaRnaFilter(databaseManager);
         dnaRnaFilter.establishDnaRnaTable(DatabaseManager.DNA_RNA_FILTER_RESULT_TABLE_NAME);
         dnaRnaFilter.executeDnaRnaFilter(DatabaseManager.DNA_RNA_FILTER_RESULT_TABLE_NAME, DatabaseManager.DNA_VCF_RESULT_TABLE_NAME,

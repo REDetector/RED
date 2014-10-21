@@ -5,6 +5,8 @@ package com.dw.denovo;
  */
 
 import com.dw.publicaffairs.DatabaseManager;
+import com.xl.dialog.ProgressDialog;
+import com.xl.dialog.REDProgressBar;
 
 import java.io.BufferedReader;
 import java.io.FileInputStream;
@@ -18,14 +20,14 @@ import java.util.Date;
 public class RepeatFilter {
     SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     private DatabaseManager databaseManager;
+    private REDProgressBar progressBar = REDProgressBar.getInstance();
 
     public RepeatFilter(DatabaseManager databaseManager) {
         this.databaseManager = databaseManager;
     }
 
     public boolean hasEstablishedRepeatTable(String repeatTable) {
-        databaseManager.createRefTable(repeatTable,
-                "(chrom varchar(30),begin int,end int,type varchar(40),index(chrom,begin,end))");
+        databaseManager.createRefTable(repeatTable, "(chrom varchar(30),begin int,end int,type varchar(40),index(chrom,begin,end))");
         ResultSet rs = databaseManager.query(repeatTable, "count(*)",
                 "1 limit 0,100");
         int number = 0;
@@ -70,12 +72,13 @@ public class RepeatFilter {
 
     public void loadRepeatTable(String repeatTable, String repeatPath) {
         System.out.println("Start loading RepeatTable..." + df.format(new Date()));
-
+        progressBar.addProgressListener(new ProgressDialog("Import repeat region data"));
+        progressBar.progressUpdated("Start loading repeated region data from " + repeatPath + " to " + repeatTable, 0, 0);
         BufferedReader rin = null;
         try {
             if (!hasEstablishedRepeatTable(repeatTable)) {
                 databaseManager.setAutoCommit(false);
-                int ts_count = 0;
+                int count = 0;
                 FileInputStream inputStream = new FileInputStream(repeatPath);
                 rin = new BufferedReader(new InputStreamReader(inputStream));
                 String line;
@@ -83,12 +86,11 @@ public class RepeatFilter {
                 rin.readLine();
                 rin.readLine();
                 while ((line = rin.readLine()) != null) {
-                    // clear head of fa.out
                     String section[] = line.trim().split("\\s+");
+                    progressBar.progressUpdated("Importing " + count + " lines from " + repeatPath + " to " + repeatTable, 0, 0);
                     databaseManager.executeSQL("insert into " + repeatTable + "(chrom,begin,end,type) values('" +
                             section[4] + "','" + section[5] + "','" + section[6] + "','" + section[10] + "')");
-                    ts_count++;
-                    if (ts_count % DatabaseManager.COMMIT_COUNTS_PER_ONCE == 0)
+                    if (++count % DatabaseManager.COMMIT_COUNTS_PER_ONCE == 0)
                         databaseManager.commit();
                 }
                 databaseManager.commit();
@@ -111,6 +113,7 @@ public class RepeatFilter {
                 }
             }
         }
+        progressBar.progressComplete("repeat_loaded", null);
         System.out.println("End loading RepeatTable..." + df.format(new Date()));
     }
 

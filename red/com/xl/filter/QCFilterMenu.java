@@ -64,6 +64,7 @@ public class QCFilterMenu extends ProbeFilter {
 
     @Override
     protected void generateProbeList() {
+        progressUpdated("Filtering RNA-editing sites by quality and coverage, please wait...", 0, 0);
         QCFilter bf = new QCFilter(databaseManager);
         bf.establishQCTable(DatabaseManager.QC_FILTER_RESULT_TABLE_NAME);
         // The first parameter means quality and the second means depth

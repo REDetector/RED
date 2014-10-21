@@ -11,7 +11,6 @@ import com.xl.interfaces.ProgressListener;
 import com.xl.preferences.REDPreferences;
 
 import javax.swing.*;
-import javax.swing.event.ListSelectionListener;
 import java.util.ArrayList;
 
 /**
@@ -20,14 +19,14 @@ import java.util.ArrayList;
  */
 public abstract class ProbeFilter implements Runnable, Cancellable {
 
+    public final String parentTable;
     protected final DataCollection collection;
     protected final ProbeList parentList;
-    protected final String parentTable;
     protected final DatabaseManager databaseManager;
     protected boolean cancel = false;
+    protected DataStore[] stores = new DataStore[0];
     private ArrayList<ProgressListener> listeners = new ArrayList<ProgressListener>();
     private ArrayList<OptionsListener> optionsListeners = new ArrayList<OptionsListener>();
-    protected DataStore[] stores = new DataStore[0];
 
     /**
      * Instantiates a new probe filter.
@@ -51,10 +50,6 @@ public abstract class ProbeFilter implements Runnable, Cancellable {
     }
 
 
-
-    /* (non-Javadoc)
-     * @see uk.ac.babraham.SeqMonk.Dialogs.Cancellable#cancel()
-     */
     public void cancel() {
         cancel = true;
     }
@@ -149,7 +144,7 @@ public abstract class ProbeFilter implements Runnable, Cancellable {
      * @param current The current progress value
      * @param total   The progress value at completion
      */
-    protected void progressUpdated(String message, int current, int total) {
+    public void progressUpdated(String message, int current, int total) {
         for (ProgressListener listener : listeners) {
             listener.progressUpdated(message, current, total);
         }

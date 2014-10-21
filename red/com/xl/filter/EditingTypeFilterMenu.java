@@ -39,11 +39,12 @@ public class EditingTypeFilterMenu extends ProbeFilter {
 
     @Override
     public String description() {
-        return "Filter editing bases by editing base information,such as 'A'->'G','C'->'T',etc.";
+        return "Filter RNA-editing sites by editing type,such as 'A'->'G','C'->'T',etc.";
     }
 
     @Override
     protected void generateProbeList() {
+        progressUpdated("Filtering RNA-editing sites by editing type, please wait...", 0, 0);
         EditingTypeFilter editingTypeFilter = new EditingTypeFilter(databaseManager);
         editingTypeFilter.establishSpecificTable(DatabaseManager.EDITING_TYPE_FILTER_RESULT_TABLE_NAME);
         editingTypeFilter.executeSpecificFilter(DatabaseManager.EDITING_TYPE_FILTER_RESULT_TABLE_NAME, parentTable,

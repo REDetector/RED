@@ -57,11 +57,12 @@ public class SpliceJunctionFilterMenu extends ProbeFilter {
 
     @Override
     public String description() {
-        return "Filter editing bases by sequence edge.";
+        return "Filter editing bases by splice-junction.";
     }
 
     @Override
     protected void generateProbeList() {
+        progressUpdated("Filtering RNA-editing sites by splice-junction, please wait...", 0, 0);
         SpliceJunctionFilter cf = new SpliceJunctionFilter(databaseManager);
         cf.establishSpliceJunctionResultTable(DatabaseManager.SPLICE_JUNCTION_FILTER_RESULT_TABLE_NAME);
         cf.executeSpliceJunctionFilter(DatabaseManager.SPLICE_JUNCTION_FILTER_TABLE_NAME,
@@ -121,12 +122,9 @@ public class SpliceJunctionFilterMenu extends ProbeFilter {
         return b.toString();
     }
 
-    /* (non-Javadoc)
-     * @see uk.ac.babraham.SeqMonk.Filters.ProbeFilter#listName()
-     */
     @Override
     protected String listName() {
-        return "Sequence edge length = " + sequenceEdge;
+        return "Splice-juncion=" + sequenceEdge;
     }
 
     /**
