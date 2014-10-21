@@ -8,7 +8,6 @@ import com.dw.publicaffairs.DatabaseManager;
 import com.xl.datatypes.probes.ProbeBean;
 import com.xl.dialog.ProgressDialog;
 import com.xl.dialog.REDProgressBar;
-import edu.ucla.stat.SOCR.analyses.command.volume.FDR;
 import net.sf.snver.pileup.util.math.FisherExact;
 import rcaller.RCaller;
 import rcaller.RCode;
@@ -68,17 +67,17 @@ public class PValueFilter {
         }
         System.out.println();
         System.out.println("Calling FDR from Jar Package1:");
-        FDR fdr = new FDR(datas, 1);
-        result = fdr.getThresholdedArray();
-        for (double re : result) {
-            System.out.print(re + "\t");
-        }
-        System.out.println();
-        System.out.println("Calling FDR from Jar Package2:");
-        result = fdr.getThresholdedArrayNP();
-        for (double re : result) {
-            System.out.print(re + "\t");
-        }
+//        FDR fdr = new FDR(datas, 1);
+//        result = fdr.getThresholdedArray();
+//        for (double re : result) {
+//            System.out.print(re + "\t");
+//        }
+//        System.out.println();
+//        System.out.println("Calling FDR from Jar Package2:");
+//        result = fdr.getThresholdedArrayNP();
+//        for (double re : result) {
+//            System.out.print(re + "\t");
+//        }
     }
 
     public boolean hasEstablishedDarnedTable(String darnedTable) {
