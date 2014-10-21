@@ -76,7 +76,7 @@ public class DataImportDialog extends JDialog implements ActionListener {
 
         GridBagConstraints c = new GridBagConstraints();
         c.gridy = 0;
-        JLabel rScriptLable = new JLabel(LocationPreferences.R_EXECUTABALE_PATH);
+        JLabel rScriptLable = new JLabel(LocationPreferences.R_SCRIPT_PATH);
         rScriptPath = new JTextField();
         if (rScript != null) {
             rScriptPath.setText(rScript);
@@ -85,7 +85,7 @@ public class DataImportDialog extends JDialog implements ActionListener {
         }
         rScriptPath.setEditable(false);
         JButton rScriptButton = new JButton("Browse");
-        rScriptButton.setActionCommand(LocationPreferences.R_EXECUTABALE_PATH);
+        rScriptButton.setActionCommand(LocationPreferences.R_SCRIPT_PATH);
         rScriptButton.addActionListener(this);
         addItem(c, nonDenovoPanel, rScriptLable, rScriptPath, rScriptButton);
 
@@ -181,7 +181,7 @@ public class DataImportDialog extends JDialog implements ActionListener {
 
         c = new GridBagConstraints();
         c.gridy = 0;
-        JLabel denovoRSciptLable = new JLabel(LocationPreferences.R_EXECUTABALE_PATH);
+        JLabel denovoRSciptLable = new JLabel(LocationPreferences.R_SCRIPT_PATH);
         denovoRScriptPath = new JTextField();
         if (rScript != null) {
             denovoRScriptPath.setText(rScript);
@@ -190,7 +190,7 @@ public class DataImportDialog extends JDialog implements ActionListener {
         }
         denovoRScriptPath.setEditable(false);
         JButton denovoRScriptButton = new JButton("Browse");
-        denovoRScriptButton.setActionCommand(LocationPreferences.R_EXECUTABALE_PATH);
+        denovoRScriptButton.setActionCommand(LocationPreferences.R_SCRIPT_PATH);
         denovoRScriptButton.addActionListener(this);
         addItem(c, denovoPanel, denovoRSciptLable, denovoRScriptPath, denovoRScriptButton);
 
@@ -368,7 +368,7 @@ public class DataImportDialog extends JDialog implements ActionListener {
                 preferences.setDarnedFile(denovoDarnedFileField.getText());
             }
 
-        } else if (action.equals(LocationPreferences.R_EXECUTABALE_PATH)) {
+        } else if (action.equals(LocationPreferences.R_SCRIPT_PATH)) {
             if (currentIndex == NON_DENOVO_INDEX) {
                 getFile(action, rScriptPath);
                 preferences.setRScriptPath(rScriptPath.getText());

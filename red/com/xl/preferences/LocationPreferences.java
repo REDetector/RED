@@ -30,7 +30,7 @@ public class LocationPreferences {
     public static final String REF_SEQ_FILE = "RefSeq File";
     public static final String DBSNP_FILE = "dbSNP File";
     public static final String DARNED_FILE = "DARNED File";
-    public static final String R_EXECUTABALE_PATH = "R Executable Path";
+    public static final String R_SCRIPT_PATH = "R Script Path";
     public static final String CYTOBAND_FILE = "Cytoband File";
 
     public static LocationPreferences locationPreferences = new LocationPreferences();
@@ -392,7 +392,7 @@ public class LocationPreferences {
         properties.setProperty(REF_SEQ_FILE, refSeqFile);
         properties.setProperty(DBSNP_FILE, dbSNPFile);
         properties.setProperty(DARNED_FILE, darnedFile);
-        properties.setProperty(R_EXECUTABALE_PATH, rScriptPath);
+        properties.setProperty(R_SCRIPT_PATH, rScriptPath);
         properties.setProperty(CYTOBAND_FILE, cytobandFile);
         // Save the recently opened file list
         properties.setProperty(RECENTLY_OPENED_FILES_NUMBER, recentlyOpenedFiles.size() + "");
@@ -418,7 +418,7 @@ public class LocationPreferences {
         setRefSeqFile(properties.getProperty(REF_SEQ_FILE));
         setDbSNPFile(properties.getProperty(DBSNP_FILE));
         setDarnedFile(properties.getProperty(DARNED_FILE));
-        setRScriptPath(properties.getProperty(R_EXECUTABALE_PATH));
+        setRScriptPath(properties.getProperty(R_SCRIPT_PATH));
         setCytobandFile(properties.getProperty(CYTOBAND_FILE));
         int recentlyOpenedFilesNumber = Integer.parseInt(properties.getProperty(RECENTLY_OPENED_FILES_NUMBER));
         recentlyOpenedFiles.clear();

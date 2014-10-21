@@ -53,7 +53,7 @@ public class PValueFilter {
         FisherExact fisherExact = new FisherExact(1000);
         System.out.println(fisherExact.getTwoTailedP(233, 21, 32, 12));
 
-        double[] datas = new double[]{0.02, 0.2343, 0.0005, 1.006, 0.4327, 0.2238, 0.43};
+        double[] datas = new double[]{0.02, 0.2343, 0.0005, 0.006, 0.4327, 0.2238, 0.43};
 
         caller = new RCaller();
         caller.setRscriptExecutable("C:\\R\\R-3.1.1\\bin\\Rscript.exe");
@@ -187,20 +187,20 @@ public class PValueFilter {
         }
     }
 
-    public double calPValue(double foundRef, double foundAlt, double knownRef, double knownAlt, RCaller caller, RCode code) {
-        try {
-            double[][] data = new double[][]{{foundRef, foundAlt}, {knownRef, knownAlt}};
-            code.addDoubleMatrix("mydata", data);
-            code.addRCode("result <- fisher.test(mydata)");
-            code.addRCode("mylist <- list(pval = result$p.value)");
-            caller.setRCode(code);
-            caller.runAndReturnResultOnline("mylist");
-            return caller.getParser().getAsDoubleArray("pval")[0];
-        } catch (Exception e) {
-            e.printStackTrace();
-            return 0;
-        }
-    }
+//    public double calPValue(double foundRef, double foundAlt, double knownRef, double knownAlt, RCaller caller, RCode code) {
+//        try {
+//            double[][] data = new double[][]{{foundRef, foundAlt}, {knownRef, knownAlt}};
+//            code.addDoubleMatrix("mydata", data);
+//            code.addRCode("result <- fisher.test(mydata)");
+//            code.addRCode("mylist <- list(pval = result$p.value)");
+//            caller.setRCode(code);
+//            caller.runAndReturnResultOnline("mylist");
+//            return caller.getParser().getAsDoubleArray("pval")[0];
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            return 0;
+//        }
+//    }
 
     private List<PValueInfo> executePValueFilter(String pvalueTable, String pvalueResultTable, String refTable) {
         System.out.println("Start executing PValueFilter..." + df.format(new Date()));
@@ -238,11 +238,15 @@ public class PValueFilter {
         return valueInfos;
     }
 
-    public void executeFDRFilter(String darnedTable, String darnedResultTable, String refTable, String rExecutable) {
+    public void executeFDRFilter(String darnedTable, String darnedResultTable, String refTable, String rScript) {
         System.out.println("Start executing FDRFilter..." + df.format(new Date()));
         try {
             RCaller caller = new RCaller();
-            caller.setRExecutable(rExecutable);
+            if (rScript.trim().toLowerCase().contains("script")) {
+                caller.setRscriptExecutable(rScript);
+            } else {
+                caller.setRExecutable(rScript);
+            }
             RCode code = new RCode();
             List<PValueInfo> pValueList = executePValueFilter(darnedTable, darnedResultTable, refTable);
             double[] pValueArray = new double[pValueList.size()];
@@ -252,8 +256,11 @@ public class PValueFilter {
             code.addDoubleArray("parray", pValueArray);
             code.addRCode("result<-p.adjust(parray,method='fdr',length(parray))");
             caller.setRCode(code);
-            caller.runAndReturnResultOnline("result");
-
+            if (rScript.trim().toLowerCase().contains("script")) {
+                caller.runAndReturnResult("result");
+            } else {
+                caller.runAndReturnResultOnline("result");
+            }
             double[] results = caller.getParser().getAsDoubleArray("result");
             databaseManager.setAutoCommit(false);
             for (int i = 0, len = results.length; i < len; i++) {

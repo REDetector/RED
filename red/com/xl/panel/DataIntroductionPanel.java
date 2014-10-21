@@ -34,7 +34,25 @@ public class DataIntroductionPanel extends JPanel {
         add(label, BorderLayout.CENTER);
         StringBuilder sb = new StringBuilder();
         sb.append("<html>");
-        if (LocationPreferences.RNA_VCF_FILE.equals(dataType)) {
+        if (LocationPreferences.R_SCRIPT_PATH.equals(dataType)) {
+            sb.append("<p style=\"text-align:center\"><b>" + LocationPreferences.R_SCRIPT_PATH + "</b></p>");
+            sb.append("<br>");
+            sb.append("We need <b><i>R executable path</i></b> or <b><I>R script path</i></b> to run statistic method.");
+            sb.append("<br>");
+            sb.append("For <b>Windows</b>,");
+            sb.append("<br>");
+            sb.append("Default R executable path is  'X:/Program Files/R/R-3.x.x/bin/R.exe'");
+            sb.append("<br>");
+            sb.append("Default R script path is  'X:/Program Files/R/R-3.x.x/bin/RScript.exe'");
+            sb.append("<br>");
+            sb.append("For <b>Linux/MAC OSX</b>,");
+            sb.append("<br>");
+            sb.append("Default R executable path is  '/usr/bin/R'");
+            sb.append("<br>");
+            sb.append("Default R script path is  '/usr/bin/RScript'");
+            sb.append("<br>");
+            label.setText(sb.toString());
+        } else if (LocationPreferences.RNA_VCF_FILE.equals(dataType)) {
             sb.append("<p style=\"text-align:center\"><b>" + LocationPreferences.RNA_VCF_FILE + "</b></p>");
             sb.append("<br>");
             sb.append("\tRNA vcf file is the main file to detect RNA editing sites.");
