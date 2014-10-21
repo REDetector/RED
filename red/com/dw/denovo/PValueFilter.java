@@ -6,6 +6,10 @@ package com.dw.denovo;
 
 import com.dw.publicaffairs.DatabaseManager;
 import com.xl.datatypes.probes.ProbeBean;
+import com.xl.dialog.ProgressDialog;
+import com.xl.dialog.REDProgressBar;
+import edu.ucla.stat.SOCR.analyses.command.volume.FDR;
+import net.sf.snver.pileup.util.math.FisherExact;
 import rcaller.RCaller;
 import rcaller.RCode;
 
@@ -25,10 +29,54 @@ public class PValueFilter {
     SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     private DatabaseManager databaseManager;
 
+    private REDProgressBar progressBar = REDProgressBar.getInstance();
+
     public PValueFilter(DatabaseManager databaseManager) {
         this.databaseManager = databaseManager;
     }
 
+    public static void main(String[] args) {
+        RCaller caller = new RCaller();
+//        Globals.detect_current_rscript();
+        caller.setRExecutable("C:\\R\\R-3.1.1\\bin\\R.exe");
+        RCode code = new RCode();
+        double[][] data = new double[][]{{233, 21}, {32, 12}};
+        code.addDoubleMatrix("mydata", data);
+        code.addRCode("result <- fisher.test(mydata)");
+        code.addRCode("mylist <- list(pval = result$p.value)");
+        caller.setRCode(code);
+        caller.runAndReturnResultOnline("mylist");
+        double pValue = caller.getParser().getAsDoubleArray("pval")[0];
+        System.out.println(pValue + "\t");
+
+        FisherExact fisherExact = new FisherExact(1000);
+        System.out.println(fisherExact.getTwoTailedP(233, 21, 32, 12));
+
+        double[] datas = new double[]{0.02, 0.2343, 0.0005, 1.006, 0.4327, 0.2238, 0.43};
+
+        code.addDoubleArray("parray", datas);
+        code.addRCode("result<-p.adjust(parray,method='fdr',length(parray))");
+        caller.setRCode(code);
+        caller.runAndReturnResultOnline("result");
+        double[] result = caller.getParser().getAsDoubleArray("result");
+        System.out.println("Calling FDR from R:");
+        for (double re : result) {
+            System.out.print(re + "\t");
+        }
+        System.out.println();
+        System.out.println("Calling FDR from Jar Package1:");
+        FDR fdr = new FDR(datas, 1);
+        result = fdr.getThresholdedArray();
+        for (double re : result) {
+            System.out.print(re + "\t");
+        }
+        System.out.println();
+        System.out.println("Calling FDR from Jar Package2:");
+        result = fdr.getThresholdedArrayNP();
+        for (double re : result) {
+            System.out.print(re + "\t");
+        }
+    }
 
     public boolean hasEstablishedDarnedTable(String darnedTable) {
         databaseManager.createRefTable(darnedTable, "(chrom varchar(15),coordinate int,strand varchar(5)," +
@@ -54,9 +102,11 @@ public class PValueFilter {
 
     public void loadDarnedTable(String pvalueTable, String pvaluePath) {
         System.out.println("Start loading DarnedTable..." + df.format(new Date()));
+        progressBar.addProgressListener(new ProgressDialog("Import pvalue data"));
+        progressBar.progressUpdated("Start loading pvalue data from " + pvaluePath + " to " + pvalueTable, 0, 0);
         if (!hasEstablishedDarnedTable(pvalueTable)) {
             try {
-                int count_ts = 0;
+                int count = 0;
                 databaseManager.setAutoCommit(false);
                 FileInputStream inputStream = new FileInputStream(pvaluePath);
                 BufferedReader rin = new BufferedReader(new InputStreamReader(
@@ -79,9 +129,9 @@ public class PValueFilter {
                         }
                     }
                     stringBuilder.deleteCharAt(stringBuilder.length() - 1).append(")");
+                    progressBar.progressUpdated("Importing " + count + " lines from " + pvaluePath + " to " + pvalueTable, 0, 0);
                     databaseManager.executeSQL(stringBuilder.toString());
-                    count_ts++;
-                    if (count_ts % DatabaseManager.COMMIT_COUNTS_PER_ONCE == 0)
+                    if (++count % DatabaseManager.COMMIT_COUNTS_PER_ONCE == 0)
                         databaseManager.commit();
                 }
                 databaseManager.commit();
@@ -90,11 +140,14 @@ public class PValueFilter {
                 // TODO Auto-generated catch block
                 System.err.println("Error load file from " + pvaluePath + " to file stream");
                 e.printStackTrace();
+                progressBar.progressExceptionReceived(e);
             } catch (SQLException e) {
                 System.err.println("Error execute sql clause in " + PValueFilter.class.getName() + ":loadDarnedTable()");
                 e.printStackTrace();
+                progressBar.progressExceptionReceived(e);
             }
         }
+        progressBar.progressComplete("pvalue_loaded", null);
         System.out.println("End loading DarnedTable..." + df.format(new Date()));
     }
 
@@ -147,26 +200,27 @@ public class PValueFilter {
         }
     }
 
-    private List<PValueInfo> executePValueFilter(String pvalueTable, String pvalueResultTable, String refTable, RCaller caller, RCode code) {
+    private List<PValueInfo> executePValueFilter(String pvalueTable, String pvalueResultTable, String refTable) {
         System.out.println("Start executing PValueFilter..." + df.format(new Date()));
         List<PValueInfo> valueInfos = getExpectedInfo(pvalueTable, refTable);
-        double known_alt = 0;
-        double known_ref = 0;
+        int knownAlt = 0;
+        int knownRef = 0;
         for (PValueInfo info : valueInfos) {
             if (info.isInDarnedDB) {
-                known_alt += info.altCount;
-                known_ref += info.refCount;
+                knownAlt += info.altCount;
+                knownRef += info.refCount;
             } else {
-                known_ref += info.altCount + info.refCount;
+                knownRef += info.altCount + info.refCount;
             }
         }
-        known_alt /= valueInfos.size();
-        known_ref /= valueInfos.size();
+        knownAlt = (int) Math.ceil(knownAlt / valueInfos.size());
+        knownRef = (int) Math.ceil(knownRef / valueInfos.size());
+        FisherExact fisherExact = new FisherExact(1000);
         DecimalFormat dF = new DecimalFormat("#.###");
         for (PValueInfo pValueInfo : valueInfos) {
             int alt = pValueInfo.altCount;
             int ref = pValueInfo.refCount;
-            double pValue = calPValue(ref, alt, known_ref, known_alt, caller, code);
+            double pValue = fisherExact.getTwoTailedP(ref, alt, knownRef, knownAlt);
             double level = (double) alt / (alt + ref);
             pValueInfo.setPValue(pValue);
             pValueInfo.setLevel(level);
@@ -188,7 +242,7 @@ public class PValueFilter {
             RCaller caller = new RCaller();
             caller.setRExecutable(rExecutable);
             RCode code = new RCode();
-            List<PValueInfo> pValueList = executePValueFilter(darnedTable, darnedResultTable, refTable, caller, code);
+            List<PValueInfo> pValueList = executePValueFilter(darnedTable, darnedResultTable, refTable);
             double[] pValueArray = new double[pValueList.size()];
             for (int i = 0, len = pValueList.size(); i < len; i++) {
                 pValueArray[i] = pValueList.get(i).getPvalue();
@@ -252,22 +306,4 @@ public class PValueFilter {
             return result;
         }
     }
-
-//    public static void main(String[] args) {
-//        RCaller caller = new RCaller();
-////        Globals.detect_current_rscript();
-//        caller.setRExecutable("C:\\R\\R-3.1.1\\bin\\R.exe");
-//        RCode code = new RCode();
-//        double[][] data = new double[][]{{233, 21}, {32, 12}};
-//        for (int i = 0; i < 10; i++) {
-////            code.clear();
-//            code.addDoubleMatrix("mydata", data);
-//            code.addRCode("result <- fisher.test(mydata)");
-//            code.addRCode("mylist <- list(pval = result$p.value)");
-//            caller.setRCode(code);
-//            caller.runAndReturnResultOnline("mylist");
-//            double pValue = caller.getParser().getAsDoubleArray("pval")[0];
-//            System.out.println(pValue + "\t");
-//        }
-//    }
 }
