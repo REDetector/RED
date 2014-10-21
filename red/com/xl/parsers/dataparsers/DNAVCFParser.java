@@ -1,8 +1,27 @@
+/*
+ * RED: RNA Editing Detector
+ *     Copyright (C) <2014>  <Xing Li>
+ *
+ *     RED is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU General Public License as published by
+ *     the Free Software Foundation, either version 3 of the License, or
+ *     (at your option) any later version.
+ *
+ *     RED is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     GNU General Public License for more details.
+ *
+ *     You should have received a copy of the GNU General Public License
+ *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package com.xl.parsers.dataparsers;
 
 import com.dw.publicaffairs.DatabaseManager;
+import com.xl.dialog.ProgressDialog;
+import com.xl.dialog.REDProgressBar;
 import com.xl.exception.REDException;
-import com.xl.preferences.REDPreferences;
 
 import java.io.BufferedReader;
 import java.io.FileInputStream;
@@ -18,37 +37,36 @@ import java.util.Date;
  * VCFParser mainly parsers VCF file and insert all data into database.
  * The class will delete old vcf table and create a new one.
  */
-public class VCFParser {
+public class DNAVCFParser {
     public static final String VCF_CHROM = "CHROM";
     public static final String VCF_POS = "POS";
-//    public static final String VCF_ID = "ID";
+    //    public static final String VCF_ID = "ID";
 //    public static final String VCF_REF = "REF";
 //    public static final String VCF_ALT = "ALT";
 //    public static final String VCF_QUAL = "QUAL";
 //    public static final String VCF_FILTER = "FILTER";
 //    public static final String VCF_INFO = "INFO";
 //    public static final String VCF_FORMAT = "FORMAT";
-
+    REDProgressBar progressBar = REDProgressBar.getInstance();
     //    private int chromColumn = 0;
 //    private int posColumn = 1;
 //    private int idColumn = 2;
-//    private int refColumn = 3;
-    private int altColumn = 4;
-//    private int qualColumn = 5;
+    private int refColumn = 3;
+    //    private int qualColumn = 5;
 //    private int filterColumn = 6;
 //    private int infoColumn = 7;
-
-
+    private int altColumn = 4;
     private DatabaseManager databaseManager;
-
     private SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
-    public VCFParser() {
+    public DNAVCFParser() {
         databaseManager = DatabaseManager.getInstance();
+        progressBar.addProgressListener(new ProgressDialog("Import dna vcf data"));
     }
 
+
     public void parseVCFFile(String vcfTable, String vcfPath) {
-        System.out.println("Start Parsing VCF file..." + " " + df.format(new Date()));
+        System.out.println("Start Parsing DNA VCF file..." + " " + df.format(new Date()));
         BufferedReader bufferedReader = null;
         try {
             int formatColumnIndex = 8;
@@ -84,7 +102,7 @@ public class VCFParser {
                 }
                 String[] sections = line.split("\\t");
 
-                if (sections[altColumn].equals(".")) {
+                if (!sections[altColumn].equals(".") || !sections[refColumn].toUpperCase().equals("A")) {
                     continue;
                 }
 
@@ -110,7 +128,6 @@ public class VCFParser {
                     databaseManager.deleteTable(vcfTable);
                     databaseManager.executeSQL("create table " + vcfTable + "(" + tableBuilders + ")");
                     databaseManager.commit();
-                    REDPreferences.getInstance().setDatabaseTableBuilder(tableBuilders.toString());
                 }
                 // data for import '.' stands for undetected, so we discard it
                 if (calGTIndex) {
@@ -166,7 +183,7 @@ public class VCFParser {
                 // 'valueK','valueK+1','valueK+2',...,'valueN')
                 sqlClause.append(")");
                 databaseManager.executeSQL(sqlClause.toString());
-
+                progressBar.progressUpdated("Import " + lineCount + " lines from " + vcfPath + " to " + vcfTable, 0, 0);
                 if (++lineCount % DatabaseManager.COMMIT_COUNTS_PER_ONCE == 0)
                     databaseManager.commit();
             }
@@ -174,11 +191,14 @@ public class VCFParser {
             databaseManager.setAutoCommit(true);
         } catch (IOException e) {
             e.printStackTrace();
+            progressBar.progressWarningReceived(e);
         } catch (SQLException e) {
-            System.err.println("Error execute sql clause in " + VCFParser.class.getName() + ":run()");
+            System.err.println("Error execute sql clause in " + DNAVCFParser.class.getName() + ":run()");
             e.printStackTrace();
+            progressBar.progressWarningReceived(e);
         } catch (REDException e) {
             e.printStackTrace();
+            progressBar.progressWarningReceived(e);
         } finally {
             if (bufferedReader != null) {
                 try {
@@ -188,7 +208,8 @@ public class VCFParser {
                 }
             }
         }
-        System.out.println("End Parsing VCF file..." + df.format(new Date()));
+        progressBar.progressComplete("dna_vcf_loaded", null);
+        System.out.println("End Parsing DNA VCF file..." + df.format(new Date()));
     }
 
 }
