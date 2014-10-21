@@ -168,14 +168,12 @@ public class REDDataWriter implements Runnable, Cancellable {
     public void run() {
         try {
             // Generate a temp file in the same directory as the final destination
-            tempFile = File
-                    .createTempFile("red", ".temp", file.getParentFile());
+            tempFile = File.createTempFile("red", ".temp", file.getParentFile());
 
             BufferedOutputStream bos;
 
             if (REDPreferences.getInstance().compressOutput()) {
-                bos = new BufferedOutputStream(new GZIPOutputStream(
-                        new FileOutputStream(tempFile), 2048));
+                bos = new BufferedOutputStream(new GZIPOutputStream(new FileOutputStream(tempFile), 2048));
             } else {
                 bos = new BufferedOutputStream(new FileOutputStream(tempFile));
             }
@@ -300,9 +298,7 @@ public class REDDataWriter implements Runnable, Cancellable {
         for (int i = 0; i < dataSets.length; i++) {
             Enumeration<ProgressListener> e = listeners.elements();
             while (e.hasMoreElements()) {
-                e.nextElement().progressUpdated(
-                        "Writing data for " + dataSets[i].name(), i * 10,
-                        dataSets.length * 10);
+                e.nextElement().progressUpdated("Writing data for " + dataSets[i].name(), i * 10, dataSets.length * 10);
             }
 
             if (dataSets[i] instanceof PairedDataSet) {
@@ -321,8 +317,7 @@ public class REDDataWriter implements Runnable, Cancellable {
         return true;
     }
 
-    private boolean printPairedDataSet(PairedDataSet set, PrintStream p,
-                                       int index, int indexTotal) throws IOException {
+    private boolean printPairedDataSet(PairedDataSet set, PrintStream p, int index, int indexTotal) throws IOException {
 
         p.println(set.getTotalReadCount() * 2 + "\t" + set.name());
 
@@ -377,8 +372,7 @@ public class REDDataWriter implements Runnable, Cancellable {
         return true;
     }
 
-    private boolean printStandardDataSet(DataSet set, PrintStream p, int index,
-                                         int indexTotal) throws IOException {
+    private boolean printStandardDataSet(DataSet set, PrintStream p, int index, int indexTotal) throws IOException {
 
         p.println(set.getTotalReadCount() + "\t" + set.name());
 
@@ -401,10 +395,7 @@ public class REDDataWriter implements Runnable, Cancellable {
                 if ((j % (1 + (reads.length / 10))) == 0) {
                     Enumeration<ProgressListener> e2 = listeners.elements();
                     while (e2.hasMoreElements()) {
-                        e2.nextElement().progressUpdated(
-                                "Writing data for " + set.name(),
-                                index * chrs.length + c,
-                                indexTotal * chrs.length);
+                        e2.nextElement().progressUpdated("Writing data for " + set.name(), index * chrs.length + c, indexTotal * chrs.length);
                     }
 
                 }
@@ -418,11 +409,8 @@ public class REDDataWriter implements Runnable, Cancellable {
                     } else if (lastReadCount == 1) {
                         p.println(lastRead.toWrite());
                     } else {
-                        throw new IllegalStateException(
-                                "Shouldn't have zero count ever, read is "
-                                        + reads[j] + " last read is "
-                                        + lastRead + " count is "
-                                        + lastReadCount);
+                        throw new IllegalStateException("Shouldn't have zero count ever, read is " + reads[j] + " last read is " + lastRead + " " +
+                                "count is " + lastReadCount);
                     }
                     lastRead = reads[j];
                     lastReadCount = 1;

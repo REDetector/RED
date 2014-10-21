@@ -935,9 +935,7 @@ public class REDApplication extends JFrame implements ProgressListener,
         } else if (command.equals("annotation_loaded")) {
             System.out.println("annotation_loaded");
         } else {
-            throw new IllegalArgumentException(
-                    "Don't know how to handle progress command '" + command
-                            + "'");
+            throw new IllegalArgumentException("Don't know how to handle progress command '" + command + "'");
         }
     }
 

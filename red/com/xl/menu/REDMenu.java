@@ -370,7 +370,7 @@ public class REDMenu extends JMenuBar implements ActionListener {
         } else if (action.equals(MenuUtils.CONNECT_TO_MYSQL)) {
             new UserPasswordDialog(redApplication);
         } else if (action.equals(MenuUtils.DATABASE)) {
-            new DataInportDialog(redApplication);
+            new DataImportDialog(redApplication);
         } else if (action.equals(MenuUtils.FASTA)) {
             redApplication.importData(new FastaFileParser(redApplication.dataCollection()));
         } else if (action.equals(MenuUtils.RNA)) {

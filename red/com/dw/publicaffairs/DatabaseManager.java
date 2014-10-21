@@ -67,6 +67,20 @@ public class DatabaseManager {
         }
     }
 
+    public int calRowCount(String tableName) {
+        ResultSet rs;
+        int count = 0;
+        try {
+            rs = stmt.executeQuery("select count(*) from " + tableName);
+            if (rs != null && rs.next()) {
+                count = rs.getInt(1);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return count;
+    }
+
     public void createDatabase(String databaseName) {
         try {
             stmt.executeUpdate("create database if not exists " + databaseName);
@@ -146,8 +160,7 @@ public class DatabaseManager {
 
     public ResultSet query(String table, String columns, String whereArgs) {
         try {
-            return stmt.executeQuery("select " + columns + " from " + table
-                    + " where " + whereArgs);
+            return stmt.executeQuery("select " + columns + " from " + table + " where " + whereArgs);
         } catch (SQLException e) {
             System.err.println("Error execute query clause: '" + "select " + columns + " from " + table + "'");
             e.printStackTrace();

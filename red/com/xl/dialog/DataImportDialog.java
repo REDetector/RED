@@ -19,7 +19,7 @@ import java.io.File;
 /**
  * A Dialog to allow the viewing and editing of all SeqMonk preferences.
  */
-public class DataInportDialog extends JDialog implements ActionListener {
+public class DataImportDialog extends JDialog implements ActionListener {
     private final int NON_DENOVO_INDEX = 0;
     private final int DENOVO_INDEX = 1;
     private REDApplication application;
@@ -56,7 +56,7 @@ public class DataInportDialog extends JDialog implements ActionListener {
     /**
      * Instantiates a new edits the preferences dialog.
      */
-    public DataInportDialog(REDApplication application) {
+    public DataImportDialog(REDApplication application) {
         super(application, "Inport Data Into Database...");
         this.application = application;
         setSize(600, 300);
@@ -315,14 +315,12 @@ public class DataInportDialog extends JDialog implements ActionListener {
         chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
         if (chooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
             f.setText(chooser.getSelectedFile().getAbsolutePath().replaceAll("\\\\", "/"));
+            File file = chooser.getSelectedFile();
+            if (!dataType.equals(LocationPreferences.getInstance().getRScriptPath()))
+                LocationPreferences.getInstance().setProjectSaveLocation(file.getParent());
         }
-        File file = chooser.getSelectedFile();
-        LocationPreferences.getInstance().setProjectSaveLocation(file.getParent());
     }
 
-    /* (non-Javadoc)
-     * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
-     */
     public void actionPerformed(ActionEvent ae) {
         String action = ae.getActionCommand();
         int currentIndex = tabs.getSelectedIndex();
@@ -385,18 +383,10 @@ public class DataInportDialog extends JDialog implements ActionListener {
         } else if (action.equals("import")) {
             switch (currentIndex) {
                 case NON_DENOVO_INDEX:
-                    ThreadNonDenovoInput nonDenovoInput = new ThreadNonDenovoInput(application.dataCollection());
-                    nonDenovoInput.addProgressListener(REDApplication.getInstance());
-                    ProgressDialog progressDialog = new ProgressDialog("Importing Data Into Database");
-                    nonDenovoInput.addProgressListener(progressDialog);
-                    new Thread(nonDenovoInput).start();
+                    new Thread(new ThreadNonDenovoInput(application.dataCollection())).start();
                     break;
                 case DENOVO_INDEX:
-                    ThreadDenovoInput denovoInput = new ThreadDenovoInput(application.dataCollection());
-                    denovoInput.addProgressListener(REDApplication.getInstance());
-                    ProgressDialog progressDialog2 = new ProgressDialog("Importing Data Into Database");
-                    denovoInput.addProgressListener(progressDialog2);
-                    new Thread(denovoInput).start();
+                    new Thread(new ThreadDenovoInput(application.dataCollection())).start();
                     break;
             }
             setVisible(false);

@@ -146,11 +146,12 @@ public class ProgressDialog extends JDialog implements Runnable, ProgressListene
      * @param cancellable the cancellable
      */
     private void setup(Component parent, Cancellable cancellable) {
-        setSize(400, 75);
+        setSize(600, 100);
         setLocationRelativeTo(parent);
 
         this.cancellable = cancellable;
         label = new JLabel("", JLabel.CENTER);
+        setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
         getContentPane().setLayout(new BorderLayout());
         getContentPane().add(label, BorderLayout.CENTER);
 
@@ -169,19 +170,14 @@ public class ProgressDialog extends JDialog implements Runnable, ProgressListene
 
     }
 
-    /* (non-Javadoc)
-     * @see java.lang.Runnable#run()
-     */
     public void run() {
         try {
             Thread.sleep(500);
         } catch (InterruptedException e) {
+            e.printStackTrace();
         }
     }
 
-    /* (non-Javadoc)
-     * @see uk.ac.babraham.SeqMonk.DataTypes.ProgressListener#progressUpdated(java.lang.String, int, int)
-     */
     public void progressUpdated(String message, int currentPos, int totalPos) {
         label.setText(message);
         current = currentPos;
@@ -190,9 +186,6 @@ public class ProgressDialog extends JDialog implements Runnable, ProgressListene
 
     }
 
-    /* (non-Javadoc)
-     * @see uk.ac.babraham.SeqMonk.DataTypes.ProgressListener#progressExceptionReceived(java.lang.Exception)
-     */
     public void progressExceptionReceived(Exception e) {
 
         if (reportedException != null && reportedException == e) return;
@@ -201,21 +194,15 @@ public class ProgressDialog extends JDialog implements Runnable, ProgressListene
 
         setVisible(false);
         dispose();
-//		new CrashReporter(e);
+        new CrashReporter(e);
     }
 
 
-    /* (non-Javadoc)
-     * @see uk.ac.babraham.SeqMonk.DataTypes.ProgressListener#progressCancelled()
-     */
     public void progressCancelled() {
         setVisible(false);
         dispose();
     }
 
-    /* (non-Javadoc)
-     * @see uk.ac.babraham.SeqMonk.DataTypes.ProgressListener#progressComplete(java.lang.String, java.lang.Object)
-     */
     public void progressComplete(String command, Object result) {
         setVisible(false);
 
@@ -226,9 +213,6 @@ public class ProgressDialog extends JDialog implements Runnable, ProgressListene
         dispose();
     }
 
-    /* (non-Javadoc)
-     * @see uk.ac.babraham.SeqMonk.DataTypes.ProgressListener#progressWarningReceived(java.lang.Exception)
-     */
     public void progressWarningReceived(Exception e) {
         warningCount++;
         // We just store this warning so we can display all
@@ -239,9 +223,6 @@ public class ProgressDialog extends JDialog implements Runnable, ProgressListene
         }
     }
 
-    /* (non-Javadoc)
-     * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
-     */
     public void actionPerformed(ActionEvent e) {
         // This can only come from the cancel button
         cancellable.cancel();

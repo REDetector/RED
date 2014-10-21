@@ -58,10 +58,7 @@ public class ChromosomeDisplay extends JPanel implements DataChangeListener {
 
     private Probe[] probes = null;
 
-    private DataStore activeStore = null;
-
-    // Values cached from the last update and used when
-    // relating pixels to positions
+    // Values cached from the last update and used when relating pixels to positions
     private int xOffset = 0;
     private int chrWidth = 0;
 
@@ -69,7 +66,7 @@ public class ChromosomeDisplay extends JPanel implements DataChangeListener {
     private boolean isSelecting = false;
     private int selectionStart = 0;
     private int selectionEnd = 0;
-
+    private boolean showProbes;
 
     /**
      * Instantiates a new chromosome display.
@@ -87,8 +84,11 @@ public class ChromosomeDisplay extends JPanel implements DataChangeListener {
         addMouseMotionListener(pl);
     }
 
+    public void setShowProbes(boolean showProbes) {
+        this.showProbes = showProbes;
+    }
+
     public void paintComponent(Graphics g) {
-        super.paintComponent(g);
         xOffset = getWidth() / 80;
         if (xOffset > 10)
             xOffset = 10;
@@ -109,10 +109,15 @@ public class ChromosomeDisplay extends JPanel implements DataChangeListener {
         g.setColor(Color.WHITE);
         g.fillRect(0, 0, getWidth(), getHeight());
 
-        if (activeStore != null && probes != null) {
+        if (showProbes && probes != null) {
 
             g.setColor(ColourScheme.DATA_BACKGROUND_ODD);
             g.fillRoundRect(xOffset, yOffset, scaleX(width, chromosome.getLength(), maxLen), height, 2, 2);
+            // Now go through all the probes figuring out whether they need to be displayed
+
+            for (Probe probe : probes) {
+                drawProbe(probe, g, width, maxLen, yOffset, xOffset, height);
+            }
 
             // Draw a box over the selected region if there is one
             if (showView) {
@@ -120,16 +125,10 @@ public class ChromosomeDisplay extends JPanel implements DataChangeListener {
 
                 // Limit how small the box can get so we can always see it
                 int boxWidth = scaleX(width, viewEnd - viewStart, maxLen);
-                if (boxWidth < 4) {
-                    boxWidth = 4;
+                if (boxWidth < 2) {
+                    boxWidth = 2;
                 }
-                g.fillRoundRect(xOffset + scaleX(width, viewStart, maxLen), 0,
-                        boxWidth, getHeight(), 2, 2);
-            }
-
-            // Now go through all the probes figuring out whether they need to be displayed
-            for (Probe probe : probes) {
-                drawProbe(probe, g, width, maxLen, yOffset, xOffset, height);
+                g.fillRoundRect(xOffset + scaleX(width, viewStart, maxLen), 0, boxWidth, getHeight(), 2, 2);
             }
 
             if (showView) {
@@ -137,28 +136,12 @@ public class ChromosomeDisplay extends JPanel implements DataChangeListener {
             } else {
                 g.setColor(ColourScheme.GENOME_CHROMOSOME);
             }
-            g.drawRoundRect(xOffset, yOffset,
-                    scaleX(width, chromosome.getLength(), maxLen), height, 2, 2);
+            g.drawRoundRect(xOffset, yOffset, scaleX(width, chromosome.getLength(), maxLen), height, 2, 2);
 
-            // Draw a box over the selected region if there is one
-//            if (showView) {
-//                g.setColor(Color.BLACK);
-//
-//                // Limit how small the box can get so we can always see it
-//                int boxWidth = scaleX(width, viewEnd - viewStart, maxLen);
-//                if (boxWidth < 4) {
-//                    boxWidth = 4;
-//                }
-//                g.drawRoundRect(xOffset + scaleX(width, viewStart, maxLen), 0,
-//                        boxWidth, getHeight(), 2, 2);
-//            }
         } else {
 
-            // There's no quantitation to draw so fall back to the old methods
-
             g.setColor(ColourScheme.GENOME_CHROMOSOME);
-            g.fillRoundRect(xOffset, yOffset,
-                    scaleX(width, chromosome.getLength(), maxLen), height, 2, 2);
+            g.fillRoundRect(xOffset, yOffset, scaleX(width, chromosome.getLength(), maxLen), height, 2, 2);
 
             // Draw a box over the selected region if there is one
             if (showView) {
@@ -166,49 +149,28 @@ public class ChromosomeDisplay extends JPanel implements DataChangeListener {
 
                 // Limit how small the box can get so we can always see it
                 int boxWidth = scaleX(width, viewEnd - viewStart, maxLen);
-                if (boxWidth < 4) {
-                    boxWidth = 4;
+                if (boxWidth < 2) {
+                    boxWidth = 2;
                 }
-                g.fillRoundRect(xOffset + scaleX(width, viewStart, maxLen), 1,
-                        boxWidth, getHeight() - 2, 2, 2);
+                g.fillRoundRect(xOffset + scaleX(width, viewStart, maxLen), 1, boxWidth, getHeight() - 2, 2, 2);
             }
         }
 
         // Finally draw a selection if there is one
         if (isSelecting) {
             g.setColor(ColourScheme.DRAGGED_SELECTION);
-            g.fillRect(Math.min(selectionEnd, selectionStart), yOffset,
-                    Math.abs(selectionEnd - selectionStart), height);
+            g.fillRect(Math.min(selectionEnd, selectionStart), yOffset, Math.abs(selectionEnd - selectionStart), height);
         }
 
     }
 
-    private void drawProbe(Probe p, Graphics g, int chrWidth, int maxLength,
-                           int yOffset, int xOffset, int effectiveHeight) {
+    private void drawProbe(Probe p, Graphics g, int chrWidth, int maxLength, int yOffset, int xOffset, int effectiveHeight) {
 
         int wholeXStart = xOffset + scaleX(chrWidth, p.getStart(), maxLength);
         int wholeXEnd = wholeXStart + 1;
         g.setColor(ColourScheme.getBaseColor(p.getAltBase()));
 
-        int yBoxStart;
-        int yBoxEnd;
-
-		/*
-         * If we're drawing reads as well we can only take up half of the track.
-		 * If it's just probes we can take the whole track.
-		 * 
-		 * We also need to consider if we're showing negative values. If we are
-		 * then we draw from the middle of the track up or down
-		 */
-
-
-        yBoxStart = (getHeight() - yOffset)
-                - ((int) (((double) effectiveHeight) * (p.getStart() / chrWidth)));
-        yBoxEnd = effectiveHeight + yOffset;
-
-        g.fillRect(wholeXStart, yBoxStart, (wholeXEnd - wholeXStart), yBoxEnd - yBoxStart);
-
-//        System.out.println("Drawing probe from x=" + wholeXStart + " y=" + yBoxStart + " width=" + (wholeXEnd - wholeXStart) + " height=" + (yBoxEnd - yBoxStart));
+        g.fillRect(wholeXStart, yOffset, (wholeXEnd - wholeXStart), effectiveHeight);
 
     }
 
@@ -276,8 +238,6 @@ public class ChromosomeDisplay extends JPanel implements DataChangeListener {
     }
 
     public void activeDataStoreChanged(DataStore s) {
-        activeStore = s;
-        repaint();
     }
 
     public void activeProbeListChanged(ProbeList l) {

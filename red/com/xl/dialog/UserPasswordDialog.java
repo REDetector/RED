@@ -156,7 +156,7 @@ public class UserPasswordDialog extends JDialog implements ActionListener {
                                         "sites. <br>Click 'ok' to the next step.",
                                 "Connect Successfully",
                                 JOptionPane.INFORMATION_MESSAGE);
-                        new DataInportDialog(application);
+                        new DataImportDialog(application);
                         setVisible(false);
                     } else {
                         JOptionPane.showMessageDialog(application, "<html>Connect Successfully. " +

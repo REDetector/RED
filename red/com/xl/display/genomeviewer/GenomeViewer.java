@@ -1,25 +1,5 @@
 package com.xl.display.genomeviewer;
 
-/**
- * Copyright Copyright 2007-13 Simon Andrews
- *
- *    This file is part of SeqMonk.
- *
- *    SeqMonk is free software; you can redistribute it and/or modify
- *    it under the terms of the GNU General Public License as published by
- *    the Free Software Foundation; either version 3 of the License, or
- *    (at your option) any later version.
- *
- *    SeqMonk is distributed in the hope that it will be useful,
- *    but WITHOUT ANY WARRANTY; without even the implied warranty of
- *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *    GNU General Public License for more details.
- *
- *    You should have received a copy of the GNU General Public License
- *    along with SeqMonk; if not, write to the Free Software
- *    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
- */
-
 import com.xl.datatypes.DataGroup;
 import com.xl.datatypes.DataSet;
 import com.xl.datatypes.DataStore;
@@ -44,11 +24,6 @@ public class GenomeViewer extends JPanel implements DataChangeListener,
         DisplayPreferencesListener {
 
     /**
-     * The chromosomes.
-     */
-    private Chromosome[] chromosomes;
-
-    /**
      * The chromosome displays.
      */
     private ChromosomeDisplay[] chromosomeDisplays;
@@ -58,6 +33,7 @@ public class GenomeViewer extends JPanel implements DataChangeListener,
      */
     private REDApplication application;
 
+
     /**
      * Instantiates a new genome viewer.
      *
@@ -65,14 +41,14 @@ public class GenomeViewer extends JPanel implements DataChangeListener,
      * @param application the application
      */
     public GenomeViewer(Genome genome, REDApplication application) {
-        chromosomes = genome.getAllChromosomes();
+
+        Chromosome[] chromosomes = genome.getAllChromosomes();
         chromosomeDisplays = new ChromosomeDisplay[chromosomes.length];
         this.application = application;
 
         setLayout(new BorderLayout());
 
-        JLabel title = new JLabel("Chromosomes in " + " "
-                + genome.getDisplayName(), JLabel.CENTER);
+        JLabel title = new JLabel("Chromosomes in " + genome.getDisplayName(), JLabel.CENTER);
         add(title, BorderLayout.NORTH);
 
         JPanel chromosomePanel = new JPanel();
@@ -83,6 +59,7 @@ public class GenomeViewer extends JPanel implements DataChangeListener,
         gridBagConstraints.weighty = 1;
         gridBagConstraints.gridy = 0;
         gridBagConstraints.fill = GridBagConstraints.BOTH;
+
         for (int i = 0; i < chromosomes.length; i++) {
             gridBagConstraints.gridy = i;
             gridBagConstraints.gridx = 0;
@@ -91,8 +68,7 @@ public class GenomeViewer extends JPanel implements DataChangeListener,
                     gridBagConstraints);
             gridBagConstraints.gridx = 1;
             gridBagConstraints.weightx = 100;
-            chromosomeDisplays[i] = new ChromosomeDisplay(genome,
-                    chromosomes[i], this);
+            chromosomeDisplays[i] = new ChromosomeDisplay(genome, chromosomes[i], this);
             chromosomePanel.add(chromosomeDisplays[i], gridBagConstraints);
         }
 
@@ -155,79 +131,92 @@ public class GenomeViewer extends JPanel implements DataChangeListener,
      * @param end   the end
      */
     private void setView(Chromosome c, int start, int end) {
-        for (int i = 0; i < chromosomeDisplays.length; i++) {
-            chromosomeDisplays[i].setView(c, start, end);
+        boolean drawProbes;
+        switch (DisplayPreferences.getInstance().getDisplayMode()) {
+            case DisplayPreferences.DISPLAY_MODE_PROBES_ONLY:
+                drawProbes = true;
+                break;
+            case DisplayPreferences.DISPLAY_MODE_READS_ONLY:
+                drawProbes = false;
+                break;
+            case DisplayPreferences.DISPLAY_MODE_READS_AND_PROBES:
+                drawProbes = true;
+                break;
+            default:
+                drawProbes = false;
         }
-
+        for (ChromosomeDisplay display : chromosomeDisplays) {
+            display.setShowProbes(drawProbes);
+            display.setView(c, start, end);
+        }
     }
 
     // For all of the listener events we merely forward these to the
     // individual chromosome views
 
     public void activeDataStoreChanged(DataStore s) {
-        for (int i = 0; i < chromosomeDisplays.length; i++) {
-            chromosomeDisplays[i].activeDataStoreChanged(s);
+        for (ChromosomeDisplay display : chromosomeDisplays) {
+            display.activeDataStoreChanged(s);
         }
     }
 
     public void activeProbeListChanged(ProbeList l) {
-        for (int i = 0; i < chromosomeDisplays.length; i++) {
-            chromosomeDisplays[i].activeProbeListChanged(l);
+        for (ChromosomeDisplay display : chromosomeDisplays) {
+            display.activeProbeListChanged(l);
         }
     }
 
     public void dataGroupAdded(DataGroup g) {
-        for (int i = 0; i < chromosomeDisplays.length; i++) {
-            chromosomeDisplays[i].dataGroupAdded(g);
+        for (ChromosomeDisplay display : chromosomeDisplays) {
+            display.dataGroupAdded(g);
         }
     }
 
     public void dataGroupsRemoved(DataGroup[] g) {
-        for (int i = 0; i < chromosomeDisplays.length; i++) {
-            chromosomeDisplays[i].dataGroupsRemoved(g);
+        for (ChromosomeDisplay display : chromosomeDisplays) {
+            display.dataGroupsRemoved(g);
         }
     }
 
     public void dataGroupRenamed(DataGroup g) {
-        for (int i = 0; i < chromosomeDisplays.length; i++) {
-            chromosomeDisplays[i].dataGroupRenamed(g);
+        for (ChromosomeDisplay display : chromosomeDisplays) {
+            display.dataGroupRenamed(g);
         }
 
     }
 
     public void dataGroupSamplesChanged(DataGroup g) {
-        for (int i = 0; i < chromosomeDisplays.length; i++) {
-            chromosomeDisplays[i].dataGroupSamplesChanged(g);
+        for (ChromosomeDisplay display : chromosomeDisplays) {
+            display.dataGroupSamplesChanged(g);
         }
     }
 
     public void dataSetAdded(DataSet d) {
-        for (int i = 0; i < chromosomeDisplays.length; i++) {
-            chromosomeDisplays[i].dataSetAdded(d);
+        for (ChromosomeDisplay display : chromosomeDisplays) {
+            display.dataSetAdded(d);
         }
     }
 
     public void dataSetsRemoved(DataSet[] d) {
-        for (int i = 0; i < chromosomeDisplays.length; i++) {
-            chromosomeDisplays[i].dataSetsRemoved(d);
+        for (ChromosomeDisplay display : chromosomeDisplays) {
+            display.dataSetsRemoved(d);
         }
     }
 
     public void dataSetRenamed(DataSet d) {
-        for (int i = 0; i < chromosomeDisplays.length; i++) {
-            chromosomeDisplays[i].dataSetRenamed(d);
+        for (ChromosomeDisplay display : chromosomeDisplays) {
+            display.dataSetRenamed(d);
         }
     }
 
     public void probeSetReplaced(ProbeSet p) {
-        for (int i = 0; i < chromosomeDisplays.length; i++) {
-            chromosomeDisplays[i].probeSetReplaced(p);
+        for (ChromosomeDisplay display : chromosomeDisplays) {
+            display.probeSetReplaced(p);
         }
     }
 
     public void displayPreferencesUpdated(DisplayPreferences prefs) {
-        setView(prefs.getCurrentChromosome(), prefs.getCurrentStartLocation(),
-                prefs.getCurrentEndLocation());
+        setView(prefs.getCurrentChromosome(), prefs.getCurrentStartLocation(), prefs.getCurrentEndLocation());
         repaint();
     }
 }

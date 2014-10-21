@@ -210,7 +210,7 @@ public class Connect {
             DatabaseManager.getInstance().distinctTable(
                     DatabaseManager.SPLICE_JUNCTION_FILTER_RESULT_TABLE_NAME);
 
-            DbsnpFilter sf = new DbsnpFilter(manager);
+            DBSNPFilter sf = new DBSNPFilter(manager);
             sf.establishDbSNPResultTable(DatabaseManager.DBSNP_FILTER_RESULT_TABLE_NAME);
             sf.loadDbSNPTable(DatabaseManager.DBSNP_FILTER_TABLE_NAME, args[5]);
             sf.executeDbSNPFilter(DatabaseManager.DBSNP_FILTER_TABLE_NAME,
@@ -294,7 +294,7 @@ public class Connect {
             DatabaseManager.getInstance().distinctTable(
                     DatabaseManager.SPLICE_JUNCTION_FILTER_RESULT_TABLE_NAME);
 
-            DbsnpFilter sf = new DbsnpFilter(manager);
+            DBSNPFilter sf = new DBSNPFilter(manager);
             sf.establishDbSNPResultTable(DatabaseManager.DBSNP_FILTER_RESULT_TABLE_NAME);
             sf.loadDbSNPTable(DatabaseManager.DBSNP_FILTER_TABLE_NAME, args[4]);
             sf.executeDbSNPFilter(DatabaseManager.DBSNP_FILTER_TABLE_NAME,
