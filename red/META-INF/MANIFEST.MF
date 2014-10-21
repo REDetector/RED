@@ -1,3 +1,7 @@
 Manifest-Version: 1.0
+Class-Path: batik-awt-util.jar batik-codec.jar batik-dom.jar batik-ext
+ .jar batik-svggen.jar batik-util.jar batik-xml.jar epsgraphics-1.4.ja
+ r JRI.jar mysql-connector-java-5.1.26-bin.jar RCaller-2.4-SNAPSHOT.ja
+ r sam-1.104.jar SNVerIndividual.jar
 Main-Class: com.xl.main.REDApplication
 
