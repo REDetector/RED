@@ -43,13 +43,9 @@ public class QCFilter {
                 int ref_n = Integer.parseInt(sections[0]);
                 int alt_n = Integer.parseInt(sections[1]);
                 if (ref_n + alt_n >= depth) {
-                    databaseManager.executeSQL("insert into " + basicTable
-                            + " (select * from " + refTable
-                            + " where filter='PASS' and pos=" + probeBean.getPos()
-                            + " and qual >=" + quality + " and chrom='"
-                            + probeBean.getChr() + "')");
-                    count++;
-                    if (count % DatabaseManager.COMMIT_COUNTS_PER_ONCE == 0)
+                    databaseManager.executeSQL("insert into " + basicTable + " (select * from " + refTable + " where filter='PASS' and pos=" + probeBean
+                            .getPos() + " and qual >=" + quality + " and chrom='" + probeBean.getChr() + "')");
+                    if (++count % DatabaseManager.COMMIT_COUNTS_PER_ONCE == 0)
                         databaseManager.commit();
                 }
             }
