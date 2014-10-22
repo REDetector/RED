@@ -59,7 +59,7 @@ public class QCFilterMenu extends ProbeFilter {
 
     @Override
     public String description() {
-        return "Filter editing bases by quality and coverage.";
+        return "Filter RNA-editing bases by quality and depth.";
     }
 
     @Override
@@ -125,7 +125,7 @@ public class QCFilterMenu extends ProbeFilter {
 
     @Override
     protected String listName() {
-        return "Q>=" + qualityInt + " & C>=" + coverageInt;
+        return "Q>=" + qualityInt + " & DP>=" + coverageInt;
     }
 
     /**
