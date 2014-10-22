@@ -180,7 +180,7 @@ public class DbSNPFilterMenu extends ProbeFilter {
             JPanel choicePanel = new JPanel();
             choicePanel.setLayout(new GridBagLayout());
             choicePanel.setBorder(BorderFactory.createEmptyBorder(4, 4, 4, 4));
-            description = new JTextArea("DnSNP Filter will filter out bases which are already \nsnp in DNA level.");
+            description = new JTextArea("DbSNP Filter will filter out bases which are already \nsnp in DNA level.");
             description.setEditable(false);
             choicePanel.add(description);
             return choicePanel;
