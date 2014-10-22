@@ -25,7 +25,7 @@ public class EditingTypeFilter {
         System.out.println("Start executing specific filter..." + df.format(new Date()));
 
         databaseManager.insertClause("insert into " + specificTable + "  select * from " + rnaVcfTable + " where " +
-                "REF='" + ref + "' AND ALT='" + alt + "'");
+                "REF='" + ref + "' AND ALT='" + alt + "' AND GT!='0/0'");
 
         System.out.println("End executing specific filter..." + df.format(new Date()));
     }
