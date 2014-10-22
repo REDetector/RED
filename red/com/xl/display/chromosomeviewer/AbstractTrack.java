@@ -98,7 +98,7 @@ public abstract class AbstractTrack extends JPanel implements MouseListener, Mou
 
     protected void drawBase(Graphics g, char base, int x, int y) {
         g.setColor(ColourScheme.getBaseColor(base));
-        g.drawString(String.valueOf(base), bpToPixel(x), y);
+        g.drawString(String.valueOf(base).toUpperCase(), bpToPixel(x), y);
     }
 
     protected void fillRect(Graphics g, int positionLeft, int positionRight, int yStart, int height) {
