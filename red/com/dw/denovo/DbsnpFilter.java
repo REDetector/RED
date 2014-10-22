@@ -76,9 +76,11 @@ public class DbSNPFilter {
             // TODO Auto-generated catch block
             System.err.println("Error load file from " + dbSNPPath + " to file stream");
             e.printStackTrace();
+            progressBar.progressWarningReceived(e);
         } catch (SQLException e) {
             System.err.println("Error execute sql clause in " + DbSNPFilter.class.getName() + ":loadDbSNPTable()");
             e.printStackTrace();
+            progressBar.progressWarningReceived(e);
         }
         progressBar.progressComplete("dbsnp_loaded", null);
         System.out.println("End loading dbSNPTable" + " " + df.format(new Date()));
