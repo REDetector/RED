@@ -21,7 +21,7 @@ public class SpliceJunctionFilter {
 
     public SpliceJunctionFilter(DatabaseManager databaseManager) {
         this.databaseManager = databaseManager;
-        progressBar.addProgressListener(new ProgressDialog("Import splice-juntion data"));
+
     }
 
     public boolean hasEstablishedSpliceJunctionTable(String spliceJunctionTable) {
@@ -47,6 +47,7 @@ public class SpliceJunctionFilter {
 
     public void loadSpliceJunctionTable(String spliceJunctionTable, String spliceJunctionPath) {
         System.out.println("Start loading SpliceJunctionTable..." + df.format(new Date()));
+        progressBar.addProgressListener(new ProgressDialog("Import splice-juntion data"));
         progressBar.progressUpdated("Start loading splice-junction data from " + spliceJunctionPath + " to " + spliceJunctionTable, 0, 0);
         if (!hasEstablishedSpliceJunctionTable(spliceJunctionTable)) {
             try {
@@ -58,6 +59,7 @@ public class SpliceJunctionFilter {
                 e.printStackTrace();
             }
         }
+        progressBar.progressComplete("splicejunction_loaded", null);
 
         System.out.println("End loading SpliceJunctionTable..." + df.format(new Date()));
     }
