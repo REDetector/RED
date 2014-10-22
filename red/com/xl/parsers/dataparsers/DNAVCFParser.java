@@ -53,8 +53,8 @@ public class DNAVCFParser {
 //    private int idColumn = 2;
     private int refColumn = 3;
     //    private int qualColumn = 5;
-//    private int filterColumn = 6;
-//    private int infoColumn = 7;
+    private int filterColumn = 6;
+    //    private int infoColumn = 7;
     private int altColumn = 4;
     private DatabaseManager databaseManager;
     private SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -103,6 +103,9 @@ public class DNAVCFParser {
                 String[] sections = line.split("\\t");
 
                 if (!sections[altColumn].equals(".") || !sections[refColumn].toUpperCase().equals("A")) {
+                    continue;
+                }
+                if (!sections[filterColumn].toLowerCase().equals("pass")) {
                     continue;
                 }
 
