@@ -268,7 +268,7 @@ public class PValueFilter {
             }
             databaseManager.commit();
             databaseManager.setAutoCommit(true);
-            databaseManager.executeSQL("delete from " + darnedResultTable + " where (pvalue>=0.05)||(fdr>=0.05)");
+            databaseManager.executeSQL("delete from " + darnedResultTable + " where (pvalue > 0.05) || (fdr > 0.05)");
         } catch (Exception e) {
             e.printStackTrace();
         }
