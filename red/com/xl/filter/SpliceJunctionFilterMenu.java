@@ -42,7 +42,7 @@ import java.util.Vector;
  */
 public class SpliceJunctionFilterMenu extends ProbeFilter {
 
-    private int sequenceEdge = 4;
+    private int sequenceEdge = 2;
     private SpliceJunctionFilterOptionPanel optionsPanel = new SpliceJunctionFilterOptionPanel();
 
     /**
