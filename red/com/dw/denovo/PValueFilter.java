@@ -163,8 +163,8 @@ public class PValueFilter {
                         rs.getFloat(6), rs.getString(7), rs.getString(8), rs.getString(9), rs.getString(10), rs.getString(11), rs.getString(12),
                         rs.getString(13));
                 String[] sections = info.getAd().split("/");
-                info.altCount = Integer.parseInt(sections[0]);
-                info.refCount = Integer.parseInt(sections[1]);
+                info.refCount = Integer.parseInt(sections[0]);
+                info.altCount = Integer.parseInt(sections[1]);
                 info.setInDarnedDB(false);
                 valueInfos.add(info);
             }
