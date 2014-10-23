@@ -44,6 +44,8 @@ public class BAMFileParser extends DataParser {
     public void run() {
         System.out.println(BAMFileParser.class.getName() + ":run()");
         minMappingQuality = prefs.minMappingQuality();
+        int lineCount = 0;
+        System.out.println("Start parsing bam/sam file. Total Reads: " + lineCount);
 
         File[] samFiles = getFiles();
         DataSet[] newData = new DataSet[samFiles.length];
@@ -51,15 +53,13 @@ public class BAMFileParser extends DataParser {
         try {
             for (int f = 0; f < samFiles.length; f++) {
 
-                SAMFileReader
-                        .setDefaultValidationStringency(SAMFileReader.ValidationStringency.SILENT);
+                SAMFileReader.setDefaultValidationStringency(SAMFileReader.ValidationStringency.SILENT);
 
                 SAMFileReader inputSam = new SAMFileReader(samFiles[f]);
 
 
                 newData[f] = new DataSet(samFiles[f].getName(), samFiles[f].getCanonicalPath(), prefs.removeDuplicates());
 
-                int lineCount = 0;
                 // Now process the file
 
                 // A flag we can set to skip the next record if we're getting
@@ -120,6 +120,7 @@ public class BAMFileParser extends DataParser {
             progressCancelled();
             return;
         }
+        System.out.println("End parsing bam/sam file. Total Reads: " + lineCount + "\tRemove duplicate: " + prefs.removeDuplicates());
 
         processingComplete(newData);
     }
