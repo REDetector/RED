@@ -388,7 +388,11 @@ public class REDMenu extends JMenuBar implements ActionListener {
         } else if (action.equals(MenuUtils.CHROMOSOME_VIEW)) {
             ImageSaver.saveImage(redApplication.chromosomeViewer());
         } else if (action.equals(MenuUtils.GENOME_VIEW)) {
+            redApplication.genomeViewer().setExportImage(true);
+            redApplication.genomeViewer().displayPreferencesUpdated(DisplayPreferences.getInstance());
             ImageSaver.saveImage(redApplication.genomeViewer());
+            redApplication.genomeViewer().setExportImage(false);
+            redApplication.genomeViewer().displayPreferencesUpdated(DisplayPreferences.getInstance());
         } else if (action.equals(MenuUtils.EXIT)) {
             redApplication.dispose();
             System.exit(0);

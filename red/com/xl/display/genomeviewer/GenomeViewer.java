@@ -28,11 +28,12 @@ public class GenomeViewer extends JPanel implements DataChangeListener,
      */
     private ChromosomeDisplay[] chromosomeDisplays;
 
+
     /**
      * The application.
      */
     private REDApplication application;
-
+    private boolean isExportImage = false;
 
     /**
      * Instantiates a new genome viewer.
@@ -100,6 +101,11 @@ public class GenomeViewer extends JPanel implements DataChangeListener,
         add(new JScrollPane(chromosomePanel), BorderLayout.CENTER);
     }
 
+    public void setExportImage(boolean isExportImage) {
+        this.isExportImage = isExportImage;
+        repaint();
+    }
+
     /**
      * Application.
      *
@@ -118,8 +124,7 @@ public class GenomeViewer extends JPanel implements DataChangeListener,
         if (c == null) {
             application.setStatusText("RED");
         } else {
-            application.setStatusText("Chromosome " + c.getName() + " "
-                    + c.getLength() + "bp");
+            application.setStatusText("Chromosome " + c.getName() + " " + c.getLength() + "bp");
         }
     }
 
@@ -131,6 +136,7 @@ public class GenomeViewer extends JPanel implements DataChangeListener,
      * @param end   the end
      */
     private void setView(Chromosome c, int start, int end) {
+        System.out.println(this.getClass().getName() + ":setView()");
         boolean drawProbes;
         switch (DisplayPreferences.getInstance().getDisplayMode()) {
             case DisplayPreferences.DISPLAY_MODE_PROBES_ONLY:
@@ -147,7 +153,11 @@ public class GenomeViewer extends JPanel implements DataChangeListener,
         }
         for (ChromosomeDisplay display : chromosomeDisplays) {
             display.setShowProbes(drawProbes);
-            display.setView(c, start, end);
+            if (!isExportImage) {
+                display.setView(c, start, end);
+            } else {
+                display.setView(null, start, end);
+            }
         }
     }
 

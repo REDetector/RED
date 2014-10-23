@@ -68,6 +68,7 @@ public class ChromosomeDisplay extends JPanel implements DataChangeListener {
     private int selectionEnd = 0;
     private boolean showProbes;
 
+
     /**
      * Instantiates a new chromosome display.
      *
@@ -194,7 +195,10 @@ public class ChromosomeDisplay extends JPanel implements DataChangeListener {
      * @param end   the end
      */
     protected void setView(Chromosome c, int start, int end) {
-        if (c.equals(chromosome)) {
+        if (c == null) {
+            showView = false;
+            repaint();
+        } else if (c.equals(chromosome)) {
             showView = true;
             viewStart = start;
             viewEnd = end;
