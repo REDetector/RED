@@ -1,9 +1,9 @@
 package com.xl.datatypes;
 
 import com.xl.datatypes.probes.Probe;
-import com.xl.datatypes.sequence.SequenceRead;
+import com.xl.datatypes.sequence.Alignment;
+import com.xl.datatypes.sequence.Location;
 import com.xl.dialog.CrashReporter;
-import com.xl.exception.REDException;
 import com.xl.main.REDApplication;
 import com.xl.preferences.LocationPreferences;
 import com.xl.thread.ThreadSafeIntCounter;
@@ -23,10 +23,6 @@ import java.util.*;
  */
 public class DataSet extends DataStore implements Runnable {
 
-    // I've tried using a HashMap and a linked list instead of
-    // a hashtable and a vector but they proved to be slower and
-    // use more memory.
-
     /**
      * This variable controls how many thread we allow to finalise at the same
      * time.
@@ -35,8 +31,7 @@ public class DataSet extends DataStore implements Runnable {
      * which we're likely to hurt the throughput as we just thrash the
      * underlying disks.
      */
-    private static final int MAX_CONCURRENT_FINALISE = Math.min(Runtime
-            .getRuntime().availableProcessors(), 6);
+    private static final int MAX_CONCURRENT_FINALISE = Math.min(Runtime.getRuntime().availableProcessors(), 6);
     /**
      * We cache the total read count to save having to reload every chromosome
      * just to get the read count
@@ -66,7 +61,8 @@ public class DataSet extends DataStore implements Runnable {
      * The total read length.
      */
     protected ThreadSafeLongCounter totalReadLength = new ThreadSafeLongCounter();
-    private Hashtable<String, ChromosomeDataStore> readData = new Hashtable<String, ChromosomeDataStore>();
+
+    private Map<String, ChromosomeDataStore> readData = new HashMap<String, ChromosomeDataStore>();
 
     /**
      * The original file name - can't be changed by the user
@@ -86,11 +82,6 @@ public class DataSet extends DataStore implements Runnable {
      */
     private ThreadSafeIntCounter chromosomesStillToFinalise;
 
-    // These are cached values used when we're saving excess data to temp files
-    /**
-     * A flag to say if we should remove duplicates when finalising
-     */
-    private boolean removeDuplicates = true;
     /**
      * The last cached chromosome.
      */
@@ -98,9 +89,10 @@ public class DataSet extends DataStore implements Runnable {
     /**
      * The reads last loaded from the cache
      */
-    private SequenceRead[] lastCachedReads = null;
+    private List<Location> lastCachedReads = null;
 
     private HashMap<Probe, ReadIndexOfProbe> probeMap = new HashMap<Probe, ReadIndexOfProbe>();
+
 
     /**
      * Instantiates a new data set.
@@ -109,10 +101,9 @@ public class DataSet extends DataStore implements Runnable {
      * @param fileName The name of the data source - which can't be changed by the
      *                 user
      */
-    public DataSet(String name, String fileName, boolean removeDuplicates) {
+    public DataSet(String name, String fileName) {
         super(name);
         this.fileName = fileName;
-        this.removeDuplicates = removeDuplicates;
 
         // We need to set a shutdown hook to delete any cache files we hold
         Runtime.getRuntime().addShutdownHook(new Thread(this));
@@ -123,10 +114,6 @@ public class DataSet extends DataStore implements Runnable {
         if (collection() != null) {
             collection().dataSetRenamed(this);
         }
-    }
-
-    protected boolean removeDuplicates() {
-        return removeDuplicates;
     }
 
     /**
@@ -147,12 +134,11 @@ public class DataSet extends DataStore implements Runnable {
         // which are sorted by start position. This means that subsequent
         // access will be a lot more efficient.
 
-        Enumeration<String> e = readData.keys();
+        Set<String> chrs = readData.keySet();
 
         chromosomesStillToFinalise = new ThreadSafeIntCounter();
 
-        while (e.hasMoreElements()) {
-
+        for (String chr : chrs) {
             while (chromosomesStillToFinalise.value() >= MAX_CONCURRENT_FINALISE) {
                 try {
                     Thread.sleep(20);
@@ -160,14 +146,11 @@ public class DataSet extends DataStore implements Runnable {
                     ex.printStackTrace();
                 }
             }
-
-            String chr = e.nextElement();
             chromosomesStillToFinalise.increment();
             readData.get(chr).finalise();
         }
 
-        // Now we need to wait around for the last chromosome to finish
-        // processing
+        // Now we need to wait around for the last chromosome to finish processing
 
         while (chromosomesStillToFinalise.value() > 0) {
             try {
@@ -180,42 +163,15 @@ public class DataSet extends DataStore implements Runnable {
         isFinalised = true;
     }
 
-    public void addData(SequenceRead sequence) throws REDException {
-        addData(sequence, false);
-    }
-
-    public void addData(SequenceRead sequence, boolean skipSorting)
-            throws REDException {
-        if (isFinalised) {
-            throw new REDException(
-                    "This data set is finalised.  No more data can be added");
-        }
-        if (readData.containsKey(sequence.getChr())) {
-            readData.get(sequence.getChr()).getSequenceReads().add(sequence);
+    public void addData(Alignment location) {
+        String chr = location.getChr();
+        if (readData.containsKey(chr)) {
+            readData.get(chr).add(location);
         } else {
             ChromosomeDataStore cds = new ChromosomeDataStore();
-            cds.getSequenceReads().add(sequence);
-            readData.put(sequence.getChr(), cds);
+            cds.add(location);
+            readData.put(chr, cds);
         }
-        if (!skipSorting) {
-            needsSorting = true;
-        }
-    }
-
-    /**
-     * Adds more data to this set.
-     *
-     * @param chr         The chromosome to which data will be added
-     * @param start       The start location of this read
-     * @param strand      The strand
-     * @param readBases   The whole read bases
-     * @param qualities   The quality of each base
-     * @param skipSorting If the read need sorting
-     * @throws REDException if this DataSet has been finalised.
-     */
-    public void addData(String chr, int start, Strand strand, byte[] readBases,
-                        byte[] qualities, boolean skipSorting) throws REDException {
-        addData(new SequenceRead(chr, start, strand, readBases, qualities), skipSorting);
     }
 
     /**
@@ -230,15 +186,14 @@ public class DataSet extends DataStore implements Runnable {
 
 
     @Override
-    public SequenceRead[] getReadsForProbe(Probe p) {
+    public List<Location> getReadsForProbe(Probe p) {
         if (!isFinalised)
             finalise();
 
+        List<Location> allReads = getReadsForChromosome(p.getChr());
 
-        SequenceRead[] allReads = getReadsForChromosome(p.getChr());
-
-        if (allReads.length == 0)
-            return new SequenceRead[0];
+        if (allReads.size() == 0)
+            return null;
 
         int startIndex = -1;
         int endIndex = -1;
@@ -247,42 +202,37 @@ public class DataSet extends DataStore implements Runnable {
             startIndex = readIndexOfProbe.getStartIndex();
             endIndex = readIndexOfProbe.getEndIndex();
         } else {
-            for (int i = 0, len = allReads.length; i < len; i++) {
-                if (SequenceReadUtils.overlaps(allReads[i], p)) {
+            for (int i = 0, len = allReads.size(); i < len; i++) {
+                if (SequenceReadUtils.overlaps(allReads.get(i), p)) {
                     startIndex = i;
                     break;
                 }
             }
-            for (int len = allReads.length, i = len; i > 0; i--) {
-                if (SequenceReadUtils.overlaps(allReads[i], p)) {
+            for (int len = allReads.size(), i = len; i > 0; i--) {
+                if (SequenceReadUtils.overlaps(allReads.get(i), p)) {
                     endIndex = i;
                     break;
                 }
             }
             probeMap.put(p, new ReadIndexOfProbe(p, startIndex, endIndex));
         }
-        SequenceRead[] seq = new SequenceRead[endIndex - startIndex];
-        System.arraycopy(allReads, startIndex, seq, 0, endIndex - startIndex);
-        return seq;
+        return new ArrayList<Location>(allReads.subList(startIndex, endIndex));
     }
 
-    public synchronized SequenceRead[] getReadsForChromosome(String c) {
+    public synchronized List<Location> getReadsForChromosome(String c) {
         if (!isFinalised)
             finalise();
 
-        // Check if we need to reset which chromosome was loaded last.
-        // We need to do this even if we're not caching since we use
-        // this to determine whether the cached index we're holding
-        // is valid.
+        // Check if we need to reset which chromosome was loaded last. We need to do this even if we're not caching since we use this to determine whether
+        // the cached index we're holding is valid.
         boolean needToUpdate = lastCachedChromosome == null || lastCachedChromosome.equals(c);
         if (needToUpdate) {
             lastCachedChromosome = c;
         }
         if (readData.containsKey(c)) {
-
             if (readData.get(c).getSequenceReads() != null) {
                 // We're not caching, so just give them back the reads
-                return readData.get(c).getSequenceReads().toArray(new SequenceRead[0]);
+                return readData.get(c).getSequenceReads();
             } else {
                 // This is a serialised dataset.
 
@@ -294,35 +244,28 @@ public class DataSet extends DataStore implements Runnable {
                 REDApplication.getInstance().cacheUsed();
                 // System.err.println("Cache miss for "+this.name()+" requested "+c+" but last cached was "+lastCachedChromosome);
 
-                // If not then we need to reload the data from the
-                // temp file
+                // If not then we need to reload the data from the temp file
                 try {
-                    ObjectInputStream ois = new ObjectInputStream(
-                            new BufferedInputStream(new FileInputStream(
-                                    readData.get(c).tempFile)));
-                    lastCachedReads = (SequenceRead[]) ois.readObject();
+                    ObjectInputStream ois = new ObjectInputStream(new BufferedInputStream(new FileInputStream(readData.get(c).tempFile)));
+                    lastCachedReads = (List<Location>) ois.readObject();
                     ois.close();
                     return lastCachedReads;
                 } catch (Exception e) {
-//                    new CrashReporter(e);
+                    new CrashReporter(e);
                     e.printStackTrace();
                 }
             }
-
-            return readData.get(c).getSequenceReads().toArray(new SequenceRead[0]);
+            return readData.get(c).getSequenceReads();
         } else {
-            return new SequenceRead[0];
+            return new ArrayList<Location>();
         }
     }
 
     public void run() {
         // We need to delete any cache files we're still holding
-
-        Enumeration<String> e = readData.keys();
-        while (e.hasMoreElements()) {
-            String c = e.nextElement();
-
-            File f = readData.get(c).tempFile;
+        Set<String> chrs = readData.keySet();
+        for (String chr : chrs) {
+            File f = readData.get(chr).tempFile;
             if (f != null) {
                 if (!f.delete())
                     System.err.println("Failed to delete cache file " + f.getAbsolutePath());
@@ -336,7 +279,7 @@ public class DataSet extends DataStore implements Runnable {
             finalise();
 
         if (readData.containsKey(chr)) {
-            return getReadsForChromosome(chr).length;
+            return getReadsForChromosome(chr).size();
         } else {
             return 0;
         }
@@ -384,17 +327,25 @@ public class DataSet extends DataStore implements Runnable {
      * The Class ChromosomeDataStore.
      */
     private class ChromosomeDataStore implements Runnable {
-        private List<SequenceRead> sequenceReads = null;
+        private List<Location> sequenceReads = null;
         /**
          * The temp file.
          */
         private File tempFile = null;
 
-        public List<SequenceRead> getSequenceReads() {
+        public ChromosomeDataStore() {
+            sequenceReads = new ArrayList<Location>();
+        }
+
+        public List<Location> getSequenceReads() {
             if (sequenceReads == null) {
-                sequenceReads = new ArrayList<SequenceRead>();
+                sequenceReads = new ArrayList<Location>();
             }
             return sequenceReads;
+        }
+
+        public void add(Location location) {
+            sequenceReads.add(location);
         }
 
         public void finalise() {
@@ -411,20 +362,20 @@ public class DataSet extends DataStore implements Runnable {
                 Collections.sort(sequenceReads);
             }
 
-            if (removeDuplicates()) {
-                List<SequenceRead> seqTmp = new ArrayList<SequenceRead>();
-                SequenceRead lastRead = sequenceReads.get(0);
-                seqTmp.add(sequenceReads.get(0));
-                for (int i = 1; i < sequenceReads.size(); i++) {
-                    SequenceRead temp = sequenceReads.get(i);
-                    if (!SequenceReadUtils.duplicate(lastRead, temp)) {
-                        seqTmp.add(temp);
-                        lastRead = temp;
-                    }
-                }
-                sequenceReads.clear();
-                sequenceReads = seqTmp;
-            }
+//            if (removeDuplicates()) {
+//                List<SequenceRead> seqTmp = new ArrayList<SequenceRead>();
+//                SequenceRead lastRead = sequenceReads.get(0);
+//                seqTmp.add(sequenceReads.get(0));
+//                for (int i = 1; i < sequenceReads.size(); i++) {
+//                    SequenceRead temp = sequenceReads.get(i);
+//                    if (!SequenceReadUtils.duplicate(lastRead, temp)) {
+//                        seqTmp.add(temp);
+//                        lastRead = temp;
+//                    }
+//                }
+//                sequenceReads.clear();
+//                sequenceReads = seqTmp;
+//            }
 
             // We keep local counts here so we only have to do one update of the
             // synchronised counters
@@ -432,22 +383,26 @@ public class DataSet extends DataStore implements Runnable {
             int totalReads = 0;
             int forwardReads = 0;
             int reverseReads = 0;
-            int unknownReads = 0;
 
             int readLengths = 0;
 
             int localMinLength = 0;
             int localMaxLength = 0;
 
-            for (int i = 0; i < sequenceReads.size(); i++) {
+            for (int i = 0, len = sequenceReads.size(); i < len; i++) {
 
                 // This is really slow when lots of datasets are doing this
                 // at the same time. Instead we can keep a local cache of
                 // min max values and just send the extreme values to the
                 // main set at the end.
                 //
-                SequenceRead sequence = sequenceReads.get(i);
-                int sequenceLength = sequence.length();
+                Alignment sequence;
+                if (sequenceReads.get(i) instanceof Alignment) {
+                    sequence = (Alignment) sequenceReads.get(i);
+                } else {
+                    continue;
+                }
+                int sequenceLength = sequence.getEnd() - sequence.getStart() + 1;
                 if (i == 0 || sequenceLength < localMinLength)
                     localMinLength = sequenceLength;
                 if (i == 0 || sequenceLength > localMaxLength)
@@ -462,8 +417,6 @@ public class DataSet extends DataStore implements Runnable {
                     forwardReads++;
                 } else if (sequence.getStrand() == Strand.NEGATIVE) {
                     reverseReads++;
-                } else {
-                    unknownReads++;
                 }
             }
 
@@ -475,7 +428,6 @@ public class DataSet extends DataStore implements Runnable {
             totalReadCount.incrementBy(totalReads);
             forwardReadCount.incrementBy(forwardReads);
             reverseReadCount.incrementBy(reverseReads);
-            unknownReadCount.incrementBy(unknownReads);
 
             totalReadLength.incrementBy(readLengths);
 
@@ -488,9 +440,7 @@ public class DataSet extends DataStore implements Runnable {
                 new CrashReporter(ioe);
                 ioe.printStackTrace();
             }
-
             chromosomesStillToFinalise.decrement();
-
         }
 
     }

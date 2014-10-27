@@ -20,9 +20,12 @@
 package com.xl.datatypes;
 
 import com.xl.datatypes.probes.Probe;
-import com.xl.datatypes.sequence.SequenceRead;
-import com.xl.utils.LocationSorter;
+import com.xl.datatypes.sequence.Location;
 import com.xl.utils.Strand;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * The Class DataGroup is a virtual DataStore which can combine
@@ -123,40 +126,13 @@ public class DataGroup extends DataStore {
         return count;
     }
 
-    public SequenceRead[] getReadsForChromosome(String chr) {
-
-        SequenceRead[][] readsFromAllChrs = new SequenceRead[dataSets.length][];
-
-//		int totalCount = 0;
-
-        for (int i = 0; i < dataSets.length; i++) {
-            readsFromAllChrs[i] = dataSets[i].getReadsForChromosome(chr);
+    public List<Location> getReadsForChromosome(String chr) {
+        List<Location> allReads = new ArrayList<Location>();
+        for (DataSet dataSet : dataSets) {
+            allReads.addAll(dataSet.getReadsForChromosome(chr));
         }
-
-        return LocationSorter.sortLocationSets(readsFromAllChrs);
-
-//		int [] currentIndices = new int[dataSets.length];
-//		
-//		long [] returnedReads = new long[totalCount];
-//		
-//		for (int i=0;i<returnedReads.length;i++) {	
-//			// Add the lowest read to the full set
-//			int lowestIndex = -1;
-//			long lowestValue = 0;
-//			for (int j=0;j<currentIndices.length;j++) {
-//				if (currentIndices[j] == readsFromAllChrs[j].length) continue; // Skip datasets we've already emptied
-//				if (lowestValue == 0 || SequenceRead.compare(readsFromAllChrs[j][currentIndices[j]],lowestValue) < 0) {
-//					lowestIndex = j;
-//					lowestValue = readsFromAllChrs[j][currentIndices[j]];
-//				}
-//			}
-//			
-//			returnedReads[i] = lowestValue;
-//			currentIndices[lowestIndex]++;
-//			
-//		}
-//		
-//		return returnedReads;
+        Collections.sort(allReads);
+        return allReads;
     }
 
     public int getTotalReadCount() {
@@ -206,12 +182,13 @@ public class DataGroup extends DataStore {
         return getTotalReadCount() / 2;
     }
 
-    public SequenceRead[] getReadsForProbe(Probe p) {
-        SequenceRead[][] returnReads = new SequenceRead[dataSets.length][];
-        for (int i = 0; i < dataSets.length; i++) {
-            returnReads[i] = dataSets[i].getReadsForProbe(p);
+    public List<Location> getReadsForProbe(Probe p) {
+        List<Location> allReads = new ArrayList<Location>();
+        for (DataSet dataSet : dataSets) {
+            allReads.addAll(dataSet.getReadsForProbe(p));
         }
-        return LocationSorter.sortLocationSets(returnReads);
+        Collections.sort(allReads);
+        return allReads;
     }
 
 }

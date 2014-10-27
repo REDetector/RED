@@ -2,8 +2,11 @@ package com.xl.datatypes;
 
 import com.xl.datatypes.probes.Probe;
 import com.xl.datatypes.probes.ProbeSet;
-import com.xl.datatypes.sequence.SequenceRead;
+import com.xl.datatypes.sequence.Location;
+import com.xl.parsers.dataparsers.DataParser;
 import com.xl.utils.Strand;
+
+import java.util.List;
 
 /**
  * The Class DataStore is a generic representation of a set
@@ -19,11 +22,6 @@ public abstract class DataStore implements Comparable<DataStore> {
     private String name;
 
     /**
-     * The probe data.
-     */
-    private float[] probeData = null;
-
-    /**
      * The probe data size.
      */
     private int probeDataSize = 0;
@@ -32,6 +30,8 @@ public abstract class DataStore implements Comparable<DataStore> {
      * The collection.
      */
     private DataCollection collection = null;
+    private boolean isStandardChromosomeName = true;
+    private DataParser dataParser = null;
 
     /**
      * Instantiates a new data store.
@@ -60,13 +60,29 @@ public abstract class DataStore implements Comparable<DataStore> {
         return collection;
     }
 
+    public boolean isStandardChromosomeName() {
+        return isStandardChromosomeName;
+    }
+
+    public void setStandardChromosomeName(boolean isStandardChromosomeName) {
+        this.isStandardChromosomeName = isStandardChromosomeName;
+    }
+
+    public DataParser getDataParser() {
+        return dataParser;
+    }
+
+    public void setDataParser(DataParser dataParser) {
+        this.dataParser = dataParser;
+    }
+
     /**
      * Gets the reads for probe.
      *
      * @param p the p
      * @return the reads for probe
      */
-    public abstract SequenceRead[] getReadsForProbe(Probe p);
+    public abstract List<? extends Location> getReadsForProbe(Probe p);
 
     /**
      * Gets the reads for chromosome.
@@ -74,7 +90,7 @@ public abstract class DataStore implements Comparable<DataStore> {
      * @param chr the chromosome
      * @return the reads for chromsome
      */
-    public abstract SequenceRead[] getReadsForChromosome(String chr);
+    public abstract List<? extends Location> getReadsForChromosome(String chr);
 
     /**
      * Gets the read count for chromosome.
@@ -144,7 +160,6 @@ public abstract class DataStore implements Comparable<DataStore> {
      * @param probes the probes
      */
     public void probeSetReplaced(ProbeSet probes) {
-        probeData = null;
         if (probes != null) {
             probeDataSize = probes.size();
         } else {
