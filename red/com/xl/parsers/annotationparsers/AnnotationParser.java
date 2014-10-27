@@ -34,7 +34,7 @@ public abstract class AnnotationParser implements Cancellable, Runnable {
     /**
      * The file.
      */
-    private File[] files = null;
+    private File file = null;
 
 	/*
      * These are the methods any implementing class must provide
@@ -70,7 +70,7 @@ public abstract class AnnotationParser implements Cancellable, Runnable {
      * @return the annotation set
      * @throws Exception the exception
      */
-    abstract protected AnnotationSet[] parseAnnotation(GeneType geneType, File file) throws Exception;
+    abstract protected AnnotationSet parseAnnotation(GeneType geneType, File file) throws Exception;
 
     /**
      * Name.
@@ -122,15 +122,14 @@ public abstract class AnnotationParser implements Cancellable, Runnable {
     /**
      * Parses the file.
      *
-     * @param files the files
+     * @param file the files
      */
-    public void parseFiles(File[] files) {
-        if (requiresFile() && files == null) {
-            progressExceptionReceived(new NullPointerException(
-                    "Files to parse cannot be null"));
+    public void parseFiles(File file) {
+        if (requiresFile() && file == null) {
+            progressExceptionReceived(new NullPointerException("Files to parse cannot be null"));
             return;
         }
-        this.files = files;
+        this.file = file;
         Thread t = new Thread(this);
         t.start();
     }
@@ -142,43 +141,28 @@ public abstract class AnnotationParser implements Cancellable, Runnable {
      */
     public void run() {
         System.out.println(this.getClass().getName() + ":run ()");
-        Vector<AnnotationSet> parsedSets = new Vector<AnnotationSet>();
         try {
             if (requiresFile()) {
-                for (int f = 0; f < files.length; f++) {
-                    GeneType geneType = ParsingUtils.parseGeneType(files[f].getName());
-                    AnnotationSet[] theseSets = parseAnnotation(geneType, files[f]);
-                    if (theseSets == null) {
-                        System.out.println("theseSets == null");
-                        // They cancelled or had an error which will be reported
-                        // through the other methods here
-                        return;
-                    }
-                    for (int s = 0; s < theseSets.length; s++) {
-                        parsedSets.add(theseSets[s]);
-                    }
+                GeneType geneType = ParsingUtils.parseGeneType(file.getName());
+                AnnotationSet set = parseAnnotation(geneType, file);
+                if (set == null) {
+                    System.out.println("theseSets == null");
+                    // They cancelled or had an error which will be reported  through the other methods here
+                    return;
                 }
+                // Here we have to add the new sets to the annotation collection before we say that we're finished otherwise this object can get destroyed
+                // before the program gets chance to execute the operation which adds the sets to the annotation collection.
+                genome.getAnnotationCollection().addAnnotationSet(set);
+                progressComplete("annotation_loaded", set);
             } else {
                 System.err.println("Not require files?");
             }
         } catch (Exception e) {
             e.printStackTrace();
             progressExceptionReceived(e);
-            return;
         }
-        if (!cancel) {
 
-            // Here we have to add the new sets to the annotation collection
-            // before we
-            // say that we're finished otherwise this object can get destroyed
-            // before the
-            // program gets chance to execute the operation which adds the sets
-            // to the
-            // annotation collection.
-            AnnotationSet[] sets = parsedSets.toArray(new AnnotationSet[0]);
-            genome.getAnnotationCollection().addAnnotationSets(sets);
-            progressComplete("annotation_loaded", sets);
-        }
+
     }
 
 	/*

@@ -29,8 +29,6 @@ import com.xl.datatypes.annotation.AnnotationSet;
  * component's <code>addAnnotationCollectionListener<code> method. When
  * the annotationCollection event occurs, that object's appropriate
  * method is invoked.
- *
- * @see AnnotationCollectionEvent
  */
 public interface AnnotationCollectionListener {
 
@@ -40,7 +38,7 @@ public interface AnnotationCollectionListener {
      *
      * @param annotationSets the newly added annotation sets
      */
-    public void annotationSetsAdded(AnnotationSet[] annotationSets);
+    public void annotationSetAdded(AnnotationSet annotationSets);
 
     /**
      * Annotation set removed.

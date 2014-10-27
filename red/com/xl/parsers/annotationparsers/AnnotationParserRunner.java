@@ -21,23 +21,23 @@ public class AnnotationParserRunner {
      * @param parser      the parser
      */
     public static void RunAnnotationParser(REDApplication application, AnnotationParser parser) {
-
-        File[] files = null;
         if (parser.requiresFile()) {
+            File file;
             JFileChooser chooser = new JFileChooser(LocationPreferences.getInstance().getProjectSaveLocation());
-            chooser.setMultiSelectionEnabled(true);
+            chooser.setMultiSelectionEnabled(false);
             chooser.setFileFilter(parser.fileFilter());
 
             int result = chooser.showOpenDialog(application);
             if (result == JFileChooser.CANCEL_OPTION) return;
 
-            files = chooser.getSelectedFiles();
-            LocationPreferences.getInstance().setProjectSaveLocation(files[0].getParent());
+            file = chooser.getSelectedFile();
+            LocationPreferences.getInstance().setProjectSaveLocation(file.getParent());
+            parser.addProgressListener(new ProgressDialog(application, parser.name(), parser));
+            parser.parseFiles(file);
+        } else {
+            System.err.println("Nothing to parse");
         }
 
-        parser.addProgressListener(new ProgressDialog(application, parser.name(), parser));
-
-        parser.parseFiles(files);
     }
 
 }

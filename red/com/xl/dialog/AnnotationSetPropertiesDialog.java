@@ -1,7 +1,7 @@
 package com.xl.dialog;
 
 import com.xl.datatypes.annotation.AnnotationSet;
-import com.xl.display.featureviewer.Feature;
+import com.xl.datatypes.feature.Feature;
 import com.xl.main.REDApplication;
 import com.xl.utils.ChromosomeNameComparator;
 
@@ -69,8 +69,8 @@ public class AnnotationSetPropertiesDialog extends JDialog implements Runnable {
 
     public void run() {
         for (int i = 0, len = chrNames.length; i < len; i++) {
-            Feature[] feature = set.getFeaturesForChr(chrNames[i]);
-            counts[i] = feature.length;
+            java.util.List<Feature> feature = set.getFeaturesForChr(chrNames[i]);
+            counts[i] = feature.size();
             model.fireTableCellUpdated(i, 1);
         }
     }

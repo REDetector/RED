@@ -1,29 +1,9 @@
 package com.xl.dialog;
 
-/**
- * Copyright 2009-13 Simon Andrews
- *
- *    This file is part of SeqMonk.
- *
- *    SeqMonk is free software; you can redistribute it and/or modify
- *    it under the terms of the GNU General Public License as published by
- *    the Free Software Foundation; either version 3 of the License, or
- *    (at your option) any later version.
- *
- *    SeqMonk is distributed in the hope that it will be useful,
- *    but WITHOUT ANY WARRANTY; without even the implied warranty of
- *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *    GNU General Public License for more details.
- *
- *    You should have received a copy of the GNU General Public License
- *    along with SeqMonk; if not, write to the Free Software
- *    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
- */
-
 import com.xl.datatypes.DataGroup;
 import com.xl.datatypes.DataSet;
 import com.xl.datatypes.DataStore;
-import com.xl.datatypes.sequence.SequenceRead;
+import com.xl.datatypes.sequence.Location;
 import com.xl.main.REDApplication;
 import com.xl.utils.Strand;
 
@@ -106,8 +86,7 @@ public class DataStorePropertiesDialog extends JDialog implements
         } else if (dataStore instanceof DataGroup) {
             infoPanel.add(new JLabel("Data Sets"), gbc);
             gbc.gridx = 2;
-            infoPanel.add(new JLabel(((DataGroup) dataStore).dataSets().length
-                    + ""), gbc);
+            infoPanel.add(new JLabel(((DataGroup) dataStore).dataSets().length + ""), gbc);
 
         }
 
@@ -124,8 +103,7 @@ public class DataStorePropertiesDialog extends JDialog implements
 
         infoPanel.add(new JLabel("Forward Count"), gbc);
         gbc.gridx = 2;
-        forwardCount = new JLabel(""
-                + dataStore.getReadCountForStrand(Strand.POSITIVE));
+        forwardCount = new JLabel("" + dataStore.getReadCountForStrand(Strand.POSITIVE));
         infoPanel.add(forwardCount, gbc);
 
         gbc.gridx = 1;
@@ -133,8 +111,7 @@ public class DataStorePropertiesDialog extends JDialog implements
 
         infoPanel.add(new JLabel("Reverse Count"), gbc);
         gbc.gridx = 2;
-        reveseCount = new JLabel(""
-                + dataStore.getReadCountForStrand(Strand.NEGATIVE));
+        reveseCount = new JLabel("" + dataStore.getReadCountForStrand(Strand.NEGATIVE));
         infoPanel.add(reveseCount, gbc);
 
         gbc.gridx = 1;
@@ -142,8 +119,7 @@ public class DataStorePropertiesDialog extends JDialog implements
 
         infoPanel.add(new JLabel("Unknown Count"), gbc);
         gbc.gridx = 2;
-        unknownCount = new JLabel(""
-                + dataStore.getReadCountForStrand(Strand.NONE));
+        unknownCount = new JLabel("" + dataStore.getReadCountForStrand(Strand.NONE));
         infoPanel.add(unknownCount, gbc);
 
         gbc.gridx = 1;
@@ -191,19 +167,20 @@ public class DataStorePropertiesDialog extends JDialog implements
      */
     public void run() {
 
-        String[] chrs = dataStore.collection().genome()
-                .getAllChromosomeNames();
+        String[] chrs = dataStore.collection().genome().getAllChromosomeNames();
         double averageLength = 0;
         int totalCount = 0;
         int shortestLength = 0;
         int longestLength = 0;
 
-        for (int c = 0; c < chrs.length; c++) {
-            SequenceRead[] reads = dataStore.getReadsForChromosome(chrs[c]);
 
-            for (int i = 0; i < reads.length; i++) {
+        for (int c = 0; c < chrs.length; c++) {
+            java.util.List<? extends Location> reads = dataStore.getReadsForChromosome(chrs[c]);
+
+            for (int i = 0; i < reads.size(); i++) {
                 totalCount++;
-                int readLength = reads[i].length();
+                Location location = reads.get(i);
+                int readLength = location.getEnd() - location.getStart();
 
                 if (i == 0) {
                     shortestLength = readLength;
@@ -220,8 +197,7 @@ public class DataStorePropertiesDialog extends JDialog implements
         }
         averageLength /= totalCount;
 
-        this.averageLength.setText("" + (int) averageLength + "bp ("
-                + shortestLength + "-" + longestLength + ")");
+        this.averageLength.setText("" + (int) averageLength + "bp (" + shortestLength + "-" + longestLength + ")");
 
     }
 
