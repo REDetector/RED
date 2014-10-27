@@ -19,27 +19,33 @@
  */
 package com.xl.datawriters;
 
-import com.xl.datatypes.*;
+import com.xl.datatypes.DataCollection;
+import com.xl.datatypes.DataGroup;
+import com.xl.datatypes.DataSet;
+import com.xl.datatypes.DataStore;
 import com.xl.datatypes.annotation.AnnotationSet;
 import com.xl.datatypes.annotation.CoreAnnotationSet;
+import com.xl.datatypes.feature.Feature;
 import com.xl.datatypes.genome.Genome;
 import com.xl.datatypes.genome.GenomeDescriptor;
 import com.xl.datatypes.probes.Probe;
 import com.xl.datatypes.probes.ProbeList;
 import com.xl.datatypes.probes.ProbeSet;
-import com.xl.datatypes.sequence.HiCHitCollection;
-import com.xl.datatypes.sequence.SequenceRead;
-import com.xl.display.featureviewer.Feature;
+import com.xl.datatypes.sequence.Alignment;
+import com.xl.datatypes.sequence.Location;
 import com.xl.exception.REDException;
 import com.xl.interfaces.Cancellable;
 import com.xl.interfaces.ProgressListener;
 import com.xl.main.REDApplication;
 import com.xl.preferences.DisplayPreferences;
 import com.xl.preferences.REDPreferences;
+import com.xl.utils.ChromosomeUtils;
 import com.xl.utils.ParsingUtils;
+import com.xl.utils.Strand;
 
 import java.io.*;
 import java.util.Enumeration;
+import java.util.List;
 import java.util.Vector;
 import java.util.zip.GZIPOutputStream;
 
@@ -287,11 +293,10 @@ public class REDDataWriter implements Runnable, Cancellable {
      * @param p        the p
      * @return false if cancelled, else true
      */
-    private boolean printDataSets(DataSet[] dataSets, PrintStream p)
-            throws IOException {
+    private boolean printDataSets(DataSet[] dataSets, PrintStream p) throws IOException, REDException {
         p.println(ParsingUtils.SAMPLES + "\t" + dataSets.length);
-        for (int i = 0; i < dataSets.length; i++) {
-            p.println(dataSets[i].name() + "\t" + dataSets[i].fileName() + "\t");
+        for (DataSet dataSet : dataSets) {
+            p.println(dataSet.name() + "\t" + dataSet.fileName() + "\t" + dataSet.isStandardChromosomeName());
         }
 
         // We now need to print the data for each data set
@@ -301,133 +306,103 @@ public class REDDataWriter implements Runnable, Cancellable {
                 e.nextElement().progressUpdated("Writing data for " + dataSets[i].name(), i * 10, dataSets.length * 10);
             }
 
-            if (dataSets[i] instanceof PairedDataSet) {
-                boolean returnValue = printPairedDataSet(
-                        (PairedDataSet) dataSets[i], p, i, dataSets.length);
-                if (!returnValue)
-                    return false; // They cancelled
-            } else {
-                boolean returnValue = printStandardDataSet(dataSets[i], p, i,
-                        dataSets.length);
-                if (!returnValue)
-                    return false; // They cancelled
-            }
+            boolean returnValue = printStandardDataSet(dataSets[i], p, i, dataSets.length);
+            if (!returnValue)
+                return false; // They cancelled
         }
 
         return true;
     }
 
-    private boolean printPairedDataSet(PairedDataSet set, PrintStream p, int index, int indexTotal) throws IOException {
+//    private boolean printPairedDataSet(PairedDataSet set, PrintStream p, int index, int indexTotal) throws IOException {
+//
+//        p.println(set.getTotalReadCount() * 2 + "\t" + set.name());
+//
+//        // Go through one chromosome at a time.
+//        String[] chrs = data.genome().getAllChromosomeNames();
+//        for (int c = 0; c < chrs.length; c++) {
+//
+//            HiCHitCollection hiCHits = set.getHiCReadsForChromosome(chrs[c]);
+//
+//            // Work out how many of these reads we're actually going to output
+//            int validReadCount = 0;
+//            for (int c2 = 0; c2 < chrs.length; c2++) {
+//                validReadCount += hiCHits
+//                        .getSourcePositionsForChromosome(chrs[c2]).length;
+//            }
+//
+//            p.println(chrs[c] + "\t" + validReadCount);
+//
+//            for (int c2 = 0; c2 < chrs.length; c2++) {
+//
+//                SequenceRead[] sourceReads = hiCHits
+//                        .getSourcePositionsForChromosome(chrs[c2]);
+//                SequenceRead[] hitReads = hiCHits
+//                        .getHitPositionsForChromosome(chrs[c2]);
+//
+//                for (int j = 0; j < sourceReads.length; j++) {
+//
+//                    if (cancel) {
+//                        cancelled(p);
+//                        return false;
+//                    }
+//
+//                    // TODO: Fix the progress bar
+//                    if ((j % (1 + (validReadCount / 10))) == 0) {
+//                        Enumeration<ProgressListener> e2 = listeners.elements();
+//                        while (e2.hasMoreElements()) {
+//                            e2.nextElement().progressUpdated(
+//                                    "Writing data for " + set.name(),
+//                                    index * chrs.length + c,
+//                                    indexTotal * chrs.length);
+//                        }
+//
+//                    }
+//
+//                    p.println(sourceReads[j].toWrite() + ":" + hitReads[j].toWrite());
+//                }
+//            }
+//        }
+//        // Print a blank line after the last chromosome
+//        p.println("");
+//
+//        return true;
+//    }
 
-        p.println(set.getTotalReadCount() * 2 + "\t" + set.name());
-
-        // Go through one chromosome at a time.
-        String[] chrs = data.genome().getAllChromosomeNames();
-        for (int c = 0; c < chrs.length; c++) {
-
-            HiCHitCollection hiCHits = set.getHiCReadsForChromosome(chrs[c]);
-
-            // Work out how many of these reads we're actually going to output
-            int validReadCount = 0;
-            for (int c2 = 0; c2 < chrs.length; c2++) {
-                validReadCount += hiCHits
-                        .getSourcePositionsForChromosome(chrs[c2]).length;
-            }
-
-            p.println(chrs[c] + "\t" + validReadCount);
-
-            for (int c2 = 0; c2 < chrs.length; c2++) {
-
-                SequenceRead[] sourceReads = hiCHits
-                        .getSourcePositionsForChromosome(chrs[c2]);
-                SequenceRead[] hitReads = hiCHits
-                        .getHitPositionsForChromosome(chrs[c2]);
-
-                for (int j = 0; j < sourceReads.length; j++) {
-
-                    if (cancel) {
-                        cancelled(p);
-                        return false;
-                    }
-
-                    // TODO: Fix the progress bar
-                    if ((j % (1 + (validReadCount / 10))) == 0) {
-                        Enumeration<ProgressListener> e2 = listeners.elements();
-                        while (e2.hasMoreElements()) {
-                            e2.nextElement().progressUpdated(
-                                    "Writing data for " + set.name(),
-                                    index * chrs.length + c,
-                                    indexTotal * chrs.length);
-                        }
-
-                    }
-
-                    p.println(sourceReads[j].toWrite() + ":" + hitReads[j].toWrite());
-                }
-            }
-        }
-        // Print a blank line after the last chromosome
-        p.println("");
-
-        return true;
-    }
-
-    private boolean printStandardDataSet(DataSet set, PrintStream p, int index, int indexTotal) throws IOException {
+    private boolean printStandardDataSet(DataSet set, PrintStream p, int index, int indexTotal) throws IOException, REDException {
 
         p.println(set.getTotalReadCount() + "\t" + set.name());
 
         // Go through one chromosome at a time.
         String[] chrs = data.genome().getAllChromosomeNames();
         for (int c = 0; c < chrs.length; c++) {
-            SequenceRead[] reads = set.getReadsForChromosome(chrs[c]);
-            p.println(chrs[c] + "\t" + reads.length);
+            if (!set.isStandardChromosomeName()) {
+                chrs[c] = ChromosomeUtils.getAliasChromosomeName(chrs[c]);
+            }
+            List<Location> reads = set.getReadsForChromosome(chrs[c]);
+            p.println(chrs[c] + "\t" + reads.size());
 
-            SequenceRead lastRead = null;
-            int lastReadCount = 0;
-
-            for (int j = 0; j < reads.length; j++) {
+            for (int j = 0, len = reads.size(); j < len; j++) {
 
                 if (cancel) {
                     cancelled(p);
                     return false;
                 }
 
-                if ((j % (1 + (reads.length / 10))) == 0) {
+                if ((j % (1 + (len / 10))) == 0) {
                     Enumeration<ProgressListener> e2 = listeners.elements();
                     while (e2.hasMoreElements()) {
                         e2.nextElement().progressUpdated("Writing data for " + set.name(), index * chrs.length + c, indexTotal * chrs.length);
                     }
-
                 }
 
-                if (lastReadCount == 0 || reads[j] == lastRead) {
-                    lastRead = reads[j];
-                    ++lastReadCount;
-                } else {
-                    if (lastReadCount > 1) {
-                        p.println(lastRead.toWrite() + "\t" + lastReadCount);
-                    } else if (lastReadCount == 1) {
-                        p.println(lastRead.toWrite());
-                    } else {
-                        throw new IllegalStateException("Shouldn't have zero count ever, read is " + reads[j] + " last read is " + lastRead + " " +
-                                "count is " + lastReadCount);
-                    }
-                    lastRead = reads[j];
-                    lastReadCount = 1;
+                Location sequence = reads.get(j);
+                if (!(sequence instanceof Alignment)) {
+                    throw new REDException("Data didn't initiated with Alignment");
                 }
+                p.println(sequence.toString());
             }
-            if (lastReadCount > 1) {
-                p.println(lastRead.toWrite() + "\t" + lastReadCount);
-            }
-
-            // If there are no reads on a chromosome then this value could be
-            // zero
-            else if (lastReadCount == 1) {
-                p.println(lastRead.toWrite());
-            }
-
         }
-        // Print a blank line after the last chromosome
         p.println("");
 
         return true;
@@ -440,8 +415,7 @@ public class REDDataWriter implements Runnable, Cancellable {
      * @param dataGroups the data groups
      * @param p          the p
      */
-    private void printDataGroups(DataSet[] dataSets, DataGroup[] dataGroups,
-                                 PrintStream p) {
+    private void printDataGroups(DataSet[] dataSets, DataGroup[] dataGroups, PrintStream p) {
 
         p.println(ParsingUtils.DATA_GROUPS + "\t" + dataGroups.length);
         for (int i = 0; i < dataGroups.length; i++) {
@@ -476,28 +450,29 @@ public class REDDataWriter implements Runnable, Cancellable {
      */
     private boolean printAnnotationSet(AnnotationSet a, PrintStream p)
             throws IOException {
-        Feature[] features = a.getAllFeatures();
-        p.println(ParsingUtils.ANNOTATION + "\t" + a.name() + "\t" + features.length);
+        List<Feature> features = a.getAllFeatures();
+        p.println(ParsingUtils.ANNOTATION + "\t" + a.name() + "\t" + features.size());
 
         Enumeration<ProgressListener> e = listeners.elements();
         while (e.hasMoreElements()) {
-            e.nextElement().progressUpdated(
-                    "Writing annotation set " + a.name(), 0, 1);
+            e.nextElement().progressUpdated("Writing annotation set " + a.name(), 0, 1);
         }
 
-        for (int f = 0; f < features.length; f++) {
+        for (Feature feature : features) {
 
             if (cancel) {
                 cancelled(p);
                 return false;
             }
-
-            p.println(features[f].toString());
-
+            String name = feature.getName();
+            String chr = feature.getChr();
+            String strand = Strand.parseStrand(feature.getStrand());
+            String aliasName = feature.getAliasName();
+            List<Location> allLocations = feature.getAllLocations();
+            p.println(name + "\t" + chr + "\t" + strand + "\t" + aliasName);
+            p.println(allLocations);
         }
-
         return true;
-
     }
 
     /**
