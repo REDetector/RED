@@ -12,6 +12,7 @@ public class ChromosomeUtils {
         }
         chrNameSets.add("chrX");
         chrNameSets.add("chrY");
+        chrNameSets.add("chrM");
     }
 
     public static boolean isStandardChromosomeName(String chr) {
