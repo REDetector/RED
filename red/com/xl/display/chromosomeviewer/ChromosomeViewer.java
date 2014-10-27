@@ -143,6 +143,7 @@ public class ChromosomeViewer extends JPanel implements DataChangeListener, Disp
                 sequenceScrollPane.setVisible(false);
             } else {
                 gridBagConstraints.weighty = 1;
+                DisplayPreferences.getInstance().addListener((ChromosomeDataTrack) abstractTrack);
                 JScrollPane scrollCDT = new JScrollPane(abstractTrack);
                 scrollCDT.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
                 scrollCDT.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);

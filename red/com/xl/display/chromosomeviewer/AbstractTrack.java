@@ -128,6 +128,12 @@ public abstract class AbstractTrack extends JPanel implements MouseListener, Mou
         g.drawRect(xStart, yStart, width, height);
     }
 
+    protected void drawLine(Graphics g, int x1, int x2, int y1, int y2) {
+        int xStart = bpToPixel(x1);
+        int xEnd = bpToPixel(x2);
+        g.drawLine(xStart, y1, xEnd, y2);
+    }
+
     /**
      * Pixel to bp.
      *
