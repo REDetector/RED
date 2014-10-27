@@ -19,8 +19,8 @@
  */
 package com.xl.parsers.dataparsers;
 
-import com.xl.datatypes.DataCollection;
 import com.xl.datatypes.DataSet;
+import com.xl.datatypes.sequence.Location;
 import com.xl.exception.REDException;
 import com.xl.interfaces.Cancellable;
 import com.xl.interfaces.ProgressListener;
@@ -30,6 +30,7 @@ import javax.swing.filechooser.FileFilter;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 /**
  * Represents a generic data parser for read data.  Actual data parsers for
@@ -37,18 +38,14 @@ import java.util.Iterator;
  */
 public abstract class DataParser implements Runnable, Cancellable {
 
-    protected final DataCollection collection;
     protected final ArrayList<ProgressListener> listeners;
     protected boolean cancel = false;
-    private File[] files;
+    private File file;
 
     /**
      * Instantiates a new data parser.
-     *
-     * @param collection The dataCollection to which the new data will be added
      */
-    public DataParser(DataCollection collection) {
-        this.collection = collection;
+    public DataParser() {
         listeners = new ArrayList<ProgressListener>();
     }
 
@@ -96,22 +93,24 @@ public abstract class DataParser implements Runnable, Cancellable {
      */
     abstract public String getDescription();
 
+    abstract public List<? extends Location> query(String chr, int start, int end);
+
     /**
      * Gets the list of files to be parsed
      *
      * @return A list of files to parse
      */
-    protected File[] getFiles() {
-        return files;
+    protected File getFile() {
+        return file;
     }
 
     /**
      * Sets the files which are to be parsed
      *
-     * @param files A list of files to parse
+     * @param file A list of files to parse
      */
-    public void setFiles(File[] files) {
-        this.files = files;
+    public void setFile(File file) {
+        this.file = file;
     }
 
     /**
@@ -132,15 +131,6 @@ public abstract class DataParser implements Runnable, Cancellable {
                 return "All Files";
             }
         };
-    }
-
-    /**
-     * Data collection.
-     *
-     * @return The data collection
-     */
-    public DataCollection dataCollection() {
-        return collection;
     }
 
     /* (non-Javadoc)

@@ -111,8 +111,7 @@ public class DataCollection {
             e.nextElement().probeSetReplaced(probeSet);
         }
 
-        // We need to tell all of the DataSets and Groups
-        // about the new probe set
+        // We need to tell all of the DataSets and Groups about the new probe set
         DataStore[] stores = getAllDataStores();
         for (int i = 0; i < stores.length; i++) {
             stores[i].probeSetReplaced(newProbeSet);

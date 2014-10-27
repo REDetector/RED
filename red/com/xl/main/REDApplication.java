@@ -57,9 +57,7 @@ import java.util.Vector;
 /**
  * @author Xing Li
  */
-public class REDApplication extends JFrame implements ProgressListener,
-        DataChangeListener, ProbeSetChangeListener,
-        AnnotationCollectionListener {
+public class REDApplication extends JFrame implements ProgressListener, DataChangeListener, ProbeSetChangeListener, AnnotationCollectionListener {
 
     /**
      * The version of RED
@@ -487,7 +485,7 @@ public class REDApplication extends JFrame implements ProgressListener,
             }
 
             LocationPreferences.getInstance().setProjectSaveLocation(chooser.getSelectedFile().getParent());
-            parser.setFiles(chooser.getSelectedFiles());
+            parser.setFile(chooser.getSelectedFile());
         }
 
         // See if we need to display any options
@@ -817,10 +815,9 @@ public class REDApplication extends JFrame implements ProgressListener,
     }
 
     @Override
-    public void annotationSetsAdded(AnnotationSet[] annotationSets) {
+    public void annotationSetAdded(AnnotationSet annotationSets) {
         // If these annotation sets contains 3 or fewer feature types then add
         // them immediately to the annotation tracks
-
         changesWereMade();
     }
 

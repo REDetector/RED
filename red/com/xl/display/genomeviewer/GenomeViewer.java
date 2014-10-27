@@ -28,7 +28,6 @@ public class GenomeViewer extends JPanel implements DataChangeListener,
      */
     private ChromosomeDisplay[] chromosomeDisplays;
 
-
     /**
      * The application.
      */
@@ -136,7 +135,6 @@ public class GenomeViewer extends JPanel implements DataChangeListener,
      * @param end   the end
      */
     private void setView(Chromosome c, int start, int end) {
-        System.out.println(this.getClass().getName() + ":setView()");
         boolean drawProbes;
         switch (DisplayPreferences.getInstance().getDisplayMode()) {
             case DisplayPreferences.DISPLAY_MODE_PROBES_ONLY:

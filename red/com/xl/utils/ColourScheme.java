@@ -93,11 +93,11 @@ public class ColourScheme {
     /**
      * The background to odd numbered data tracks
      */
-    public static final Color DATA_BACKGROUND_ODD = new Color(230, 185, 181);
+    public static final Color DATA_BACKGROUND_ODD = new Color(230, 196, 192);
     /**
      * The background to even numbered data tracks
      */
-    public static final Color DATA_BACKGROUND_EVEN = new Color(195, 200, 255);
+    public static final Color DATA_BACKGROUND_EVEN = new Color(204, 207, 255);
     /**
      * Shown with block status when the chromosome viewer length is larger than screen pixel.
      */
@@ -123,6 +123,8 @@ public class ColourScheme {
      * The selected region in the genome view
      */
     public static final Color GENOME_SELECTED = new Color(220, 0, 0);
+
+    public static final Color READ_INTEVAL = Color.GRAY;
 
     public static Color getBaseColor(char c) {
         if (c == 'a' || c == 'A') {

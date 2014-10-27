@@ -294,15 +294,9 @@ public class DataCollectionTreeModel implements TreeModel, DataChangeListener, A
     public void probeSetReplaced(ProbeSet probes) {
     }
 
-    public void annotationSetsAdded(AnnotationSet[] annotationSets) {
-
-        int[] indices = new int[annotationSets.length];
-        for (int i = 0; i < annotationSets.length; i++) {
-            indices[i] = getIndexOfChild(annotationNode, annotationSets[i]);
-        }
-
-
-        TreeModelEvent me = new TreeModelEvent(annotationSets, getPathToRoot(annotationNode), indices, annotationSets);
+    public void annotationSetAdded(AnnotationSet annotationSets) {
+        TreeModelEvent me = new TreeModelEvent(annotationSets, getPathToRoot(annotationNode), new int[]{getIndexOfChild(annotationNode, annotationSets)},
+                new AnnotationSet[]{annotationSets});
 
         Enumeration<TreeModelListener> e = listeners.elements();
         while (e.hasMoreElements()) {

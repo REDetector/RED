@@ -86,14 +86,10 @@ public class REDInfoPanel extends JPanel implements Runnable, ActionListener {
 
         // We prepare a couple of buttons for optional later use
 
-        JButton setTempDirButton = this
-                .addNewButton(InfoPanelUtils.CACHE_DIRECTORY_SET);
-        JButton removeStaleFilesButton = this
-                .addNewButton(InfoPanelUtils.CACHE_OLD_FILES_DETELE);
-        JButton setGenomesFolderButton = this
-                .addNewButton(InfoPanelUtils.GENOMES_CUSTOM_FOLDER_SET);
-        JButton updateGenomesButton = this
-                .addNewButton(InfoPanelUtils.GENOMES_UPDATE);
+        JButton setTempDirButton = this.addNewButton(InfoPanelUtils.CACHE_DIRECTORY_SET);
+        JButton removeStaleFilesButton = this.addNewButton(InfoPanelUtils.CACHE_OLD_FILES_DETELE);
+        JButton setGenomesFolderButton = this.addNewButton(InfoPanelUtils.GENOMES_CUSTOM_FOLDER_SET);
+        JButton updateGenomesButton = this.addNewButton(InfoPanelUtils.GENOMES_UPDATE);
 
         setLayout(new GridBagLayout());
         GridBagConstraints gridBagConstraints = new GridBagConstraints();

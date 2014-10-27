@@ -4,6 +4,7 @@ import com.xl.datatypes.DataCollection;
 import com.xl.datatypes.DataSet;
 import com.xl.datatypes.genome.Genome;
 import com.xl.datatypes.genome.GenomeDescriptor;
+import com.xl.datatypes.sequence.Location;
 import com.xl.interfaces.ProgressListener;
 import com.xl.main.REDApplication;
 import com.xl.preferences.LocationPreferences;
@@ -15,6 +16,7 @@ import com.xl.utils.namemanager.SuffixUtils;
 import javax.swing.*;
 import java.io.*;
 import java.util.Iterator;
+import java.util.List;
 
 public class FastaFileParser extends DataParser {
     private Genome genome;
@@ -22,7 +24,6 @@ public class FastaFileParser extends DataParser {
 
 
     public FastaFileParser(DataCollection collection) {
-        super(collection);
         genome = collection.genome();
     }
 
@@ -72,7 +73,6 @@ public class FastaFileParser extends DataParser {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
     }
 
     @Override
@@ -100,6 +100,11 @@ public class FastaFileParser extends DataParser {
         return "Import the fasta data including original reference sequence";
     }
 
+    @Override
+    public List<? extends Location> query(String chr, int start, int end) {
+        throw new UnsupportedOperationException();
+    }
+
     /**
      * Read an entire fasta file, which might be local or remote and might be gzipped.
      */
@@ -107,42 +112,40 @@ public class FastaFileParser extends DataParser {
         BufferedReader br;
         FileOutputStream fos = null;
         String currentChr = null;
-        File[] fastaFiles = getFiles();
+        File fastaFile = getFile();
         String nextLine;
-        for (File fastaFile : fastaFiles) {
-            br = ParsingUtils.openBufferedReader(fastaFile);
-            int line = 0;
-            int chr = 0;
-            while ((nextLine = br.readLine()) != null) {
-                if (nextLine.startsWith(">")) {
-                    if (fos != null) {
-                        fos.flush();
-                        fos.close();
-                        System.gc();
-                    }
-                    currentChr = skipToNextChr(br, nextLine);
-                    if (currentChr != null) {
-                        chr++;
-                        line = 0;
-                        String currentChrPath = fastaCacheDirectory + File.separator + currentChr + SuffixUtils.CACHE_FASTA;
-                        fos = new FileOutputStream(currentChrPath, true);
-                    }
-                } else {
-                    if (fos != null) {
-                        fos.write(nextLine.trim().getBytes());
-                        if (++line % 100000 == 0) {
-                            progressUpdated("Read " + line + " lines from " + currentChr + ", " + genome.getDisplayName(), chr, 24);
-                        }
+        br = ParsingUtils.openBufferedReader(fastaFile);
+        int line = 0;
+        int chr = 0;
+        while ((nextLine = br.readLine()) != null) {
+            if (nextLine.startsWith(">")) {
+                if (fos != null) {
+                    fos.flush();
+                    fos.close();
+                    System.gc();
+                }
+                currentChr = skipToNextChr(br, nextLine);
+                if (currentChr != null) {
+                    chr++;
+                    line = 0;
+                    String currentChrPath = fastaCacheDirectory + File.separator + currentChr + SuffixUtils.CACHE_FASTA;
+                    fos = new FileOutputStream(currentChrPath, true);
+                }
+            } else {
+                if (fos != null) {
+                    fos.write(nextLine.trim().getBytes());
+                    if (++line % 100000 == 0) {
+                        progressUpdated("Read " + line + " lines from " + currentChr + ", " + genome.getDisplayName(), chr, 24);
                     }
                 }
             }
-            if (fos != null) {
-                fos.flush();
-                fos.close();
-                System.gc();
-            }
-            br.close();
         }
+        if (fos != null) {
+            fos.flush();
+            fos.close();
+            System.gc();
+        }
+        br.close();
         FileWriter fw = new FileWriter(fastaCacheDirectory + File.separator + SuffixUtils.CACHE_FASTA_COMPLETE);
         fw.write(REDApplication.VERSION);
         fw.close();
