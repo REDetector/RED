@@ -3,17 +3,17 @@ package com.xl.parsers.dataparsers;
 import com.xl.datatypes.DataGroup;
 import com.xl.datatypes.DataSet;
 import com.xl.datatypes.DataStore;
-import com.xl.datatypes.PairedDataSet;
 import com.xl.datatypes.annotation.AnnotationSet;
+import com.xl.datatypes.feature.Feature;
+import com.xl.datatypes.feature.FeatureLocation;
 import com.xl.datatypes.genome.GenomeDescriptor;
 import com.xl.datatypes.probes.Probe;
 import com.xl.datatypes.probes.ProbeList;
 import com.xl.datatypes.probes.ProbeSet;
+import com.xl.datatypes.sequence.Alignment;
 import com.xl.datatypes.sequence.Location;
-import com.xl.datatypes.sequence.SequenceRead;
 import com.xl.dialog.CrashReporter;
 import com.xl.dialog.ProgressDialog;
-import com.xl.display.featureviewer.Feature;
 import com.xl.exception.REDException;
 import com.xl.interfaces.ProgressListener;
 import com.xl.main.REDApplication;
@@ -26,7 +26,9 @@ import com.xl.utils.namemanager.GenomeUtils;
 import net.xl.genomes.GenomeDownloader;
 
 import java.io.*;
+import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.List;
 import java.util.Vector;
 import java.util.zip.GZIPInputStream;
 
@@ -112,8 +114,6 @@ public class REDParser implements Runnable, ProgressListener {
             String line;
             String[] sections;
 
-            Vector<AnnotationSet> annotationSets = new Vector<AnnotationSet>();
-
             while ((line = reader.readLine()) != null) {
                 sections = line.split("\\t");
 
@@ -129,7 +129,8 @@ public class REDParser implements Runnable, ProgressListener {
                     if (!genomeLoaded) {
                         throw new REDException("No genome definition found before data");
                     }
-                    annotationSets.add(parseAnnotation(sections));
+                    // Add any annotation sets we've parsed at this point
+                    application.dataCollection().genome().getAnnotationCollection().addAnnotationSet(parseAnnotation(sections));
                 } else if (sections[0].equals(ParsingUtils.DATA_GROUPS)) {
                     if (!genomeLoaded) {
                         throw new REDException("No genome definition found before data");
@@ -167,8 +168,7 @@ public class REDParser implements Runnable, ProgressListener {
                     if (!genomeLoaded) {
                         throw new REDException("No genome definition found before data");
                     }
-                    // Add any annotation sets we've parsed at this point
-                    application.dataCollection().genome().getAnnotationCollection().addAnnotationSets(annotationSets.toArray(new AnnotationSet[0]));
+
                     parseDisplayPreferences(sections);
                 } else {
                     throw new REDException("Didn't recognise section '" + sections[0] + "' in red file");
@@ -356,46 +356,37 @@ public class REDParser implements Runnable, ProgressListener {
      * @throws REDException
      * @throws IOException  Signals that an I/O exception has occurred.
      */
-    private AnnotationSet parseAnnotation(String[] sections)
-            throws REDException, IOException {
+    private AnnotationSet parseAnnotation(String[] sections) throws REDException, IOException {
         System.out.println(this.getClass().getName() + ":parseAnnotation()");
         if (sections.length != 3) {
             throw new REDException("Annotation line didn't contain 3 sections");
         }
 
-        AnnotationSet set = new AnnotationSet(application.dataCollection()
-                .genome(), sections[1]);
+        AnnotationSet set = new AnnotationSet(application.dataCollection().genome(), sections[1]);
 
         int featureCount = Integer.parseInt(sections[2]);
 
         for (int i = 0; i < featureCount; i++) {
 
             if (i % 1000 == 0) {
-                progressUpdated("Parsing annotation in " + set.name(), i,
-                        featureCount);
+                progressUpdated("Parsing annotation in " + set.name(), i, featureCount);
             }
             sections = reader.readLine().split("\\t");
+            if (sections.length != 4) {
+                throw new REDException("Feature line didn't contain 4 sections");
+            }
             String name = sections[0];
             String chr = sections[1];
             Strand strand = Strand.parseStrand(sections[2]);
-            String[] loca = sections[3].split("-");
-            Location txLocation = new SequenceRead(Integer.parseInt(loca[0]),
-                    Integer.parseInt(loca[1]));
-            loca = sections[4].split("-");
-            Location cdsLocation = new SequenceRead(Integer.parseInt(loca[0]),
-                    Integer.parseInt(loca[1]));
-            loca = sections[5].split(",");
-            Location[] exonLocations = new Location[loca.length];
+            String aliasName = sections[3];
 
-            for (int l = 0; l < loca.length; l++) {
-                String[] exonLoc = loca[l].split("-");
-                exonLocations[l] = new SequenceRead(
-                        Integer.parseInt(exonLoc[0]),
-                        Integer.parseInt(exonLoc[1]));
+            String secondLine = reader.readLine();
+            sections = secondLine.substring(1, secondLine.length()).split(",");
+            List<Location> allLocations = new ArrayList<Location>();
+            for (String section : sections) {
+                allLocations.add(new FeatureLocation(section));
             }
-            String aliasName = sections[6];
-            Feature feature = new Feature(name, chr, strand,
-                    txLocation, cdsLocation, exonLocations, aliasName);
+            Feature feature = new Feature(name, chr, strand, allLocations, aliasName);
             set.addFeature(feature);
         }
 
@@ -410,14 +401,10 @@ public class REDParser implements Runnable, ProgressListener {
      * @throws REDException
      * @throws IOException  Signals that an I/O exception has occurred.
      */
-    private void parseSamples(String[] sections) throws REDException,
-            IOException {
+    private void parseSamples(String[] sections) throws REDException, IOException {
         System.out.println(this.getClass().getName() + ":parseSamples()");
         if (sections.length != 2) {
             throw new REDException("Samples line didn't contain 2 sections");
-        }
-        if (!sections[0].equals("Samples")) {
-            throw new REDException("Couldn't find expected samples line");
         }
 
         int n = Integer.parseInt(sections[1]);
@@ -427,23 +414,12 @@ public class REDParser implements Runnable, ProgressListener {
 
         for (int i = 0; i < n; i++) {
             sections = reader.readLine().split("\\t");
-            // Originally there was only one section (the DataSet name). Then
-            // there were two names, a user supplied name and the original
-            // imported file name. Now there are 3 sections where the third
-            // section indicates the type of dataset. The only unusual one is a
-            // HiC dataset anything else is assumed to be a normal dataset.
-            if (sections.length == 1) {
-                dataSets[i] = new DataSet(sections[0], "Not known", false);
-            } else if (sections.length == 2) {
-                dataSets[i] = new DataSet(sections[0], sections[1], false);
-            } else if (sections.length == 3) {
-                if (sections[2].equals("HiC")) {
-                    dataSets[i] = new PairedDataSet(sections[0], sections[1],
-                            false, 0, false);
-                } else {
-                    dataSets[i] = new DataSet(sections[0], sections[1], false);
-                }
+            if (sections.length != 3) {
+                throw new REDException("Read line " + i + " didn't contain 3 sections");
             }
+            dataSets[i] = new DataSet(sections[0], sections[1]);
+            dataSets[i].setDataParser(new BAMFileParser(new File(sections[1])));
+            dataSets[i].setStandardChromosomeName(Boolean.parseBoolean(sections[2]));
         }
 
         // Immediately after the list of samples comes the lists of reads
@@ -465,147 +441,58 @@ public class REDParser implements Runnable, ProgressListener {
             }
             int readCount = Integer.parseInt(sections[0]);
 
-            if (dataSets[i] instanceof PairedDataSet) {
-                // Paired Data sets have a different format, with a packed
-                // position for the first read, then a chromosome name and
-                // packed position for the second read.
+            // We keep count of reads processed to update the progress listeners
 
-                // From v13 onwards we started entering HiC data pairs in both
-                // directions so
-                // the data would be able to be read back in without sorting it.
-                // boolean hicDataIsPresorted = thisDataVersion >= 13;
+            while (true) {
+                // The first line should be the chromosome and a number of reads
+                line = reader.readLine();
 
-                // We use this to update the progress bar every time we move to
-                // a new chromosome
-                int seenChromosomeCount = 0;
+                if (line == null) {
+                    throw new REDException("Ran out of data whilst parsing reads for sample " + i);
+                }
 
-                while (true) {
-                    // The first line should be the chromosome and a number of
-                    // reads
+                // A blank line indicates the end of the sample
+                if (line.length() == 0)
+                    break;
+
+                sections = line.split("\\t");
+
+                // We don't try to capture this exception since we can't
+                // then process any of the reads which follow.
+                String chr = sections[0];
+                int chrReadCount = Integer.parseInt(sections[1]);
+
+                for (int r = 0; r < chrReadCount; r++) {
+                    if ((r % (1 + (readCount / 10))) == 0) {
+                        Enumeration<ProgressListener> en2 = listeners.elements();
+                        while (en2.hasMoreElements()) {
+                            en2.nextElement().progressUpdated("Reading data for " + dataSets[i].name(), i * 10 + (r / (1 + (readCount / 10))), n * 10);
+                        }
+                    }
+
                     line = reader.readLine();
-
                     if (line == null) {
                         throw new REDException("Ran out of data whilst parsing reads for sample " + i);
                     }
-
-                    // A blank line indicates the end of the sample
-                    if (line.length() == 0)
-                        break;
-
                     sections = line.split("\\t");
-
-                    ++seenChromosomeCount;
-                    progressUpdated("Reading data for " + dataSets[i].name(), seenChromosomeCount, readCount);
-
-                    String chr = sections[0];
-                    int chrReadCount = Integer.parseInt(sections[1]);
-
-                    // System.err.println("Trying to parse "+chrReadCount+" from chr "+c.name());
-
-                    for (int r = 0; r < chrReadCount; r++) {
-
-                        line = reader.readLine();
-                        if (line == null) {
-                            throw new REDException(
-                                    "Ran out of data whilst parsing reads for sample "
-                                            + i);
-                        }
-
-						/*
-                         * We used to have a split("\t") here, but this turned
-						 * out to be the bottleneck which hugely restricted the
-						 * speed at which the data could be read. Switching for
-						 * a set of index calls and substring makes this *way*
-						 * faster.
-						 */
-                        sections = line.split(":");
-                        String[] sourceReads = sections[0].split("\\t");
-                        String[] hitReads = sections[1].split("\\t");
-                        SequenceRead sourceSeq = parsePairedDataSetLine(chr,
-                                sourceReads);
-                        SequenceRead hitSeq = parsePairedDataSetLine(chr,
-                                hitReads);
-                        try {
-                            dataSets[i].addData(sourceSeq);
-                            dataSets[i].addData(hitSeq);
-                        } catch (REDException ex) {
-                            Enumeration<ProgressListener> e = listeners.elements();
-                            while (e.hasMoreElements()) {
-                                e.nextElement().progressWarningReceived(ex);
-                            }
-                        }
-                    }
-
+                    // We use some custom parsing code to efficiently
+                    // extract the packed position and count from the line.
+                    // This avoids having to use the generic parsing code or
+                    // doing a split to determine the tab location.
+                    dataSets[i].addData(parsePairedDataSetLine(chr, sections));
                 }
-            } else {
-                // In versions after 7 we split the section up into chromosomes
-                // so we don't put the chromosome on every line, and we put out
-                // the packed double value rather than the individual start, end
-                // and strand
 
-                // As of version 12 we collapse repeated reads into one line
-                // with
-                // a count after it, so we need to check for this.
-
-                // We keep count of reads processed to update the progress
-                // listeners
-
-                while (true) {
-                    // The first line should be the chromosome and a number of
-                    // reads
-                    line = reader.readLine();
-
-                    if (line == null) {
-                        throw new REDException(
-                                "Ran out of data whilst parsing reads for sample "
-                                        + i);
-                    }
-
-                    // A blank line indicates the end of the sample
-                    if (line.length() == 0)
-                        break;
-
-                    sections = line.split("\\t");
-
-                    // We don't try to capture this exception since we can't
-                    // then process any of the reads which follow.
-                    String chr = sections[0];
-                    int chrReadCount = Integer.parseInt(sections[1]);
-
-                    for (int r = 0; r < chrReadCount; r++) {
-                        if ((r % (1 + (readCount / 10))) == 0) {
-                            Enumeration<ProgressListener> en2 = listeners.elements();
-                            while (en2.hasMoreElements()) {
-                                en2.nextElement().progressUpdated("Reading data for " + dataSets[i].name(), i * 10 + (r / (1 + (readCount / 10))), n * 10);
-                            }
-                        }
-
-                        line = reader.readLine();
-                        if (line == null) {
-                            throw new REDException("Ran out of data whilst parsing reads for sample " + i);
-                        }
-                        sections = line.split("\\t");
-                        // We use some custom parsing code to efficiently
-                        // extract the packed position and count from the line.
-                        // This avoids having to use the generic parsing code or
-                        // doing a split to determine the tab location.
-                        dataSets[i].addData(parsePairedDataSetLine(chr, sections));
-                    }
-
-                }
+//                }
 
             }
 
-            // We've now read all of the data for this sample so we can compact
-            // it
+            // We've now read all of the data for this sample so we can compact it
             Enumeration<ProgressListener> en2 = listeners.elements();
             while (en2.hasMoreElements()) {
-                en2.nextElement().progressUpdated(
-                        "Caching data for " + dataSets[i].name(), (i + 1) * 10, n * 10);
+                en2.nextElement().progressUpdated("Caching data for " + dataSets[i].name(), (i + 1) * 10, n * 10);
             }
             dataSets[i].finalise();
-            System.out.println(this.getClass().getName()
-                    + ":application.dataCollection().addDataSet(dataSets[i]);");
+            System.out.println(this.getClass().getName() + ":application.dataCollection().addDataSet(dataSets[i]);");
             application.dataCollection().addDataSet(dataSets[i]);
         }
     }
@@ -617,8 +504,7 @@ public class REDParser implements Runnable, ProgressListener {
      * @throws REDException
      * @throws IOException  Signals that an I/O exception has occurred.
      */
-    private void parseGroups(String[] sections) throws REDException,
-            IOException {
+    private void parseGroups(String[] sections) throws REDException, IOException {
         System.out.println(REDParser.class.getName() + ":parseGroups(String[] sections)");
         if (sections.length != 2) {
             throw new REDException("Data Groups line didn't contain 2 sections");
@@ -636,8 +522,7 @@ public class REDParser implements Runnable, ProgressListener {
             DataSet[] groupMembers = new DataSet[group.length - 1];
 
             if (thisDataVersion < 4) {
-                DataSet[] allSets = application.dataCollection()
-                        .getAllDataSets();
+                DataSet[] allSets = application.dataCollection().getAllDataSets();
                 // In the bad old days we used to refer to datasets by their
                 // name
                 for (int j = 1; j < group.length; j++) {
@@ -649,8 +534,7 @@ public class REDParser implements Runnable, ProgressListener {
                         if (allSets[d].name().equals(group[j])) {
                             if (seen) {
                                 // System.out.println("Seen this before - abort abort");
-                                throw new REDException("Name " + group[j]
-                                        + " is ambiguous in group " + group[0]);
+                                throw new REDException("Name " + group[j] + " is ambiguous in group " + group[0]);
                             }
                             // System.out.println("Seen for the first time");
                             groupMembers[j - 1] = allSets[d];
@@ -663,11 +547,9 @@ public class REDParser implements Runnable, ProgressListener {
 
                     // The more modern and safer way to make up a group is by
                     // its index
-                    groupMembers[j - 1] = application.dataCollection()
-                            .getDataSet(Integer.parseInt(group[j]));
+                    groupMembers[j - 1] = application.dataCollection().getDataSet(Integer.parseInt(group[j]));
                     if (groupMembers[j - 1] == null) {
-                        throw new REDException(
-                                "Couldn't find dataset at position " + group[j]);
+                        throw new REDException("Couldn't find dataset at position " + group[j]);
                     }
                 }
             }
@@ -909,15 +791,15 @@ public class REDParser implements Runnable, ProgressListener {
         }
     }
 
-    private SequenceRead parsePairedDataSetLine(String chr, String[] reads) throws REDException {
+    private Alignment parsePairedDataSetLine(String chr, String[] reads) throws REDException {
         if (reads.length != 3) {
             throw new REDException("This line is incomplete.");
         }
-        SequenceRead sequence;
-        byte[] readBases = reads[2].getBytes();
-//        byte[] qualities = reads[3].getBytes();
-        sequence = new SequenceRead(chr, Integer.parseInt(reads[0]),
-                Strand.parseStrand(reads[1]), readBases, null);
+        Alignment sequence;
+        int start = Integer.parseInt(reads[0]);
+        int end = Integer.parseInt(reads[1]);
+        Strand strand = Strand.parseStrand(reads[2]);
+        sequence = new Alignment(chr, start, end, strand);
         return sequence;
     }
 
