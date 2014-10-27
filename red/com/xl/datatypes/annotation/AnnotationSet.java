@@ -1,8 +1,8 @@
 package com.xl.datatypes.annotation;
 
+import com.xl.datatypes.feature.Feature;
 import com.xl.datatypes.genome.Genome;
 import com.xl.dialog.CrashReporter;
-import com.xl.display.featureviewer.Feature;
 import com.xl.main.REDApplication;
 import com.xl.preferences.LocationPreferences;
 import com.xl.utils.FileUtils;
@@ -74,7 +74,7 @@ public class AnnotationSet {
         return featureSet.getChromosomeNames();
     }
 
-    public Feature[] getFeaturesForChr(String chr) {
+    public List<Feature> getFeaturesForChr(String chr) {
         return featureSet.getFeatureTypeCollection(chr).getFeatures();
     }
 
@@ -107,28 +107,18 @@ public class AnnotationSet {
         return featureSet.getFeaturesForLocation(location);
     }
 
-    public boolean deleteFeature(String chr, Feature feature) {
-        return featureSet.deleteFeature(chr, feature);
-    }
-
-    public Feature[] getAllFeatures() {
+    public List<Feature> getAllFeatures() {
 
         // TODO: Find a way to not load all features into memory just to do
         // this.
 
-        Vector<Feature> allFeatures = new Vector<Feature>();
+        List<Feature> allFeatures = new ArrayList<Feature>();
 
         Set<String> chrs = featureSet.getChromosomeNames();
         for (String chrName : chrs) {
-            Feature[] features = featureSet
-                    .getFeatureTypeCollection(chrName).getFeatures();
-            for (Feature f : features) {
-                allFeatures.add(f);
-            }
+            allFeatures.addAll(featureSet.getFeatureTypeCollection(chrName).getFeatures());
         }
-
-
-        return allFeatures.toArray(new Feature[0]);
+        return allFeatures;
     }
 
     public synchronized void finalise() {
@@ -239,14 +229,6 @@ public class AnnotationSet {
         }
 
 
-        public boolean deleteFeature(String chr, Feature feature) {
-            if (chrFeatures.containsKey(chr)) {
-                return chrFeatures.get(chr).deleteFeature(feature);
-            } else {
-                return false;
-            }
-        }
-
         /**
          * Gets a list of features.
          *
@@ -326,14 +308,13 @@ public class AnnotationSet {
      */
     protected class FeatureTypeCollection implements Runnable {
 
-        private LinkedList<Feature> buildFeatures = null;
-        private Feature[] featureList = null;
+        private List<Feature> buildFeatures = null;
         private File cacheFile = null;
         private String chr = null;
 
         public FeatureTypeCollection(String chr) {
             this.chr = chr;
-            buildFeatures = new LinkedList<Feature>();
+            buildFeatures = new ArrayList<Feature>();
         }
 
         /**
@@ -360,14 +341,6 @@ public class AnnotationSet {
                         "Can't add data to a finalsed type collection");
             }
             buildFeatures.add(f);
-        }
-
-        public boolean deleteFeature(Feature feature) {
-            if (buildFeatures != null && buildFeatures.size() != 0 && buildFeatures.contains(feature)) {
-                return buildFeatures.remove(feature);
-            } else {
-                return false;
-            }
         }
 
         public Feature getFeatureForName(String name) {
@@ -403,9 +376,6 @@ public class AnnotationSet {
                 System.err.println("This already appears to be finalised");
                 return;
             }
-            featureList = buildFeatures.toArray(new Feature[0]);
-            buildFeatures.clear();
-            buildFeatures = null;
 
             // If this is a core annotation set then we want to maintain a set
             // of cache files for future use so we write them where we can get
@@ -413,16 +383,13 @@ public class AnnotationSet {
             // need to keep them all.
             if (AnnotationSet.this instanceof CoreAnnotationSet) {
                 try {
-                    String cacheBase = LocationPreferences.getInstance().getCacheDirectory()
-                            + File.separator + genome.getDisplayName();
+                    String cacheBase = LocationPreferences.getInstance().getCacheDirectory() + File.separator + genome.getDisplayName();
                     FileUtils.createDirectory(cacheBase);
                     cacheFile = new File(cacheBase + File.separator + chr + SuffixUtils.CACHE_GENOME);
-                    ObjectOutputStream oos = new ObjectOutputStream(
-                            new BufferedOutputStream(new FileOutputStream(
-                                    cacheFile)));
-                    oos.writeObject(featureList);
+                    ObjectOutputStream oos = new ObjectOutputStream(new BufferedOutputStream(new FileOutputStream(cacheFile)));
+                    oos.writeObject(buildFeatures);
                     oos.close();
-                    featureList = null;
+                    buildFeatures = null;
 
                 } catch (IOException ioe) {
                     new CrashReporter(ioe);
@@ -461,25 +428,23 @@ public class AnnotationSet {
          *
          * @return The list of stored features.
          */
-        public Feature[] getFeatures() {
+        public List<Feature> getFeatures() {
             if (buildFeatures != null) {
                 finalise();
             }
+            List<Feature> returnedFeatures = null;
             if (cacheFile != null) {
                 REDApplication.getInstance().cacheUsed();
                 try {
-                    ObjectInputStream ois = new ObjectInputStream(
-                            new BufferedInputStream(new FileInputStream(
-                                    cacheFile)));
-                    Feature[] returnedFeatures = (Feature[]) ois
-                            .readObject();
+                    ObjectInputStream ois = new ObjectInputStream(new BufferedInputStream(new FileInputStream(cacheFile)));
+                    returnedFeatures = (List<Feature>) ois.readObject();
                     ois.close();
                     return returnedFeatures;
                 } catch (Exception e) {
                     new CrashReporter(e);
                 }
             }
-            return featureList;
+            return returnedFeatures;
         }
     }
 }

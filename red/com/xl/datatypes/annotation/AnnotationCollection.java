@@ -1,9 +1,9 @@
 package com.xl.datatypes.annotation;
 
+import com.xl.datatypes.feature.Feature;
 import com.xl.datatypes.genome.Chromosome;
 import com.xl.datatypes.genome.Genome;
 import com.xl.dialog.CrashReporter;
-import com.xl.display.featureviewer.Feature;
 import com.xl.exception.REDException;
 import com.xl.interfaces.AnnotationCollectionListener;
 import com.xl.preferences.LocationPreferences;
@@ -83,21 +83,20 @@ public class AnnotationCollection {
      *
      * @param newSets the annotation sets to add
      */
-    public void addAnnotationSets(AnnotationSet[] newSets) {
-        System.out.println(AnnotationCollection.class.getName() + ":addAnnotationSets(AnnotationSet[] newSets)\t" + newSets.length);
-        for (int s = 0; s < newSets.length; s++) {
+    public void addAnnotationSet(AnnotationSet newSets) {
+        System.out.println(AnnotationCollection.class.getName() + ":addAnnotationSet(AnnotationSet[] newSets)\t" + newSets.name());
+//        for (int s = 0; s < newSets.length; s++) {
 
-            if (newSets[s].getGenome() != genome) {
-                throw new IllegalArgumentException(
-                        "Annotation set genome doesn't match annotation collection");
-            }
-            annotationSets.add(newSets[s]);
-            newSets[s].setCollection(this);
+        if (newSets.getGenome() != genome) {
+            throw new IllegalArgumentException("Annotation set genome doesn't match annotation collection");
         }
+        annotationSets.add(newSets);
+        newSets.setCollection(this);
+//        }
 
         Enumeration<AnnotationCollectionListener> l = listeners.elements();
         while (l.hasMoreElements()) {
-            l.nextElement().annotationSetsAdded(newSets);
+            l.nextElement().annotationSetAdded(newSets);
         }
     }
 
@@ -173,19 +172,14 @@ public class AnnotationCollection {
      * @param c the c
      * @return the features for type
      */
-    public Feature[] getFeaturesForChr(Chromosome c) {
-        Vector<Feature> features = new Vector<Feature>();
+    public List<Feature> getFeaturesForChr(Chromosome c) {
+        List<Feature> features = new ArrayList<Feature>();
         Enumeration<AnnotationSet> sets = annotationSets.elements();
         while (sets.hasMoreElements()) {
-            Feature[] f = sets.nextElement().getFeaturesForChr(c.getName());
-            for (int i = 0; i < f.length; i++) {
-                features.add(f[i]);
-            }
+            features.addAll(sets.nextElement().getFeaturesForChr(c.getName()));
         }
-
-        Feature[] allFeatures = features.toArray(new Feature[0]);
-        Arrays.sort(allFeatures);
-        return allFeatures;
+        Collections.sort(features);
+        return features;
     }
 
     public Feature[] getFeaturesForName(String name) {
