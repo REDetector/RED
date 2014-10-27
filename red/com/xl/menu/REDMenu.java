@@ -374,11 +374,9 @@ public class REDMenu extends JMenuBar implements ActionListener {
         } else if (action.equals(MenuUtils.FASTA)) {
             redApplication.importData(new FastaFileParser(redApplication.dataCollection()));
         } else if (action.equals(MenuUtils.RNA)) {
-            redApplication.importData(new BAMFileParser(redApplication
-                    .dataCollection()));
+            redApplication.importData(new BAMFileParser());
         } else if (action.equals(MenuUtils.DNA)) {
-            redApplication.importData(new BAMFileParser(redApplication
-                    .dataCollection()));
+            redApplication.importData(new BAMFileParser());
         } else if (action.equals(MenuUtils.ANNOTATION)) {
             AnnotationParserRunner.RunAnnotationParser(redApplication,
                     new UCSCRefGeneParser(redApplication.dataCollection()
@@ -433,7 +431,7 @@ public class REDMenu extends JMenuBar implements ActionListener {
         } else if (action.equals(MenuUtils.ZOOM_OUT)) {
             redApplication.chromosomeViewer().zoomOut();
         } else if (action.equals(MenuUtils.SET_ZOOM_LEVEL)) {
-            new DataZoomSelector(redApplication, "Dialog");
+            new DataZoomSelectorDialog(redApplication);
         } else if (action.equals(MenuUtils.MOVE_LEFT)) {
             redApplication.chromosomeViewer().moveLeft();
         } else if (action.equals(MenuUtils.MOVE_RIGHT)) {

@@ -28,20 +28,15 @@ import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.Hashtable;
 
 /**
  * Provides a small dialog which allows the user to select a suitable data zoom
  * level. Applies the selected level to currently visible data tracks
  */
-public class DataZoomSelector extends JDialog implements ActionListener,
-        ChangeListener {
-
+public class DataZoomSelector extends JDialog implements ChangeListener {
     private REDApplication application;
     private Chromosome currentChromosome;
-    private String action;
     private int currentChromosomeLength;
     private int currentViewLength;
     private JSlider slider;
@@ -51,41 +46,10 @@ public class DataZoomSelector extends JDialog implements ActionListener,
      *
      * @param application
      */
-    public DataZoomSelector(REDApplication application, String action) {
+    public DataZoomSelector(REDApplication application) {
         super(application, "Set Data Zoom");
         this.application = application;
-        this.action = action;
-        currentChromosome = DisplayPreferences.getInstance().getCurrentChromosome();
-        currentChromosomeLength = DisplayPreferences.getInstance().getCurrentChromosome().getLength();
-        currentViewLength = DisplayPreferences.getInstance().getCurrentLength();
-        getContentPane().setLayout(new BorderLayout());
-        Hashtable<Integer, Component> labelTable = new Hashtable<Integer, Component>();
-        for (int i = 0; i <= 20; i++) {
-            if (i % 2 == 0) {
-                labelTable.put(currentChromosomeLength / 20 * i, new JLabel("" + i));
-            } else {
-                labelTable.put(currentChromosomeLength / 20 * i, new JLabel(""));
-            }
-        }
-        slider = new JSlider(0, currentChromosomeLength, currentViewLength);
-        slider.setPaintTicks(true);
-        slider.setSnapToTicks(false);
-        slider.setLabelTable(labelTable);
-        slider.setPaintLabels(true);
-        slider.setOrientation(JSlider.HORIZONTAL);
-        slider.addChangeListener(this);
-        slider.setMajorTickSpacing(currentChromosomeLength / 20);
-        getContentPane().add(slider, BorderLayout.CENTER);
-
-        if ("Dialog".equals(action)) {
-            JButton closeButton = new JButton("Close");
-            getRootPane().setDefaultButton(closeButton);
-            closeButton.addActionListener(this);
-            getContentPane().add(closeButton, BorderLayout.SOUTH);
-            setSize(300, 100);
-            setLocationRelativeTo(application);
-            setVisible(true);
-        }
+        setJSlider();
     }
 
     public void setJSlider() {
@@ -116,35 +80,8 @@ public class DataZoomSelector extends JDialog implements ActionListener,
         slider.setOrientation(JSlider.HORIZONTAL);
         slider.addChangeListener(this);
         slider.setMajorTickSpacing(currentChromosomeLength / 20);
-        if ("Dialog".equals(action)) {
-            JButton closeButton = new JButton("Close");
-            getRootPane().setDefaultButton(closeButton);
-            closeButton.addActionListener(this);
-            getContentPane().add(closeButton, BorderLayout.SOUTH);
-            setSize(300, 100);
-            setLocationRelativeTo(application);
-            setVisible(true);
-        }
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see
-     * java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
-     */
-    public void actionPerformed(ActionEvent ae) {
-        setVisible(false);
-        dispose();
-    }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see
-     * javax.swing.event.ChangeListener#stateChanged(javax.swing.event.ChangeEvent
-     * )
-     */
     public void stateChanged(ChangeEvent ce) {
         if (currentChromosome != DisplayPreferences.getInstance().getCurrentChromosome()) {
             setJSlider();

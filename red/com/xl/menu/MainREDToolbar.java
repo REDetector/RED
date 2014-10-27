@@ -24,10 +24,11 @@ public class MainREDToolbar extends REDToolbar {
      */
     private JButton findFeatureButton;
 
-    private JButton changeDataZoomButton;
     private JButton readsOnlyButton;
     private JButton probesOnlyButton;
     private JButton probesAndReadsButton;
+
+    private DataZoomSelector dataZoomSelector;
 
     /**
      * Instantiates a new red toolbar.
@@ -38,55 +39,31 @@ public class MainREDToolbar extends REDToolbar {
 
         super(menu);
 
-        readsOnlyButton = new JButton(new ImageIcon(
-                ClassLoader
-                        .getSystemResource("resources/toolbar/reads_only.png")));
+        readsOnlyButton = new JButton(new ImageIcon(ClassLoader.getSystemResource("resources/toolbar/reads_only.png")));
         readsOnlyButton.setActionCommand(MenuUtils.SHOW_READS_ONLY);
         readsOnlyButton.setToolTipText("Show only Reads");
         readsOnlyButton.addActionListener(menu);
         add(readsOnlyButton);
-        probesOnlyButton = new JButton(
-                new ImageIcon(ClassLoader
-                        .getSystemResource("resources/toolbar/probes_only.png")));
+        probesOnlyButton = new JButton(new ImageIcon(ClassLoader.getSystemResource("resources/toolbar/probes_only.png")));
         probesOnlyButton.setActionCommand(MenuUtils.SHOW_PROBES_ONLY);
         probesOnlyButton.setToolTipText("Show only Probes");
         probesOnlyButton.addActionListener(menu);
         add(probesOnlyButton);
-        probesAndReadsButton = new JButton(
-                new ImageIcon(
-                        ClassLoader
-                                .getSystemResource("resources/toolbar/probes_and_reads.png")));
+        probesAndReadsButton = new JButton(new ImageIcon(ClassLoader.getSystemResource("resources/toolbar/probes_and_reads.png")));
         probesAndReadsButton.setActionCommand(MenuUtils.SHOW_READS_AND_PROBES);
         probesAndReadsButton.setToolTipText("Show Reads and Probes");
         probesAndReadsButton.addActionListener(menu);
         add(probesAndReadsButton);
         addSeparator();
 
-        changeDataZoomButton = new JButton(
-                new ImageIcon(
-                        ClassLoader
-                                .getSystemResource("resources/toolbar/change_data_zoom.png")));
-        changeDataZoomButton.setActionCommand(MenuUtils.SET_ZOOM_LEVEL);
-        changeDataZoomButton.setToolTipText("Change Data Zoom Level");
-        changeDataZoomButton.addActionListener(menu);
-        add(changeDataZoomButton);
-
-        addSeparator();
-
-        findFeatureButton = new JButton(
-                new ImageIcon(
-                        ClassLoader
-                                .getSystemResource("resources/toolbar/find_feature.png")));
+        findFeatureButton = new JButton(new ImageIcon(ClassLoader.getSystemResource("resources/toolbar/find_feature.png")));
         findFeatureButton.setActionCommand(MenuUtils.FIND);
         findFeatureButton.setToolTipText("Find Feature");
         findFeatureButton.addActionListener(menu);
 
         add(findFeatureButton);
 
-        jumpToPositionButton = new JButton(
-                new ImageIcon(
-                        ClassLoader
-                                .getSystemResource("resources/toolbar/jump_to_position.png")));
+        jumpToPositionButton = new JButton(new ImageIcon(ClassLoader.getSystemResource("resources/toolbar/jump_to_position.png")));
         jumpToPositionButton.setActionCommand(MenuUtils.GOTO_POSITION);
         jumpToPositionButton.setToolTipText("Go to Position");
         jumpToPositionButton.addActionListener(menu);
@@ -94,6 +71,7 @@ public class MainREDToolbar extends REDToolbar {
         add(jumpToPositionButton);
 
         addSeparator();
+
 
         reset();
     }
@@ -109,10 +87,13 @@ public class MainREDToolbar extends REDToolbar {
         probesAndReadsButton.setEnabled(true);
         jumpToPositionButton.setEnabled(true);
         jumpToPositionButton.setFocusable(false);
-        changeDataZoomButton.setEnabled(true);
         findFeatureButton.setEnabled(true);
         findFeatureButton.setFocusable(false);
-        add(new DataZoomSelector(REDApplication.getInstance(), null).getContentPane());
+        if (dataZoomSelector == null) {
+            dataZoomSelector = new DataZoomSelector(REDApplication.getInstance());
+            add(dataZoomSelector.getContentPane());
+        }
+
     }
 
     public boolean showByDefault() {
