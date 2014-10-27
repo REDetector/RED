@@ -144,6 +144,9 @@ public class BAMFileParser extends DataParser {
                     continue;
                 }
                 String sequenceName = samRecord.getReferenceName();
+                if (lineCount == 1) {
+                    System.out.println(sequenceName);
+                }
 
                 if (lineCount == 1 && !ChromosomeUtils.isStandardChromosomeName(sequenceName)) {
                     newData.setStandardChromosomeName(false);
