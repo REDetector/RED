@@ -1,39 +1,48 @@
+/*
+ * RED: RNA Editing Detector
+ *     Copyright (C) <2014>  <Xing Li>
+ *
+ *     RED is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU General Public License as published by
+ *     the Free Software Foundation, either version 3 of the License, or
+ *     (at your option) any later version.
+ *
+ *     RED is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     GNU General Public License for more details.
+ *
+ *     You should have received a copy of the GNU General Public License
+ *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package com.xl.datatypes.sequence;
 
 import com.xl.utils.Strand;
+import net.sf.samtools.AlignmentBlock;
+import net.sf.samtools.SAMRecord;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 /**
  * The Class SequenceRead is used in places where both the read
  * and chromsome need to passed together. Sequence Reads do not store their
  * chromosome by default to save memory
  */
-public class SequenceRead implements Location {
+public class SequenceRead extends Alignment {
 
-    /**
-     * This class is only to be used by data parsers which temporarily need to
-     * associate a sequence read with a chromosome in a single object. All of
-     * the main classes use the SequenceRead object which doesn't store the
-     * chromosome to save memory.
-     */
-
-    private String chr = null;
-
-    private Strand strand = null;
-    private int start = 0;
     private byte[] readBases = null;
-    private int length = -1;
     private byte[] qualities = null;
-    private short[] counts = null;
 
-    public SequenceRead(int start, int end) {
-        this(null, start, end);
-    }
+    private List<AlignmentBlock> alignmentBlocks = null;
 
-    public SequenceRead(String chr, int start, int end) {
-        this(chr, start, null, null, null);
-        this.length = end - start + 1;
+    public SequenceRead(SAMRecord record) {
+        super(record.getReferenceName(), record.getAlignmentStart(), record.getAlignmentEnd(), record.getReadNegativeStrandFlag());
+        this.readBases = record.getReadBases();
+        this.qualities = record.getBaseQualities();
+        this.alignmentBlocks = record.getAlignmentBlocks();
     }
 
     /**
@@ -45,25 +54,25 @@ public class SequenceRead implements Location {
      * @param readBases
      * @param qualities
      */
-    public SequenceRead(String chr, int start, Strand strand, byte[] readBases,
-                        byte[] qualities) {
-        this.chr = chr;
-        this.start = start;
-        this.strand = strand;
+    public SequenceRead(String chr, int start, int end, Strand strand, byte[] readBases, byte[] qualities) {
+        super(chr, start, end, strand);
         this.readBases = readBases;
         if (readBases != null) {
-            this.length = readBases.length;
             if (qualities == null || qualities.length < readBases.length) {
                 this.qualities = new byte[readBases.length];
-                Arrays.fill(this.qualities, (byte) 126);
+                Arrays.fill(this.qualities, (byte) 255);
             } else {
                 this.qualities = qualities;
             }
         }
     }
 
-    public Strand getStrand() {
-        return strand;
+    public List<SmallPieceSequence> getAlignmentBlocks() {
+        List<SmallPieceSequence> list = new ArrayList<SmallPieceSequence>(alignmentBlocks.size());
+        for (AlignmentBlock block : alignmentBlocks) {
+            list.add(new SmallPieceSequence(block.getReadStart(), block.getReferenceStart(), block.getLength(), readBases, qualities));
+        }
+        return list;
     }
 
     public byte[] getReadBases() {
@@ -82,17 +91,6 @@ public class SequenceRead implements Location {
         return qualities[index];
     }
 
-    public short[] getCounts() {
-        return counts;
-    }
-
-    public void setCounts(short[] counts) {
-        this.counts = counts;
-    }
-
-    public short getCount(int index) {
-        return counts[index];
-    }
 
     public boolean contains(int position) {
         if (position > getStart() && position < getEnd()) {
@@ -100,10 +98,6 @@ public class SequenceRead implements Location {
         } else {
             return false;
         }
-    }
-
-    public boolean hasCounts() {
-        return counts != null;
     }
 
     @Override
@@ -115,39 +109,35 @@ public class SequenceRead implements Location {
         }
     }
 
-    @Override
-    public int compareTo(Location o) {
-        if (getStart() > o.getStart()) {
-            return 1;
-        } else if (getStart() < o.getStart()) {
-            return -1;
-        } else {
-            return 0;
+    public class SmallPieceSequence {
+        private int referenceStart;
+        private int length;
+        private byte[] bases;
+        private byte[] qualities;
+
+        public SmallPieceSequence(int readStart, int referenceStart, int length, byte[] rawBases, byte[] rawQualities) {
+            this.referenceStart = referenceStart;
+            this.length = length;
+            bases = Arrays.copyOfRange(rawBases, readStart - 1, readStart + length - 1);
+            qualities = Arrays.copyOfRange(rawQualities, readStart - 1, readStart + length - 1);
         }
+
+        public int getEnd() {
+            return referenceStart + length;
+        }
+
+        public int getReferenceStart() {
+            return referenceStart;
+        }
+
+        public byte[] getQualities() {
+            return qualities;
+        }
+
+        public byte[] getBases() {
+            return bases;
+        }
+
     }
 
-    public String toWrite() {
-        return getStart() + "\t" + Strand.parseStrand(strand) + "\t"
-                + new String(readBases);
-    }
-
-    @Override
-    public int getStart() {
-        return start;
-    }
-
-    @Override
-    public int getEnd() {
-        return start + length;
-    }
-
-    @Override
-    public int length() {
-        return length;
-    }
-
-    @Override
-    public String getChr() {
-        return chr;
-    }
 }
