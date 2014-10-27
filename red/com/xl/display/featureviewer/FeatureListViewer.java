@@ -1,6 +1,7 @@
 package com.xl.display.featureviewer;
 
 import com.sun.java.TableSorter;
+import com.xl.datatypes.feature.Feature;
 import com.xl.main.REDApplication;
 import com.xl.preferences.DisplayPreferences;
 
@@ -46,7 +47,7 @@ public class FeatureListViewer extends JTable implements MouseListener {
             }
             rowData[i][4] = features[i].getTxLocation().toString();
             rowData[i][5] = features[i].getCdsLocation().toString();
-            rowData[i][6] = features[i].toExonString();
+            rowData[i][6] = features[i].getExonLocations();
         }
 
         TableSorter sorter = new TableSorter(new FeatureTableModel(rowData,

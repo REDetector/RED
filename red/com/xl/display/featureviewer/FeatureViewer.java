@@ -19,6 +19,7 @@
  */
 package com.xl.display.featureviewer;
 
+import com.xl.datatypes.feature.Feature;
 import com.xl.main.REDApplication;
 import com.xl.preferences.DisplayPreferences;
 

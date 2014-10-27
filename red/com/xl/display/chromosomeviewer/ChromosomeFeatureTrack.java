@@ -1,9 +1,9 @@
 package com.xl.display.chromosomeviewer;
 
 import com.xl.datatypes.DataCollection;
+import com.xl.datatypes.feature.Feature;
 import com.xl.datatypes.genome.Chromosome;
 import com.xl.datatypes.sequence.Location;
-import com.xl.display.featureviewer.Feature;
 import com.xl.display.featureviewer.FeatureViewer;
 import com.xl.preferences.DisplayPreferences;
 import com.xl.utils.ColourScheme;
@@ -11,6 +11,7 @@ import com.xl.utils.PositionFormat;
 
 import java.awt.*;
 import java.awt.event.MouseEvent;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.Vector;
@@ -30,7 +31,7 @@ public class ChromosomeFeatureTrack extends AbstractTrack {
     /**
      * The features shown in this track
      */
-    private Feature[] features;
+    private java.util.List<Feature> features;
 
     private long currentTime = 0;
 
@@ -110,25 +111,23 @@ public class ChromosomeFeatureTrack extends AbstractTrack {
             drawLabel = true;
             yLableHeight = 5;
         }
-        Location tx = feature.getTxLocation();
-        Location cds = feature.getCdsLocation();
-        Location[] exons = feature.getExonLocations();
-        int wholeXStart = tx.getStart();
-        int wholeXEnd = tx.getEnd();
+        ArrayList<Location> allLocation = (ArrayList<Location>) feature.getAllLocations();
+
+        int wholeXStart = allLocation.get(0).getStart();
+        int wholeXEnd = allLocation.get(0).getEnd();
         drawnFeatures.add(new DrawnFeature(wholeXStart, wholeXEnd, feature));
         fillRect(g, wholeXStart, wholeXEnd, txYPosition - yLableHeight, 2);
 
-        int cdsStart = cds.getStart();
-        int cdsEnd = cds.getEnd();
+        int cdsStart = allLocation.get(1).getStart();
+        int cdsEnd = allLocation.get(1).getEnd();
         fillRect(g, cdsStart, cdsEnd, cdsYPosition - yLableHeight, cdsHeight);
 
-        for (Location exon : exons) {
-            int exonStart = exon.getStart();
-            int exonEnd = exon.getEnd();
+        for (int i = 2, len = allLocation.size(); i < len; i++) {
+            int exonStart = allLocation.get(i).getStart();
+            int exonEnd = allLocation.get(i).getEnd();
             if (exonStart > cdsStart && exonEnd < cdsEnd) {
                 fillRect(g, exonStart, exonEnd, exonYPosition - yLableHeight, exonHeight);
             }
-
             if (drawLabel && (feature == activeFeature)) {
 //                g.setColor(Color.DARK_GRAY);
                 g.drawString(feature.getChr() + ":" + feature.getAliasName(), cursorXPosition, ((displayHeight + exonHeight) / 2 + yLableHeight));

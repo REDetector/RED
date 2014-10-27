@@ -2,10 +2,9 @@ package com.xl.parsers.annotationparsers;
 
 import com.xl.datatypes.annotation.AnnotationSet;
 import com.xl.datatypes.annotation.CoreAnnotationSet;
+import com.xl.datatypes.feature.Feature;
 import com.xl.datatypes.genome.Genome;
 import com.xl.datatypes.sequence.Location;
-import com.xl.datatypes.sequence.SequenceRead;
-import com.xl.display.featureviewer.Feature;
 import com.xl.exception.REDException;
 import com.xl.utils.ChromosomeUtils;
 import com.xl.utils.GeneType;
@@ -13,9 +12,8 @@ import com.xl.utils.Strand;
 import com.xl.utils.filefilters.FileFilterExt;
 
 import java.io.*;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.Vector;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.zip.GZIPInputStream;
 
 public class UCSCRefGeneParser extends AnnotationParser {
@@ -32,8 +30,6 @@ public class UCSCRefGeneParser extends AnnotationParser {
     private int exonEndsBufferColumn = 0;
     private int aliasNameColumn = 0;
 
-    private Set<String> nameList = new HashSet<String>();
-
     public UCSCRefGeneParser(Genome genome) {
         super(genome);
     }
@@ -45,7 +41,7 @@ public class UCSCRefGeneParser extends AnnotationParser {
     }
 
     @Override
-    protected AnnotationSet[] parseAnnotation(GeneType type, File file)
+    protected AnnotationSet parseAnnotation(GeneType type, File file)
             throws Exception {
         // TODO Auto-generated method stub
         BufferedReader br = null;
@@ -64,10 +60,9 @@ public class UCSCRefGeneParser extends AnnotationParser {
         return parseAnnotation(type, br, genome);
     }
 
-    protected AnnotationSet[] parseAnnotation(GeneType type, BufferedReader br, Genome genome) throws IOException {
+    protected AnnotationSet parseAnnotation(GeneType type, BufferedReader br, Genome genome) throws IOException {
         System.out.println(this.getClass().getName() + ":parseAnnotation()");
         parseGeneType(type);
-        Vector<AnnotationSet> annotationSets = new Vector<AnnotationSet>();
         AnnotationSet currentAnnotation = new CoreAnnotationSet(genome);
         int lineCount = 0;
         String line;
@@ -79,32 +74,16 @@ public class UCSCRefGeneParser extends AnnotationParser {
             }
 
             if (lineCount % 1000 == 0) {
-                progressUpdated(
-                        "Read " + lineCount + " lines from "
-                                + genome.getDisplayName(), 0, 1);
-            }
-            if (lineCount == 1000000) {
-                currentAnnotation.finalise();
-                annotationSets.add(currentAnnotation);
-                currentAnnotation = new AnnotationSet(genome,
-                        genome.getGenomeId() + "[" + annotationSets.size()
-                                + "]");
+                progressUpdated("Read " + lineCount + " lines from " + genome.getDisplayName(), 0, 1);
             }
 
-            if (lineCount > 1000000 && lineCount % 1000000 == 0) {
-                progressUpdated("Caching...", 0, 1);
-                currentAnnotation.finalise();
-                currentAnnotation = new AnnotationSet(genome,
-                        genome.getGenomeId() + "[" + annotationSets.size()
-                                + "]");
-                annotationSets.add(currentAnnotation);
-            }
             String[] sections = line.split("\t");
             try {
                 // int index = Integer.parseInt(sections[binColumn]);
                 String name = sections[nameColumn].trim();
                 String aliasName = sections[aliasNameColumn];
                 String chr = sections[chromColumn];
+                List<Location> allLocations = new ArrayList<Location>();
                 if (ChromosomeUtils.isStandardChromosomeName(chr)) {
                     //Get the strand of the feature.
                     Strand strand = Strand.parseStrand(sections[strandColumn]);
@@ -112,56 +91,44 @@ public class UCSCRefGeneParser extends AnnotationParser {
                     //Get the transcription start and end of the feature.
                     int txStart = Integer.parseInt(sections[txStartColumn]);
                     int txEnd = Integer.parseInt(sections[txEndColumn]);
-                    Location txLocation = new SequenceRead(txStart, txEnd);
+                    allLocations.add(new Location(txStart, txEnd));
 
                     //Get the coding region's start and end of the feature.
                     int cdsStart = Integer.parseInt(sections[cdsStartColumn]);
                     int cdsEnd = Integer.parseInt(sections[cdsEndColumn]);
-                    Location cdsLocation = new SequenceRead(cdsStart, cdsEnd);
+                    allLocations.add(new Location(cdsStart, cdsEnd));
 
                     //Get all exons' start and end of the feature.
                     int exonCount = Integer.parseInt(sections[exonCountColumn]);
                     String[] exonStarts = sections[exonStartsBufferColumn].split(",");
                     String[] exonEnds = sections[exonEndsBufferColumn].split(",");
-                    Location[] exonLocations = new Location[exonCount];
                     if (exonStarts.length == exonEnds.length) {
                         for (int i = 0; i < exonCount; i++) {
-                            exonLocations[i] = new SequenceRead(
-                                    Integer.parseInt(exonStarts[i]),
-                                    Integer.parseInt(exonEnds[i]));
+                            allLocations.add(new Location(Integer.parseInt(exonStarts[i]), Integer.parseInt(exonEnds[i])));
                         }
                     }
-                    Feature newFeature = new Feature(name, chr, strand,
-                            txLocation, cdsLocation, exonLocations, aliasName);
-                    if (nameList.add(name) && nameList.add(aliasName)) {
-                        currentAnnotation.addFeature(newFeature);
-                    } else {
-                        Feature originFeature = currentAnnotation.getFeaturesForName(chr, aliasName);
-                        if (originFeature != null) {
-                            if (newFeature.getTotalLength() > originFeature.getTotalLength()) {
-                                currentAnnotation.deleteFeature(chr, originFeature);
-                                currentAnnotation.addFeature(newFeature);
-                            }
-                        } else {
-                            currentAnnotation.addFeature(newFeature);
-                        }
-                    }
+                    Feature newFeature = new Feature(name, chr, strand, allLocations, aliasName);
+                    currentAnnotation.addFeature(newFeature);
+
+//                        Feature originFeature = currentAnnotation.getFeaturesForName(chr, aliasName);
+//                        if (originFeature != null) {
+//                            if (newFeature.getTotalLength() > originFeature.getTotalLength()) {
+//                                currentAnnotation.deleteFeature(chr, originFeature);
+//                                currentAnnotation.addFeature(newFeature);
+//                            }
+//                        } else {
+//                            currentAnnotation.addFeature(newFeature);
+//                        }
                 }
             } catch (NumberFormatException e) {
-                progressWarningReceived(new REDException("Location "
-                        + sections[txStartColumn] + "-" + sections[txEndColumn]
-                        + " was not an integer"));
+                progressWarningReceived(new REDException("Location " + sections[txStartColumn] + "-" + sections[txEndColumn] + " was not an integer"));
                 e.printStackTrace();
             }
         }
-
-        if (lineCount < 1000000) {
-            currentAnnotation.finalise();
-            annotationSets.add(currentAnnotation);
-        }
+        currentAnnotation.finalise();
         br.close();
-        progressComplete("annotation_loaded", annotationSets);
-        return annotationSets.toArray(new AnnotationSet[0]);
+        progressComplete("annotation_loaded", currentAnnotation);
+        return currentAnnotation;
     }
 
     @Override
@@ -175,40 +142,6 @@ public class UCSCRefGeneParser extends AnnotationParser {
         // TODO Auto-generated method stub
         return new FileFilterExt(".txt");
     }
-
-//    private Feature mergeTwoFeatures(Feature originalFeature, Feature newFeature) {
-//        String name = originalFeature.getName().length() > newFeature.getName().length() ? newFeature.getName() : originalFeature.getName();
-//        String aliasName = originalFeature.getAliasName();
-//        String chr = originalFeature.getChr();
-//        Strand strand = originalFeature.getStrand();
-//        int txStart = originalFeature.getTxLocation().getStart() <= newFeature.getTxLocation().getStart() ? originalFeature.getTxLocation().getStart() : newFeature.getTxLocation().getStart();
-//        int txEnd = originalFeature.getTxLocation().getEnd() >= newFeature.getTxLocation().getEnd() ? originalFeature.getTxLocation().getEnd() : newFeature.getTxLocation().getEnd();
-//
-//        Location txLocation = new SequenceRead(txStart, txEnd);
-//        int cdsStart = originalFeature.getCdsLocation().getStart() <= newFeature.getCdsLocation().getStart() ? originalFeature.getCdsLocation().getStart() : newFeature.getCdsLocation().getStart();
-//        int cdsEnd = originalFeature.getCdsLocation().getEnd() >= newFeature.getCdsLocation().getEnd() ? originalFeature.getCdsLocation().getEnd() : newFeature.getCdsLocation().getEnd();
-//        Location cdsLocation = new SequenceRead(cdsStart, cdsEnd);
-//
-//        Vector<Location> exonLocations = new Vector<Location>();
-//        Location[] originalExons = originalFeature.getExonLocations();
-//        Location[] newExons = newFeature.getExonLocations();
-//        for (int i = 0; i < originalExons.length; i++) {
-//            for (int j = 0; j < newExons.length; j++) {
-//                if (SequenceReadUtils.duplicate(originalExons[i], newExons[j])) {
-//                    exonLocations.add(originalExons[i]);
-//                    j = newExons.length;
-//                } else if (SequenceReadUtils.overlaps(originalExons[i], newExons[j])) {
-//                    int exonStart = originalExons[i].getStart() <= newExons[j].getStart() ? originalExons[i].getStart() : newExons[j].getStart();
-//                    int exonEnd = originalExons[i].getEnd() >= newExons[j].getEnd() ? originalExons[i].getEnd() : newExons[j].getEnd();
-//                    Location tmpExon = new SequenceRead(exonStart, exonEnd);
-//                    exonLocations.add(tmpExon);
-//                    j = newExons.length;
-//                }
-//            }
-//        }
-//        Location[] exonLocation = exonLocations.toArray(new Location[0]);
-//        return new Feature(name, chr, strand, txLocation, cdsLocation, exonLocation, aliasName);
-//    }
 
     public void parseGeneType(GeneType type) {
         switch (type) {

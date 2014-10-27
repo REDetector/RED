@@ -216,7 +216,7 @@ public class IGVGenomeParser implements Runnable {
                 coreAnnotation.addPreCachedFile(name, cacheFiles[i]);
             }
         }
-        genome.getAnnotationCollection().addAnnotationSets(new AnnotationSet[]{coreAnnotation});
+        genome.getAnnotationCollection().addAnnotationSet(coreAnnotation);
         progressComplete("load_genome", genome);
     }
 
@@ -264,14 +264,14 @@ public class IGVGenomeParser implements Runnable {
         if (geneReader != null && geneType != null) {
             UCSCRefGeneParser parser = new UCSCRefGeneParser(genome);
             parser.addProgressListener(new ProgressDialog(REDApplication.getInstance(), parser.name(), parser));
-            AnnotationSet[] sets = parser.parseAnnotation(geneType, geneReader, genome);
+            AnnotationSet set = parser.parseAnnotation(geneType, geneReader, genome);
 
             // Here we have to add the new sets to the annotation
             // collection before we say that we're finished otherwise
             // this object can get destroyed before the program gets
             // chance to execute the operation which adds the sets to
             // the annotation collection.
-            genome.getAnnotationCollection().addAnnotationSets(sets);
+            genome.getAnnotationCollection().addAnnotationSet(set);
 
         }
         progressComplete("load_genome", genome);

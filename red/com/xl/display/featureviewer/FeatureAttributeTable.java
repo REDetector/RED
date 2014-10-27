@@ -20,7 +20,7 @@ package com.xl.display.featureviewer;
  *    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-import com.xl.datatypes.sequence.Location;
+import com.xl.datatypes.feature.Feature;
 import com.xl.utils.Strand;
 
 import javax.swing.table.AbstractTableModel;
@@ -91,16 +91,9 @@ public class FeatureAttributeTable extends AbstractTableModel {
                     case 4:
                         return feature.getCdsLocation().toString();
                     case 5:
-                        return feature.getExonLocations().length;
+                        return feature.getExonLocations().size();
                     case 6:
-                        StringBuffer str = new StringBuffer();
-                        for (Location exon : feature.getExonLocations()) {
-                            str.append(exon.toString() + ",");
-                        }
-                        if (str.length() != 0) {
-                            str.deleteCharAt(str.length() - 1);
-                        }
-                        return str.toString();
+                        return feature.getExonLocations();
                     default:
                         return null;
                 }
