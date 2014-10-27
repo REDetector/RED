@@ -15,11 +15,34 @@ public class ChromosomeUtils {
     }
 
     public static boolean isStandardChromosomeName(String chr) {
-        if (chrNameSets.contains(chr)) {
-            return true;
+        return chrNameSets.contains(chr);
+    }
+
+    public static String formatChromosomeName(String chr) {
+        if (chr.length() == 1) {
+            return "chr" + chr;
+        } else if (chr.startsWith("ch") && !chr.startsWith("chr")) {
+            return "chr" + chr.substring(2);
         } else {
-            return false;
+            return chr;
         }
     }
 
+    public static String getAliasChromosomeName(String chr) {
+        if (chr.length() == 1) {
+            return chr;
+        } else {
+            return chr.substring(3);
+        }
+    }
+
+    public static void main(String[] args) {
+        System.out.println(ChromosomeUtils.formatChromosomeName("8"));
+        System.out.println(ChromosomeUtils.formatChromosomeName("ch8"));
+        System.out.println(ChromosomeUtils.formatChromosomeName("chr8"));
+        System.out.println(ChromosomeUtils.formatChromosomeName("Y"));
+        System.out.println(ChromosomeUtils.formatChromosomeName("chY"));
+        System.out.println(ChromosomeUtils.formatChromosomeName("chrY"));
+        System.out.println(ChromosomeUtils.getAliasChromosomeName("chrY"));
+    }
 }
