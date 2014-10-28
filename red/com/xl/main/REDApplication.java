@@ -310,11 +310,11 @@ public class REDApplication extends JFrame implements ProgressListener, DataChan
         ArrayList<DataStore> storesToAdd = new ArrayList<DataStore>();
 
         for (DataSet dataset : newData) {
-            if (dataset.getTotalReadCount() > 0) {
+//            if (dataset.getTotalReadCount() > 0) {
                 // Can we leave this out as this should be handled by the data collection listener?
                 dataCollection.addDataSet(dataset);
                 storesToAdd.add(dataset);
-            }
+//            }
         }
 
         if (dataCollection.getAllDataSets().length > 0)
