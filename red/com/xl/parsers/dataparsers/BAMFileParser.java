@@ -114,6 +114,7 @@ public class BAMFileParser extends DataParser {
         System.out.println(this.getClass().getName() + ":samFiles:" + bamFile.getName());
         DataSet newData;
         SAMRecordIterator iter = null;
+        String lastChr = null;
         try {
 
             init(bamFile);
@@ -144,8 +145,9 @@ public class BAMFileParser extends DataParser {
                     continue;
                 }
                 String sequenceName = samRecord.getReferenceName();
+
                 if (lineCount == 1) {
-                    System.out.println(sequenceName);
+                    lastChr = sequenceName;
                 }
 
                 if (lineCount == 1 && !ChromosomeUtils.isStandardChromosomeName(sequenceName)) {
@@ -156,11 +158,15 @@ public class BAMFileParser extends DataParser {
                 boolean negative = samRecord.getReadNegativeStrandFlag();
                 Alignment alignment = new Alignment(sequenceName, alignmentStart, alignmentEnd, negative);
                 newData.addData(alignment);
+                if (!sequenceName.equals(lastChr)) {
+                    progressUpdated("Caching data from " + bamFile.getName(), 0, 0);
+                    lastChr = sequenceName;
+//                    newData.finalise();
+                }
             }
 
             // Cache the data in the new dataset
-            progressUpdated("Caching data from " + bamFile.getName(), 0, 0);
-            newData.finalise();
+//            newData.finalise();
         } catch (Exception ex) {
             progressExceptionReceived(ex);
             progressCancelled();

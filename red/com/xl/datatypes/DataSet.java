@@ -73,10 +73,6 @@ public class DataSet extends DataStore implements Runnable {
      */
     private boolean isFinalised = false;
     /**
-     * A flag which is set as soon as any unsorted data is added to the data set
-     */
-    private boolean needsSorting = false;
-    /**
      * This count allows us to keep track of the progress of finalisation for
      * the individual chromosomes
      */
@@ -114,6 +110,10 @@ public class DataSet extends DataStore implements Runnable {
         if (collection() != null) {
             collection().dataSetRenamed(this);
         }
+    }
+
+    public void finalise(String chr) {
+
     }
 
     /**
@@ -357,10 +357,7 @@ public class DataSet extends DataStore implements Runnable {
             // This method is only run when the store is being finalised. It allows us to process all of the chromosomes for a data store in parallel which
             // is quicker given that the processing is constrained by CPU
 
-            if (needsSorting) {
-                // System.err.println("Sorting unsorted reads");
-                Collections.sort(sequenceReads);
-            }
+            Collections.sort(sequenceReads);
 
 //            if (removeDuplicates()) {
 //                List<SequenceRead> seqTmp = new ArrayList<SequenceRead>();
