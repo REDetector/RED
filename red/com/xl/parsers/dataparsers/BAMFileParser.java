@@ -159,7 +159,8 @@ public class BAMFileParser extends DataParser {
                 Alignment alignment = new Alignment(sequenceName, alignmentStart, alignmentEnd, negative);
                 newData.addData(alignment);
                 if (!sequenceName.equals(lastChr)) {
-                    progressUpdated("Caching data from " + bamFile.getName(), 0, 0);
+//                    progressUpdated("Caching data from " + bamFile.getName(), 0, 0);
+                    System.out.println("Parsing " + lastChr);
                     lastChr = sequenceName;
 //                    newData.finalise();
                 }
