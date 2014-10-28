@@ -491,7 +491,7 @@ public class REDParser implements Runnable, ProgressListener {
             while (en2.hasMoreElements()) {
                 en2.nextElement().progressUpdated("Caching data for " + dataSets[i].name(), (i + 1) * 10, n * 10);
             }
-            dataSets[i].finalise();
+//            dataSets[i].finalise();
             System.out.println(this.getClass().getName() + ":application.dataCollection().addDataSet(dataSets[i]);");
             application.dataCollection().addDataSet(dataSets[i]);
         }

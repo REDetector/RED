@@ -124,7 +124,7 @@ public class DataSet extends DataStore implements Runnable {
      * This call should only be made by DataParsers who know that no more data
      * will be added.
      */
-    public synchronized void finalise() {
+    public synchronized void finalise1() {
 
         if (isFinalised)
             return;
@@ -187,8 +187,8 @@ public class DataSet extends DataStore implements Runnable {
 
     @Override
     public List<Location> getReadsForProbe(Probe p) {
-        if (!isFinalised)
-            finalise();
+//        if (!isFinalised)
+//            finalise();
 
         List<Location> allReads = getReadsForChromosome(p.getChr());
 
@@ -220,8 +220,8 @@ public class DataSet extends DataStore implements Runnable {
     }
 
     public synchronized List<Location> getReadsForChromosome(String c) {
-        if (!isFinalised)
-            finalise();
+//        if (!isFinalised)
+//            finalise();
 
         // Check if we need to reset which chromosome was loaded last. We need to do this even if we're not caching since we use this to determine whether
         // the cached index we're holding is valid.
@@ -275,8 +275,8 @@ public class DataSet extends DataStore implements Runnable {
 
     public int getReadCountForChromosome(String chr) {
 
-        if (!isFinalised)
-            finalise();
+//        if (!isFinalised)
+//            finalise();
 
         if (readData.containsKey(chr)) {
             return getReadsForChromosome(chr).size();
@@ -287,8 +287,8 @@ public class DataSet extends DataStore implements Runnable {
 
     public int getTotalReadCount() {
 //		System.out.println(this.getClass().getDisplayName() + ":getTotalReadCount()");
-        if (!isFinalised)
-            finalise();
+//        if (!isFinalised)
+//            finalise();
 
         return totalReadCount.value();
     }
@@ -303,8 +303,8 @@ public class DataSet extends DataStore implements Runnable {
 
     public int getReadCountForStrand(Strand strand) {
 
-        if (!isFinalised)
-            finalise();
+//        if (!isFinalised)
+//            finalise();
 
         if (strand == Strand.POSITIVE) {
             return forwardReadCount.value();
@@ -317,8 +317,8 @@ public class DataSet extends DataStore implements Runnable {
 
     public long getTotalReadLength() {
 
-        if (!isFinalised)
-            finalise();
+//        if (!isFinalised)
+//            finalise();
 
         return totalReadLength.value();
     }
