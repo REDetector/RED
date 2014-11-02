@@ -93,7 +93,7 @@ public abstract class DataParser implements Runnable, Cancellable {
      */
     abstract public String getDescription();
 
-    abstract public List<? extends Location> query(String chr, int start, int end);
+    public abstract List<? extends Location> query(String chr, int start, int end);
 
     /**
      * Gets the list of files to be parsed
