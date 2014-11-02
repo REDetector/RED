@@ -1,6 +1,6 @@
 package com.dw.denovo;
 
-import com.dw.publicaffairs.DatabaseManager;
+import com.dw.dbutils.DatabaseManager;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
