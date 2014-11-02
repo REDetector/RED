@@ -5,14 +5,13 @@ import com.xl.datatypes.DataGroup;
 import com.xl.datatypes.DataSet;
 import com.xl.datatypes.DataStore;
 import com.xl.datatypes.genome.Chromosome;
-import com.xl.datatypes.probes.Probe;
-import com.xl.datatypes.probes.ProbeList;
-import com.xl.datatypes.probes.ProbeSet;
-import com.xl.datatypes.sequence.Alignment;
 import com.xl.datatypes.sequence.Location;
 import com.xl.datatypes.sequence.SequenceRead;
+import com.xl.datatypes.sites.Site;
+import com.xl.datatypes.sites.SiteList;
+import com.xl.datatypes.sites.SiteSet;
 import com.xl.interfaces.DataChangeListener;
-import com.xl.interfaces.DisplayPreferencesListener;
+import com.xl.parsers.dataparsers.BAMFileParser;
 import com.xl.preferences.DisplayPreferences;
 import com.xl.utils.AsciiUtils;
 import com.xl.utils.ChromosomeUtils;
@@ -29,8 +28,9 @@ import java.util.List;
  * view containing the data from a single data store. Depending on the display
  * preferences it can show either just raw data, or quantitated data, or both.
  */
-public class ChromosomeDataTrack extends AbstractTrack implements DataChangeListener, DisplayPreferencesListener {
-
+public class ChromosomeDataTrack extends AbstractTrack implements DataChangeListener {
+    private static int TEN_MB = 10000000;
+    private Chromosome chromosome = null;
     /**
      * The data.
      */
@@ -40,11 +40,12 @@ public class ChromosomeDataTrack extends AbstractTrack implements DataChangeList
      */
     private List<? extends Location> reads = null;
 
-    private List<? extends Location> smallReads = null;
+    private List<Site> depths = null;
+
     /**
-     * The probes
+     * The sites
      */
-    private Probe[] probes;
+    private Site[] sites;
     /**
      * Whether the tip is displayed.
      */
@@ -56,7 +57,7 @@ public class ChromosomeDataTrack extends AbstractTrack implements DataChangeList
     /**
      * The active read.
      */
-    private Alignment activeRead = null;
+    private Location activeRead = null;
     /**
      * The active read index.
      */
@@ -70,14 +71,15 @@ public class ChromosomeDataTrack extends AbstractTrack implements DataChangeList
      */
     private int[] readsYIndex = null;
 
-    private int[] smallReadsYIndex = null;
+    private int maxCoverage = 0;
 
-    private boolean drawProbes = true;
+    private boolean drawSites = true;
     private boolean drawReads = true;
 
     private boolean isStandardChromosomeName;
 
-    private int maxCoverage;
+    private int enlargeStart = 0;
+    private int enlargeEnd = 0;
 
     /**
      * Instantiates a new chromosome data track.
@@ -94,49 +96,53 @@ public class ChromosomeDataTrack extends AbstractTrack implements DataChangeList
     @Override
     public void paint(Graphics g) {
         super.paint(g);
+        int viewerLength = getViewerLength();
+        if (viewerLength > TEN_MB) {
+            g.setColor(ColourScheme.DATA_TRACK);
+            String prompt = "Zoom in to make the mapped reads visible.";
+            int baseWidth = g.getFontMetrics().stringWidth(prompt);
+            g.drawString(prompt, (getWidth() - baseWidth) / 2, readHeight);
+            reads = null;
+            depths = null;
+            enlargeStart = enlargeEnd = 0;
+            return;
+        }
         switch (DisplayPreferences.getInstance().getDisplayMode()) {
             case DisplayPreferences.DISPLAY_MODE_PROBES_ONLY:
                 drawReads = false;
                 break;
             case DisplayPreferences.DISPLAY_MODE_READS_ONLY:
-                drawProbes = false;
+                drawSites = false;
                 break;
             default:
                 drawReads = true;
-                drawProbes = true;
+                drawSites = true;
         }
         drawnReads.removeAllElements();
 
-        if (drawReads) {
-            if (smallReads != null) {
-                for (int i = 0, readsLength = smallReads.size(); i < readsLength; i++) {
-                    SequenceRead alignment = (SequenceRead) smallReads.get(i);
-                    if (alignment.getEnd() >= currentViewerStart && alignment.getStart() <= currentViewerEnd) {
-                        drawRead(g, alignment, smallReadsYIndex[i] * readHeight);
-                    }
-                }
-            } else {
-                for (int i = 0, readsLength = reads.size(); i < readsLength; i++) {
-                    Alignment alignment = (Alignment) reads.get(i);
-                    if (alignment.getEnd() >= currentViewerStart && alignment.getStart() <= currentViewerEnd) {
-                        drawRead(g, alignment, readsYIndex[i] * readHeight);
-                    }
-                }
+        if (currentViewerStart < enlargeStart || currentViewerEnd > enlargeEnd) {
+            if (viewerLength > displayWidth * 2) {
+                updateBlocks();
             }
-
-            //Always draw the active read last
-            if (activeRead != null) {
-                g.setColor(ColourScheme.ACTIVE_READ);
-                drawRect(g, activeRead.getStart(), activeRead.getEnd() + 1, activeReadIndex, readHeight);
-                g.setColor(ColourScheme.DATA_TRACK);
+            enlargeStart = currentViewerStart - viewerLength / 2;
+            enlargeEnd = currentViewerEnd + viewerLength / 2;
+            if (enlargeStart < 0) {
+                enlargeStart = 0;
+            }
+            if (enlargeEnd > chromosome.getLength()) {
+                enlargeEnd = chromosome.getLength();
             }
         }
-        if (drawProbes) {
-            for (Probe probe : probes) {
-                if (probe.getStart() > currentViewerStart && probe.getStart() < currentViewerEnd) {
-                    drawProbe(g, probe);
-                }
+        if (drawReads) {
+            if (viewerLength > displayWidth * 2) {
+                drawBlocks(g);
+                reads = null;
+            } else {
+                drawReads(g);
             }
+        }
+        if (drawSites) {
+            drawSites(g);
         }
 
         // Draw a line across the bottom of the display
@@ -158,9 +164,25 @@ public class ChromosomeDataTrack extends AbstractTrack implements DataChangeList
 
     }
 
-    private void drawRead(Graphics g, Alignment r, int pixelYStart) {
+    private void drawReads(Graphics g) {
+        if (reads == null) {
+            updateReads();
+        }
+        for (int i = 0, readsLength = reads.size(); i < readsLength; i++) {
+            Location location = reads.get(i);
+            if (location.getEnd() >= currentViewerStart && location.getStart() <= currentViewerEnd) {
+                drawRead(g, location, readsYIndex[i] * readHeight);
+            }
+        }
+        //Always draw the active read last
+        if (activeRead != null) {
+            g.setColor(ColourScheme.ACTIVE_READ);
+            drawRect(g, activeRead.getStart(), activeRead.getEnd() + 1, activeReadIndex, readHeight);
+            g.setColor(ColourScheme.DATA_TRACK);
+        }
+    }
 
-
+    private void drawRead(Graphics g, Location r, int pixelYStart) {
         g.setFont(FontManager.defaultFont);
         int start = r.getStart();
         int end = r.getEnd();
@@ -178,7 +200,12 @@ public class ChromosomeDataTrack extends AbstractTrack implements DataChangeList
                 int k = 0;
                 for (; k < cChar.length; k++) {
                     char c = cChar[k];
-                    drawBase(g, c, start + k, pixelYStart + readHeight);
+                    if (getViewerLength() > displayWidth / 4) {
+                        g.setColor(ColourScheme.getBaseColor(c));
+                        fillRect(g, start + k, start + k + 1, pixelYStart, readHeight);
+                    } else {
+                        drawBase(g, c, start + k, pixelYStart + readHeight);
+                    }
                 }
                 if (i < len - 1) {
                     g.setColor(ColourScheme.READ_INTEVAL);
@@ -192,7 +219,18 @@ public class ChromosomeDataTrack extends AbstractTrack implements DataChangeList
         }
     }
 
-    private void drawProbe(Graphics g, Probe b) {
+    private void drawSites(Graphics g) {
+        if (sites == null) {
+            return;
+        }
+        for (Site site : sites) {
+            if (site.getStart() > currentViewerStart && site.getStart() < currentViewerEnd) {
+                drawSite(g, site);
+            }
+        }
+    }
+
+    private void drawSite(Graphics g, Site b) {
         g.setColor(ColourScheme.getBaseColor(b.getAltBase()));
         int position = b.getStart();
         int baseWidth = g.getFontMetrics().stringWidth(String.valueOf(b.getAltBase()));
@@ -202,44 +240,81 @@ public class ChromosomeDataTrack extends AbstractTrack implements DataChangeList
         g.drawLine(right, 0, right, displayHeight);
     }
 
-    private void updateReads(Chromosome chromosome) {
+    private void drawBlocks(Graphics g) {
+        if (depths == null) {
+            return;
+        }
+        g.setColor(ColourScheme.DATA_TRACK);
+        for (Site depth : depths) {
+            int position = depth.getStart();
+            if (position >= currentViewerStart && position <= currentViewerEnd) {
+                drawLine(g, position, position, 0, depth.getDepth() * readHeight);
+            }
+
+        }
+    }
+
+    private void updateReads() {
+        if (chromosome == null) {
+            return;
+        }
         String currentChromosome = chromosome.getName();
         if (!isStandardChromosomeName) {
             currentChromosome = ChromosomeUtils.getAliasChromosomeName(currentChromosome);
         }
-        smallReads = data.getDataParser().query(currentChromosome, currentViewerStart, currentViewerEnd);
-        smallReadsYIndex = new int[smallReads.size()];
-        Arrays.fill(smallReadsYIndex, -1);
-        int maxCoverage = processSequence(smallReads, smallReadsYIndex);
+        reads = data.getDataParser().query(currentChromosome, enlargeStart, enlargeEnd);
+        readsYIndex = new int[reads.size()];
+        Arrays.fill(readsYIndex, -1);
+        maxCoverage = processSequence(reads, readsYIndex);
+        setPreferredSize(new Dimension(displayWidth, maxCoverage * readHeight));
+        repaint();
+    }
+
+    private void updateBlocks() {
+        if (chromosome == null) {
+            return;
+        }
+        String currentChromosome = chromosome.getName();
+        if (!isStandardChromosomeName) {
+            currentChromosome = ChromosomeUtils.getAliasChromosomeName(currentChromosome);
+        }
+        if (depths != null) {
+            depths.clear();
+            depths = null;
+            System.gc();
+        }
+        depths = ((BAMFileParser) data.getDataParser()).getDepth(currentChromosome, currentViewerStart, currentViewerEnd);
+        for (Site site : depths) {
+            if (maxCoverage < site.getDepth()) {
+                maxCoverage = site.getDepth();
+            }
+        }
         setPreferredSize(new Dimension(displayWidth, maxCoverage * readHeight));
         repaint();
     }
 
     /**
-     * This call can be made whenever the reads need to be updated -
-     * particularly when the viewer is being switched to show a different
-     * chromosome.
+     * This call can be made whenever the reads need to be updated - particularly when the viewer is being switched to show a different chromosome.
      */
     @Override
     protected void updateTrack(Chromosome chromosome) {
+        this.chromosome = chromosome;
         String currentChromosome = chromosome.getName();
-        if (dataCollection.probeSet() != null) {
-            probes = dataCollection.probeSet().getActiveList().getProbesForChromosome(currentChromosome);
+        if (dataCollection.siteSet() != null) {
+            sites = dataCollection.siteSet().getActiveList().getSitesForChromosome(currentChromosome);
         } else {
-            probes = new Probe[0];
+            sites = new Site[0];
         }
-        Arrays.sort(probes);
-        if (!isStandardChromosomeName) {
-            currentChromosome = ChromosomeUtils.getAliasChromosomeName(currentChromosome);
+        Arrays.sort(sites);
+        if (getViewerLength() > TEN_MB) {
+            repaint();
+            return;
         }
-        reads = data.getReadsForChromosome(currentChromosome);
-        System.out.println(this.getClass().getName() + "\t" + reads.size());
-        readsYIndex = new int[reads.size()];
-        Arrays.fill(readsYIndex, -1);
-        maxCoverage = processSequence(reads, readsYIndex);
-        // Force the slots to be reassigned
-        displayHeight = 0;
-        repaint();
+        if (getViewerLength() > displayWidth * 2) {
+            updateBlocks();
+        } else {
+            updateReads();
+        }
     }
 
     /**
@@ -332,12 +407,12 @@ public class ChromosomeDataTrack extends AbstractTrack implements DataChangeList
     }
 
     @Override
-    public void probeSetReplaced(ProbeSet p) {
+    public void siteSetReplaced(SiteSet p) {
         if (p == null) {
-            probes = null;
+            sites = null;
         } else {
-            probes = p.getProbesForChromosome(DisplayPreferences.getInstance().getCurrentChromosome().getName());
-            Arrays.sort(probes);
+            sites = p.getSitesForChromosome(DisplayPreferences.getInstance().getCurrentChromosome().getName());
+            Arrays.sort(sites);
         }
     }
 
@@ -347,12 +422,12 @@ public class ChromosomeDataTrack extends AbstractTrack implements DataChangeList
     }
 
     @Override
-    public void activeProbeListChanged(ProbeList l) {
+    public void activeSiteListChanged(SiteList l) {
         if (l == null) {
-            probes = null;
+            sites = null;
         } else {
-            probes = l.getProbesForChromosome(DisplayPreferences.getInstance().getCurrentChromosome().getName());
-            Arrays.sort(probes);
+            sites = l.getSitesForChromosome(DisplayPreferences.getInstance().getCurrentChromosome().getName());
+            Arrays.sort(sites);
         }
         repaint();
     }
@@ -367,7 +442,7 @@ public class ChromosomeDataTrack extends AbstractTrack implements DataChangeList
     @Override
     public void mouseMoved(MouseEvent me) {
         /*
-         * In many cases we don't need to search through reads and probes, so we
+         * In many cases we don't need to search through reads and sites, so we
 		 * can quickly work out what we should be looking for from what we're
 		 * drawing and where the mouse is.
 		 */
@@ -378,15 +453,6 @@ public class ChromosomeDataTrack extends AbstractTrack implements DataChangeList
                 setToolTipText("Single left click to zoom in and single right click to zoom out.");
                 timing = false;
             }
-        }
-    }
-
-    @Override
-    public void displayPreferencesUpdated(DisplayPreferences prefs) {
-        if (prefs.getCurrentLength() < displayWidth) {
-            updateReads(prefs.getCurrentChromosome());
-        } else {
-            smallReads = null;
         }
     }
 
@@ -414,7 +480,7 @@ public class ChromosomeDataTrack extends AbstractTrack implements DataChangeList
         /**
          * The read.
          */
-        public Alignment read;
+        public Location read;
 
         /**
          * Instantiates a new drawn read.
@@ -425,7 +491,7 @@ public class ChromosomeDataTrack extends AbstractTrack implements DataChangeList
          * @param top    the top
          * @param read   the read
          */
-        public DrawnRead(int left, int right, int bottom, int top, Alignment read) {
+        public DrawnRead(int left, int right, int bottom, int top, Location read) {
             this.left = left;
             this.right = right;
             this.top = top;
