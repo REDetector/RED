@@ -19,13 +19,13 @@
  */
 package com.xl.filter;
 
-import com.dw.denovo.PValueFilter;
-import com.dw.publicaffairs.DatabaseManager;
-import com.dw.publicaffairs.Query;
+import com.dw.dbutils.DatabaseManager;
+import com.dw.dbutils.Query;
+import com.dw.denovo.FisherExactTestFilter;
 import com.xl.datatypes.DataCollection;
 import com.xl.datatypes.DataStore;
-import com.xl.datatypes.probes.Probe;
-import com.xl.datatypes.probes.ProbeList;
+import com.xl.datatypes.sites.Site;
+import com.xl.datatypes.sites.SiteList;
 import com.xl.exception.REDException;
 import com.xl.panel.DataIntroductionPanel;
 import com.xl.preferences.LocationPreferences;
@@ -35,17 +35,24 @@ import javax.swing.event.ListSelectionEvent;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.io.File;
 import java.util.Vector;
 
 /**
- * The ValuesFilter filters probes based on their associated values
- * from quantiation.  Each probe is filtered independently of all
- * other probes.
+ * The ValuesFilter filters sites based on their associated values
+ * from quantiation.  Each site is filtered independently of all
+ * other sites.
  */
-public class PValueFilterMenu extends ProbeFilter {
+public class FisherExactTestFilterMenu extends AbstractSiteFilter {
 
     private String rScriptPath = null;
+    private double pvalueThres = 0.05;
+    private double fdrThres = 0.05;
+    private JTextField rScriptField = null;
+    private JTextField pvalueField;
+    private JTextField fdrField;
     private PValueFilterOptionPanel optionsPanel = new PValueFilterOptionPanel();
 
     /**
@@ -54,7 +61,7 @@ public class PValueFilterMenu extends ProbeFilter {
      * @param collection The dataCollection to filter
      * @throws com.xl.exception.REDException if the dataCollection isn't quantitated.
      */
-    public PValueFilterMenu(DataCollection collection) throws REDException {
+    public FisherExactTestFilterMenu(DataCollection collection) throws REDException {
         super(collection);
     }
 
@@ -64,26 +71,25 @@ public class PValueFilterMenu extends ProbeFilter {
     }
 
     @Override
-    protected void generateProbeList() {
+    protected void generateSiteList() {
         progressUpdated("Filtering RNA-editing sites by statistic method (P-Value), please wait...", 0, 0);
-        PValueFilter pv = new PValueFilter(databaseManager);
+        FisherExactTestFilter pv = new FisherExactTestFilter(databaseManager);
         pv.estblishPValueTable(DatabaseManager.PVALUE_FILTER_RESULT_TABLE_NAME);
-        pv.executeFDRFilter(DatabaseManager.PVALUE_FILTER_TABLE_NAME,
-                DatabaseManager.PVALUE_FILTER_RESULT_TABLE_NAME, parentTable,
-                LocationPreferences.getInstance().getRScriptPath());
-        Vector<Probe> probes = Query.queryAllEditingSites(DatabaseManager.PVALUE_FILTER_RESULT_TABLE_NAME);
-        ProbeList newList = new ProbeList(parentList, DatabaseManager.PVALUE_FILTER_RESULT_TABLE_NAME, "",
+        pv.executeFDRFilter(DatabaseManager.PVALUE_FILTER_TABLE_NAME, DatabaseManager.PVALUE_FILTER_RESULT_TABLE_NAME, parentTable,
+                LocationPreferences.getInstance().getRScriptPath(), pvalueThres, fdrThres);
+        Vector<Site> sites = Query.queryAllEditingSites(DatabaseManager.PVALUE_FILTER_RESULT_TABLE_NAME);
+        SiteList newList = new SiteList(parentList, DatabaseManager.PVALUE_FILTER_RESULT_TABLE_NAME, description(),
                 DatabaseManager.PVALUE_FILTER_RESULT_TABLE_NAME);
         int index = 0;
-        int probesLength = probes.size();
-        for (Probe probe : probes) {
-            progressUpdated(index++, probesLength);
+        int sitesLength = sites.size();
+        for (Site site : sites) {
+            progressUpdated(index++, sitesLength);
             if (cancel) {
                 cancel = false;
                 progressCancelled();
                 return;
             }
-            newList.addProbe(probe);
+            newList.addSite(site);
         }
         filterFinished(newList);
     }
@@ -109,38 +115,19 @@ public class PValueFilterMenu extends ProbeFilter {
 
     @Override
     public String name() {
-        return "P-Value Filter";
-    }
-
-
-    @Override
-    protected String listDescription() {
-        StringBuilder b = new StringBuilder();
-
-        b.append("Filter on probes in ");
-        b.append(collection.probeSet().getActiveList().name() + " ");
-
-        for (int s = 0; s < stores.length; s++) {
-            b.append(stores[s].name());
-            if (s < stores.length - 1) {
-                b.append(" , ");
-            }
-        }
-        return b.toString();
+        return "Fisher's Exact Test Filter";
     }
 
     @Override
     protected String listName() {
-        return "P-Value filter";
+        return "FET filter";
     }
 
 
     /**
      * The ValuesFilterOptionPanel.
      */
-    private class PValueFilterOptionPanel extends AbstractOptionPanel implements ActionListener {
-
-        private JTextField rScriptField = null;
+    private class PValueFilterOptionPanel extends AbstractOptionPanel implements ActionListener, KeyListener {
 
         /**
          * Instantiates a new values filter option panel.
@@ -149,14 +136,8 @@ public class PValueFilterMenu extends ProbeFilter {
             super(collection);
         }
 
-
-        public Dimension getPreferredSize() {
-            return new Dimension(600, 250);
-        }
-
-
         public void valueChanged(ListSelectionEvent lse) {
-            System.out.println(PValueFilterMenu.class.getName() + ":valueChanged()");
+            System.out.println(FisherExactTestFilterMenu.class.getName() + ":valueChanged()");
             Object[] objects = dataList.getSelectedValues();
             stores = new DataStore[objects.length];
             for (int i = 0; i < stores.length; i++) {
@@ -196,12 +177,16 @@ public class PValueFilterMenu extends ProbeFilter {
         }
 
         @Override
-        protected JPanel getOptionPanel() {
+        protected boolean hasChoicePanel() {
+            return true;
+        }
+
+        @Override
+        protected JPanel getChoicePanel() {
             JPanel choicePanel = new JPanel();
             choicePanel.setLayout(new GridBagLayout());
-            choicePanel.setBorder(BorderFactory.createEmptyBorder(4, 4, 4, 4));
-
             GridBagConstraints c = new GridBagConstraints();
+
             c.gridy = 0;
             rScriptField = new JTextField();
             JLabel rScriptLable = new JLabel(LocationPreferences.R_SCRIPT_PATH);
@@ -226,7 +211,69 @@ public class PValueFilterMenu extends ProbeFilter {
             c.gridx = 2;
             c.weightx = 0.1;
             choicePanel.add(rScriptButton, c);
+
+            c.gridy++;
+            c.gridx = 0;
+            c.weightx = 0.5;
+            c.weighty = 0.5;
+            c.fill = GridBagConstraints.HORIZONTAL;
+            choicePanel.add(new JLabel("Filter sites with p-value > "), c);
+            c.gridx = 1;
+            c.weightx = 0.1;
+            pvalueField = new JTextField(5);
+            pvalueField.setText(pvalueThres + "");
+            pvalueField.addKeyListener(this);
+            choicePanel.add(pvalueField, c);
+
+            c.gridy++;
+            c.gridx = 0;
+            c.weightx = 0.5;
+            c.weighty = 0.5;
+            c.fill = GridBagConstraints.HORIZONTAL;
+            choicePanel.add(new JLabel("Filter sites with fdr > "), c);
+            c.gridx = 1;
+            c.weightx = 0.1;
+            fdrField = new JTextField(5);
+            fdrField.setText(fdrThres + "");
+            fdrField.addKeyListener(this);
+            choicePanel.add(fdrField, c);
+
             return choicePanel;
+        }
+
+        @Override
+        protected String getPanelDescription() {
+            return "Fisher's exact test is used to reduce the errors in detecting RNA editing sites caused by technical artifacts (e.g., sequencing errors).";
+        }
+
+        @Override
+        public void keyTyped(KeyEvent e) {
+            int keyChar = e.getKeyChar();
+            if (!((keyChar >= KeyEvent.VK_0 && keyChar <= KeyEvent.VK_9) || (keyChar == KeyEvent.VK_PERIOD)))
+                e.consume();
+        }
+
+        @Override
+        public void keyPressed(KeyEvent e) {
+        }
+
+        @Override
+        public void keyReleased(KeyEvent e) {
+            JTextField f = (JTextField) e.getSource();
+            if (f == pvalueField) {
+                if (f.getText().length() == 0) {
+                    pvalueField.setText("");
+                } else {
+                    pvalueThres = Double.parseDouble(pvalueField.getText());
+                }
+            } else if (f == fdrField) {
+                if (f.getText().length() == 0) {
+                    fdrField.setText("");
+                } else {
+                    fdrThres = Double.parseDouble(fdrField.getText());
+                }
+            }
+            optionsChanged();
         }
     }
 

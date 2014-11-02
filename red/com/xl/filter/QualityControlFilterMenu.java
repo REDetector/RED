@@ -19,13 +19,13 @@
  */
 package com.xl.filter;
 
-import com.dw.denovo.QCFilter;
-import com.dw.publicaffairs.DatabaseManager;
-import com.dw.publicaffairs.Query;
+import com.dw.dbutils.DatabaseManager;
+import com.dw.dbutils.Query;
+import com.dw.denovo.QualityControlFilter;
 import com.xl.datatypes.DataCollection;
 import com.xl.datatypes.DataStore;
-import com.xl.datatypes.probes.Probe;
-import com.xl.datatypes.probes.ProbeList;
+import com.xl.datatypes.sites.Site;
+import com.xl.datatypes.sites.SiteList;
 import com.xl.exception.REDException;
 
 import javax.swing.*;
@@ -36,15 +36,16 @@ import java.awt.event.KeyListener;
 import java.util.Vector;
 
 /**
- * The ValuesFilter filters probes based on their associated values
- * from quantiation.  Each probe is filtered independently of all
- * other probes.
+ * The ValuesFilter filters sites based on their associated values
+ * from quantiation.  Each site is filtered independently of all
+ * other sites.
  */
-public class QCFilterMenu extends ProbeFilter {
+public class QualityControlFilterMenu extends AbstractSiteFilter {
 
-
-    private int qualityInt = -1;
-    private int coverageInt = -1;
+    private int qualityThres = 20;
+    private int depthThres = 6;
+    private JTextField qualityField;
+    private JTextField depthField;
     private QCFilterOptionPanel optionsPanel = new QCFilterOptionPanel();
 
     /**
@@ -53,7 +54,7 @@ public class QCFilterMenu extends ProbeFilter {
      * @param collection The dataCollection to filter
      * @throws REDException if the dataCollection isn't quantitated.
      */
-    public QCFilterMenu(DataCollection collection) throws REDException {
+    public QualityControlFilterMenu(DataCollection collection) throws REDException {
         super(collection);
     }
 
@@ -63,26 +64,26 @@ public class QCFilterMenu extends ProbeFilter {
     }
 
     @Override
-    protected void generateProbeList() {
+    protected void generateSiteList() {
         progressUpdated("Filtering RNA-editing sites by quality and coverage, please wait...", 0, 0);
-        QCFilter bf = new QCFilter(databaseManager);
+        QualityControlFilter bf = new QualityControlFilter(databaseManager);
         bf.establishQCTable(DatabaseManager.QC_FILTER_RESULT_TABLE_NAME);
         // The first parameter means quality and the second means depth
-        bf.executeQCFilter(parentTable, DatabaseManager.QC_FILTER_RESULT_TABLE_NAME, qualityInt, coverageInt);
+        bf.executeQCFilter(parentTable, DatabaseManager.QC_FILTER_RESULT_TABLE_NAME, qualityThres, depthThres);
         DatabaseManager.getInstance().distinctTable(DatabaseManager.QC_FILTER_RESULT_TABLE_NAME);
-        Vector<Probe> probes = Query.queryAllEditingSites(DatabaseManager.QC_FILTER_RESULT_TABLE_NAME);
-        ProbeList newList = new ProbeList(parentList, DatabaseManager.QC_FILTER_RESULT_TABLE_NAME, "",
+        Vector<Site> sites = Query.queryAllEditingSites(DatabaseManager.QC_FILTER_RESULT_TABLE_NAME);
+        SiteList newList = new SiteList(parentList, DatabaseManager.QC_FILTER_RESULT_TABLE_NAME, description(),
                 DatabaseManager.QC_FILTER_RESULT_TABLE_NAME);
         int index = 0;
-        int probesLength = probes.size();
-        for (Probe probe : probes) {
-            progressUpdated(index++, probesLength);
+        int sitesLength = sites.size();
+        for (Site site : sites) {
+            progressUpdated(index++, sitesLength);
             if (cancel) {
                 cancel = false;
                 progressCancelled();
                 return;
             }
-            newList.addProbe(probe);
+            newList.addSite(site);
         }
         filterFinished(newList);
     }
@@ -99,33 +100,17 @@ public class QCFilterMenu extends ProbeFilter {
 
     @Override
     public boolean isReady() {
-        return stores.length != 0 && qualityInt != -1 && coverageInt != -1;
+        return stores.length != 0 && qualityField.getText().length() != 0 && depthField.getText().length() != 0;
     }
 
     @Override
     public String name() {
-        return "QC Filter";
-    }
-
-    @Override
-    protected String listDescription() {
-        StringBuilder b = new StringBuilder();
-
-        b.append("Filter on probes in ");
-        b.append(collection.probeSet().getActiveList().name()).append(" ");
-
-        for (int s = 0; s < stores.length; s++) {
-            b.append(stores[s].name());
-            if (s < stores.length - 1) {
-                b.append(" , ");
-            }
-        }
-        return b.toString();
+        return "Quality Control Filter";
     }
 
     @Override
     protected String listName() {
-        return "Q>=" + qualityInt + " & DP>=" + coverageInt;
+        return "Q>=" + qualityThres + " & DP>=" + depthThres;
     }
 
     /**
@@ -133,8 +118,6 @@ public class QCFilterMenu extends ProbeFilter {
      */
     private class QCFilterOptionPanel extends AbstractOptionPanel implements KeyListener {
 
-        private JTextField quality;
-        private JTextField coverage;
 
         /**
          * Instantiates a new values filter option panel.
@@ -144,13 +127,8 @@ public class QCFilterMenu extends ProbeFilter {
         }
 
         @Override
-        public Dimension getPreferredSize() {
-            return new Dimension(600, 250);
-        }
-
-        @Override
         public void valueChanged(ListSelectionEvent lse) {
-            System.out.println(QCFilterMenu.class.getName() + ":valueChanged()");
+            System.out.println(QualityControlFilterMenu.class.getName() + ":valueChanged()");
             Object[] objects = dataList.getSelectedValues();
             stores = new DataStore[objects.length];
             for (int i = 0; i < stores.length; i++) {
@@ -173,46 +151,61 @@ public class QCFilterMenu extends ProbeFilter {
         @Override
         public void keyReleased(KeyEvent e) {
             JTextField f = (JTextField) e.getSource();
-            if (f.getText().length() == 0) {
-                return;
-            }
-            if (f == quality) {
-                qualityInt = Integer.parseInt(quality.getText());
-            } else if (f == coverage) {
-                coverageInt = Integer.parseInt(coverage.getText());
+            if (f == qualityField) {
+                if (f.getText().length() == 0) {
+                    qualityField.setText("");
+                } else {
+                    qualityThres = Integer.parseInt(qualityField.getText());
+                }
+            } else if (f == depthField) {
+                if (f.getText().length() == 0) {
+                    depthField.setText("");
+                } else {
+                    depthThres = Integer.parseInt(depthField.getText());
+                }
             }
             optionsChanged();
         }
 
         @Override
-        protected JPanel getOptionPanel() {
+        protected boolean hasChoicePanel() {
+            return true;
+        }
+
+        @Override
+        protected JPanel getChoicePanel() {
             JPanel choicePanel = new JPanel();
             choicePanel.setLayout(new GridBagLayout());
-            choicePanel.setBorder(BorderFactory.createEmptyBorder(4, 4, 4, 4));
             GridBagConstraints c = new GridBagConstraints();
             c.gridy = 0;
             c.gridx = 0;
-            c.weightx = 0.2;
+            c.weightx = 0.5;
             c.weighty = 0.5;
             c.fill = GridBagConstraints.HORIZONTAL;
             choicePanel.add(new JLabel("Quality >= "), c);
             c.gridx = 1;
             c.weightx = 0.1;
-            quality = new JTextField(3);
-            quality.addKeyListener(this);
-            choicePanel.add(quality, c);
+            qualityField = new JTextField(3);
+            qualityField.addKeyListener(this);
+            choicePanel.add(qualityField, c);
             c.gridy++;
             c.gridx = 0;
-            c.weightx = 0.2;
+            c.weightx = 0.5;
             c.weighty = 0.5;
             c.fill = GridBagConstraints.HORIZONTAL;
-            choicePanel.add(new JLabel("Coverage >= "), c);
+            choicePanel.add(new JLabel("Depth of coverage >= "), c);
             c.gridx = 1;
             c.weightx = 0.1;
-            coverage = new JTextField(3);
-            coverage.addKeyListener(this);
-            choicePanel.add(coverage, c);
+            depthField = new JTextField(3);
+            depthField.addKeyListener(this);
+            choicePanel.add(depthField, c);
             return choicePanel;
+        }
+
+        @Override
+        protected String getPanelDescription() {
+            return "Two measures of base quality (Q, range of 1-255) and depth of coverage (DP, range of 1-255) are used in the QC filter. For example, " +
+                    "a given site will be removed if it was of a low quality (Q< 20) or with a low depth of coverage (DP< 6).";
         }
     }
 }

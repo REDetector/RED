@@ -1,9 +1,9 @@
 package com.xl.filter;
 
-import com.dw.publicaffairs.DatabaseManager;
+import com.dw.dbutils.DatabaseManager;
 import com.xl.datatypes.DataCollection;
 import com.xl.datatypes.DataStore;
-import com.xl.datatypes.probes.ProbeList;
+import com.xl.datatypes.sites.SiteList;
 import com.xl.exception.REDException;
 import com.xl.interfaces.Cancellable;
 import com.xl.interfaces.OptionsListener;
@@ -14,14 +14,13 @@ import javax.swing.*;
 import java.util.ArrayList;
 
 /**
- * A class representing a generic filter from which all
- * of the actual filters derive
+ * A class representing a generic filter from which all of the actual filters derive
  */
-public abstract class ProbeFilter implements Runnable, Cancellable {
+public abstract class AbstractSiteFilter implements Runnable, Cancellable {
 
     public final String parentTable;
     protected final DataCollection collection;
-    protected final ProbeList parentList;
+    protected final SiteList parentList;
     protected final DatabaseManager databaseManager;
     protected boolean cancel = false;
     protected DataStore[] stores = new DataStore[0];
@@ -29,17 +28,17 @@ public abstract class ProbeFilter implements Runnable, Cancellable {
     private ArrayList<OptionsListener> optionsListeners = new ArrayList<OptionsListener>();
 
     /**
-     * Instantiates a new probe filter.
+     * Instantiates a new site filter.
      *
      * @param collection The dataCollection
      * @throws REDException if the collection isn't loaded
      */
-    public ProbeFilter(DataCollection collection) throws REDException {
+    public AbstractSiteFilter(DataCollection collection) throws REDException {
         if (!REDPreferences.getInstance().isDataLoadedToDatabase()) {
             throw new REDException("You must importing your data into database before running filters.");
         }
         this.collection = collection;
-        parentList = collection.probeSet().getActiveList();
+        parentList = collection.siteSet().getActiveList();
         parentTable = parentList.getTableName();
         databaseManager = DatabaseManager.getInstance();
         if (REDPreferences.getInstance().isDenovo()) {
@@ -124,16 +123,16 @@ public abstract class ProbeFilter implements Runnable, Cancellable {
 
 
     /**
-     * A shortcut method if you're processing one probe at a time.  This allows
-     * you to call this method with every probe and it will put up progress at
+     * A shortcut method if you're processing one site at a time.  This allows
+     * you to call this method with every site and it will put up progress at
      * suitable points and add a suitable message
      *
-     * @param current The current number of probes processed
+     * @param current The current number of sites processed
      * @param total   The progress value at completion
      */
     protected void progressUpdated(int current, int total) {
         if (current % ((total / 100) + 1) == 0) {
-            progressUpdated("Processed " + current + " out of " + total + " probes", current, total);
+            progressUpdated("Processed " + current + " out of " + total + " sites", current, total);
         }
     }
 
@@ -183,13 +182,13 @@ public abstract class ProbeFilter implements Runnable, Cancellable {
     /**
      * Passes on Filter finished message to all listeners
      *
-     * @param newList The newly created probe list
+     * @param newList The newly created site list
      */
-    protected void filterFinished(ProbeList newList) {
+    protected void filterFinished(SiteList newList) {
         newList.setName(listName());
         newList.setDescription(listDescription());
         for (ProgressListener listener : listeners) {
-            listener.progressComplete("new_probe_list", newList);
+            listener.progressComplete("new_site_list", newList);
         }
     }
 
@@ -197,16 +196,16 @@ public abstract class ProbeFilter implements Runnable, Cancellable {
      * @see java.lang.Runnable#run()
      */
     public void run() {
-        generateProbeList();
+        generateSiteList();
     }
 
     /**
      * List name. This just needs to be a short reasonable name
      * for the newly created list.
      *
-     * @return A suitable name for the newly generated probe list.
+     * @return A suitable name for the newly generated site list.
      */
-    abstract protected String listName();
+    protected abstract String listName();
 
     /**
      * List description.  This should provide a complete but concise summary
@@ -214,50 +213,63 @@ public abstract class ProbeFilter implements Runnable, Cancellable {
      * doesn't have to be computer parsable but it should be able to be interpreted
      * by a human.
      *
-     * @return A suitable description for the newly generated probe list
+     * @return A suitable description for the newly generated site list
      */
-    abstract protected String listDescription();
+    protected String listDescription() {
+        StringBuilder b = new StringBuilder();
+
+        b.append("Filter on potential RNA editing sites in ");
+        b.append(collection.siteSet().getActiveList().name()).append(" ");
+
+        for (int s = 0; s < stores.length; s++) {
+            b.append(stores[s].name());
+            if (s < stores.length - 1) {
+                b.append(" , ");
+            }
+        }
+        return b.toString();
+    }
 
     /**
-     * Start the generation of the probe list.  This will be called from within
+     * Start the generation of the site list.  This will be called from within
      * a new thread so you don't need to implemet threading within the filter.
      */
-    abstract protected void generateProbeList();
+    protected abstract void generateSiteList();
 
     /**
      * Checks if the currently set options allow the filter to be run
      *
      * @return true, if the filter is ready to run.
      */
-    abstract public boolean isReady();
+    public abstract boolean isReady();
 
     /**
      * Checks if this filter has an options panel.
      *
      * @return true, if the filter has an options panel
      */
-    abstract public boolean hasOptionsPanel();
+    public abstract boolean hasOptionsPanel();
 
     /**
      * Gets the options panel.
      *
      * @return The options panel
      */
-    abstract public JPanel getOptionsPanel();
+    public abstract JPanel getOptionsPanel();
 
     /**
      * Name.
      *
      * @return The name of this filter
      */
-    abstract public String name();
+    public abstract String name();
 
     /**
      * Description.
      *
      * @return A longer description describing what this filter does.
      */
-    abstract public String description();
+    public abstract String description();
 
 
 }

@@ -19,28 +19,27 @@
  */
 package com.xl.filter;
 
-import com.dw.denovo.DbSNPFilter;
-import com.dw.publicaffairs.DatabaseManager;
-import com.dw.publicaffairs.Query;
+import com.dw.dbutils.DatabaseManager;
+import com.dw.dbutils.Query;
+import com.dw.denovo.KnownSNPFilter;
 import com.xl.datatypes.DataCollection;
 import com.xl.datatypes.DataStore;
-import com.xl.datatypes.probes.Probe;
-import com.xl.datatypes.probes.ProbeList;
+import com.xl.datatypes.sites.Site;
+import com.xl.datatypes.sites.SiteList;
 import com.xl.exception.REDException;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
-import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.util.Vector;
 
 /**
- * The ValuesFilter filters probes based on their associated values
- * from quantiation.  Each probe is filtered independently of all
- * other probes.
+ * The ValuesFilter filters sites based on their associated values
+ * from quantiation.  Each site is filtered independently of all
+ * other sites.
  */
-public class DbSNPFilterMenu extends ProbeFilter {
+public class KnownSNPFilterMenu extends AbstractSiteFilter {
 
     private DbSNPFilterOptionPanel optionsPanel = new DbSNPFilterOptionPanel();
 
@@ -50,7 +49,7 @@ public class DbSNPFilterMenu extends ProbeFilter {
      * @param collection The dataCollection to filter
      * @throws com.xl.exception.REDException if the dataCollection isn't quantitated.
      */
-    public DbSNPFilterMenu(DataCollection collection) throws REDException {
+    public KnownSNPFilterMenu(DataCollection collection) throws REDException {
         super(collection);
     }
 
@@ -60,26 +59,26 @@ public class DbSNPFilterMenu extends ProbeFilter {
     }
 
     @Override
-    protected void generateProbeList() {
+    protected void generateSiteList() {
         progressUpdated("Filtering RNA-editing sites by dbSNP filter, please wait...", 0, 0);
-        DbSNPFilter dbsnpFilter = new DbSNPFilter(databaseManager);
+        KnownSNPFilter dbsnpFilter = new KnownSNPFilter(databaseManager);
         dbsnpFilter.establishDbSNPResultTable(DatabaseManager.DBSNP_FILTER_RESULT_TABLE_NAME);
 //        new Thread(new ThreadCountRow(this,DatabaseManager.DBSNP_FILTER_RESULT_TABLE_NAME)).start();
         dbsnpFilter.executeDbSNPFilter(DatabaseManager.DBSNP_FILTER_TABLE_NAME, DatabaseManager.DBSNP_FILTER_RESULT_TABLE_NAME, parentTable);
         DatabaseManager.getInstance().distinctTable(DatabaseManager.DBSNP_FILTER_RESULT_TABLE_NAME);
-        Vector<Probe> probes = Query.queryAllEditingSites(DatabaseManager.DBSNP_FILTER_RESULT_TABLE_NAME);
-        ProbeList newList = new ProbeList(parentList, DatabaseManager.DBSNP_FILTER_RESULT_TABLE_NAME, "",
+        Vector<Site> sites = Query.queryAllEditingSites(DatabaseManager.DBSNP_FILTER_RESULT_TABLE_NAME);
+        SiteList newList = new SiteList(parentList, DatabaseManager.DBSNP_FILTER_RESULT_TABLE_NAME, description(),
                 DatabaseManager.DBSNP_FILTER_RESULT_TABLE_NAME);
         int index = 0;
-        int probesLength = probes.size();
-        for (Probe probe : probes) {
-            progressUpdated(index++, probesLength);
+        int sitesLength = sites.size();
+        for (Site site : sites) {
+            progressUpdated(index++, sitesLength);
             if (cancel) {
                 cancel = false;
                 progressCancelled();
                 return;
             }
-            newList.addProbe(probe);
+            newList.addSite(site);
         }
         filterFinished(newList);
     }
@@ -101,28 +100,12 @@ public class DbSNPFilterMenu extends ProbeFilter {
 
     @Override
     public String name() {
-        return "dbSNP Filter";
-    }
-
-    @Override
-    protected String listDescription() {
-        StringBuilder b = new StringBuilder();
-
-        b.append("Filter on probes in ");
-        b.append(collection.probeSet().getActiveList().name()).append(" ");
-
-        for (int s = 0; s < stores.length; s++) {
-            b.append(stores[s].name());
-            if (s < stores.length - 1) {
-                b.append(" , ");
-            }
-        }
-        return b.toString();
+        return "Known SNP Filter";
     }
 
     @Override
     protected String listName() {
-        return "dbSNP Filter";
+        return "Known SNP Filter";
     }
 
 
@@ -131,8 +114,6 @@ public class DbSNPFilterMenu extends ProbeFilter {
      */
     private class DbSNPFilterOptionPanel extends AbstractOptionPanel implements KeyListener {
 
-        private JTextArea description = null;
-
         /**
          * Instantiates a new values filter option panel.
          */
@@ -140,12 +121,8 @@ public class DbSNPFilterMenu extends ProbeFilter {
             super(collection);
         }
 
-        public Dimension getPreferredSize() {
-            return new Dimension(600, 250);
-        }
-
         public void valueChanged(ListSelectionEvent lse) {
-            System.out.println(DbSNPFilterMenu.class.getName() + ":valueChanged()");
+            System.out.println(KnownSNPFilterMenu.class.getName() + ":valueChanged()");
             Object[] objects = dataList.getSelectedValues();
             stores = new DataStore[objects.length];
             for (int i = 0; i < stores.length; i++) {
@@ -176,14 +153,19 @@ public class DbSNPFilterMenu extends ProbeFilter {
         }
 
         @Override
-        protected JPanel getOptionPanel() {
-            JPanel choicePanel = new JPanel();
-            choicePanel.setLayout(new GridBagLayout());
-            choicePanel.setBorder(BorderFactory.createEmptyBorder(4, 4, 4, 4));
-            description = new JTextArea("DbSNP Filter will filter out bases which are already \nsnp in DNA level.");
-            description.setEditable(false);
-            choicePanel.add(description);
-            return choicePanel;
+        protected boolean hasChoicePanel() {
+            return false;
+        }
+
+        @Override
+        protected JPanel getChoicePanel() {
+            return null;
+        }
+
+        @Override
+        protected String getPanelDescription() {
+            return "RNA-seq variants that were known SNPs in DNA level are excluded for eliminating germline variants from dbSNP database " +
+                    "(e.g., db-snp_138.hg19.vcf).";
         }
     }
 }

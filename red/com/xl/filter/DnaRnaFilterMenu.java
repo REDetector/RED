@@ -19,26 +19,25 @@
  */
 package com.xl.filter;
 
-import com.dw.dnarna.DnaRnaFilter;
-import com.dw.publicaffairs.DatabaseManager;
-import com.dw.publicaffairs.Query;
+import com.dw.dbutils.DatabaseManager;
+import com.dw.dbutils.Query;
+import com.dw.dnarna.DNARNAFilter;
 import com.xl.datatypes.DataCollection;
 import com.xl.datatypes.DataStore;
-import com.xl.datatypes.probes.Probe;
-import com.xl.datatypes.probes.ProbeList;
+import com.xl.datatypes.sites.Site;
+import com.xl.datatypes.sites.SiteList;
 import com.xl.exception.REDException;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
-import java.awt.*;
 import java.util.Vector;
 
 /**
- * The ValuesFilter filters probes based on their associated values
- * from quantiation.  Each probe is filtered independently of all
- * other probes.
+ * The ValuesFilter filters sites based on their associated values
+ * from quantiation.  Each site is filtered independently of all
+ * other sites.
  */
-public class DNARNAFilterMenu extends ProbeFilter {
+public class DNARNAFilterMenu extends AbstractSiteFilter {
 
     private DNARNAFilterOptionPanel optionsPanel = new DNARNAFilterOptionPanel();
 
@@ -58,27 +57,27 @@ public class DNARNAFilterMenu extends ProbeFilter {
     }
 
     @Override
-    protected void generateProbeList() {
+    protected void generateSiteList() {
         progressUpdated("Filtering RNA-editing sites by DNA/RNA filter, please wait...", 0, 0);
-        DnaRnaFilter dnaRnaFilter = new DnaRnaFilter(databaseManager);
+        DNARNAFilter dnaRnaFilter = new DNARNAFilter(databaseManager);
         dnaRnaFilter.establishDnaRnaTable(DatabaseManager.DNA_RNA_FILTER_RESULT_TABLE_NAME);
         dnaRnaFilter.executeDnaRnaFilter(DatabaseManager.DNA_RNA_FILTER_RESULT_TABLE_NAME, DatabaseManager.DNA_VCF_RESULT_TABLE_NAME,
                 parentTable);
         DatabaseManager.getInstance().distinctTable(DatabaseManager.DNA_RNA_FILTER_RESULT_TABLE_NAME);
 
-        Vector<Probe> probes = Query.queryAllEditingSites(DatabaseManager.DNA_RNA_FILTER_RESULT_TABLE_NAME);
-        ProbeList newList = new ProbeList(parentList, DatabaseManager.DNA_RNA_FILTER_RESULT_TABLE_NAME, "",
+        Vector<Site> sites = Query.queryAllEditingSites(DatabaseManager.DNA_RNA_FILTER_RESULT_TABLE_NAME);
+        SiteList newList = new SiteList(parentList, DatabaseManager.DNA_RNA_FILTER_RESULT_TABLE_NAME, description(),
                 DatabaseManager.DNA_RNA_FILTER_RESULT_TABLE_NAME);
         int index = 0;
-        int probesLength = probes.size();
-        for (Probe probe : probes) {
-            progressUpdated(index++, probesLength);
+        int sitesLength = sites.size();
+        for (Site site : sites) {
+            progressUpdated(index++, sitesLength);
             if (cancel) {
                 cancel = false;
                 progressCancelled();
                 return;
             }
-            newList.addProbe(probe);
+            newList.addSite(site);
         }
         filterFinished(newList);
     }
@@ -100,44 +99,22 @@ public class DNARNAFilterMenu extends ProbeFilter {
 
     @Override
     public String name() {
-        return "RNA&DNA Filter";
-    }
-
-    @Override
-    protected String listDescription() {
-        StringBuilder b = new StringBuilder();
-
-        b.append("Filter on probes in ");
-        b.append(collection.probeSet().getActiveList().name()).append(" ");
-
-        for (int s = 0; s < stores.length; s++) {
-            b.append(stores[s].name());
-            if (s < stores.length - 1) {
-                b.append(" , ");
-            }
-        }
-        return b.toString();
+        return "DNA-RNA Filter";
     }
 
     @Override
     protected String listName() {
-        return "RNA/DNA filter";
+        return "RNA-DNA filter";
     }
 
 
     private class DNARNAFilterOptionPanel extends AbstractOptionPanel {
-
-        private JTextArea description = null;
 
         /**
          * Instantiates a new values filter option panel.
          */
         public DNARNAFilterOptionPanel() {
             super(collection);
-        }
-
-        public Dimension getPreferredSize() {
-            return new Dimension(600, 250);
         }
 
         public void valueChanged(ListSelectionEvent lse) {
@@ -151,16 +128,19 @@ public class DNARNAFilterMenu extends ProbeFilter {
         }
 
         @Override
-        protected JPanel getOptionPanel() {
-            JPanel choicePanel = new JPanel();
-            choicePanel.setLayout(new GridBagLayout());
-            choicePanel.setBorder(BorderFactory.createEmptyBorder(4, 4, 4, 4));
-            description = new JTextArea("RNA-editing means editing in RNA while DNA is not snp.\n" +
-                    "So only otherwise, all the difference between DNA and RNA\n" +
-                    "will be selected.");
-            description.setEditable(false);
-            choicePanel.add(description);
-            return choicePanel;
+        protected boolean hasChoicePanel() {
+            return false;
+        }
+
+        @Override
+        protected JPanel getChoicePanel() {
+            return null;
+        }
+
+        @Override
+        protected String getPanelDescription() {
+            return "RNA-seq variants where its counterparts in genomic DNA is not reference homozygote (e.g., AA) would be excluded if DNA sequencing data is" +
+                    " available.";
         }
     }
 }

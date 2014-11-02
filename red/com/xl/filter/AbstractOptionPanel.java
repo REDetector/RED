@@ -41,5 +41,30 @@ public abstract class AbstractOptionPanel extends JPanel implements ListSelectio
         valueChanged(null);
     }
 
-    protected abstract JPanel getOptionPanel();
+    @Override
+    public Dimension getPreferredSize() {
+        return new Dimension(600, 300);
+    }
+
+    protected JPanel getOptionPanel() {
+        JPanel totalPanel = new JPanel(new BorderLayout());
+        totalPanel.setBorder(BorderFactory.createEmptyBorder(4, 4, 4, 4));
+
+        JTextArea textField = new JTextArea();
+        textField.setText(getPanelDescription());
+        textField.setEditable(false);
+        textField.setLineWrap(true);
+        totalPanel.add(textField, BorderLayout.NORTH);
+
+        if (hasChoicePanel()) {
+            totalPanel.add(getChoicePanel(), BorderLayout.CENTER);
+        }
+        return totalPanel;
+    }
+
+    protected abstract boolean hasChoicePanel();
+
+    protected abstract JPanel getChoicePanel();
+
+    protected abstract String getPanelDescription();
 }

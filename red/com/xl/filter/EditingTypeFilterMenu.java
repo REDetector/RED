@@ -1,27 +1,24 @@
 package com.xl.filter;
 
+import com.dw.dbutils.DatabaseManager;
+import com.dw.dbutils.Query;
 import com.dw.denovo.EditingTypeFilter;
-import com.dw.publicaffairs.DatabaseManager;
-import com.dw.publicaffairs.Query;
 import com.xl.datatypes.DataCollection;
 import com.xl.datatypes.DataStore;
-import com.xl.datatypes.probes.Probe;
-import com.xl.datatypes.probes.ProbeList;
+import com.xl.datatypes.sites.Site;
+import com.xl.datatypes.sites.SiteList;
 import com.xl.exception.REDException;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.Vector;
 
 /**
- * The ValuesFilter filters probes based on their associated values
- * from quantiation.  Each probe is filtered independently of all
- * other probes.
+ * The ValuesFilter filters sites based on their associated values
+ * from quantiation.  Each site is filtered independently of all
+ * other sites.
  */
-public class EditingTypeFilterMenu extends ProbeFilter {
+public class EditingTypeFilterMenu extends AbstractSiteFilter {
 
     private JComboBox refBase = null;
     private JComboBox altBase = null;
@@ -43,26 +40,26 @@ public class EditingTypeFilterMenu extends ProbeFilter {
     }
 
     @Override
-    protected void generateProbeList() {
+    protected void generateSiteList() {
         progressUpdated("Filtering RNA-editing sites by editing type, please wait...", 0, 0);
         EditingTypeFilter editingTypeFilter = new EditingTypeFilter(databaseManager);
         editingTypeFilter.establishSpecificTable(DatabaseManager.EDITING_TYPE_FILTER_RESULT_TABLE_NAME);
         editingTypeFilter.executeSpecificFilter(DatabaseManager.EDITING_TYPE_FILTER_RESULT_TABLE_NAME, parentTable,
                 refBase.getSelectedItem().toString(), altBase.getSelectedItem().toString());
         DatabaseManager.getInstance().distinctTable(DatabaseManager.EDITING_TYPE_FILTER_RESULT_TABLE_NAME);
-        Vector<Probe> probes = Query.queryAllEditingSites(DatabaseManager.EDITING_TYPE_FILTER_RESULT_TABLE_NAME);
-        ProbeList newList = new ProbeList(parentList, DatabaseManager.EDITING_TYPE_FILTER_RESULT_TABLE_NAME, "",
+        Vector<Site> sites = Query.queryAllEditingSites(DatabaseManager.EDITING_TYPE_FILTER_RESULT_TABLE_NAME);
+        SiteList newList = new SiteList(parentList, DatabaseManager.EDITING_TYPE_FILTER_RESULT_TABLE_NAME, description(),
                 DatabaseManager.EDITING_TYPE_FILTER_RESULT_TABLE_NAME);
         int index = 0;
-        int probesLength = probes.size();
-        for (Probe probe : probes) {
-            progressUpdated(index++, probesLength);
+        int sitesLength = sites.size();
+        for (Site site : sites) {
+            progressUpdated(index++, sitesLength);
             if (cancel) {
                 cancel = false;
                 progressCancelled();
                 return;
             }
-            newList.addProbe(probe);
+            newList.addSite(site);
         }
         filterFinished(newList);
     }
@@ -84,23 +81,7 @@ public class EditingTypeFilterMenu extends ProbeFilter {
 
     @Override
     public String name() {
-        return "Specific Filter";
-    }
-
-    @Override
-    protected String listDescription() {
-        StringBuilder b = new StringBuilder();
-
-        b.append("Filter on probes in ");
-        b.append(collection.probeSet().getActiveList().name()).append(" ");
-
-        for (int s = 0; s < stores.length; s++) {
-            b.append(stores[s].name());
-            if (s < stores.length - 1) {
-                b.append(" , ");
-            }
-        }
-        return b.toString();
+        return "Editing Type Filter";
     }
 
     @Override
@@ -111,7 +92,7 @@ public class EditingTypeFilterMenu extends ProbeFilter {
     /**
      * The ValuesFilterOptionPanel.
      */
-    private class SpecificFilterOptionPanel extends AbstractOptionPanel implements ActionListener {
+    private class SpecificFilterOptionPanel extends AbstractOptionPanel {
 
         /**
          * Instantiates a new values filter option panel.
@@ -120,12 +101,8 @@ public class EditingTypeFilterMenu extends ProbeFilter {
             super(collection);
         }
 
-        public Dimension getPreferredSize() {
-            return new Dimension(600, 250);
-        }
-
         public void valueChanged(ListSelectionEvent lse) {
-            System.out.println(QCFilterMenu.class.getName() + ":valueChanged()");
+            System.out.println(QualityControlFilterMenu.class.getName() + ":valueChanged()");
             Object[] objects = dataList.getSelectedValues();
             stores = new DataStore[objects.length];
             for (int i = 0; i < stores.length; i++) {
@@ -135,39 +112,17 @@ public class EditingTypeFilterMenu extends ProbeFilter {
         }
 
         @Override
-        public void actionPerformed(ActionEvent e) {
-//            String action = e.getActionCommand();
-//            if (action.equals("ref")) {
-//                if ((Character) refBase.getSelectedItem() == 'A') {
-//                    altBase.setSelectedItem('G');
-//                } else if (refBase.getSelectedItem().equals('G')) {
-//                    altBase.setSelectedItem('A');
-//                } else if (refBase.getSelectedItem().equals('C')) {
-//                    altBase.setSelectedItem('T');
-//                } else if (refBase.getSelectedItem().equals('T')) {
-//                    altBase.setSelectedItem('C');
-//                }
-//            } else if (action.equals("alt")) {
-//
-//                if (altBase.getSelectedItem().equals('A')) {
-//                    refBase.setSelectedItem('G');
-//                } else if (altBase.getSelectedItem().equals('G')) {
-//                    refBase.setSelectedItem('A');
-//                } else if (altBase.getSelectedItem().equals('T')) {
-//                    refBase.setSelectedItem('C');
-//                } else if (altBase.getSelectedItem().equals('C')) {
-//                    refBase.setSelectedItem('T');
-//                }
-//            }
+        protected boolean hasChoicePanel() {
+            return true;
         }
 
         @Override
-        protected JPanel getOptionPanel() {
+        protected JPanel getChoicePanel() {
             JPanel choicePanel = new JPanel();
             choicePanel.setLayout(new BoxLayout(choicePanel, BoxLayout.Y_AXIS));
 
             JPanel choicePanel2 = new JPanel();
-            choicePanel2.add(new JLabel("Focus on editing event from"));
+            choicePanel2.add(new JLabel("Focus on editing type from"));
             choicePanel.add(choicePanel2);
 
             JPanel choicePanel3 = new JPanel();
@@ -175,7 +130,6 @@ public class EditingTypeFilterMenu extends ProbeFilter {
             refBase = new JComboBox(new Character[]{'A', 'G', 'C', 'T'});
             refBase.setSelectedItem('A');
             refBase.setActionCommand("ref");
-            refBase.addActionListener(this);
             choicePanel3.add(refBase);
             choicePanel.add(choicePanel3);
 
@@ -184,10 +138,15 @@ public class EditingTypeFilterMenu extends ProbeFilter {
             altBase = new JComboBox(new Character[]{'A', 'G', 'C', 'T'});
             altBase.setSelectedItem('G');
             altBase.setActionCommand("alt");
-            altBase.addActionListener(this);
             choicePanel4.add(altBase);
             choicePanel.add(choicePanel4);
             return choicePanel;
+        }
+
+        @Override
+        protected String getPanelDescription() {
+            return "Mostly, we focus on A->G change since over 95% RNA editing sites are of A->G. If 'A' in reference base and 'G' in alternative base are " +
+                    "chosen (default option), the sites of non A->G change will be filtered.";
         }
     }
 }

@@ -19,26 +19,25 @@
  */
 package com.xl.filter;
 
-import com.dw.denovo.RepeatFilter;
-import com.dw.publicaffairs.DatabaseManager;
-import com.dw.publicaffairs.Query;
+import com.dw.dbutils.DatabaseManager;
+import com.dw.dbutils.Query;
+import com.dw.denovo.RepeatRegionsFilter;
 import com.xl.datatypes.DataCollection;
 import com.xl.datatypes.DataStore;
-import com.xl.datatypes.probes.Probe;
-import com.xl.datatypes.probes.ProbeList;
+import com.xl.datatypes.sites.Site;
+import com.xl.datatypes.sites.SiteList;
 import com.xl.exception.REDException;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
-import java.awt.*;
 import java.util.Vector;
 
 /**
- * The ValuesFilter filters probes based on their associated values
- * from quantiation.  Each probe is filtered independently of all
- * other probes.
+ * The ValuesFilter filters sites based on their associated values
+ * from quantiation.  Each site is filtered independently of all
+ * other sites.
  */
-public class RepeatFilterMenu extends ProbeFilter {
+public class RepeatRegionsFilterMenu extends AbstractSiteFilter {
 
     private RepeatFilterOptionPanel optionsPanel = new RepeatFilterOptionPanel();
 
@@ -48,7 +47,7 @@ public class RepeatFilterMenu extends ProbeFilter {
      * @param collection The dataCollection to filter
      * @throws com.xl.exception.REDException if the dataCollection isn't quantitated.
      */
-    public RepeatFilterMenu(DataCollection collection) throws REDException {
+    public RepeatRegionsFilterMenu(DataCollection collection) throws REDException {
         super(collection);
     }
 
@@ -58,86 +57,52 @@ public class RepeatFilterMenu extends ProbeFilter {
     }
 
     @Override
-    protected void generateProbeList() {
+    protected void generateSiteList() {
         progressUpdated("Filtering RNA-editing sites by repeatmasker database, please wait...", 0, 0);
-        RepeatFilter rf = new RepeatFilter(databaseManager);
+        RepeatRegionsFilter rf = new RepeatRegionsFilter(databaseManager);
         rf.establishRepeatResultTable(DatabaseManager.REPEAT_FILTER_RESULT_TABLE_NAME);
         rf.establishAluResultTable(DatabaseManager.ALU_FILTER_RESULT_TABLE_NAME);
         rf.executeRepeatFilter(DatabaseManager.REPEAT_FILTER_TABLE_NAME, DatabaseManager.REPEAT_FILTER_RESULT_TABLE_NAME,
                 DatabaseManager.ALU_FILTER_RESULT_TABLE_NAME, parentTable);
         DatabaseManager.getInstance().distinctTable(DatabaseManager.REPEAT_FILTER_RESULT_TABLE_NAME);
 
-        Vector<Probe> probes = Query.queryAllEditingSites(DatabaseManager.REPEAT_FILTER_RESULT_TABLE_NAME);
-        ProbeList newList = new ProbeList(parentList, DatabaseManager.REPEAT_FILTER_RESULT_TABLE_NAME, "",
+        Vector<Site> sites = Query.queryAllEditingSites(DatabaseManager.REPEAT_FILTER_RESULT_TABLE_NAME);
+        SiteList newList = new SiteList(parentList, DatabaseManager.REPEAT_FILTER_RESULT_TABLE_NAME, description(),
                 DatabaseManager.REPEAT_FILTER_RESULT_TABLE_NAME);
         int index = 0;
-        int probesLength = probes.size();
-        for (Probe probe : probes) {
-            progressUpdated(index++, probesLength);
+        int sitesLength = sites.size();
+        for (Site site : sites) {
+            progressUpdated(index++, sitesLength);
             if (cancel) {
                 cancel = false;
                 progressCancelled();
                 return;
             }
-            newList.addProbe(probe);
+            newList.addSite(site);
         }
         filterFinished(newList);
     }
 
-    /* (non-Javadoc)
-     * @see uk.ac.babraham.SeqMonk.Filters.ProbeFilter#getOptionsPanel()
-     */
     @Override
     public JPanel getOptionsPanel() {
         return optionsPanel;
     }
 
-    /* (non-Javadoc)
-     * @see uk.ac.babraham.SeqMonk.Filters.ProbeFilter#hasOptionsPanel()
-     */
     @Override
     public boolean hasOptionsPanel() {
         return true;
     }
 
-    /* (non-Javadoc)
-     * @see uk.ac.babraham.SeqMonk.Filters.ProbeFilter#isReady()
-     */
     @Override
     public boolean isReady() {
         return stores.length != 0;
     }
 
-    /* (non-Javadoc)
-     * @see uk.ac.babraham.SeqMonk.Filters.ProbeFilter#name()
-     */
     @Override
     public String name() {
         return "Repeat Filter";
     }
 
-    /* (non-Javadoc)
-     * @see uk.ac.babraham.SeqMonk.Filters.ProbeFilter#listDescription()
-     */
-    @Override
-    protected String listDescription() {
-        StringBuilder b = new StringBuilder();
-
-        b.append("Filter on probes in ");
-        b.append(collection.probeSet().getActiveList().name() + " ");
-
-        for (int s = 0; s < stores.length; s++) {
-            b.append(stores[s].name());
-            if (s < stores.length - 1) {
-                b.append(" , ");
-            }
-        }
-        return b.toString();
-    }
-
-    /* (non-Javadoc)
-     * @see uk.ac.babraham.SeqMonk.Filters.ProbeFilter#listName()
-     */
     @Override
     protected String listName() {
         return "Repeat area filter";
@@ -149,8 +114,6 @@ public class RepeatFilterMenu extends ProbeFilter {
      */
     private class RepeatFilterOptionPanel extends AbstractOptionPanel {
 
-        private JTextArea description = null;
-
         /**
          * Instantiates a new values filter option panel.
          */
@@ -158,18 +121,8 @@ public class RepeatFilterMenu extends ProbeFilter {
             super(collection);
         }
 
-        /* (non-Javadoc)
-         * @see javax.swing.JComponent#getPreferredSize()
-         */
-        public Dimension getPreferredSize() {
-            return new Dimension(600, 250);
-        }
-
-        /* (non-Javadoc)
-         * @see javax.swing.event.ListSelectionListener#valueChanged(javax.swing.event.ListSelectionEvent)
-         */
         public void valueChanged(ListSelectionEvent lse) {
-            System.out.println(RepeatFilterMenu.class.getName() + ":valueChanged()");
+            System.out.println(RepeatRegionsFilterMenu.class.getName() + ":valueChanged()");
             Object[] objects = dataList.getSelectedValues();
             stores = new DataStore[objects.length];
             for (int i = 0; i < stores.length; i++) {
@@ -179,17 +132,19 @@ public class RepeatFilterMenu extends ProbeFilter {
         }
 
         @Override
-        protected JPanel getOptionPanel() {
-            JPanel choicePanel = new JPanel();
-            choicePanel.setLayout(new GridBagLayout());
-            choicePanel.setBorder(BorderFactory.createEmptyBorder(4, 4, 4, 4));
-            description = new JTextArea("The repeat filter will remove bases located in such " +
-                    "\nareas where are supposed to be unfunctional except " +
-                    "\nfor SINE/Alu area.");
-//            description.setLineWrap(true);
-            description.setEditable(false);
-            choicePanel.add(description);
-            return choicePanel;
+        protected boolean hasChoicePanel() {
+            return false;
+        }
+
+        @Override
+        protected JPanel getChoicePanel() {
+            return null;
+        }
+
+        @Override
+        protected String getPanelDescription() {
+            return "Variants that are within repeat regions are excluded. However, sites in SINE/Alu regions are remained since A->I RNA editing is " +
+                    "pervasive in Alu repeats and it has been implicated in non-Alu RNA editing sites.";
         }
     }
 }
