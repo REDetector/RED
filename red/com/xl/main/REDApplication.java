@@ -4,18 +4,18 @@
 
 package com.xl.main;
 
-import com.dw.publicaffairs.DatabaseManager;
-import com.dw.publicaffairs.Query;
+import com.dw.dbutils.DatabaseManager;
+import com.dw.dbutils.Query;
 import com.xl.datatypes.DataCollection;
 import com.xl.datatypes.DataGroup;
 import com.xl.datatypes.DataSet;
 import com.xl.datatypes.DataStore;
 import com.xl.datatypes.annotation.AnnotationSet;
 import com.xl.datatypes.genome.Genome;
-import com.xl.datatypes.probes.Probe;
-import com.xl.datatypes.probes.ProbeList;
-import com.xl.datatypes.probes.ProbeSet;
-import com.xl.datatypes.probes.ProbeSetChangeListener;
+import com.xl.datatypes.sites.Site;
+import com.xl.datatypes.sites.SiteList;
+import com.xl.datatypes.sites.SiteSet;
+import com.xl.datatypes.sites.SiteSetChangeListener;
 import com.xl.datawriters.REDDataWriter;
 import com.xl.dialog.CrashReporter;
 import com.xl.dialog.DataParserOptionsDialog;
@@ -33,6 +33,7 @@ import com.xl.interfaces.CacheListener;
 import com.xl.interfaces.DataChangeListener;
 import com.xl.interfaces.ProgressListener;
 import com.xl.menu.REDMenu;
+import com.xl.net.genomes.GenomeDownloader;
 import com.xl.panel.REDPreviewPanel;
 import com.xl.panel.StatusPanel;
 import com.xl.panel.WelcomePanel;
@@ -43,7 +44,6 @@ import com.xl.preferences.DisplayPreferences;
 import com.xl.preferences.LocationPreferences;
 import com.xl.preferences.REDPreferences;
 import com.xl.utils.filefilters.FileFilterExt;
-import net.xl.genomes.GenomeDownloader;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileFilter;
@@ -57,7 +57,7 @@ import java.util.Vector;
 /**
  * @author Xing Li
  */
-public class REDApplication extends JFrame implements ProgressListener, DataChangeListener, ProbeSetChangeListener, AnnotationCollectionListener {
+public class REDApplication extends JFrame implements ProgressListener, DataChangeListener, SiteSetChangeListener, AnnotationCollectionListener {
 
     /**
      * The version of RED
@@ -311,9 +311,9 @@ public class REDApplication extends JFrame implements ProgressListener, DataChan
 
         for (DataSet dataset : newData) {
 //            if (dataset.getTotalReadCount() > 0) {
-                // Can we leave this out as this should be handled by the data collection listener?
-                dataCollection.addDataSet(dataset);
-                storesToAdd.add(dataset);
+            // Can we leave this out as this should be handled by the data collection listener?
+            dataCollection.addDataSet(dataset);
+            storesToAdd.add(dataset);
 //            }
         }
 
@@ -799,8 +799,8 @@ public class REDApplication extends JFrame implements ProgressListener, DataChan
     }
 
     @Override
-    public void probeSetReplaced(ProbeSet p) {
-        p.addProbeSetChangeListener(this);
+    public void siteSetReplaced(SiteSet p) {
+        p.addSiteSetChangeListener(this);
         changesWereMade();
     }
 
@@ -810,7 +810,7 @@ public class REDApplication extends JFrame implements ProgressListener, DataChan
     }
 
     @Override
-    public void activeProbeListChanged(ProbeList l) {
+    public void activeSiteListChanged(SiteList l) {
 
     }
 
@@ -899,10 +899,10 @@ public class REDApplication extends JFrame implements ProgressListener, DataChan
             menu.databaseConnected();
             menu.databaseLoaded();
             menu.setDenovo(REDPreferences.getInstance().isDenovo());
-            if (dataCollection.probeSet() == null) {
-                Vector<Probe> probes = Query.queryAllEditingSites(DatabaseManager.RNA_VCF_RESULT_TABLE_NAME);
-                Probe[] probeArray = probes.toArray(new Probe[0]);
-                dataCollection.setProbeSet(new ProbeSet("Original RNA editing sites by RNA vcf file", probeArray,
+            if (dataCollection.siteSet() == null) {
+                Vector<Site> sites = Query.queryAllEditingSites(DatabaseManager.RNA_VCF_RESULT_TABLE_NAME);
+                Site[] siteArray = sites.toArray(new Site[0]);
+                dataCollection.setSiteSet(new SiteSet("Original RNA editing sites by RNA vcf file", siteArray,
                         DatabaseManager.RNA_VCF_RESULT_TABLE_NAME));
                 changesWereMade();
             }
@@ -937,19 +937,19 @@ public class REDApplication extends JFrame implements ProgressListener, DataChan
     }
 
     @Override
-    public void probeListAdded(ProbeList l) {
+    public void siteListAdded(SiteList l) {
         // TODO Auto-generated method stub
         changesWereMade();
     }
 
     @Override
-    public void probeListRemoved(ProbeList l) {
+    public void siteListRemoved(SiteList l) {
         // TODO Auto-generated method stub
         changesWereMade();
     }
 
     @Override
-    public void probeListRenamed(ProbeList l) {
+    public void siteListRenamed(SiteList l) {
         // TODO Auto-generated method stub
         changesWereMade();
     }
