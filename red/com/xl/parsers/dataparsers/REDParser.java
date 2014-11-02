@@ -7,23 +7,23 @@ import com.xl.datatypes.annotation.AnnotationSet;
 import com.xl.datatypes.feature.Feature;
 import com.xl.datatypes.feature.FeatureLocation;
 import com.xl.datatypes.genome.GenomeDescriptor;
-import com.xl.datatypes.probes.Probe;
-import com.xl.datatypes.probes.ProbeList;
-import com.xl.datatypes.probes.ProbeSet;
 import com.xl.datatypes.sequence.Alignment;
 import com.xl.datatypes.sequence.Location;
+import com.xl.datatypes.sites.Site;
+import com.xl.datatypes.sites.SiteList;
+import com.xl.datatypes.sites.SiteSet;
 import com.xl.dialog.CrashReporter;
 import com.xl.dialog.ProgressDialog;
 import com.xl.exception.REDException;
 import com.xl.interfaces.ProgressListener;
 import com.xl.main.REDApplication;
+import com.xl.net.genomes.GenomeDownloader;
 import com.xl.parsers.annotationparsers.IGVGenomeParser;
 import com.xl.preferences.DisplayPreferences;
 import com.xl.preferences.LocationPreferences;
 import com.xl.utils.ParsingUtils;
 import com.xl.utils.Strand;
 import com.xl.utils.namemanager.GenomeUtils;
-import net.xl.genomes.GenomeDownloader;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -35,7 +35,7 @@ import java.util.zip.GZIPInputStream;
 /**
  * The REDParser reads the main RED file format. It is different to all
  * other data parsers in that it does not extend DataParser since it not only
- * contains data, but can also load genomes and probes and can set visual
+ * contains data, but can also load genomes and sites and can set visual
  * preferences.
  */
 public class REDParser implements Runnable, ProgressListener {
@@ -147,11 +147,11 @@ public class REDParser implements Runnable, ProgressListener {
                             throw ex;
                         }
                     }
-                } else if (sections[0].equals(ParsingUtils.PROBES)) {
+                } else if (sections[0].equals(ParsingUtils.SITES)) {
                     if (!genomeLoaded) {
                         throw new REDException("No genome definition found before data");
                     }
-                    parseProbes(sections);
+                    parseSites(sections);
                 } else if (sections[0].equals(ParsingUtils.LISTS)) {
                     if (!genomeLoaded) {
                         throw new REDException("No genome definition found before data");
@@ -420,80 +420,16 @@ public class REDParser implements Runnable, ProgressListener {
             dataSets[i] = new DataSet(sections[0], sections[1]);
             dataSets[i].setDataParser(new BAMFileParser(new File(sections[1])));
             dataSets[i].setStandardChromosomeName(Boolean.parseBoolean(sections[2]));
-        }
-
-        // Immediately after the list of samples comes the lists of reads
-        String line;
-
-        // Iterate through the number of samples
-        for (int i = 0; i < n; i++) {
-
-            Enumeration<ProgressListener> en = listeners.elements();
-            while (en.hasMoreElements()) {
-                en.nextElement().progressUpdated("Reading data for " + dataSets[i].name(), i * 10, n * 10);
+            sections = reader.readLine().split("\\t");
+            if (sections.length != 4) {
+                throw new REDException("Read line " + i + " didn't contain 4 sections");
             }
-
-            // The first line is
-            line = reader.readLine();
-            sections = line.split("\\t");
-            if (sections.length != 2) {
-                throw new REDException("Read line " + i + " didn't contain 2 sections");
-            }
-            int readCount = Integer.parseInt(sections[0]);
-
-            // We keep count of reads processed to update the progress listeners
-
-            while (true) {
-                // The first line should be the chromosome and a number of reads
-                line = reader.readLine();
-
-                if (line == null) {
-                    throw new REDException("Ran out of data whilst parsing reads for sample " + i);
-                }
-
-                // A blank line indicates the end of the sample
-                if (line.length() == 0)
-                    break;
-
-                sections = line.split("\\t");
-
-                // We don't try to capture this exception since we can't
-                // then process any of the reads which follow.
-                String chr = sections[0];
-                int chrReadCount = Integer.parseInt(sections[1]);
-
-                for (int r = 0; r < chrReadCount; r++) {
-                    if ((r % (1 + (readCount / 10))) == 0) {
-                        Enumeration<ProgressListener> en2 = listeners.elements();
-                        while (en2.hasMoreElements()) {
-                            en2.nextElement().progressUpdated("Reading data for " + dataSets[i].name(), i * 10 + (r / (1 + (readCount / 10))), n * 10);
-                        }
-                    }
-
-                    line = reader.readLine();
-                    if (line == null) {
-                        throw new REDException("Ran out of data whilst parsing reads for sample " + i);
-                    }
-                    sections = line.split("\\t");
-                    // We use some custom parsing code to efficiently
-                    // extract the packed position and count from the line.
-                    // This avoids having to use the generic parsing code or
-                    // doing a split to determine the tab location.
-                    dataSets[i].addData(parsePairedDataSetLine(chr, sections));
-                }
-
-//                }
-
-            }
-
-            // We've now read all of the data for this sample so we can compact it
-            Enumeration<ProgressListener> en2 = listeners.elements();
-            while (en2.hasMoreElements()) {
-                en2.nextElement().progressUpdated("Caching data for " + dataSets[i].name(), (i + 1) * 10, n * 10);
-            }
-//            dataSets[i].finalise();
-            System.out.println(this.getClass().getName() + ":application.dataCollection().addDataSet(dataSets[i]);");
+            dataSets[i].setTotalReadCount(Integer.parseInt(sections[0]));
+            dataSets[i].setTotalReadLength(Long.parseLong(sections[1]));
+            dataSets[i].setForwardReadCount(Integer.parseInt(sections[2]));
+            dataSets[i].setReverseReadCount(Integer.parseInt(sections[3]));
             application.dataCollection().addDataSet(dataSets[i]);
+            System.out.println(this.getClass().getName() + ":application.dataCollection().addDataSet(dataSets[i]);");
         }
     }
 
@@ -561,20 +497,20 @@ public class REDParser implements Runnable, ProgressListener {
     }
 
     /**
-     * Parses the list of probes.
+     * Parses the list of sites.
      *
-     * @param sections The tab split initial line from the probes section
+     * @param sections The tab split initial line from the sites section
      * @throws REDException
      * @throws IOException  Signals that an I/O exception has occurred.
      */
-    private void parseProbes(String[] sections) throws REDException,
+    private void parseSites(String[] sections) throws REDException,
             IOException {
-        System.out.println(REDParser.class.getName() + ":parseProbes()");
+        System.out.println(REDParser.class.getName() + ":parseSites()");
         if (sections.length < 3) {
-            throw new REDException("Probe line didn't contain at least 3 sections");
+            throw new REDException("Site line didn't contain at least 3 sections");
         }
-        if (!sections[0].equals(ParsingUtils.PROBES)) {
-            throw new REDException("Couldn't find expected probes line");
+        if (!sections[0].equals(ParsingUtils.SITES)) {
+            throw new REDException("Couldn't find expected sites line");
         }
 
         int n = Integer.parseInt(sections[1]);
@@ -589,49 +525,49 @@ public class REDParser implements Runnable, ProgressListener {
             description = "No generator description available";
         }
 
-        ProbeSet probeSet = new ProbeSet(description, n, tableName);
+        SiteSet siteSet = new SiteSet(description, n, tableName);
 
         if (sections.length > 4) {
-            probeSet.setComments(sections[4].replaceAll("`", "\n"));
+            siteSet.setComments(sections[4].replaceAll("`", "\n"));
         }
 
-        // We need to save the probeset to the dataset at this point so we can
-        // add the probe lists as we get to them.
-        application.dataCollection().setProbeSet(probeSet);
+        // We need to save the siteset to the dataset at this point so we can
+        // add the site lists as we get to them.
+        application.dataCollection().setSiteSet(siteSet);
 
         String line;
         for (int i = 0; i < n; i++) {
             line = reader.readLine();
             if (line == null) {
-                throw new REDException("Ran out of probe data at line " + i + " (expected " + n + " probes)");
+                throw new REDException("Ran out of site data at line " + i + " (expected " + n + " sites)");
             }
             if (i % 1000 == 0) {
                 Enumeration<ProgressListener> e = listeners.elements();
                 while (e.hasMoreElements()) {
-                    e.nextElement().progressUpdated("Processed data for " + i + " probes", i, n);
+                    e.nextElement().progressUpdated("Processed data for " + i + " sites", i, n);
                 }
             }
             sections = line.split("\\t");
             if (sections.length != 4) {
                 throw new REDException("Line " + i + "does not contain three sections. We need chr/position/editing " +
-                        "base to create the Probe now.");
+                        "base to create the Site now.");
             }
             String chr = sections[0];
             if (chr == null) {
                 throw new REDException("Couldn't find a chromosome called " + sections[1]);
             }
             // Chr, Position, Reference, Alternative
-            Probe p = new Probe(chr, Integer.parseInt(sections[1]), sections[2].charAt(0), sections[3].charAt(0));
-            probeSet.addProbe(p);
+            Site p = new Site(chr, Integer.parseInt(sections[1]), sections[2].charAt(0), sections[3].charAt(0));
+            siteSet.addSite(p);
         }
-        application.dataCollection().activeProbeListChanged(probeSet);
+        application.dataCollection().activeSiteListChanged(siteSet);
 
-        // This rename doesn't actually change the name. We put this in because the All Probes group is drawn in the
-        // data view before probes have been added to it. This means that it's name isn't updated when the probes
-        // have been added and it appears labelled with 0 probes. This doesn't happen if there are any probe lists
-        // under all probes as they cause it to be refreshed, but if you only have the probe set then you need this
+        // This rename doesn't actually change the name. We put this in because the All Sites group is drawn in the
+        // data view before sites have been added to it. This means that it's name isn't updated when the sites
+        // have been added and it appears labelled with 0 sites. This doesn't happen if there are any site lists
+        // under all sites as they cause it to be refreshed, but if you only have the site set then you need this
         // to make the display show the correct information.
-        probeSet.setName("All Probes");
+        siteSet.setName("All Sites");
 
     }
 
@@ -679,69 +615,69 @@ public class REDParser implements Runnable, ProgressListener {
     }
 
     /**
-     * Parses the set of probe lists.
+     * Parses the set of site lists.
      *
-     * @param sections The tab split initial line from the probe lists section
+     * @param sections The tab split initial line from the site lists section
      * @throws REDException
      * @throws IOException  Signals that an I/O exception has occurred.
      */
     private void parseLists(String[] sections) throws REDException, IOException {
         System.out.println(REDParser.class.getName() + ":parseLists()");
         if (sections.length != 2) {
-            throw new REDException("Probe Lists line didn't contain 2 sections");
+            throw new REDException("Site Lists line didn't contain 2 sections");
         }
 
         int n = Integer.parseInt(sections[1]);
-        ProbeList[] lists = new ProbeList[n];
+        SiteList[] lists = new SiteList[n];
 
-        // We also store the probe lists in their appropriate linkage position
-        // to recreate the links between probe lists. The worst case scenario
+        // We also store the site lists in their appropriate linkage position
+        // to recreate the links between site lists. The worst case scenario
         // is that we have one big chain of linked lists so we make a linkage
-        // list which is the same size as the number of probe lists.
-        ProbeList[] linkage = new ProbeList[n + 1];
+        // list which is the same size as the number of site lists.
+        SiteList[] linkage = new SiteList[n + 1];
 
-        // The 0 linkage list will always be the full ProbeSet
-        linkage[0] = application.dataCollection().probeSet();
+        // The 0 linkage list will always be the full SiteSet
+        linkage[0] = application.dataCollection().siteSet();
         for (int i = 0; i < n; i++) {
             String line = reader.readLine();
             if (line == null) {
-                throw new REDException("Ran out of probe data at line " + i + " (expected " + n + " probes)");
+                throw new REDException("Ran out of site data at line " + i + " (expected " + n + " sites)");
             }
             String[] listSections = line.split("\\t");
             // The fields should be linkage, name, value name, description
 
-            lists[i] = new ProbeList(linkage[Integer.parseInt(listSections[0]) - 1],
+            lists[i] = new SiteList(linkage[Integer.parseInt(listSections[0]) - 1],
                     listSections[1], listSections[2], listSections[3]);
-            int currentListProbeLength = Integer.parseInt(listSections[4]);
+            int currentListSiteLength = Integer.parseInt(listSections[4]);
             if (listSections.length > 5) {
                 lists[i].setComments(listSections[5].replaceAll("`", "\n"));
             }
             linkage[Integer.parseInt(listSections[0])] = lists[i];
-            // Next we reach the probe list data. These comes as a long list of values the first of which is the probe
-            // name, then either a numerical value if the probe is contained in that list, or a blank if it isn't.
-            for (int j = 0; j < currentListProbeLength; j++) {
+            // Next we reach the site list data. These comes as a long list of values the first of which is the site
+            // name, then either a numerical value if the site is contained in that list, or a blank if it isn't.
+            for (int j = 0; j < currentListSiteLength; j++) {
                 if (j % 1000 == 0) {
                     Enumeration<ProgressListener> e = listeners.elements();
                     while (e.hasMoreElements()) {
-                        e.nextElement().progressUpdated("Processed list data for " + i + " probes", i, n);
+                        e.nextElement().progressUpdated("Processed list data for " + i + " sites", i, n);
                     }
                 }
                 line = reader.readLine();
                 if (line == null) {
-                    throw new REDException("Couldn't find probe line for list data");
+                    throw new REDException("Couldn't find site line for list data");
                 }
                 sections = line.split("\\t");
                 if (sections.length != 4) {
                     throw new REDException("Line " + i + "does not contain three sections. We need chr/position/editing " +
-                            "base to create the new Probe.");
+                            "base to create the new Site.");
                 }
                 String chr = sections[0];
                 if (chr == null) {
                     throw new REDException("Couldn't find a chromosome called "
                             + sections[0]);
                 }
-                Probe p = new Probe(chr, Integer.parseInt(sections[1]), sections[2].toCharArray()[0], sections[3].toCharArray()[0]);
-                lists[i].addProbe(p);
+                Site p = new Site(chr, Integer.parseInt(sections[1]), sections[2].toCharArray()[0], sections[3].toCharArray()[0]);
+                lists[i].addSite(p);
             }
         }
     }

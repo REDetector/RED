@@ -28,18 +28,16 @@ import com.xl.datatypes.annotation.CoreAnnotationSet;
 import com.xl.datatypes.feature.Feature;
 import com.xl.datatypes.genome.Genome;
 import com.xl.datatypes.genome.GenomeDescriptor;
-import com.xl.datatypes.probes.Probe;
-import com.xl.datatypes.probes.ProbeList;
-import com.xl.datatypes.probes.ProbeSet;
-import com.xl.datatypes.sequence.Alignment;
 import com.xl.datatypes.sequence.Location;
+import com.xl.datatypes.sites.Site;
+import com.xl.datatypes.sites.SiteList;
+import com.xl.datatypes.sites.SiteSet;
 import com.xl.exception.REDException;
 import com.xl.interfaces.Cancellable;
 import com.xl.interfaces.ProgressListener;
 import com.xl.main.REDApplication;
 import com.xl.preferences.DisplayPreferences;
 import com.xl.preferences.REDPreferences;
-import com.xl.utils.ChromosomeUtils;
 import com.xl.utils.ParsingUtils;
 import com.xl.utils.Strand;
 
@@ -74,7 +72,7 @@ public class REDDataWriter implements Runnable, Cancellable {
 	 * the preferences section is pretty small it won't affect overall file size
 	 * much.
 	 * 
-	 * If the data (probes, groups or quantitation) changes then we'll have to
+	 * If the data (sites, groups or quantitation) changes then we'll have to
 	 * do a full rewrite.
 	 */
 
@@ -210,22 +208,22 @@ public class REDDataWriter implements Runnable, Cancellable {
                 }
             }
 
-            Probe[] probes = null;
+            Site[] sites = null;
 
-            if (data.probeSet() != null) {
-                probes = data.probeSet().getAllProbes();
+            if (data.siteSet() != null) {
+                sites = data.siteSet().getAllSites();
             }
 
-            if (probes != null) {
-                if (!printProbeSet(data.probeSet(), probes, p)) {
+            if (sites != null) {
+                if (!printSiteSet(data.siteSet(), sites, p)) {
                     return; // They cancelled
                 }
             }
 
             printVisibleDataStores(dataSets, dataGroups, p);
 
-            if (probes != null) {
-                if (!printProbeLists(p)) {
+            if (sites != null) {
+                if (!printSiteLists(p)) {
                     return; // They cancelled
                 }
             }
@@ -297,114 +295,8 @@ public class REDDataWriter implements Runnable, Cancellable {
         p.println(ParsingUtils.SAMPLES + "\t" + dataSets.length);
         for (DataSet dataSet : dataSets) {
             p.println(dataSet.name() + "\t" + dataSet.fileName() + "\t" + dataSet.isStandardChromosomeName());
+            p.println(dataSet.getTotalReadCount() + "\t" + dataSet.getTotalReadLength() + "\t" + dataSet.getForwardReadCount() + "\t" + dataSet.getReverseReadCount());
         }
-
-        // We now need to print the data for each data set
-        for (int i = 0; i < dataSets.length; i++) {
-            Enumeration<ProgressListener> e = listeners.elements();
-            while (e.hasMoreElements()) {
-                e.nextElement().progressUpdated("Writing data for " + dataSets[i].name(), i * 10, dataSets.length * 10);
-            }
-
-            boolean returnValue = printStandardDataSet(dataSets[i], p, i, dataSets.length);
-            if (!returnValue)
-                return false; // They cancelled
-        }
-
-        return true;
-    }
-
-//    private boolean printPairedDataSet(PairedDataSet set, PrintStream p, int index, int indexTotal) throws IOException {
-//
-//        p.println(set.getTotalReadCount() * 2 + "\t" + set.name());
-//
-//        // Go through one chromosome at a time.
-//        String[] chrs = data.genome().getAllChromosomeNames();
-//        for (int c = 0; c < chrs.length; c++) {
-//
-//            HiCHitCollection hiCHits = set.getHiCReadsForChromosome(chrs[c]);
-//
-//            // Work out how many of these reads we're actually going to output
-//            int validReadCount = 0;
-//            for (int c2 = 0; c2 < chrs.length; c2++) {
-//                validReadCount += hiCHits
-//                        .getSourcePositionsForChromosome(chrs[c2]).length;
-//            }
-//
-//            p.println(chrs[c] + "\t" + validReadCount);
-//
-//            for (int c2 = 0; c2 < chrs.length; c2++) {
-//
-//                SequenceRead[] sourceReads = hiCHits
-//                        .getSourcePositionsForChromosome(chrs[c2]);
-//                SequenceRead[] hitReads = hiCHits
-//                        .getHitPositionsForChromosome(chrs[c2]);
-//
-//                for (int j = 0; j < sourceReads.length; j++) {
-//
-//                    if (cancel) {
-//                        cancelled(p);
-//                        return false;
-//                    }
-//
-//                    // TODO: Fix the progress bar
-//                    if ((j % (1 + (validReadCount / 10))) == 0) {
-//                        Enumeration<ProgressListener> e2 = listeners.elements();
-//                        while (e2.hasMoreElements()) {
-//                            e2.nextElement().progressUpdated(
-//                                    "Writing data for " + set.name(),
-//                                    index * chrs.length + c,
-//                                    indexTotal * chrs.length);
-//                        }
-//
-//                    }
-//
-//                    p.println(sourceReads[j].toWrite() + ":" + hitReads[j].toWrite());
-//                }
-//            }
-//        }
-//        // Print a blank line after the last chromosome
-//        p.println("");
-//
-//        return true;
-//    }
-
-    private boolean printStandardDataSet(DataSet set, PrintStream p, int index, int indexTotal) throws IOException, REDException {
-
-        p.println(set.getTotalReadCount() + "\t" + set.name());
-
-        // Go through one chromosome at a time.
-        String[] chrs = data.genome().getAllChromosomeNames();
-        for (int c = 0; c < chrs.length; c++) {
-            if (!set.isStandardChromosomeName()) {
-                chrs[c] = ChromosomeUtils.getAliasChromosomeName(chrs[c]);
-            }
-            List<Location> reads = set.getReadsForChromosome(chrs[c]);
-            p.println(chrs[c] + "\t" + reads.size());
-
-            for (int j = 0, len = reads.size(); j < len; j++) {
-
-                if (cancel) {
-                    cancelled(p);
-                    return false;
-                }
-
-                if ((j % (1 + (len / 10))) == 0) {
-                    Enumeration<ProgressListener> e2 = listeners.elements();
-                    while (e2.hasMoreElements()) {
-                        e2.nextElement().progressUpdated("Writing data for " + set.name(), index * chrs.length + c, indexTotal * chrs.length);
-                    }
-                }
-
-                Location sequence = reads.get(j);
-                if (!(sequence instanceof Alignment)) {
-                    throw new REDException("Data didn't initiated with Alignment");
-                }
-                p.println(sequence.toString());
-            }
-        }
-        p.println("");
-
         return true;
     }
 
@@ -476,27 +368,27 @@ public class REDDataWriter implements Runnable, Cancellable {
     }
 
     /**
-     * Prints the probe set.
+     * Prints the site set.
      *
-     * @param probeSet the probe set
-     * @param probes   the probes
-     * @param p        the p
+     * @param siteSet the site set
+     * @param sites   the sites
+     * @param p       the p
      * @return false if cancelled, else true
      */
-    private boolean printProbeSet(ProbeSet probeSet, Probe[] probes, PrintStream p) throws IOException {
+    private boolean printSiteSet(SiteSet siteSet, Site[] sites, PrintStream p) throws IOException {
 
         // We need the saved string to be linear so we replace the line breaks
         // with ` (which we've replaced with ' in the
         // comment. We put back the line breaks when we load the comments back.
 
-        String comments = probeSet.comments().replaceAll("[\\r\\n]", "`");
+        String comments = siteSet.comments().replaceAll("[\\r\\n]", "`");
 
-        p.println(ParsingUtils.PROBES + "\t" + probes.length + "\t" + probeSet.getTableName() + "\t" + probeSet
+        p.println(ParsingUtils.SITES + "\t" + sites.length + "\t" + siteSet.getTableName() + "\t" + siteSet
                 .justDescription() + "\t" + comments);
 
         // Next we print out the data
 
-        for (int i = 0; i < probes.length; i++) {
+        for (int i = 0; i < sites.length; i++) {
 
             if (cancel) {
                 cancelled(p);
@@ -507,12 +399,12 @@ public class REDDataWriter implements Runnable, Cancellable {
                 Enumeration<ProgressListener> e = listeners.elements();
                 while (e.hasMoreElements()) {
                     e.nextElement().progressUpdated(
-                            "Written data for " + i + " probes out of "
-                                    + probes.length, i, probes.length);
+                            "Written data for " + i + " sites out of "
+                                    + sites.length, i, sites.length);
                 }
             }
 
-            p.println(probes[i].getChr() + "\t" + probes[i].getStart() + "\t" + probes[i].getRefBase() + "\t" + probes[i].getAltBase());
+            p.println(sites[i].getChr() + "\t" + sites[i].getStart() + "\t" + sites[i].getRefBase() + "\t" + sites[i].getAltBase());
         }
         return true;
     }
@@ -548,12 +440,12 @@ public class REDDataWriter implements Runnable, Cancellable {
     }
 
     /**
-     * Prints the probe lists.
+     * Prints the site lists.
      *
      * @param p the p
      */
-    private boolean printProbeLists(PrintStream p) throws REDException, IOException {
-        // Now we print out the list of probe lists
+    private boolean printSiteLists(PrintStream p) throws REDException, IOException {
+        // Now we print out the list of site lists
 
 		/*
          * We rely on this list coming in tree order, that is to say that when
@@ -563,21 +455,21 @@ public class REDDataWriter implements Runnable, Cancellable {
 		 * 
 		 * This should be how the nodes are created anyway.
 		 */
-        ProbeList[] lists = data.probeSet().getAllProbeLists();
+        SiteList[] lists = data.siteSet().getAllSiteLists();
 
         // We start at the second list since the first list will always
-        // be "All probes" which we'll sort out some other way.
+        // be "All sites" which we'll sort out some other way.
 
         p.println(ParsingUtils.LISTS + "\t" + (lists.length - 1));
 
         for (int i = 1, len = lists.length; i < len; i++) {
             String listComments = lists[i].comments().replaceAll("[\\r\\n]", "`");
-            Probe[] currentListProbes = lists[i].getAllProbes();
-            int probeLength = currentListProbes.length;
+            Site[] currentSiteLists = lists[i].getAllSites();
+            int siteLength = currentSiteLists.length;
             p.println(getListDepth(lists[i]) + "\t" + lists[i].name() + "\t" + lists[i].description() + "\t" +
-                    lists[i].getTableName() + "\t" + probeLength + "\t" + listComments);
+                    lists[i].getTableName() + "\t" + siteLength + "\t" + listComments);
 
-            for (int j = 0; j < probeLength; j++) {
+            for (int j = 0; j < siteLength; j++) {
                 if (j % 1000 == 0) {
                     if (cancel) {
                         cancelled(p);
@@ -586,12 +478,12 @@ public class REDDataWriter implements Runnable, Cancellable {
                     Enumeration<ProgressListener> e = listeners.elements();
                     while (e.hasMoreElements()) {
                         e.nextElement().progressUpdated(
-                                "Written lists for " + j + " probes out of "
-                                        + probeLength, j, probeLength);
+                                "Written lists for " + j + " sites out of "
+                                        + siteLength, j, siteLength);
                     }
                 }
-                p.println(currentListProbes[j].getChr() + "\t" + currentListProbes[j].getStart() + "\t" + currentListProbes[j].getRefBase() + "\t" +
-                        currentListProbes[j].getAltBase());
+                p.println(currentSiteLists[j].getChr() + "\t" + currentSiteLists[j].getStart() + "\t" + currentSiteLists[j].getRefBase() + "\t" +
+                        currentSiteLists[j].getAltBase());
             }
         }
 
@@ -614,7 +506,7 @@ public class REDDataWriter implements Runnable, Cancellable {
      * @param p the p
      * @return the list depth
      */
-    private int getListDepth(ProbeList p) {
+    private int getListDepth(SiteList p) {
         int depth = 0;
 
         while (p.getParent() != null) {
