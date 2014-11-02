@@ -19,7 +19,7 @@
  */
 package com.xl.dialog;
 
-import com.xl.datatypes.probes.ProbeList;
+import com.xl.datatypes.sites.SiteList;
 import com.xl.main.REDApplication;
 
 import javax.swing.*;
@@ -27,17 +27,17 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class ProbeListCommentEditDialog extends JDialog implements ActionListener {
+public class SiteListCommentEditDialog extends JDialog implements ActionListener {
 
 
-    private ProbeList list;
+    private SiteList list;
     private JTextArea editor;
 
-    public ProbeListCommentEditDialog(ProbeList list) {
+    public SiteListCommentEditDialog(SiteList list) {
         this(list, REDApplication.getInstance());
     }
 
-    public ProbeListCommentEditDialog(ProbeList list, Component c) {
+    public SiteListCommentEditDialog(SiteList list, Component c) {
 
         super(REDApplication.getInstance(), "Edit comments for " + list.name());
 
@@ -47,7 +47,7 @@ public class ProbeListCommentEditDialog extends JDialog implements ActionListene
 
         panel.setLayout(new BorderLayout());
 
-        panel.add(new JLabel("You can use this comments section to record the rationale for a particular filter or probe generation.", JLabel.CENTER), BorderLayout.NORTH);
+        panel.add(new JLabel("You can use this comments section to record the rationale for a particular filter or site generation.", JLabel.CENTER), BorderLayout.NORTH);
 
         editor = new JTextArea();
         editor.setWrapStyleWord(true);

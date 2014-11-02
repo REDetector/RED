@@ -1,8 +1,8 @@
 package com.xl.datatypes;
 
 import com.xl.datatypes.genome.Genome;
-import com.xl.datatypes.probes.ProbeList;
-import com.xl.datatypes.probes.ProbeSet;
+import com.xl.datatypes.sites.SiteList;
+import com.xl.datatypes.sites.SiteSet;
 import com.xl.exception.REDException;
 import com.xl.interfaces.DataChangeListener;
 import com.xl.main.REDApplication;
@@ -18,9 +18,9 @@ import java.util.Vector;
 public class DataCollection {
 
     /**
-     * The probe set.
+     * The site set.
      */
-    private ProbeSet probeSet = null;
+    private SiteSet siteSet = null;
 
     /**
      * The data sets.
@@ -96,35 +96,35 @@ public class DataCollection {
     }
 
     /**
-     * Sets the probe set.
+     * Sets the site set.
      *
-     * @param newProbeSet the new probe set
+     * @param newSiteSet the new site set
      */
-    public void setProbeSet(ProbeSet newProbeSet) {
-        if (probeSet != null) {
-            probeSet.delete();
+    public void setSiteSet(SiteSet newSiteSet) {
+        if (siteSet != null) {
+            siteSet.delete();
         }
-        probeSet = newProbeSet;
-        probeSet.setCollection(this);
+        siteSet = newSiteSet;
+        siteSet.setCollection(this);
         Enumeration<DataChangeListener> e = listeners.elements();
         while (e.hasMoreElements()) {
-            e.nextElement().probeSetReplaced(probeSet);
+            e.nextElement().siteSetReplaced(siteSet);
         }
 
-        // We need to tell all of the DataSets and Groups about the new probe set
+        // We need to tell all of the DataSets and Groups about the new site set
         DataStore[] stores = getAllDataStores();
         for (int i = 0; i < stores.length; i++) {
-            stores[i].probeSetReplaced(newProbeSet);
+            stores[i].siteSetReplaced(newSiteSet);
         }
     }
 
     /**
-     * Probe set.
+     * Site set.
      *
-     * @return the probe set
+     * @return the site set
      */
-    public ProbeSet probeSet() {
-        return probeSet;
+    public SiteSet siteSet() {
+        return siteSet;
     }
 
     /**
@@ -139,7 +139,7 @@ public class DataCollection {
 
         // We need to let this dataset know about the
         // current probset.
-        data.probeSetReplaced(probeSet());
+        data.siteSetReplaced(siteSet());
 
         Enumeration<DataChangeListener> e = listeners.elements();
         while (e.hasMoreElements()) {
@@ -158,7 +158,7 @@ public class DataCollection {
 
         // We need to let this datagroup know about the
         // current probset.
-        group.probeSetReplaced(probeSet());
+        group.siteSetReplaced(siteSet());
 
         Enumeration<DataChangeListener> e = listeners.elements();
         while (e.hasMoreElements()) {
@@ -262,10 +262,10 @@ public class DataCollection {
         return stores;
     }
 
-    public void activeProbeListChanged(ProbeList list) {
+    public void activeSiteListChanged(SiteList list) {
         Enumeration<DataChangeListener> e = listeners.elements();
         while (e.hasMoreElements()) {
-            e.nextElement().activeProbeListChanged(list);
+            e.nextElement().activeSiteListChanged(list);
         }
     }
 

@@ -1,8 +1,8 @@
 package com.xl.dialog;
 
 import com.sun.java.TableSorter;
-import com.xl.datatypes.probes.Probe;
-import com.xl.datatypes.probes.ProbeList;
+import com.xl.datatypes.sites.Site;
+import com.xl.datatypes.sites.SiteList;
 import com.xl.main.REDApplication;
 import com.xl.preferences.DisplayPreferences;
 import com.xl.preferences.LocationPreferences;
@@ -20,10 +20,10 @@ import java.awt.event.MouseListener;
 import java.io.*;
 
 /**
- * The Class ProbeListViewer shows a simple view of a probe list and
+ * The Class SiteListViewer shows a simple view of a site list and
  * its description
  */
-public class ProbeListViewer extends JDialog implements MouseListener, ActionListener {
+public class SiteListViewer extends JDialog implements MouseListener, ActionListener {
 
     /**
      * The table.
@@ -31,15 +31,15 @@ public class ProbeListViewer extends JDialog implements MouseListener, ActionLis
     private JTable table;
 
     /**
-     * Instantiates a new probe list viewer.
+     * Instantiates a new site list viewer.
      *
      * @param list        the list
      * @param application the application
      */
-    public ProbeListViewer(ProbeList list, REDApplication application) {
-        super(application, list.name() + " (" + list.getAllProbes().length + " probes)");
+    public SiteListViewer(SiteList list, REDApplication application) {
+        super(application, list.name() + " (" + list.getAllSiteLists().length + " sites)");
 
-        Probe[] probes = list.getAllProbes();
+        Site[] sites = list.getAllSites();
 
         getContentPane().setLayout(new BorderLayout());
 
@@ -53,16 +53,16 @@ public class ProbeListViewer extends JDialog implements MouseListener, ActionLis
         String[] headers = new String[]{"Chr", "Position", "Refefence Base", "Alternative Base"};
         Class[] classes = new Class[]{String.class, Integer.class, Character.class, Character.class};
 
-        Object[][] rowData = new Object[probes.length][headers.length];
+        Object[][] rowData = new Object[sites.length][headers.length];
 
-        for (int i = 0; i < probes.length; i++) {
-            rowData[i][0] = probes[i].getChr();
-            rowData[i][1] = probes[i].getStart();
-            rowData[i][2] = probes[i].getRefBase();
-            rowData[i][3] = probes[i].getAltBase();
+        for (int i = 0; i < sites.length; i++) {
+            rowData[i][0] = sites[i].getChr();
+            rowData[i][1] = sites[i].getStart();
+            rowData[i][2] = sites[i].getRefBase();
+            rowData[i][3] = sites[i].getAltBase();
         }
 
-        TableSorter sorter = new TableSorter(new ProbeTableModel(rowData, headers, classes));
+        TableSorter sorter = new TableSorter(new SiteTableModel(rowData, headers, classes));
         table = new JTable(sorter);
 //		table.setDefaultRenderer(Double.class, new SmallDoubleCellRenderer());
         table.addMouseListener(this);
@@ -90,8 +90,8 @@ public class ProbeListViewer extends JDialog implements MouseListener, ActionLis
 
     }
 
-    public ProbeListViewer(Probe[] probes, String probeName, String descriptions, REDApplication application) {
-        super(application, probeName + " (" + probes.length + " probes)");
+    public SiteListViewer(Site[] sites, String siteName, String descriptions, REDApplication application) {
+        super(application, siteName + " (" + sites.length + " sites)");
 
         getContentPane().setLayout(new BorderLayout());
 
@@ -105,16 +105,16 @@ public class ProbeListViewer extends JDialog implements MouseListener, ActionLis
         String[] headers = new String[]{"Chr", "Position", "Refefence Base", "Alternative Base"};
         Class[] classes = new Class[]{String.class, Integer.class, Character.class, Character.class};
 
-        Object[][] rowData = new Object[probes.length][headers.length];
+        Object[][] rowData = new Object[sites.length][headers.length];
 
-        for (int i = 0; i < probes.length; i++) {
-            rowData[i][0] = probes[i].getChr();
-            rowData[i][1] = probes[i].getStart();
-            rowData[i][2] = probes[i].getRefBase();
-            rowData[i][3] = probes[i].getAltBase();
+        for (int i = 0; i < sites.length; i++) {
+            rowData[i][0] = sites[i].getChr();
+            rowData[i][1] = sites[i].getStart();
+            rowData[i][2] = sites[i].getRefBase();
+            rowData[i][3] = sites[i].getAltBase();
         }
 
-        TableSorter sorter = new TableSorter(new ProbeTableModel(rowData, headers, classes));
+        TableSorter sorter = new TableSorter(new SiteTableModel(rowData, headers, classes));
         table = new JTable(sorter);
 //		table.setDefaultRenderer(Double.class, new SmallDoubleCellRenderer());
         table.addMouseListener(this);
@@ -266,9 +266,9 @@ public class ProbeListViewer extends JDialog implements MouseListener, ActionLis
     }
 
     /**
-     * The Class ProbeTableModel.
+     * The Class SiteTableModel.
      */
-    private class ProbeTableModel extends AbstractTableModel {
+    private class SiteTableModel extends AbstractTableModel {
 
         /**
          * The data.
@@ -286,13 +286,13 @@ public class ProbeListViewer extends JDialog implements MouseListener, ActionLis
         private Class[] classes;
 
         /**
-         * Instantiates a new probe table model.
+         * Instantiates a new site table model.
          *
          * @param data    the data
          * @param headers the headers
          * @param classes the classes
          */
-        public ProbeTableModel(Object[][] data, String[] headers, Class[] classes) {
+        public SiteTableModel(Object[][] data, String[] headers, Class[] classes) {
             super();
             this.data = data;
             this.headers = headers;

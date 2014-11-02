@@ -1,9 +1,9 @@
 package com.xl.dialog;
 
 import com.xl.datatypes.DataCollection;
-import com.xl.datatypes.probes.ProbeList;
+import com.xl.datatypes.sites.SiteList;
 import com.xl.exception.REDException;
-import com.xl.filter.ProbeFilter;
+import com.xl.filter.AbstractSiteFilter;
 import com.xl.interfaces.OptionsListener;
 import com.xl.interfaces.ProgressListener;
 import com.xl.main.REDApplication;
@@ -18,10 +18,10 @@ import java.awt.event.ActionListener;
  */
 public class FilterOptionsDialog extends JDialog implements OptionsListener, ProgressListener, ActionListener {
 
-    private ProbeFilter filter;
+    private AbstractSiteFilter filter;
     private JButton filterButton;
 
-    public FilterOptionsDialog(DataCollection collection, ProbeFilter filter) {
+    public FilterOptionsDialog(DataCollection collection, AbstractSiteFilter filter) {
         super(REDApplication.getInstance(), filter.name());
 
         this.filter = filter;
@@ -31,10 +31,11 @@ public class FilterOptionsDialog extends JDialog implements OptionsListener, Pro
 
         getContentPane().setLayout(new BorderLayout());
 
-        JLabel probeListLabel = new JLabel("Testing probes in '" + collection.probeSet().getActiveList().name() + "' (" + collection.probeSet().getActiveList().getAllProbes().length + " probes)", JLabel.CENTER);
-        probeListLabel.setFont(new Font("Default", Font.BOLD, 12));
-        probeListLabel.setBorder(BorderFactory.createEmptyBorder(3, 0, 3, 0));
-        getContentPane().add(probeListLabel, BorderLayout.NORTH);
+        JLabel siteListLabel = new JLabel("Filtering sites in '" + collection.siteSet().getActiveList().name() + "' (" + collection.siteSet().getActiveList()
+                .getAllSiteLists().length + " sites)", JLabel.CENTER);
+        siteListLabel.setFont(new Font("Default", Font.BOLD, 12));
+        siteListLabel.setBorder(BorderFactory.createEmptyBorder(3, 0, 3, 0));
+        getContentPane().add(siteListLabel, BorderLayout.NORTH);
 
         if (filter.hasOptionsPanel()) {
             JPanel optionsPanel = filter.getOptionsPanel();
@@ -102,25 +103,26 @@ public class FilterOptionsDialog extends JDialog implements OptionsListener, Pro
 
     public void progressComplete(String command, Object result) {
 
-        ProbeList newList = (ProbeList) result;
+        SiteList newList = (SiteList) result;
 
         filterButton.setEnabled(true);
 
-        // See if any probes actually passed
-        if (newList.getAllProbes().length == 0) {
+        // See if any sites actually passed
+        if (newList.getAllSiteLists().length == 0) {
             // We need to remove this empty list.
             newList.delete();
-            JOptionPane.showMessageDialog(this, "No probes matched the criteria set", "Info", JOptionPane.INFORMATION_MESSAGE);
+            JOptionPane.showMessageDialog(this, "No sites matched the criteria set", "Info", JOptionPane.INFORMATION_MESSAGE);
             return;
         }
 
         // Ask for a name for the list
         String groupName;
         while (true) {
-            groupName = (String) JOptionPane.showInputDialog(this, "Enter list name", "Found " + newList.getAllProbes().length + " probes", JOptionPane.QUESTION_MESSAGE, null, null, newList.name());
+            groupName = (String) JOptionPane.showInputDialog(this, "Enter list name", "Found " + newList.getAllSiteLists().length + " sites",
+                    JOptionPane.QUESTION_MESSAGE, null, null, newList.name());
             if (groupName == null) {
                 // Since the list will automatically have been added to
-                // the ProbeList tree we actively need to delete it if
+                // the SiteList tree we actively need to delete it if
                 // they choose to cancel at this point.
                 newList.delete();
                 return;  // They cancelled

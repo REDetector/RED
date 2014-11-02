@@ -1,6 +1,6 @@
 package com.xl.dialog;
 
-import com.dw.publicaffairs.DatabaseManager;
+import com.dw.dbutils.DatabaseManager;
 import com.xl.interfaces.ProgressListener;
 import com.xl.main.REDApplication;
 import com.xl.preferences.REDPreferences;

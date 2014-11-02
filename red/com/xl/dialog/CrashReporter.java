@@ -1,9 +1,9 @@
 package com.xl.dialog;
 
 import com.xl.main.REDApplication;
+import com.xl.net.crashreport.HTMLDisplayDialog;
 import com.xl.preferences.REDPreferences;
 import com.xl.utils.FontManager;
-import net.xl.crashreport.HTMLDisplayDialog;
 
 import javax.swing.*;
 import java.awt.*;

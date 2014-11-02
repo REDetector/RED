@@ -20,9 +20,9 @@
 package com.xl.dialog;
 
 import com.xl.main.REDApplication;
-import net.xl.genomes.DownloadableGenomeSet;
-import net.xl.genomes.DownloadableGenomeTreeModel;
-import net.xl.genomes.GenomeLists;
+import com.xl.net.genomes.DownloadableGenomeSet;
+import com.xl.net.genomes.DownloadableGenomeTreeModel;
+import com.xl.net.genomes.GenomeLists;
 
 import javax.swing.*;
 import javax.swing.event.TreeSelectionEvent;
