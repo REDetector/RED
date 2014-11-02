@@ -23,7 +23,7 @@ package com.xl.display.dataviewer;
 import com.xl.datatypes.DataGroup;
 import com.xl.datatypes.DataSet;
 import com.xl.datatypes.annotation.AnnotationSet;
-import com.xl.datatypes.probes.ProbeList;
+import com.xl.datatypes.sites.SiteList;
 
 import javax.swing.*;
 import javax.swing.tree.DefaultTreeCellRenderer;
@@ -49,11 +49,11 @@ public class DataTreeRenderer extends DefaultTreeCellRenderer {
                     .getSystemResource("resources/datagroup_icon.png"));
 
     /**
-     * The probe list icon.
+     * The site list icon.
      */
-    private static Icon probeListIcon = new ImageIcon(
+    private static Icon siteListIcon = new ImageIcon(
             ClassLoader
-                    .getSystemResource("resources/probelist_icon.png"));
+                    .getSystemResource("resources/sitelist_icon.png"));
 
     /**
      * The annotation set icon.
@@ -92,8 +92,8 @@ public class DataTreeRenderer extends DefaultTreeCellRenderer {
                 label.setBackground(Color.LIGHT_GRAY);
             }
             return label;
-        } else if (value instanceof ProbeList) {
-            JLabel label = new JLabel(value.toString(), probeListIcon,
+        } else if (value instanceof SiteList) {
+            JLabel label = new JLabel(value.toString(), siteListIcon,
                     JLabel.LEFT);
             if (selected) {
                 label.setOpaque(true);

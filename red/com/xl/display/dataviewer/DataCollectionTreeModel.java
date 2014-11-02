@@ -5,8 +5,8 @@ import com.xl.datatypes.DataGroup;
 import com.xl.datatypes.DataSet;
 import com.xl.datatypes.DataStore;
 import com.xl.datatypes.annotation.AnnotationSet;
-import com.xl.datatypes.probes.ProbeList;
-import com.xl.datatypes.probes.ProbeSet;
+import com.xl.datatypes.sites.SiteList;
+import com.xl.datatypes.sites.SiteSet;
 import com.xl.interfaces.AnnotationCollectionListener;
 import com.xl.interfaces.DataChangeListener;
 
@@ -82,8 +82,8 @@ public class DataCollectionTreeModel implements TreeModel, DataChangeListener, A
     }
 
     public Object getChild(Object node, int index) {
-        if (node instanceof ProbeList) {
-            return ((ProbeList) node).children()[index];
+        if (node instanceof SiteList) {
+            return ((SiteList) node).children()[index];
         } else if (node.equals(rootNode)) {
             switch (index) {
                 case 0:
@@ -105,8 +105,8 @@ public class DataCollectionTreeModel implements TreeModel, DataChangeListener, A
     }
 
     public int getChildCount(Object node) {
-        if (node instanceof ProbeList) {
-            return ((ProbeList) node).children().length;
+        if (node instanceof SiteList) {
+            return ((SiteList) node).children().length;
         } else if (node.equals(annotationNode)) {
             return collection.genome().getAnnotationCollection().anotationSets().length;
         } else if (node.equals(rootNode)) {
@@ -121,8 +121,8 @@ public class DataCollectionTreeModel implements TreeModel, DataChangeListener, A
     }
 
     public int getIndexOfChild(Object node, Object child) {
-        if (node instanceof ProbeList) {
-            ProbeList[] children = ((ProbeList) node).children();
+        if (node instanceof SiteList) {
+            SiteList[] children = ((SiteList) node).children();
             for (int i = 0; i < children.length; i++) {
                 if (children[i].equals(child)) {
                     return i;
@@ -291,7 +291,7 @@ public class DataCollectionTreeModel implements TreeModel, DataChangeListener, A
 
     }
 
-    public void probeSetReplaced(ProbeSet probes) {
+    public void siteSetReplaced(SiteSet sites) {
     }
 
     public void annotationSetAdded(AnnotationSet annotationSets) {
@@ -327,7 +327,7 @@ public class DataCollectionTreeModel implements TreeModel, DataChangeListener, A
     public void activeDataStoreChanged(DataStore s) {
     }
 
-    public void activeProbeListChanged(ProbeList l) {
+    public void activeSiteListChanged(SiteList l) {
     }
 
     /**

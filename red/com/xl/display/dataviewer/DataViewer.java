@@ -6,8 +6,8 @@ import com.xl.datatypes.DataSet;
 import com.xl.datatypes.DataStore;
 import com.xl.datatypes.annotation.AnnotationSet;
 import com.xl.datatypes.annotation.CoreAnnotationSet;
-import com.xl.datatypes.probes.ProbeList;
-import com.xl.datatypes.probes.ProbeSet;
+import com.xl.datatypes.sites.SiteList;
+import com.xl.datatypes.sites.SiteSet;
 import com.xl.dialog.*;
 import com.xl.display.report.SitesDistributionHistogram;
 import com.xl.display.report.VariantDistributionHistogram;
@@ -25,14 +25,14 @@ import java.awt.event.*;
 /**
  * The DataViewer is a panel which shows a tree based overview of a data
  * collection.  It also provides a mechanism to select DataStores and
- * ProbeLists and can launch various tools via popup menus.
+ * SiteLists and can launch various tools via popup menus.
  */
 public class DataViewer extends JPanel implements MouseListener, TreeSelectionListener {
 
     private DataCollection collection;
     private REDApplication application;
     private JTree dataTree;
-    private JTree probeSetTree;
+    private JTree siteSetTree;
 
     /**
      * Instantiates a new data viewer.
@@ -61,12 +61,12 @@ public class DataViewer extends JPanel implements MouseListener, TreeSelectionLi
 
         con.gridy++;
 
-        ProbeSetTreeModel probeModel = new ProbeSetTreeModel(collection);
-        probeSetTree = new UnfocusableTree(probeModel);
-        probeSetTree.addMouseListener(this);
-        probeSetTree.addTreeSelectionListener(this);
-        probeSetTree.setCellRenderer(new DataTreeRenderer());
-        add(probeSetTree, con);
+        SiteSetTreeModel siteModel = new SiteSetTreeModel(collection);
+        siteSetTree = new UnfocusableTree(siteModel);
+        siteSetTree.addMouseListener(this);
+        siteSetTree.addTreeSelectionListener(this);
+        siteSetTree.setCellRenderer(new DataTreeRenderer());
+        add(siteSetTree, con);
 
 
         // This nasty bit just makes the trees squash up to the top of the display
@@ -105,8 +105,8 @@ public class DataViewer extends JPanel implements MouseListener, TreeSelectionLi
                 new DataPopupMenu((DataSet) clickedItem).show(dataTree, me.getX(), me.getY());
             } else if (clickedItem instanceof DataGroup) {
                 new GroupPopupMenu((DataGroup) clickedItem).show(dataTree, me.getX(), me.getY());
-            } else if (clickedItem instanceof ProbeList) {
-                new ProbePopupMenu((ProbeList) clickedItem).show(probeSetTree, me.getX(), me.getY());
+            } else if (clickedItem instanceof SiteList) {
+                new SitePopupMenu((SiteList) clickedItem).show(siteSetTree, me.getX(), me.getY());
             } else if (clickedItem instanceof AnnotationSet) {
                 new AnnotationPopupMenu((AnnotationSet) clickedItem).show(dataTree, me.getX(), me.getY());
             }
@@ -124,8 +124,8 @@ public class DataViewer extends JPanel implements MouseListener, TreeSelectionLi
                 new DataPopupMenu((DataSet) clickedItem).actionPerformed(new ActionEvent(this, 0, "properties"));
             } else if (clickedItem instanceof DataGroup) {
                 new GroupPopupMenu((DataGroup) clickedItem).actionPerformed(new ActionEvent(this, 0, "properties"));
-            } else if (clickedItem instanceof ProbeList) {
-//                new ProbePopupMenu((ProbeList) clickedItem).actionPerformed(new ActionEvent(this, 0, "view"));
+            } else if (clickedItem instanceof SiteList) {
+//                new SitePopupMenu((SiteList) clickedItem).actionPerformed(new ActionEvent(this, 0, "view"));
             } else if (clickedItem instanceof AnnotationSet) {
                 new AnnotationPopupMenu((AnnotationSet) clickedItem).actionPerformed(new ActionEvent(this, 0, "properties"));
             }
@@ -171,16 +171,16 @@ public class DataViewer extends JPanel implements MouseListener, TreeSelectionLi
                     }
                 }
 
-            } else if (tse.getSource() == probeSetTree) {
-                if (probeSetTree.getSelectionPath() == null) {
-                    collection.probeSet().setActiveList(null);
+            } else if (tse.getSource() == siteSetTree) {
+                if (siteSetTree.getSelectionPath() == null) {
+                    collection.siteSet().setActiveList(null);
                 } else {
-                    Object selectedItem = probeSetTree.getSelectionPath().getLastPathComponent();
-                    if (selectedItem instanceof ProbeList) {
-                        collection.probeSet().setActiveList((ProbeList) selectedItem);
+                    Object selectedItem = siteSetTree.getSelectionPath().getLastPathComponent();
+                    if (selectedItem instanceof SiteList) {
+                        collection.siteSet().setActiveList((SiteList) selectedItem);
                     } else {
-                        if (collection.probeSet() != null) {
-                            collection.probeSet().setActiveList(null);
+                        if (collection.siteSet() != null) {
+                            collection.siteSet().setActiveList(null);
                         }
                     }
                 }
@@ -355,18 +355,18 @@ public class DataViewer extends JPanel implements MouseListener, TreeSelectionLi
     }
 
     /**
-     * The popup menu which appears when the user right-clicks on a ProbeList
+     * The popup menu which appears when the user right-clicks on a SiteList
      */
-    private class ProbePopupMenu extends JPopupMenu implements ActionListener {
+    private class SitePopupMenu extends JPopupMenu implements ActionListener {
 
-        private ProbeList p;
+        private SiteList p;
 
         /**
-         * Instantiates a new probe popup menu.
+         * Instantiates a new site popup menu.
          *
          * @param p
          */
-        public ProbePopupMenu(ProbeList p) {
+        public SitePopupMenu(SiteList p) {
             this.p = p;
 
             JMenuItem view = new JMenuItem("Show Sites List");
@@ -387,7 +387,7 @@ public class DataViewer extends JPanel implements MouseListener, TreeSelectionLi
             JMenuItem rename = new JMenuItem("Rename");
             rename.setActionCommand("rename");
             rename.addActionListener(this);
-            if (p instanceof ProbeSet) {
+            if (p instanceof SiteSet) {
                 rename.setEnabled(false);
             }
             add(rename);
@@ -400,7 +400,7 @@ public class DataViewer extends JPanel implements MouseListener, TreeSelectionLi
             JMenuItem delete = new JMenuItem("Delete");
             delete.setActionCommand("delete");
             delete.addActionListener(this);
-            if (p instanceof ProbeSet) {
+            if (p instanceof SiteSet) {
                 delete.setEnabled(false);
             }
             add(delete);
@@ -411,7 +411,7 @@ public class DataViewer extends JPanel implements MouseListener, TreeSelectionLi
          */
         public void actionPerformed(ActionEvent ae) {
             if (ae.getActionCommand().equals("view")) {
-                new ProbeListViewer(p, application);
+                new SiteListViewer(p, application);
             } else if (ae.getActionCommand().equals("sites distribution")) {
                 new SitesDistributionHistogram(collection.getActiveDataStore());
             } else if (ae.getActionCommand().equals("variant distribution")) {
@@ -422,7 +422,7 @@ public class DataViewer extends JPanel implements MouseListener, TreeSelectionLi
                     p.setName(name);
                 }
             } else if (ae.getActionCommand().equals("comments")) {
-                new ProbeListCommentEditDialog(p, this);
+                new SiteListCommentEditDialog(p, this);
             } else if (ae.getActionCommand().equals("delete")) {
                 p.delete();
             } else {
