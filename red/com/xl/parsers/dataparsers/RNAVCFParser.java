@@ -1,6 +1,6 @@
 package com.xl.parsers.dataparsers;
 
-import com.dw.publicaffairs.DatabaseManager;
+import com.dw.dbutils.DatabaseManager;
 import com.xl.dialog.ProgressDialog;
 import com.xl.dialog.REDProgressBar;
 import com.xl.exception.REDException;

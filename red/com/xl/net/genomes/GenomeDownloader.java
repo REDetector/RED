@@ -17,7 +17,7 @@
  *    along with SeqMonk; if not, write to the Free Software
  *    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package net.xl.genomes;
+package com.xl.net.genomes;
 
 import com.xl.exception.REDException;
 import com.xl.interfaces.ProgressListener;

@@ -3,8 +3,8 @@ package com.xl.interfaces;
 import com.xl.datatypes.DataGroup;
 import com.xl.datatypes.DataSet;
 import com.xl.datatypes.DataStore;
-import com.xl.datatypes.probes.ProbeList;
-import com.xl.datatypes.probes.ProbeSet;
+import com.xl.datatypes.sites.SiteList;
+import com.xl.datatypes.sites.SiteSet;
 
 /**
  * The listener interface for receiving dataChange events.
@@ -67,14 +67,14 @@ public interface DataChangeListener {
     public void dataGroupSamplesChanged(DataGroup g);
 
     /**
-     * Probe set replaced.
+     * Site set replaced.
      *
      * @param p the p
      */
-    public void probeSetReplaced(ProbeSet p);
+    public void siteSetReplaced(SiteSet p);
 
     public void activeDataStoreChanged(DataStore s);
 
-    public void activeProbeListChanged(ProbeList l);
+    public void activeSiteListChanged(SiteList l);
 
 }

@@ -1,14 +1,14 @@
 package com.xl.thread;
 
-import com.dw.denovo.DbSNPFilter;
-import com.dw.denovo.PValueFilter;
-import com.dw.denovo.RepeatFilter;
+import com.dw.dbutils.DatabaseManager;
+import com.dw.dbutils.Query;
+import com.dw.denovo.FisherExactTestFilter;
+import com.dw.denovo.KnownSNPFilter;
+import com.dw.denovo.RepeatRegionsFilter;
 import com.dw.denovo.SpliceJunctionFilter;
-import com.dw.publicaffairs.DatabaseManager;
-import com.dw.publicaffairs.Query;
 import com.xl.datatypes.DataCollection;
-import com.xl.datatypes.probes.Probe;
-import com.xl.datatypes.probes.ProbeSet;
+import com.xl.datatypes.sites.Site;
+import com.xl.datatypes.sites.SiteSet;
 import com.xl.main.REDApplication;
 import com.xl.parsers.dataparsers.DNAVCFParser;
 import com.xl.parsers.dataparsers.RNAVCFParser;
@@ -43,21 +43,21 @@ public class ThreadNonDenovoInput implements Runnable {
         RNAVCFParser rnaVCFParser = new RNAVCFParser();
         rnaVCFParser.parseVCFFile(DatabaseManager.RNA_VCF_RESULT_TABLE_NAME, locationPreferences.getRnaVcfFile());
 
-        Vector<Probe> probes = Query.queryAllEditingSites(DatabaseManager.RNA_VCF_RESULT_TABLE_NAME);
-        Probe[] probeArray = probes.toArray(new Probe[0]);
-        dataCollection.setProbeSet(new ProbeSet("Original RNA editing sites by RNA vcf file", probeArray, DatabaseManager.RNA_VCF_RESULT_TABLE_NAME));
+        Vector<Site> sites = Query.queryAllEditingSites(DatabaseManager.RNA_VCF_RESULT_TABLE_NAME);
+        Site[] siteArray = sites.toArray(new Site[0]);
+        dataCollection.setSiteSet(new SiteSet("Original RNA editing sites by RNA vcf file", siteArray, DatabaseManager.RNA_VCF_RESULT_TABLE_NAME));
 
 
-        RepeatFilter rf = new RepeatFilter(manager);
+        RepeatRegionsFilter rf = new RepeatRegionsFilter(manager);
         rf.loadRepeatTable(DatabaseManager.REPEAT_FILTER_TABLE_NAME, locationPreferences.getRepeatFile());
 
         SpliceJunctionFilter cf = new SpliceJunctionFilter(manager);
         cf.loadSpliceJunctionTable(DatabaseManager.SPLICE_JUNCTION_FILTER_TABLE_NAME, locationPreferences.getRefSeqFile());
 
-        DbSNPFilter sf = new DbSNPFilter(manager);
+        KnownSNPFilter sf = new KnownSNPFilter(manager);
         sf.loadDbSNPTable(DatabaseManager.DBSNP_FILTER_TABLE_NAME, locationPreferences.getDbSNPFile());
 
-        PValueFilter pv = new PValueFilter(manager);
+        FisherExactTestFilter pv = new FisherExactTestFilter(manager);
         pv.loadDarnedTable(DatabaseManager.PVALUE_FILTER_TABLE_NAME, locationPreferences.getDarnedFile());
 
         REDApplication.getInstance().progressComplete("database_loaded", null);

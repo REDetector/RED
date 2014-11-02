@@ -1,4 +1,4 @@
-package net.xl.genomes;
+package com.xl.net.genomes;
 
 import javax.swing.event.TreeModelListener;
 import javax.swing.tree.TreeModel;

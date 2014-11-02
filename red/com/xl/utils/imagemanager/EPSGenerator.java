@@ -44,7 +44,7 @@ public class EPSGenerator {
             fos = new FileOutputStream(file);
             g = new EpsGraphics("eps", fos, 0, 0, c.getWidth(), c.getHeight(), colorModeClass);
             // EpsGraphics stores directly in a file
-            c.paintAll(g);
+            c.paint(g);
             exportSuccess = true;
 
         } catch (Exception e) {

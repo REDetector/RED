@@ -3,8 +3,8 @@ package com.xl.menu;
 import com.xl.datatypes.DataGroup;
 import com.xl.datatypes.DataSet;
 import com.xl.datatypes.DataStore;
-import com.xl.datatypes.probes.ProbeList;
-import com.xl.datatypes.probes.ProbeSet;
+import com.xl.datatypes.sites.SiteList;
+import com.xl.datatypes.sites.SiteSet;
 import com.xl.dialog.DataZoomSelector;
 import com.xl.main.REDApplication;
 import com.xl.utils.namemanager.MenuUtils;
@@ -25,8 +25,8 @@ public class MainREDToolbar extends REDToolbar {
     private JButton findFeatureButton;
 
     private JButton readsOnlyButton;
-    private JButton probesOnlyButton;
-    private JButton probesAndReadsButton;
+    private JButton sitesOnlyButton;
+    private JButton sitesAndReadsButton;
 
     private DataZoomSelector dataZoomSelector;
 
@@ -44,16 +44,16 @@ public class MainREDToolbar extends REDToolbar {
         readsOnlyButton.setToolTipText("Show only Reads");
         readsOnlyButton.addActionListener(menu);
         add(readsOnlyButton);
-        probesOnlyButton = new JButton(new ImageIcon(ClassLoader.getSystemResource("resources/toolbar/probes_only.png")));
-        probesOnlyButton.setActionCommand(MenuUtils.SHOW_PROBES_ONLY);
-        probesOnlyButton.setToolTipText("Show only Probes");
-        probesOnlyButton.addActionListener(menu);
-        add(probesOnlyButton);
-        probesAndReadsButton = new JButton(new ImageIcon(ClassLoader.getSystemResource("resources/toolbar/probes_and_reads.png")));
-        probesAndReadsButton.setActionCommand(MenuUtils.SHOW_READS_AND_PROBES);
-        probesAndReadsButton.setToolTipText("Show Reads and Probes");
-        probesAndReadsButton.addActionListener(menu);
-        add(probesAndReadsButton);
+        sitesOnlyButton = new JButton(new ImageIcon(ClassLoader.getSystemResource("resources/toolbar/sites_only.png")));
+        sitesOnlyButton.setActionCommand(MenuUtils.SHOW_PROBES_ONLY);
+        sitesOnlyButton.setToolTipText("Show only Sites");
+        sitesOnlyButton.addActionListener(menu);
+        add(sitesOnlyButton);
+        sitesAndReadsButton = new JButton(new ImageIcon(ClassLoader.getSystemResource("resources/toolbar/sites_and_reads.png")));
+        sitesAndReadsButton.setActionCommand(MenuUtils.SHOW_READS_AND_PROBES);
+        sitesAndReadsButton.setToolTipText("Show Reads and Sites");
+        sitesAndReadsButton.addActionListener(menu);
+        add(sitesAndReadsButton);
         addSeparator();
 
         findFeatureButton = new JButton(new ImageIcon(ClassLoader.getSystemResource("resources/toolbar/find_feature.png")));
@@ -83,8 +83,8 @@ public class MainREDToolbar extends REDToolbar {
         // Enable the buttons relating only to the genome
         System.out.println(this.getClass().getName() + ":genomeLoaded()");
         readsOnlyButton.setEnabled(true);
-        probesOnlyButton.setEnabled(true);
-        probesAndReadsButton.setEnabled(true);
+        sitesOnlyButton.setEnabled(true);
+        sitesAndReadsButton.setEnabled(true);
         jumpToPositionButton.setEnabled(true);
         jumpToPositionButton.setFocusable(false);
         findFeatureButton.setEnabled(true);
@@ -170,14 +170,14 @@ public class MainREDToolbar extends REDToolbar {
     public void dataGroupSamplesChanged(DataGroup g) {
     }
 
-    public void probeSetReplaced(ProbeSet p) {
+    public void siteSetReplaced(SiteSet p) {
     }
 
     public void activeDataStoreChanged(DataStore s) {
 
     }
 
-    public void activeProbeListChanged(ProbeList l) {
+    public void activeSiteListChanged(SiteList l) {
     }
 
     public String name() {

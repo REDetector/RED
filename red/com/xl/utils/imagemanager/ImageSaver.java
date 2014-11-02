@@ -29,14 +29,17 @@ public class ImageSaver {
      *
      * @param c The component to save.
      */
-    public static void saveImage(Component c) {
+    public static void saveImage(Component c, String defaultName) {
         JFileChooser chooser = new JFileChooser(LocationPreferences.getInstance().getProjectSaveLocation());
+
         chooser.setMultiSelectionEnabled(false);
         EPSFileFilter epsFileFilter = new EPSFileFilter();
         chooser.addChoosableFileFilter(new SVGFileFilter());
         chooser.addChoosableFileFilter(epsFileFilter);
         chooser.addChoosableFileFilter(new PNGFileFilter());
         chooser.setFileFilter(epsFileFilter);
+        File defaultFile = new File(LocationPreferences.getInstance().getProjectSaveLocation() + "/" + defaultName);
+        chooser.setSelectedFile(defaultFile);
 
         int result = chooser.showSaveDialog(c);
         if (result == JFileChooser.CANCEL_OPTION) return;

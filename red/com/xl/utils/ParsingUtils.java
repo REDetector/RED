@@ -19,7 +19,7 @@ public class ParsingUtils {
     public static final String SAMPLES = "Samples";
     public static final String ANNOTATION = "Annotation";
     public static final String DATA_GROUPS = "Data Groups";
-    public static final String PROBES = "Probes";
+    public static final String SITES = "Sites";
     public static final String LISTS = "Lists";
     public static final String VISIBLE_STORES = "Visible Stores";
     public static final String DISPLAY_PREFERENCES = "Display Preferences";

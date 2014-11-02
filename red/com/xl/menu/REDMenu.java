@@ -7,6 +7,7 @@ package com.xl.menu;
 import com.xl.dialog.*;
 import com.xl.dialog.gotodialog.GotoDialog;
 import com.xl.dialog.gotodialog.GotoWindowDialog;
+import com.xl.display.chromosomeviewer.ChromosomeViewer;
 import com.xl.display.report.FilterReports;
 import com.xl.display.report.ReportOptions;
 import com.xl.display.report.SitesDistributionHistogram;
@@ -15,10 +16,9 @@ import com.xl.exception.REDException;
 import com.xl.filter.*;
 import com.xl.help.HelpDialog;
 import com.xl.main.REDApplication;
+import com.xl.net.genomes.UpdateChecker;
 import com.xl.panel.ToolbarPanel;
 import com.xl.panel.WelcomePanel;
-import com.xl.parsers.annotationparsers.AnnotationParserRunner;
-import com.xl.parsers.annotationparsers.UCSCRefGeneParser;
 import com.xl.parsers.dataparsers.BAMFileParser;
 import com.xl.parsers.dataparsers.FastaFileParser;
 import com.xl.preferences.DisplayPreferences;
@@ -26,7 +26,6 @@ import com.xl.preferences.LocationPreferences;
 import com.xl.preferences.REDPreferences;
 import com.xl.utils.imagemanager.ImageSaver;
 import com.xl.utils.namemanager.MenuUtils;
-import net.xl.genomes.UpdateChecker;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -205,6 +204,7 @@ public class REDMenu extends JMenuBar implements ActionListener {
 
             {
                 exportImage.setText(MenuUtils.EXPORT_IMAGE);
+                exportImage.setEnabled(false);
                 addJMenuItem(exportImage, genomeView, MenuUtils.GENOME_VIEW, -1, true);
                 addJMenuItem(exportImage, chromosomeView, MenuUtils.CHROMOSOME_VIEW, -1, true);
                 fileMenu.add(exportImage);
@@ -275,7 +275,7 @@ public class REDMenu extends JMenuBar implements ActionListener {
             addJMenuItem(filterMenu, knownSNVsFilter, MenuUtils.KNOWN_SNVS_FILTER, -1);
             addJMenuItem(filterMenu, rnadnaFilter, MenuUtils.DNA_RNA_FILTER, -1);
             addJMenuItem(filterMenu, repetitiveFilter, MenuUtils.REPEATED_FILTER, -1);
-            addJMenuItem(filterMenu, comprehensiveFilter, MenuUtils.COMPREHENSIVE_FILTER, -1);
+            addJMenuItem(filterMenu, comprehensiveFilter, MenuUtils.SPLICE_JUNCTION_FILTER, -1);
             {
                 statisticalFilterMenu.setText(MenuUtils.STATISTICAL_FILTER);
                 addJMenuItem(statisticalFilterMenu, pvalueFilter, MenuUtils.PVALUE_FILTER, -1);
@@ -378,17 +378,17 @@ public class REDMenu extends JMenuBar implements ActionListener {
         } else if (action.equals(MenuUtils.DNA)) {
             redApplication.importData(new BAMFileParser());
         } else if (action.equals(MenuUtils.ANNOTATION)) {
-            AnnotationParserRunner.RunAnnotationParser(redApplication,
-                    new UCSCRefGeneParser(redApplication.dataCollection()
-                            .genome()));
+//            AnnotationParserRunner.RunAnnotationParser(redApplication, new UCSCRefGeneParser(redApplication.dataCollection().genome()));
+            throw new UnsupportedOperationException("We only support .genome file from IGV server now...");
         } else if (action.equals(MenuUtils.LOAD_GENOME)) {
             redApplication.startNewProject();
         } else if (action.equals(MenuUtils.CHROMOSOME_VIEW)) {
-            ImageSaver.saveImage(redApplication.chromosomeViewer());
+            ChromosomeViewer viewer = redApplication.chromosomeViewer();
+            ImageSaver.saveImage(viewer, "chr_view_" + viewer.chromosome().getName() + "_" + viewer.currentStart() + "_" + viewer.currentEnd());
         } else if (action.equals(MenuUtils.GENOME_VIEW)) {
             redApplication.genomeViewer().setExportImage(true);
             redApplication.genomeViewer().displayPreferencesUpdated(DisplayPreferences.getInstance());
-            ImageSaver.saveImage(redApplication.genomeViewer());
+            ImageSaver.saveImage(redApplication.genomeViewer(), "genome_view");
             redApplication.genomeViewer().setExportImage(false);
             redApplication.genomeViewer().displayPreferencesUpdated(DisplayPreferences.getInstance());
         } else if (action.equals(MenuUtils.EXIT)) {
@@ -445,29 +445,27 @@ public class REDMenu extends JMenuBar implements ActionListener {
         else if (action.endsWith("Filter...")) {
             try {
                 if (action.equals(MenuUtils.QC_FILTER)) {
-                    new FilterOptionsDialog(redApplication.dataCollection(), new QCFilterMenu(redApplication
-                            .dataCollection()));
+                    new FilterOptionsDialog(redApplication.dataCollection(), new QualityControlFilterMenu(redApplication.dataCollection()));
                 } else if (action.equals(MenuUtils.SPECIFIC_FILTER)) {
-                    new FilterOptionsDialog(redApplication.dataCollection(), new EditingTypeFilterMenu(redApplication
-                            .dataCollection()));
+                    new FilterOptionsDialog(redApplication.dataCollection(), new EditingTypeFilterMenu(redApplication.dataCollection()));
                 } else if (action.equals(MenuUtils.KNOWN_SNVS_FILTER)) {
-                    new FilterOptionsDialog(redApplication.dataCollection(), new DbSNPFilterMenu(redApplication
-                            .dataCollection()));
+                    new FilterOptionsDialog(redApplication.dataCollection(), new KnownSNPFilterMenu(redApplication.dataCollection()));
                 } else if (action.equals(MenuUtils.REPEATED_FILTER)) {
-                    new FilterOptionsDialog(redApplication.dataCollection(), new RepeatFilterMenu(redApplication
-                            .dataCollection()));
+                    new FilterOptionsDialog(redApplication.dataCollection(), new RepeatRegionsFilterMenu(redApplication.dataCollection()));
                 } else if (action.equals(MenuUtils.DNA_RNA_FILTER)) {
-                    new FilterOptionsDialog(redApplication.dataCollection(), new DNARNAFilterMenu(redApplication
-                            .dataCollection()));
-                } else if (action.equals(MenuUtils.COMPREHENSIVE_FILTER)) {
-                    new FilterOptionsDialog(redApplication.dataCollection(),
-                            new SpliceJunctionFilterMenu(redApplication.dataCollection()));
-                } else if (action.equals(MenuUtils.PVALUE_FILTER)) {
-                    new FilterOptionsDialog(redApplication.dataCollection(), new PValueFilterMenu(redApplication
-                            .dataCollection()));
+                    new FilterOptionsDialog(redApplication.dataCollection(), new DNARNAFilterMenu(redApplication.dataCollection()));
+                } else if (action.equals(MenuUtils.SPLICE_JUNCTION_FILTER)) {
+                    new FilterOptionsDialog(redApplication.dataCollection(), new SpliceJunctionFilterMenu(redApplication.dataCollection()));
+                }
+            } catch (REDException e) {
+                e.printStackTrace();
+            }
+        } else if (action.contains("test")) {
+            try {
+                if (action.equals(MenuUtils.PVALUE_FILTER)) {
+                    new FilterOptionsDialog(redApplication.dataCollection(), new FisherExactTestFilterMenu(redApplication.dataCollection()));
                 } else if (action.equals(MenuUtils.LLR_FILTER)) {
-                    new FilterOptionsDialog(redApplication.dataCollection(), new LLRFilterMenu(redApplication
-                            .dataCollection()));
+                    new FilterOptionsDialog(redApplication.dataCollection(), new LikelihoodRatioFilterMenu(redApplication.dataCollection()));
                 }
             } catch (REDException e) {
                 e.printStackTrace();
@@ -478,8 +476,8 @@ public class REDMenu extends JMenuBar implements ActionListener {
             if (redApplication.dataCollection().getActiveDataStore() == null) {
                 JOptionPane.showMessageDialog(redApplication, "You need to select a data store in the Data panel before viewing this plot",
                         "No data selected...", JOptionPane.INFORMATION_MESSAGE);
-            } else if (redApplication.dataCollection().probeSet() == null) {
-                JOptionPane.showMessageDialog(redApplication, "You need to select a probeset/probelist in the Data panel before viewing this plot",
+            } else if (redApplication.dataCollection().siteSet() == null) {
+                JOptionPane.showMessageDialog(redApplication, "You need to select a siteset/sitelist in the Data panel before viewing this plot",
                         "No data selected...", JOptionPane.INFORMATION_MESSAGE);
             } else {
                 new VariantDistributionHistogram(redApplication.dataCollection().getActiveDataStore());
@@ -488,8 +486,8 @@ public class REDMenu extends JMenuBar implements ActionListener {
             if (redApplication.dataCollection().getActiveDataStore() == null) {
                 JOptionPane.showMessageDialog(redApplication, "You need to select a data store in the Data panel before viewing this plot",
                         "No data selected...", JOptionPane.INFORMATION_MESSAGE);
-            } else if (redApplication.dataCollection().probeSet() == null) {
-                JOptionPane.showMessageDialog(redApplication, "You need to select a probeset/probelist in the Data panel before viewing this plot",
+            } else if (redApplication.dataCollection().siteSet() == null) {
+                JOptionPane.showMessageDialog(redApplication, "You need to select a siteset/sitelist in the Data panel before viewing this plot",
                         "No data selected...", JOptionPane.INFORMATION_MESSAGE);
             } else {
                 new SitesDistributionHistogram(redApplication.dataCollection().getActiveDataStore());

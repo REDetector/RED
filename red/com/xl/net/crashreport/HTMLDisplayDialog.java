@@ -1,4 +1,4 @@
-package net.xl.crashreport;
+package com.xl.net.crashreport;
 
 /**
  * Copyright 2012-13 Simon Andrews

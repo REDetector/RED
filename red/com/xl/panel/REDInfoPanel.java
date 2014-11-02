@@ -21,11 +21,11 @@ package com.xl.panel;
 
 import com.xl.dialog.CrashReporter;
 import com.xl.main.REDApplication;
+import com.xl.net.genomes.UpdateChecker;
 import com.xl.preferences.LocationPreferences;
 import com.xl.preferences.REDPreferences;
 import com.xl.utils.namemanager.IconUtils;
 import com.xl.utils.namemanager.InfoPanelUtils;
-import net.xl.genomes.UpdateChecker;
 
 import javax.swing.*;
 import java.awt.*;

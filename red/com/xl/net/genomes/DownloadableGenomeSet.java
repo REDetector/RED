@@ -1,4 +1,4 @@
-package net.xl.genomes;
+package com.xl.net.genomes;
 
 import com.xl.preferences.LocationPreferences;
 

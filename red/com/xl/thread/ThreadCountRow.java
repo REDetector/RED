@@ -18,8 +18,8 @@
 
 package com.xl.thread;
 
-import com.dw.publicaffairs.DatabaseManager;
-import com.xl.filter.ProbeFilter;
+import com.dw.dbutils.DatabaseManager;
+import com.xl.filter.AbstractSiteFilter;
 
 /**
  * Created by Administrator on 2014/10/20.
@@ -27,10 +27,10 @@ import com.xl.filter.ProbeFilter;
 public class ThreadCountRow implements Runnable {
     private String tableName;
 
-    private ProbeFilter probeFilter;
+    private AbstractSiteFilter abstractSiteFilter;
 
-    public ThreadCountRow(ProbeFilter probeFilter, String tableName) {
-        this.probeFilter = probeFilter;
+    public ThreadCountRow(AbstractSiteFilter abstractSiteFilter, String tableName) {
+        this.abstractSiteFilter = abstractSiteFilter;
         this.tableName = tableName;
     }
 
@@ -46,7 +46,7 @@ public class ThreadCountRow implements Runnable {
                 break;
             } else {
                 totalCount = currentCount;
-                probeFilter.progressUpdated("Filtering out " + totalCount + " RNA-editing sites from " + probeFilter.parentTable, 0, 0);
+                abstractSiteFilter.progressUpdated("Filtering out " + totalCount + " RNA-editing sites from " + abstractSiteFilter.parentTable, 0, 0);
             }
             try {
                 Thread.sleep(1000);
