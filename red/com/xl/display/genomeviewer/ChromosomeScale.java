@@ -31,8 +31,7 @@ public class ChromosomeScale extends JPanel {
      */
     private int division;
 
-    // Values cached from the last update and used when
-    // relating pixels to positions
+    // Values cached from the last update and used when relating pixels to positions
     public ChromosomeScale(Genome genome) {
         this(genome.getLongestChromosomeLength());
     }
@@ -59,9 +58,6 @@ public class ChromosomeScale extends JPanel {
 
     }
 
-    /* (non-Javadoc)
-     * @see javax.swing.JComponent#paintComponent(java.awt.Graphics)
-     */
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
         int xOffset = getWidth() / 80;

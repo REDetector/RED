@@ -5,9 +5,9 @@ import com.xl.datatypes.DataSet;
 import com.xl.datatypes.DataStore;
 import com.xl.datatypes.genome.Chromosome;
 import com.xl.datatypes.genome.Genome;
-import com.xl.datatypes.probes.Probe;
-import com.xl.datatypes.probes.ProbeList;
-import com.xl.datatypes.probes.ProbeSet;
+import com.xl.datatypes.sites.Site;
+import com.xl.datatypes.sites.SiteList;
+import com.xl.datatypes.sites.SiteSet;
 import com.xl.dialog.CrashReporter;
 import com.xl.exception.REDException;
 import com.xl.interfaces.DataChangeListener;
@@ -56,7 +56,7 @@ public class ChromosomeDisplay extends JPanel implements DataChangeListener {
      */
     private int viewEnd = 0;
 
-    private Probe[] probes = null;
+    private Site[] sites = null;
 
     // Values cached from the last update and used when relating pixels to positions
     private int xOffset = 0;
@@ -66,7 +66,7 @@ public class ChromosomeDisplay extends JPanel implements DataChangeListener {
     private boolean isSelecting = false;
     private int selectionStart = 0;
     private int selectionEnd = 0;
-    private boolean showProbes;
+    private boolean showSites;
 
 
     /**
@@ -85,8 +85,8 @@ public class ChromosomeDisplay extends JPanel implements DataChangeListener {
         addMouseMotionListener(pl);
     }
 
-    public void setShowProbes(boolean showProbes) {
-        this.showProbes = showProbes;
+    public void setShowSites(boolean showSites) {
+        this.showSites = showSites;
     }
 
     public void paintComponent(Graphics g) {
@@ -110,14 +110,14 @@ public class ChromosomeDisplay extends JPanel implements DataChangeListener {
         g.setColor(Color.WHITE);
         g.fillRect(0, 0, getWidth(), getHeight());
 
-        if (showProbes && probes != null) {
+        if (showSites && sites != null) {
 
             g.setColor(ColourScheme.DATA_BACKGROUND_ODD);
             g.fillRoundRect(xOffset, yOffset, scaleX(width, chromosome.getLength(), maxLen), height, 2, 2);
-            // Now go through all the probes figuring out whether they need to be displayed
+            // Now go through all the sites figuring out whether they need to be displayed
 
-            for (Probe probe : probes) {
-                drawProbe(probe, g, width, maxLen, yOffset, xOffset, height);
+            for (Site site : sites) {
+                drawSite(site, g, width, maxLen, yOffset, xOffset, height);
             }
 
             // Draw a box over the selected region if there is one
@@ -165,7 +165,7 @@ public class ChromosomeDisplay extends JPanel implements DataChangeListener {
 
     }
 
-    private void drawProbe(Probe p, Graphics g, int chrWidth, int maxLength, int yOffset, int xOffset, int effectiveHeight) {
+    private void drawSite(Site p, Graphics g, int chrWidth, int maxLength, int yOffset, int xOffset, int effectiveHeight) {
 
         int wholeXStart = xOffset + scaleX(chrWidth, p.getStart(), maxLength);
         int wholeXEnd = wholeXStart + 1;
@@ -232,25 +232,25 @@ public class ChromosomeDisplay extends JPanel implements DataChangeListener {
     public void dataSetRenamed(DataSet d) {
     }
 
-    public void probeSetReplaced(ProbeSet p) {
+    public void siteSetReplaced(SiteSet p) {
         if (p == null) {
-            probes = null;
+            sites = null;
         } else {
-            probes = p.getProbesForChromosome(chromosome.getName());
-            Arrays.sort(probes);
+            sites = p.getSitesForChromosome(chromosome.getName());
+            Arrays.sort(sites);
         }
     }
 
     public void activeDataStoreChanged(DataStore s) {
     }
 
-    public void activeProbeListChanged(ProbeList l) {
+    public void activeSiteListChanged(SiteList l) {
 
         if (l == null) {
-            probes = null;
+            sites = null;
         } else {
-            probes = l.getProbesForChromosome(chromosome.getName());
-            Arrays.sort(probes);
+            sites = l.getSitesForChromosome(chromosome.getName());
+            Arrays.sort(sites);
         }
 
         repaint();

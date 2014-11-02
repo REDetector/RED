@@ -5,8 +5,8 @@ import com.xl.datatypes.DataSet;
 import com.xl.datatypes.DataStore;
 import com.xl.datatypes.genome.Chromosome;
 import com.xl.datatypes.genome.Genome;
-import com.xl.datatypes.probes.ProbeList;
-import com.xl.datatypes.probes.ProbeSet;
+import com.xl.datatypes.sites.SiteList;
+import com.xl.datatypes.sites.SiteSet;
 import com.xl.interfaces.DataChangeListener;
 import com.xl.interfaces.DisplayPreferencesListener;
 import com.xl.main.REDApplication;
@@ -20,8 +20,7 @@ import java.awt.event.MouseListener;
 /**
  * The Class GenomeViewer provides a graphical overview of a whole genome
  */
-public class GenomeViewer extends JPanel implements DataChangeListener,
-        DisplayPreferencesListener {
+public class GenomeViewer extends JPanel implements DataChangeListener, DisplayPreferencesListener {
 
     /**
      * The chromosome displays.
@@ -64,8 +63,7 @@ public class GenomeViewer extends JPanel implements DataChangeListener,
             gridBagConstraints.gridy = i;
             gridBagConstraints.gridx = 0;
             gridBagConstraints.weightx = 0.1;
-            chromosomePanel.add(new JLabel(chromosomes[i].getName()),
-                    gridBagConstraints);
+            chromosomePanel.add(new JLabel(chromosomes[i].getName()), gridBagConstraints);
             gridBagConstraints.gridx = 1;
             gridBagConstraints.weightx = 100;
             chromosomeDisplays[i] = new ChromosomeDisplay(genome, chromosomes[i], this);
@@ -135,22 +133,22 @@ public class GenomeViewer extends JPanel implements DataChangeListener,
      * @param end   the end
      */
     private void setView(Chromosome c, int start, int end) {
-        boolean drawProbes;
+        boolean drawSites;
         switch (DisplayPreferences.getInstance().getDisplayMode()) {
             case DisplayPreferences.DISPLAY_MODE_PROBES_ONLY:
-                drawProbes = true;
+                drawSites = true;
                 break;
             case DisplayPreferences.DISPLAY_MODE_READS_ONLY:
-                drawProbes = false;
+                drawSites = false;
                 break;
             case DisplayPreferences.DISPLAY_MODE_READS_AND_PROBES:
-                drawProbes = true;
+                drawSites = true;
                 break;
             default:
-                drawProbes = false;
+                drawSites = false;
         }
         for (ChromosomeDisplay display : chromosomeDisplays) {
-            display.setShowProbes(drawProbes);
+            display.setShowSites(drawSites);
             if (!isExportImage) {
                 display.setView(c, start, end);
             } else {
@@ -159,18 +157,16 @@ public class GenomeViewer extends JPanel implements DataChangeListener,
         }
     }
 
-    // For all of the listener events we merely forward these to the
-    // individual chromosome views
-
+    // For all of the listener events we merely forward these to the individual chromosome views
     public void activeDataStoreChanged(DataStore s) {
         for (ChromosomeDisplay display : chromosomeDisplays) {
             display.activeDataStoreChanged(s);
         }
     }
 
-    public void activeProbeListChanged(ProbeList l) {
+    public void activeSiteListChanged(SiteList l) {
         for (ChromosomeDisplay display : chromosomeDisplays) {
-            display.activeProbeListChanged(l);
+            display.activeSiteListChanged(l);
         }
     }
 
@@ -217,9 +213,9 @@ public class GenomeViewer extends JPanel implements DataChangeListener,
         }
     }
 
-    public void probeSetReplaced(ProbeSet p) {
+    public void siteSetReplaced(SiteSet p) {
         for (ChromosomeDisplay display : chromosomeDisplays) {
-            display.probeSetReplaced(p);
+            display.siteSetReplaced(p);
         }
     }
 
