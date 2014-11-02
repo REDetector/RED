@@ -1,8 +1,8 @@
 package com.xl.datatypes;
 
-import com.xl.datatypes.probes.Probe;
-import com.xl.datatypes.probes.ProbeSet;
 import com.xl.datatypes.sequence.Location;
+import com.xl.datatypes.sites.Site;
+import com.xl.datatypes.sites.SiteSet;
 import com.xl.parsers.dataparsers.DataParser;
 import com.xl.utils.Strand;
 
@@ -16,22 +16,16 @@ import java.util.List;
  */
 public abstract class DataStore implements Comparable<DataStore> {
 
+    protected DataParser dataParser = null;
     /**
      * The name.
      */
     private String name;
-
-    /**
-     * The probe data size.
-     */
-    private int probeDataSize = 0;
-
     /**
      * The collection.
      */
     private DataCollection collection = null;
     private boolean isStandardChromosomeName = true;
-    private DataParser dataParser = null;
 
     /**
      * Instantiates a new data store.
@@ -77,12 +71,12 @@ public abstract class DataStore implements Comparable<DataStore> {
     }
 
     /**
-     * Gets the reads for probe.
+     * Gets the reads for site.
      *
      * @param p the p
-     * @return the reads for probe
+     * @return the reads for site
      */
-    public abstract List<? extends Location> getReadsForProbe(Probe p);
+    public abstract List<? extends Location> getReadsForSite(Site p);
 
     /**
      * Gets the reads for chromosome.
@@ -123,20 +117,6 @@ public abstract class DataStore implements Comparable<DataStore> {
     public abstract long getTotalReadLength();
 
     /**
-     * Gets the length of the longest read.
-     *
-     * @return the longest read length
-     */
-    public abstract int getMaxReadLength();
-
-    /**
-     * Gets the length of the shortest read.
-     *
-     * @return the shortest read length
-     */
-    public abstract int getMinReadLength();
-
-    /**
      * Name.
      *
      * @return the string
@@ -155,16 +135,12 @@ public abstract class DataStore implements Comparable<DataStore> {
     }
 
     /**
-     * Probe set replaced.
+     * Site set replaced.
      *
-     * @param probes the probes
+     * @param sites the sites
      */
-    public void probeSetReplaced(ProbeSet probes) {
-        if (probes != null) {
-            probeDataSize = probes.size();
-        } else {
-            probeDataSize = 0;
-        }
+    public void siteSetReplaced(SiteSet sites) {
+
     }
 
     public String toString() {

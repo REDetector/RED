@@ -19,8 +19,8 @@
  */
 package com.xl.datatypes;
 
-import com.xl.datatypes.probes.Probe;
 import com.xl.datatypes.sequence.Location;
+import com.xl.datatypes.sites.Site;
 import com.xl.utils.Strand;
 
 import java.util.ArrayList;
@@ -159,33 +159,10 @@ public class DataGroup extends DataStore {
         return count;
     }
 
-    public int getMaxReadLength() {
-
-        int max = 0;
-        for (int i = 0; i < dataSets.length; i++) {
-            if (i == 0 || dataSets[i].getMaxReadLength() > max) max = dataSets[i].getMaxReadLength();
-        }
-
-        return max;
-    }
-
-    public int getMinReadLength() {
-        int min = 0;
-        for (int i = 0; i < dataSets.length; i++) {
-            if (i == 0 || dataSets[i].getMinReadLength() < min) min = dataSets[i].getMinReadLength();
-        }
-
-        return min;
-    }
-
-    public long getTotalPairCount() {
-        return getTotalReadCount() / 2;
-    }
-
-    public List<Location> getReadsForProbe(Probe p) {
+    public List<Location> getReadsForSite(Site p) {
         List<Location> allReads = new ArrayList<Location>();
         for (DataSet dataSet : dataSets) {
-            allReads.addAll(dataSet.getReadsForProbe(p));
+            allReads.addAll(dataSet.getReadsForSite(p));
         }
         Collections.sort(allReads);
         return allReads;
