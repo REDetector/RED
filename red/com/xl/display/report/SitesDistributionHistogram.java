@@ -25,6 +25,8 @@ public class SitesDistributionHistogram extends JDialog implements ActionListene
      */
     private SitesHistogramPanel plotPanel;
 
+    private DataStore d;
+
     /**
      * Instantiates a new read length histogram plot.
      *
@@ -32,10 +34,11 @@ public class SitesDistributionHistogram extends JDialog implements ActionListene
      */
     public SitesDistributionHistogram(DataStore d) {
         super(REDApplication.getInstance(), "Editing Sites Distribution [" + d.name() + "]");
+        this.d = d;
         setSize(800, 600);
         setLocationRelativeTo(REDApplication.getInstance());
         setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-        plotPanel = new SitesHistogramPanel(d.collection().genome(), d.collection().probeSet().getActiveList().getAllProbes());
+        plotPanel = new SitesHistogramPanel(d.collection().genome(), d.collection().siteSet().getActiveList().getAllSites());
         getContentPane().setLayout(new BorderLayout());
         getContentPane().add(plotPanel, BorderLayout.CENTER);
 
@@ -68,7 +71,7 @@ public class SitesDistributionHistogram extends JDialog implements ActionListene
             setVisible(false);
             dispose();
         } else if (ae.getActionCommand().equals("save")) {
-            ImageSaver.saveImage(plotPanel.mainHistogramPanel());
+            ImageSaver.saveImage(plotPanel.mainHistogramPanel(), "site_distribution_" + d.name());
         } else if (ae.getActionCommand().equals("export")) {
             JFileChooser chooser = new JFileChooser(LocationPreferences.getInstance().getProjectSaveLocation());
             chooser.setMultiSelectionEnabled(false);
@@ -88,7 +91,8 @@ public class SitesDistributionHistogram extends JDialog implements ActionListene
 
             // Check if we're stepping on anyone's toes...
             if (file.exists()) {
-                int answer = JOptionPane.showOptionDialog(this, file.getName() + " exists.  Do you want to overwrite the existing file?", "Overwrite file?", 0, JOptionPane.QUESTION_MESSAGE, null, new String[]{"Overwrite and Save", "Cancel"}, "Overwrite and Save");
+                int answer = JOptionPane.showOptionDialog(this, file.getName() + " exists.  Do you want to overwrite the existing file?", "Overwrite file?",
+                        JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, new String[]{"Overwrite and Save", "Cancel"}, "Overwrite and Save");
 
                 if (answer > 0) {
                     return;

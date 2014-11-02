@@ -1,8 +1,8 @@
 package com.xl.display.report;
 
 import com.xl.datatypes.genome.Genome;
-import com.xl.datatypes.probes.Probe;
-import com.xl.dialog.ProbeListViewer;
+import com.xl.datatypes.sites.Site;
+import com.xl.dialog.SiteListViewer;
 import com.xl.main.REDApplication;
 import com.xl.utils.AxisScale;
 import com.xl.utils.ColourScheme;
@@ -26,7 +26,7 @@ public class SitesHistogramPanel extends JPanel implements Runnable {
     /**
      * The data.
      */
-    private Probe[] probes;
+    private Site[] sites;
 
     private Genome genome;
     /**
@@ -56,12 +56,12 @@ public class SitesHistogramPanel extends JPanel implements Runnable {
     /**
      * Instantiates a new histogram panel.
      *
-     * @param probes the probes
+     * @param sites the sites
      */
-    public SitesHistogramPanel(Genome genome, Probe[] probes) {
+    public SitesHistogramPanel(Genome genome, Site[] sites) {
 
         this.genome = genome;
-        this.probes = probes;
+        this.sites = sites;
 
         setLayout(new BorderLayout());
         JPanel textPanel = new JPanel();
@@ -114,12 +114,12 @@ public class SitesHistogramPanel extends JPanel implements Runnable {
             histogramCategories[i] = new HistogramCategory(chromosomeNames[i]);
         }
         // In this thread we recalculate the categories to display
-        for (Probe probe : probes) {
+        for (Site site : sites) {
             if (stopCalculating) {
                 stopCalculating = false;
                 return;
             }
-            String chr = probe.getChr();
+            String chr = site.getChr();
             for (HistogramCategory histogramCategory : histogramCategories) {
                 if (chr.equals(histogramCategory.chr)) {
                     histogramCategory.count++;
@@ -294,13 +294,13 @@ public class SitesHistogramPanel extends JPanel implements Runnable {
         public void mouseClicked(MouseEvent arg0) {
             if (arg0.getClickCount() == 2 && selectedCategory != null) {
                 String chr = selectedCategory.chr;
-                java.util.List<Probe> probeList = new ArrayList<Probe>();
-                for (Probe probe : probes) {
-                    if (probe.getChr().equals(chr)) {
-                        probeList.add(probe);
+                java.util.List<Site> siteList = new ArrayList<Site>();
+                for (Site site : sites) {
+                    if (site.getChr().equals(chr)) {
+                        siteList.add(site);
                     }
                 }
-                new ProbeListViewer(probeList.toArray(new Probe[0]), "RNA-editing sites in " + chr, "RNA-editing sites in " + chr,
+                new SiteListViewer(siteList.toArray(new Site[0]), "RNA-editing sites in " + chr, "RNA-editing sites in " + chr,
                         REDApplication.getInstance());
             }
         }

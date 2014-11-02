@@ -61,15 +61,15 @@ public class ReportOptions extends JDialog implements ActionListener, ProgressLi
 
         JPanel topPanel = new JPanel();
 
-        JLabel probeListLabel;
+        JLabel siteListLabel;
 
-        if (report.dataCollection().probeSet() != null) {
-            probeListLabel = new JLabel("Reporting on probes in '" + report.dataCollection().probeSet().getActiveList().name() + "' (" + report.dataCollection().probeSet().getActiveList().getAllProbes().length + " probes)", JLabel.CENTER);
+        if (report.dataCollection().siteSet() != null) {
+            siteListLabel = new JLabel("Reporting on sites in '" + report.dataCollection().siteSet().getActiveList().name() + "' (" + report.dataCollection().siteSet().getActiveList().getAllSites().length + " sites)", JLabel.CENTER);
         } else {
-            probeListLabel = new JLabel("Reporting on all data", JLabel.CENTER);
+            siteListLabel = new JLabel("Reporting on all data", JLabel.CENTER);
         }
-        probeListLabel.setFont(FontManager.defaultFont);
-        topPanel.add(probeListLabel);
+        siteListLabel.setFont(FontManager.defaultFont);
+        topPanel.add(siteListLabel);
 
         getContentPane().add(topPanel, BorderLayout.NORTH);
 

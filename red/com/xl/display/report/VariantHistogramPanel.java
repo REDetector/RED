@@ -1,7 +1,7 @@
 package com.xl.display.report;
 
-import com.xl.datatypes.probes.Probe;
-import com.xl.dialog.ProbeListViewer;
+import com.xl.datatypes.sites.Site;
+import com.xl.dialog.SiteListViewer;
 import com.xl.main.REDApplication;
 import com.xl.utils.AxisScale;
 import com.xl.utils.ColourScheme;
@@ -28,7 +28,7 @@ public class VariantHistogramPanel extends JPanel implements Runnable {
     /**
      * The data.
      */
-    private Probe[] probes;
+    private Site[] sites;
 
     /**
      * The main histogram panel.
@@ -51,11 +51,11 @@ public class VariantHistogramPanel extends JPanel implements Runnable {
     /**
      * Instantiates a new histogram panel.
      *
-     * @param probes the probes
+     * @param sites the sites
      */
-    public VariantHistogramPanel(Probe[] probes) {
+    public VariantHistogramPanel(Site[] sites) {
 
-        this.probes = probes;
+        this.sites = sites;
 
         setLayout(new BorderLayout());
         JPanel textPanel = new JPanel();
@@ -101,8 +101,8 @@ public class VariantHistogramPanel extends JPanel implements Runnable {
      */
     public void run() {
 
-        for (Probe probe : probes) {
-            String refalt = String.valueOf(probe.getRefBase()).toUpperCase() + " to " + String.valueOf(probe.getAltBase()).toUpperCase();
+        for (Site site : sites) {
+            String refalt = String.valueOf(site.getRefBase()).toUpperCase() + " to " + String.valueOf(site.getAltBase()).toUpperCase();
             if (!histogramCategories.containsKey(refalt)) {
                 histogramCategories.put(refalt, 1);
             } else {
@@ -258,13 +258,13 @@ public class VariantHistogramPanel extends JPanel implements Runnable {
                 String refalt = currentHistogram.getKey();
                 char ref = refalt.charAt(0);
                 char alt = refalt.charAt(refalt.length() - 1);
-                java.util.List<Probe> probeList = new ArrayList<Probe>();
-                for (Probe probe : probes) {
-                    if (probe.getAltBase() == alt && probe.getRefBase() == ref) {
-                        probeList.add(probe);
+                java.util.List<Site> siteList = new ArrayList<Site>();
+                for (Site site : sites) {
+                    if (site.getAltBase() == alt && site.getRefBase() == ref) {
+                        siteList.add(site);
                     }
                 }
-                new ProbeListViewer(probeList.toArray(new Probe[0]), ref + " to " + alt, "Focus on " + ref + " to " + alt, REDApplication.getInstance());
+                new SiteListViewer(siteList.toArray(new Site[0]), ref + " to " + alt, "Focus on " + ref + " to " + alt, REDApplication.getInstance());
             }
         }
 

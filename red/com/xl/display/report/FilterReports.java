@@ -1,11 +1,11 @@
 package com.xl.display.report;
 
-import com.dw.publicaffairs.Query;
+import com.dw.dbutils.Query;
 import com.xl.datatypes.DataCollection;
-import com.xl.datatypes.probes.ProbeBean;
-import com.xl.datatypes.probes.ProbeList;
+import com.xl.datatypes.sites.SiteBean;
+import com.xl.datatypes.sites.SiteList;
 import com.xl.display.dataviewer.DataTreeRenderer;
-import com.xl.display.dataviewer.ProbeSetTreeModel;
+import com.xl.display.dataviewer.SiteSetTreeModel;
 
 import javax.swing.*;
 import javax.swing.event.TreeSelectionEvent;
@@ -22,8 +22,8 @@ import java.util.Vector;
  */
 public class FilterReports extends Report implements MouseListener, TreeSelectionListener {
     private JPanel optionsPanel = null;
-    private JTree probeSetTree;
-    private Object currentProbeList;
+    private JTree siteSetTree;
+    private Object currentSiteList;
 
     /**
      * Instantiates a new report.
@@ -70,9 +70,9 @@ public class FilterReports extends Report implements MouseListener, TreeSelectio
         optionsPanel = new JPanel();
         optionsPanel.setLayout(new BorderLayout());
 
-        JPanel probeViewer = new JPanel();
-        probeViewer.setLayout(new GridBagLayout());
-        probeViewer.setBackground(Color.WHITE);
+        JPanel siteViewer = new JPanel();
+        siteViewer.setLayout(new GridBagLayout());
+        siteViewer.setBackground(Color.WHITE);
         GridBagConstraints con = new GridBagConstraints();
         con.gridx = 0;
         con.gridy = 0;
@@ -80,19 +80,19 @@ public class FilterReports extends Report implements MouseListener, TreeSelectio
         con.weighty = 0.01;
         con.fill = GridBagConstraints.HORIZONTAL;
         con.anchor = GridBagConstraints.FIRST_LINE_START;
-        ProbeSetTreeModel probeModel = new ProbeSetTreeModel(collection);
-        probeSetTree = new UnfocusableTree(probeModel);
-        probeSetTree.addMouseListener(this);
-        probeSetTree.addTreeSelectionListener(this);
-        probeSetTree.setCellRenderer(new DataTreeRenderer());
-        probeViewer.add(probeSetTree, con);
+        SiteSetTreeModel siteModel = new SiteSetTreeModel(collection);
+        siteSetTree = new UnfocusableTree(siteModel);
+        siteSetTree.addMouseListener(this);
+        siteSetTree.addTreeSelectionListener(this);
+        siteSetTree.setCellRenderer(new DataTreeRenderer());
+        siteViewer.add(siteSetTree, con);
         // This nasty bit just makes the trees squash up to the top of the display area.
         con.gridy++;
         con.weighty = 1;
         con.fill = GridBagConstraints.BOTH;
-        probeViewer.add(new JLabel(" "), con);
+        siteViewer.add(new JLabel(" "), con);
 
-        optionsPanel.add(probeViewer, BorderLayout.CENTER);
+        optionsPanel.add(siteViewer, BorderLayout.CENTER);
 
         return optionsPanel;
     }
@@ -105,24 +105,24 @@ public class FilterReports extends Report implements MouseListener, TreeSelectio
 
     @Override
     public boolean isReady() {
-        return currentProbeList != null;
+        return currentSiteList != null;
     }
 
     @Override
     public void run() {
-        ProbeList selectedProbeList = (ProbeList) currentProbeList;
-        Vector<ProbeBean> probes = Query.queryAllEditingInfo(selectedProbeList.getTableName());
-        ProbeBeanTableModel model = new ProbeBeanTableModel(probes.toArray(new ProbeBean[0]));
+        SiteList selectedSiteList = (SiteList) currentSiteList;
+        Vector<SiteBean> sites = Query.queryAllEditingInfo(selectedSiteList.getTableName());
+        SiteBeanTableModel model = new SiteBeanTableModel(sites.toArray(new SiteBean[0]));
         reportComplete(model);
     }
 
     @Override
     public void valueChanged(TreeSelectionEvent tse) {
-        if (tse.getSource() == probeSetTree) {
-            if (probeSetTree.getSelectionPath() == null) {
-                currentProbeList = null;
+        if (tse.getSource() == siteSetTree) {
+            if (siteSetTree.getSelectionPath() == null) {
+                currentSiteList = null;
             } else {
-                currentProbeList = probeSetTree.getSelectionPath().getLastPathComponent();
+                currentSiteList = siteSetTree.getSelectionPath().getLastPathComponent();
             }
             optionsChanged();
         }
@@ -158,24 +158,24 @@ public class FilterReports extends Report implements MouseListener, TreeSelectio
     /**
      * A TableModel representing the results of the AnnotatedListReport..
      */
-    private class ProbeBeanTableModel extends AbstractTableModel {
+    private class SiteBeanTableModel extends AbstractTableModel {
 
-        private ProbeBean[] probeBeans;
+        private SiteBean[] siteBeans;
 
         /**
          * Instantiates a new annotation table model.
          *
-         * @param probeBeans The starting probe list
+         * @param siteBeans The starting site list
          */
-        public ProbeBeanTableModel(ProbeBean[] probeBeans) {
-            this.probeBeans = probeBeans;
+        public SiteBeanTableModel(SiteBean[] siteBeans) {
+            this.siteBeans = siteBeans;
         }
 
         /* (non-Javadoc)
          * @see javax.swing.table.TableModel#getRowCount()
          */
         public int getRowCount() {
-            return probeBeans.length;
+            return siteBeans.length;
         }
 
         /* (non-Javadoc)
@@ -248,23 +248,23 @@ public class FilterReports extends Report implements MouseListener, TreeSelectio
         public Object getValueAt(int r, int c) {
             switch (c) {
                 case 0:
-                    return probeBeans[r].getChr();
+                    return siteBeans[r].getChr();
                 case 1:
-                    return probeBeans[r].getPos();
+                    return siteBeans[r].getPos();
                 case 2:
-                    return probeBeans[r].getId();
+                    return siteBeans[r].getId();
                 case 3:
-                    return probeBeans[r].getRef();
+                    return siteBeans[r].getRef();
                 case 4:
-                    return probeBeans[r].getAlt();
+                    return siteBeans[r].getAlt();
                 case 5:
-                    return probeBeans[r].getQual();
+                    return siteBeans[r].getQual();
                 case 6:
-                    return probeBeans[r].getLevel();
+                    return siteBeans[r].getLevel();
                 case 7:
-                    return probeBeans[r].getPvalue();
+                    return siteBeans[r].getPvalue();
                 case 8:
-                    return probeBeans[r].getFdr();
+                    return siteBeans[r].getFdr();
                 default:
                     return null;
             }

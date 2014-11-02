@@ -25,6 +25,8 @@ public class VariantDistributionHistogram extends JDialog implements ActionListe
      */
     private VariantHistogramPanel plotPanel;
 
+    private DataStore d;
+
     /**
      * Instantiates a new read length histogram plot.
      *
@@ -32,10 +34,11 @@ public class VariantDistributionHistogram extends JDialog implements ActionListe
      */
     public VariantDistributionHistogram(DataStore d) {
         super(REDApplication.getInstance(), "Editing Sites Distribution [" + d.name() + "]");
+        this.d = d;
         setSize(800, 600);
         setLocationRelativeTo(REDApplication.getInstance());
         setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-        plotPanel = new VariantHistogramPanel(d.collection().probeSet().getActiveList().getAllProbes());
+        plotPanel = new VariantHistogramPanel(d.collection().siteSet().getActiveList().getAllSites());
         getContentPane().setLayout(new BorderLayout());
         getContentPane().add(plotPanel, BorderLayout.CENTER);
 
@@ -68,7 +71,7 @@ public class VariantDistributionHistogram extends JDialog implements ActionListe
             setVisible(false);
             dispose();
         } else if (ae.getActionCommand().equals("save")) {
-            ImageSaver.saveImage(plotPanel.mainHistogramPanel());
+            ImageSaver.saveImage(plotPanel.mainHistogramPanel(), "variant_distribution_" + d.name());
         } else if (ae.getActionCommand().equals("export")) {
             JFileChooser chooser = new JFileChooser(LocationPreferences.getInstance().getProjectSaveLocation());
             chooser.setMultiSelectionEnabled(false);
