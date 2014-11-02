@@ -5,7 +5,7 @@ package com.dw.denovo;
  * we discard base in the rear or front of the sequence
  */
 
-import com.dw.publicaffairs.DatabaseManager;
+import com.dw.dbutils.DatabaseManager;
 import com.xl.dialog.ProgressDialog;
 import com.xl.dialog.REDProgressBar;
 
