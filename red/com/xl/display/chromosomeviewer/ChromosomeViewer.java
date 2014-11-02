@@ -6,8 +6,8 @@ import com.xl.datatypes.DataSet;
 import com.xl.datatypes.DataStore;
 import com.xl.datatypes.genome.Chromosome;
 import com.xl.datatypes.genome.GenomeDescriptor;
-import com.xl.datatypes.probes.ProbeList;
-import com.xl.datatypes.probes.ProbeSet;
+import com.xl.datatypes.sites.SiteList;
+import com.xl.datatypes.sites.SiteSet;
 import com.xl.interfaces.DataChangeListener;
 import com.xl.interfaces.DisplayPreferencesListener;
 import com.xl.main.REDApplication;
@@ -143,7 +143,6 @@ public class ChromosomeViewer extends JPanel implements DataChangeListener, Disp
                 sequenceScrollPane.setVisible(false);
             } else {
                 gridBagConstraints.weighty = 1;
-                DisplayPreferences.getInstance().addListener((ChromosomeDataTrack) abstractTrack);
                 JScrollPane scrollCDT = new JScrollPane(abstractTrack);
                 scrollCDT.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
                 scrollCDT.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
@@ -383,10 +382,10 @@ public class ChromosomeViewer extends JPanel implements DataChangeListener, Disp
         repaint();
     }
 
-    public void activeProbeListChanged(ProbeList l) {
+    public void activeSiteListChanged(SiteList l) {
         for (AbstractTrack abstractTrack : tracks) {
             if (abstractTrack instanceof ChromosomeDataTrack)
-                ((ChromosomeDataTrack) abstractTrack).activeProbeListChanged(l);
+                ((ChromosomeDataTrack) abstractTrack).activeSiteListChanged(l);
         }
     }
 
@@ -413,12 +412,12 @@ public class ChromosomeViewer extends JPanel implements DataChangeListener, Disp
         repaint();
     }
 
-    public void probeSetReplaced(ProbeSet p) {
-        // TODO: Do we need to do anything here? Probably not as active probe
+    public void siteSetReplaced(SiteSet p) {
+        // TODO: Do we need to do anything here? Probably not as active site
         // list replaced will be called
         for (AbstractTrack abstractTrack : tracks) {
             if (abstractTrack instanceof ChromosomeDataTrack)
-                ((ChromosomeDataTrack) abstractTrack).probeSetReplaced(p);
+                ((ChromosomeDataTrack) abstractTrack).siteSetReplaced(p);
         }
     }
 

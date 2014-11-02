@@ -51,9 +51,13 @@ public abstract class AbstractTrack extends JPanel implements MouseListener, Mou
         displayHeight = getHeight();
         currentViewerStart = chromosomeViewer.currentStart();
         currentViewerEnd = chromosomeViewer.currentEnd();
-        basePixel = getWidth() / (currentViewerEnd - currentViewerStart + 1);
+        basePixel = getWidth() / getViewerLength();
         addMouseListener(this);
         addMouseMotionListener(this);
+    }
+
+    protected int getViewerLength() {
+        return currentViewerEnd - currentViewerStart + 1;
     }
 
     protected abstract void updateTrack(Chromosome chromosome);
@@ -64,9 +68,7 @@ public abstract class AbstractTrack extends JPanel implements MouseListener, Mou
         displayHeight = getHeight();
         currentViewerStart = chromosomeViewer.currentStart();
         currentViewerEnd = chromosomeViewer.currentEnd();
-        if (currentViewerEnd != currentViewerStart) {
-            basePixel = getWidth() / (currentViewerEnd - currentViewerStart);
-        }
+        basePixel = getWidth() / getViewerLength();
         // Otherwise we alternate colours so we can see the difference between tracks.
         if (chromosomeViewer.getIndex(this) % 2 == 0) {
             g.setColor(ColourScheme.DATA_BACKGROUND_EVEN);
@@ -102,7 +104,7 @@ public abstract class AbstractTrack extends JPanel implements MouseListener, Mou
     }
 
     protected void fillRect(Graphics g, int positionLeft, int positionRight, int yStart, int height) {
-        int width = (int) ((double) (positionRight - positionLeft) / (currentViewerEnd - currentViewerStart) * displayWidth);
+        int width = (int) ((double) (positionRight - positionLeft) / getViewerLength() * displayWidth);
         if (width < 1) {
             width = 1;
         }
@@ -111,7 +113,7 @@ public abstract class AbstractTrack extends JPanel implements MouseListener, Mou
     }
 
     protected void drawRoundRect(Graphics g, int positionLeft, int positionRight, int yStart, int height) {
-        int width = (int) ((double) (positionRight - positionLeft) / (currentViewerEnd - currentViewerStart) * displayWidth);
+        int width = (int) ((double) (positionRight - positionLeft) / getViewerLength() * displayWidth);
         if (width < 1) {
             width = 1;
         }
@@ -120,7 +122,7 @@ public abstract class AbstractTrack extends JPanel implements MouseListener, Mou
     }
 
     protected void drawRect(Graphics g, int positionLeft, int positionRight, int yStart, int height) {
-        int width = (int) ((double) (positionRight - positionLeft) / (currentViewerEnd - currentViewerStart) * displayWidth);
+        int width = (int) ((double) (positionRight - positionLeft) / getViewerLength() * displayWidth);
         if (width < 1) {
             width = 1;
         }
@@ -141,7 +143,7 @@ public abstract class AbstractTrack extends JPanel implements MouseListener, Mou
      * @return the int
      */
     protected int pixelToBp(int x) {
-        int pos = chromosomeViewer.currentStart() + (int) (((double) x / displayWidth) * (currentViewerEnd - currentViewerStart));
+        int pos = chromosomeViewer.currentStart() + (int) (((double) x / displayWidth) * getViewerLength());
         if (pos < 1)
             pos = 1;
         if (pos > chromosomeViewer.chromosome().getLength())
@@ -156,7 +158,7 @@ public abstract class AbstractTrack extends JPanel implements MouseListener, Mou
      * @return the int
      */
     protected int bpToPixel(int bp) {
-        return (int) (((double) (bp - currentViewerStart) / (currentViewerEnd - currentViewerStart)) * displayWidth);
+        return (int) (((double) (bp - currentViewerStart) / getViewerLength()) * displayWidth);
     }
 
     @Override
