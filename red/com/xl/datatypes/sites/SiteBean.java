@@ -1,9 +1,9 @@
-package com.xl.datatypes.probes;
+package com.xl.datatypes.sites;
 
 /**
  * Created by Administrator on 2014/10/1.
  */
-public class ProbeBean {
+public class SiteBean {
     private String chr;
     private int pos;
     private String id;
@@ -21,8 +21,8 @@ public class ProbeBean {
     private double pvalue = -1;
     private double fdr = -1;
 
-    public ProbeBean(String chr, int pos, String id, char ref, char alt, float qual, String filter, String info, String gt, String ad, String dp, String gq,
-                     String pl) {
+    public SiteBean(String chr, int pos, String id, char ref, char alt, float qual, String filter, String info, String gt, String ad, String dp, String gq,
+                    String pl) {
         this.chr = chr;
         this.pos = pos;
         this.id = id;
@@ -38,7 +38,7 @@ public class ProbeBean {
         this.pl = pl;
     }
 
-    public ProbeBean(String chr, int pos) {
+    public SiteBean(String chr, int pos) {
         this.chr = chr;
         this.pos = pos;
     }

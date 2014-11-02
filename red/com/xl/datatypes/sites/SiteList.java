@@ -1,23 +1,23 @@
-package com.xl.datatypes.probes;
+package com.xl.datatypes.sites;
 
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.Vector;
 
 /**
- * The Class ProbeList stores as set of probes and associated quantiation values
+ * The Class SiteList stores as set of sites and associated quantiation values
  */
-public class ProbeList {
+public class SiteList {
 
-    // This vector stores all of the probes currently in the list and keeps
+    // This vector stores all of the sites currently in the list and keeps
     // them sorted for convenience.
     /**
-     * The sorted probes.
+     * The sorted sites.
      */
-    private Vector<Probe> sortedProbes = new Vector<Probe>();
+    private Vector<Site> sortedSites = new Vector<Site>();
 
     /**
-     * This flag says whether the list of probes is actually sorted at the
+     * This flag says whether the list of sites is actually sorted at the
      * moment
      */
     private boolean isSorted = false;
@@ -39,7 +39,7 @@ public class ProbeList {
     /**
      * The parent.
      */
-    private ProbeList parent;
+    private SiteList parent;
 
 
     private String tableName;
@@ -47,15 +47,15 @@ public class ProbeList {
     /**
      * The children.
      */
-    private Vector<ProbeList> children = new Vector<ProbeList>();
+    private Vector<SiteList> children = new Vector<SiteList>();
 
     /**
-     * Instantiates a new probe list.
+     * Instantiates a new site list.
      *
      * @param name        the name
      * @param description the description
      */
-    public ProbeList(ProbeList parent, String name, String description, String tableName) {
+    public SiteList(SiteList parent, String name, String description, String tableName) {
         this.parent = parent;
         if (parent != null) {
             parent.addChild(this);
@@ -63,74 +63,74 @@ public class ProbeList {
         this.name = name;
         this.description = description;
         this.tableName = tableName;
-        probeListAdded(this);
+        siteListAdded(this);
     }
 
-    public ProbeList getParent() {
+    public SiteList getParent() {
         return parent;
     }
 
     /**
-     * Gets the all probe lists.
+     * Gets the all site lists.
      *
-     * @return the all probe lists
+     * @return the all site lists
      */
-    public ProbeList[] getAllProbeLists() {
+    public SiteList[] getAllSiteLists() {
         /**
-         * Returns this probe list and all lists below this point in the tree
+         * Returns this site list and all lists below this point in the tree
          */
 
-        Vector<ProbeList> v = new Vector<ProbeList>();
+        Vector<SiteList> v = new Vector<SiteList>();
         v.add(this);
-        getAllProbeLists(v);
-        return v.toArray(new ProbeList[0]);
+        getAllSiteLists(v);
+        return v.toArray(new SiteList[0]);
     }
 
     /**
-     * Gets the all probe lists.
+     * Gets the all site lists.
      *
      * @param v the v
-     * @return the all probe lists
+     * @return the all site lists
      */
-    synchronized protected void getAllProbeLists(Vector<ProbeList> v) {
+    synchronized protected void getAllSiteLists(Vector<SiteList> v) {
         // This recursive function iterates through the tree
         // of lists building up a complete flattened list
-        // of ProbeLists.  If called from a particular node
+        // of SiteLists.  If called from a particular node
         // it will return all lists at or below that node
 
         // For the SeqMonkDataWriter to work it is essential that the
         // lists in this vector are never reordered otherwise we can
         // lose the linkage when we save and reopen the data.
 
-        Enumeration<ProbeList> e = children.elements();
+        Enumeration<SiteList> e = children.elements();
         while (e.hasMoreElements()) {
-            ProbeList l = e.nextElement();
+            SiteList l = e.nextElement();
             v.add(l);
-            l.getAllProbeLists(v);
+            l.getAllSiteLists(v);
         }
     }
 
 
     /**
-     * Gets the probes for chromosome.
+     * Gets the sites for chromosome.
      *
      * @param chr the c
-     * @return the probes for chromosome
+     * @return the sites for chromosome
      */
-    public Probe[] getProbesForChromosome(String chr) {
+    public Site[] getSitesForChromosome(String chr) {
         if (!isSorted) {
-            sortProbes();
+            sortSites();
         }
-        Enumeration<Probe> en = sortedProbes.elements();
-        Vector<Probe> tempChr = new Vector<Probe>();
+        Enumeration<Site> en = sortedSites.elements();
+        Vector<Site> tempChr = new Vector<Site>();
 
         while (en.hasMoreElements()) {
-            Probe p = en.nextElement();
+            Site p = en.nextElement();
             if (p.getChr().equals(chr)) {
                 tempChr.add(p);
             }
         }
-        return tempChr.toArray(new Probe[0]);
+        return tempChr.toArray(new Site[0]);
     }
 
     /**
@@ -146,7 +146,7 @@ public class ProbeList {
         // We need to fire this event before actually doing the delete
         // or our Data view can't use the tree connections to remove
         // the node from the existing tree cleanly
-        probeListRemoved(this);
+        siteListRemoved(this);
 
         // This actually breaks the link between this node and the rest
         // of the tree.
@@ -154,16 +154,16 @@ public class ProbeList {
             parent.removeChild(this);
         }
         parent = null;
-        sortedProbes.clear();
+        sortedSites.clear();
     }
 
     /**
      * Children.
      *
-     * @return the probe list[]
+     * @return the site list[]
      */
-    public ProbeList[] children() {
-        return children.toArray(new ProbeList[0]);
+    public SiteList[] children() {
+        return children.toArray(new SiteList[0]);
     }
 
     /**
@@ -171,9 +171,9 @@ public class ProbeList {
      *
      * @param child the child
      */
-    private void removeChild(ProbeList child) {
+    private void removeChild(SiteList child) {
         /**
-         * Should only be called from within the ProbeList class as part of the
+         * Should only be called from within the siteList class as part of the
          * public delete() method.  Breaks a node away from the rest of the tree
          */
         children.remove(child);
@@ -184,21 +184,21 @@ public class ProbeList {
      *
      * @param child the child
      */
-    private void addChild(ProbeList child) {
+    private void addChild(SiteList child) {
         /**
-         * Should only be called from within the ProbeList class as part of the
+         * Should only be called from within the SiteList class as part of the
          * constructor. Creates a two way link between nodes and their parents
          */
         children.add(child);
     }
 
     /**
-     * Adds the probe.
+     * Adds the site.
      *
      * @param p the p
      */
-    public synchronized void addProbe(Probe p) {
-        sortedProbes.add(p);
+    public synchronized void addSite(Site p) {
+        sortedSites.add(p);
         isSorted = false;
 
     }
@@ -210,7 +210,7 @@ public class ProbeList {
      */
     public void setName(String s) {
         this.name = s;
-        probeListRenamed(this);
+        siteListRenamed(this);
     }
 
     /**
@@ -239,54 +239,54 @@ public class ProbeList {
         return comments;
     }
 
-    private synchronized void sortProbes() {
+    private synchronized void sortSites() {
         if (!isSorted) {
-            Collections.sort(sortedProbes);
+            Collections.sort(sortedSites);
             isSorted = true;
         }
 
         try {
             // Do a sanity check to ensure we don't have any duplication here
-            for (int i = 1, len = sortedProbes.size(); i < len; i++) {
-                if (sortedProbes.elementAt(i) == sortedProbes.elementAt(i - 1)) {
-                    throw new Exception("Duplicate probe "
-                            + sortedProbes.elementAt(i) + " and "
-                            + sortedProbes.elementAt(i - 1) + " in " + name());
+            for (int i = 1, len = sortedSites.size(); i < len; i++) {
+                if (sortedSites.elementAt(i) == sortedSites.elementAt(i - 1)) {
+                    throw new Exception("Duplicate site "
+                            + sortedSites.elementAt(i) + " and "
+                            + sortedSites.elementAt(i - 1) + " in " + name());
                 }
-                if (sortedProbes.elementAt(i).compareTo(
-                        sortedProbes.elementAt(i - 1)) == 0) {
-                    throw new Exception("Unsortable probe "
-                            + sortedProbes.elementAt(i) + " and "
-                            + sortedProbes.elementAt(i - 1) + " in " + name());
+                if (sortedSites.elementAt(i).compareTo(
+                        sortedSites.elementAt(i - 1)) == 0) {
+                    throw new Exception("Unsortable site "
+                            + sortedSites.elementAt(i) + " and "
+                            + sortedSites.elementAt(i - 1) + " in " + name());
                 }
             }
         } catch (Exception ex) {
-            // There are duplicate probes and we need to remove them.
-            Vector<Probe> dedup = new Vector<Probe>();
-            Probe lastProbe = null;
-            Enumeration<Probe> en = sortedProbes.elements();
+            // There are duplicate sites and we need to remove them.
+            Vector<Site> dedup = new Vector<Site>();
+            Site lastSite = null;
+            Enumeration<Site> en = sortedSites.elements();
             while (en.hasMoreElements()) {
-                Probe p = en.nextElement();
-                if (p == lastProbe)
+                Site p = en.nextElement();
+                if (p == lastSite)
                     continue;
                 dedup.add(p);
-                lastProbe = p;
+                lastSite = p;
             }
 
-            sortedProbes = dedup;
+            sortedSites = dedup;
         }
 
-        sortedProbes.trimToSize();
+        sortedSites.trimToSize();
     }
 
     /**
-     * Gets the all probes.
+     * Gets the all sites.
      *
-     * @return the all probes
+     * @return the all sites
      */
-    public Probe[] getAllProbes() {
+    public Site[] getAllSites() {
         if (!isSorted) {
-            sortProbes();
+            sortSites();
         }
 
 		/*
@@ -299,8 +299,8 @@ public class ProbeList {
 		 * copy of this array rather than the original.
 		 */
 
-        Probe[] returnArray = new Probe[sortedProbes.size()];
-        Enumeration<Probe> en = sortedProbes.elements();
+        Site[] returnArray = new Site[sortedSites.size()];
+        Enumeration<Site> en = sortedSites.elements();
 
         int i = 0;
         while (en.hasMoreElements()) {
@@ -325,38 +325,38 @@ public class ProbeList {
     }
 
     public String toString() {
-        return name + " (" + sortedProbes.size() + ")";
+        return name + " (" + sortedSites.size() + ")";
     }
 
     // We use the following methods to notify up the tree about
     // changes which have occurred somewhere in the tree. They
-    // are private versions of the methods in the ProbeSetChangeListener
+    // are private versions of the methods in the SiteSetChangeListener
 
     /**
-     * Probe list added.
+     * Site list added.
      *
      * @param l the l
      */
-    protected void probeListAdded(ProbeList l) {
-        parent.probeListAdded(l);
+    protected void siteListAdded(SiteList l) {
+        parent.siteListAdded(l);
     }
 
     /**
-     * Probe list removed.
+     * Site list removed.
      *
      * @param l the l
      */
-    protected void probeListRemoved(ProbeList l) {
-        parent.probeListRemoved(l);
+    protected void siteListRemoved(SiteList l) {
+        parent.siteListRemoved(l);
     }
 
     /**
-     * Probe list renamed.
+     * Site list renamed.
      *
      * @param l the l
      */
-    protected void probeListRenamed(ProbeList l) {
-        parent.probeListRenamed(l);
+    protected void siteListRenamed(SiteList l) {
+        parent.siteListRenamed(l);
     }
 
 }

@@ -18,38 +18,38 @@
  *    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-package com.xl.datatypes.probes;
+package com.xl.datatypes.sites;
 
 /**
- * The listener interface for receiving probeSetChange events.
- * The class that is interested in processing a probeSetChange
+ * The listener interface for receiving siteSetChange events.
+ * The class that is interested in processing a siteSetChange
  * event implements this interface, and the object created
  * with that class is registered with a component using the
- * component's <code>addProbeSetChangeListener<code> method. When
- * the probeSetChange event occurs, that object's appropriate
+ * component's <code>addSiteSetChangeListener<code> method. When
+ * the siteSetChange event occurs, that object's appropriate
  * method is invoked.
  */
-public interface ProbeSetChangeListener {
+public interface SiteSetChangeListener {
 
     /**
-     * Probe list added.
+     * Site list added.
      *
      * @param l the l
      */
-    public void probeListAdded(ProbeList l);
+    public void siteListAdded(SiteList l);
 
     /**
-     * Probe list removed.
+     * Site list removed.
      *
      * @param l the l
      */
-    public void probeListRemoved(ProbeList l);
+    public void siteListRemoved(SiteList l);
 
     /**
-     * Probe list renamed.
+     * Site list renamed.
      *
      * @param l the l
      */
-    public void probeListRenamed(ProbeList l);
+    public void siteListRenamed(SiteList l);
 
 }

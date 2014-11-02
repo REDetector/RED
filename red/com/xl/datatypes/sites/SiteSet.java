@@ -1,4 +1,4 @@
-package com.xl.datatypes.probes;
+package com.xl.datatypes.sites;
 
 import com.xl.datatypes.DataCollection;
 import com.xl.exception.REDException;
@@ -7,21 +7,21 @@ import java.util.Enumeration;
 import java.util.Vector;
 
 /**
- * The Class ProbeSet is a special instance of probe list which represents a
- * full set of probes as created by a probe generator. All probe lists are
- * therefore subsets of the containing probeset.
+ * The Class SiteSet is a special instance of site list which represents a
+ * full set of sites as created by a site generator. All site lists are
+ * therefore subsets of the containing SiteSet.
  */
-public class ProbeSet extends ProbeList {
+public class SiteSet extends SiteList {
 
     /**
      * The active list.
      */
-    private ProbeList activeList = null;
+    private SiteList activeList = null;
 
     /**
      * The listeners.
      */
-    private Vector<ProbeSetChangeListener> listeners = new Vector<ProbeSetChangeListener>();
+    private Vector<SiteSetChangeListener> listeners = new Vector<SiteSetChangeListener>();
 
     /**
      * The expected total count.
@@ -34,44 +34,44 @@ public class ProbeSet extends ProbeList {
     private DataCollection collection = null;
 
     /**
-     * Instantiates a new probe set.
+     * Instantiates a new site set.
      *
      * @param description the description
-     * @param probes      the probes
+     * @param sites       the sites
      */
-    public ProbeSet(String description, Probe[] probes, String tableName) {
-        super(null, "All Probes", description, tableName);
-        setProbes(probes);
+    public SiteSet(String description, Site[] sites, String tableName) {
+        super(null, "All Sites", description, tableName);
+        setSites(sites);
     }
 
     /**
-     * Instantiates a new probe set.
+     * Instantiates a new site set.
      *
      * @param description  the description
      * @param expectedSize the expected size
      */
-    public ProbeSet(String description, int expectedSize, String tableName) {
+    public SiteSet(String description, int expectedSize, String tableName) {
         /**
          * This constructor should only be called by the SeqMonkParser since it
-         * relies on the correct number of probes eventually being added.
+         * relies on the correct number of sites eventually being added.
          * Ideally we'd go back to sort out this requirement by changing the
          * SeqMonk file format, but for now we're stuck with this work round
          */
-        super(null, "All Probes", description, tableName);
+        super(null, "All Sites", description, tableName);
         expectedTotalCount = expectedSize;
     }
 
-    public void addProbe(Probe p) {
+    public void addSite(Site p) {
 
         /**
-         * This method is only used by the SeqMonk parser. All other probe
-         * generators add their probes in bulk using the setProbes method which
+         * This method is only used by the SeqMonk parser. All other site
+         * generators add their sites in bulk using the setSites method which
          * is more efficient.
          */
 
         // Call the super method so we can still be treated like a
-        // normal probe list
-        super.addProbe(p);
+        // normal site list
+        super.addSite(p);
     }
 
     public void setCollection(DataCollection collection) {
@@ -79,16 +79,16 @@ public class ProbeSet extends ProbeList {
     }
 
     /**
-     * Sets the probes.
+     * Sets the sites.
      *
-     * @param probes the new probes
+     * @param sites the new sites
      */
-    public void setProbes(Probe[] probes) {
+    public void setSites(Site[] sites) {
 
-        expectedTotalCount = probes.length;
+        expectedTotalCount = sites.length;
 
-        for (Probe probe : probes) {
-            addProbe(probe);
+        for (Site site : sites) {
+            addSite(site);
         }
 
     }
@@ -111,7 +111,7 @@ public class ProbeSet extends ProbeList {
      *
      * @return the active list
      */
-    public ProbeList getActiveList() {
+    public SiteList getActiveList() {
         if (activeList != null) {
             return activeList;
         } else {
@@ -125,7 +125,7 @@ public class ProbeSet extends ProbeList {
      * @param list the new active list
      * @throws REDException the red exception
      */
-    public void setActiveList(ProbeList list) throws REDException {
+    public void setActiveList(SiteList list) throws REDException {
 
         if (list == null) {
             activeList = null;
@@ -134,34 +134,34 @@ public class ProbeSet extends ProbeList {
         activeList = list;
 
         if (collection != null) {
-            collection.activeProbeListChanged(list);
+            collection.activeSiteListChanged(list);
         }
     }
 
     /**
-     * Adds the probe set change listener.
+     * Adds the site set change listener.
      *
      * @param l the l
      */
-    public void addProbeSetChangeListener(ProbeSetChangeListener l) {
+    public void addSiteSetChangeListener(SiteSetChangeListener l) {
         if (l != null && !listeners.contains(l)) {
             listeners.add(l);
         }
     }
 
     /**
-     * Removes the probe set change listener.
+     * Removes the site set change listener.
      *
      * @param l the l
      */
-    public void removeProbeSetChangeListener(ProbeSetChangeListener l) {
+    public void removeSiteSetChangeListener(SiteSetChangeListener l) {
         if (l != null && listeners.contains(l)) {
             listeners.remove(l);
         }
     }
 
     synchronized public void delete() {
-        // This is overridden from ProbeList and is called as the
+        // This is overridden from SiteList and is called as the
         // list is removed.
         super.delete();
         // Now we can get rid of our list of listeners
@@ -170,30 +170,30 @@ public class ProbeSet extends ProbeList {
         collection = null;
     }
 
-    // These methods propogate up through the tree of probe lists
+    // These methods propogate up through the tree of site lists
     // to here where we override them to pass the messages on to
     // any listeners we have
-    protected void probeListAdded(ProbeList l) {
+    protected void siteListAdded(SiteList l) {
         if (listeners == null)
             return;
-        Enumeration<ProbeSetChangeListener> e = listeners.elements();
+        Enumeration<SiteSetChangeListener> e = listeners.elements();
         while (e.hasMoreElements()) {
-            ProbeSetChangeListener pl = e.nextElement();
-            pl.probeListAdded(l);
+            SiteSetChangeListener pl = e.nextElement();
+            pl.siteListAdded(l);
         }
     }
 
-    protected void probeListRemoved(ProbeList l) {
-        Enumeration<ProbeSetChangeListener> e = listeners.elements();
+    protected void siteListRemoved(SiteList l) {
+        Enumeration<SiteSetChangeListener> e = listeners.elements();
         while (e.hasMoreElements()) {
-            e.nextElement().probeListRemoved(l);
+            e.nextElement().siteListRemoved(l);
         }
     }
 
-    protected void probeListRenamed(ProbeList l) {
-        Enumeration<ProbeSetChangeListener> e = listeners.elements();
+    protected void siteListRenamed(SiteList l) {
+        Enumeration<SiteSetChangeListener> e = listeners.elements();
         while (e.hasMoreElements()) {
-            e.nextElement().probeListRenamed(l);
+            e.nextElement().siteListRenamed(l);
         }
     }
 
