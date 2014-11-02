@@ -180,8 +180,6 @@ public class REDApplication extends JFrame implements ProgressListener, DataChan
         statusPanel = new StatusPanel();
         getContentPane().add(statusPanel, BorderLayout.SOUTH);
 
-        mainPane.setDividerLocation(0.25);
-        topPane.setDividerLocation(0.25);
     }
 
     public static REDApplication getInstance() {
@@ -273,7 +271,7 @@ public class REDApplication extends JFrame implements ProgressListener, DataChan
 
         dataViewer = new DataViewer(this);
         topPane.setLeftComponent(new JScrollPane(dataViewer));
-        topPane.setDividerLocation(0.25d);
+        topPane.setDividerLocation(0.2d);
 
         validate();
 
@@ -287,7 +285,7 @@ public class REDApplication extends JFrame implements ProgressListener, DataChan
         bottomPanel.add(chromosomeViewer, BorderLayout.CENTER);
         bottomPanel.add(new ChromosomePositionScrollBar(), BorderLayout.SOUTH);
         mainPane.setBottomComponent(bottomPanel);
-        mainPane.setDividerLocation(0.4d);
+        mainPane.setDividerLocation(0.3d);
         validate();
 
         DisplayPreferences.getInstance().setChromosome(dataCollection.genome().getAllChromosomes()[0]);

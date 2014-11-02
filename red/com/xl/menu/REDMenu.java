@@ -400,14 +400,14 @@ public class REDMenu extends JMenuBar implements ActionListener {
             toolbarPanel.setVisible(showToolbar.isSelected());
         } else if (action.equals(MenuUtils.SHOW_DIRECTORY_PANEL)) {
             if (showDirectoryPanel.isSelected() && showGenomePanel.isSelected()) {
-                redApplication.topPane().setDividerLocation(0.125);
+                redApplication.topPane().setDividerLocation(0.2);
             } else {
                 redApplication.topPane().setDividerLocation(0);
             }
             redApplication.dataViewer().setVisible(showDirectoryPanel.isSelected());
         } else if (action.equals(MenuUtils.SHOW_GENOME_PANEL)) {
             if (showDirectoryPanel.isSelected() && showGenomePanel.isSelected()) {
-                redApplication.topPane().setDividerLocation(0.125);
+                redApplication.topPane().setDividerLocation(0.2);
             } else {
                 redApplication.topPane().setDividerLocation(0);
             }
