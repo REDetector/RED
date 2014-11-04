@@ -75,7 +75,7 @@ public class REDTitlePanel extends JPanel {
         gridBagConstraints.gridy++;
 
         JTextPane webPane = new JTextPane();
-        webPane.setText("https://github.com/iluhcm/RED");
+        webPane.setText("https://github.com/REDetector/RED");
         webPane.setEditable(false);
         StyledDocument doc = (StyledDocument) webPane.getDocument();
         Style s = new StyleContext().getStyle(StyleContext.DEFAULT_STYLE);
@@ -95,7 +95,7 @@ public class REDTitlePanel extends JPanel {
             public void mouseReleased(MouseEvent e) {
                 URI uri = null;
                 try {
-                    uri = new URI("https://github.com/iluhcm/RED");
+                    uri = new URI("https://github.com/REDetector/RED");
                 } catch (URISyntaxException e1) {
                     e1.printStackTrace();
                 }

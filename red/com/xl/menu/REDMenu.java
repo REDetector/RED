@@ -511,7 +511,7 @@ public class REDMenu extends JMenuBar implements ActionListener {
                 if (UpdateChecker.isUpdateAvailable()) {
                     String latestVersion = UpdateChecker.getLatestVersionNumber();
                     JOptionPane.showMessageDialog(redApplication, "<html>A newer version of RED (v" + latestVersion + ") is available, " +
-                                    "<br>please go to  <a href=\"https://github.com/iluhcm/RED\">https://github.com/iluhcm/RED</a> for the latest version",
+                                    "<br>please go to  <a href=\"https://github.com/REDetector/RED\">https://github.com/REDetector/RED</a> for the latest version",
                             "Update available", JOptionPane.INFORMATION_MESSAGE);
                 } else {
                     JOptionPane.showMessageDialog(redApplication, "<html>You are running the latest version of RED.", "Latest version of RED",
