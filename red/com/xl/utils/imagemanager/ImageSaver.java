@@ -33,11 +33,10 @@ public class ImageSaver {
         JFileChooser chooser = new JFileChooser(LocationPreferences.getInstance().getProjectSaveLocation());
 
         chooser.setMultiSelectionEnabled(false);
-        EPSFileFilter epsFileFilter = new EPSFileFilter();
         chooser.addChoosableFileFilter(new SVGFileFilter());
-        chooser.addChoosableFileFilter(epsFileFilter);
+        chooser.addChoosableFileFilter(new EPSFileFilter());
         chooser.addChoosableFileFilter(new PNGFileFilter());
-        chooser.setFileFilter(epsFileFilter);
+        chooser.setFileFilter(new SVGFileFilter());
         File defaultFile = new File(LocationPreferences.getInstance().getProjectSaveLocation() + "/" + defaultName);
         chooser.setSelectedFile(defaultFile);
 
