@@ -1,81 +1,92 @@
+<!DOCTYPE html>
+<!--
+~ RED: RNA Editing Detector
+~     Copyright (C) <2014>  <Xing Li>
+~
+~     RED is free software: you can redistribute it and/or modify
+~     it under the terms of the GNU General Public License as published by
+~     the Free Software Foundation, either version 3 of the License, or
+~     (at your option) any later version.
+~
+~     RED is distributed in the hope that it will be useful,
+~     but WITHOUT ANY WARRANTY; without even the implied warranty of
+~     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+~     GNU General Public License for more details.
+~
+~     You should have received a copy of the GNU General Public License
+~     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+
+
+<html>
 <head>
-    <title>Grouping Samples</title>
+    <title>Connecting to MySQL Database</title>
     <style type="text/css">
         body {
-        font-family: sans-serif;
+        font-family: Times New Roman;
+        }
+        p,ul {
+        font-size: 18px;
         }
         li {
-        padding-bottom: 1em
+        padding-bottom: 1 em
+        }
+        .imgname {
+        text-align: center;
+        font-size: 10px;
+        font-style: italic;
         }
     </style>
 </head>
 <body>
-<h1>Grouping Samples</h1>
+<h4>2.1.2 Connecting to MySQL Database</h4>
 
 <p>
-    In many experiment designs it makes sense to group together a set of
-    samples so they are treated as a single data store. There are two
-    ways to group samples in SeqMonk and they serve different purposes.
+    A simple database connection dialog will pop up when you select <em>File &gt; Connect to MySQL...</em> as following illustrated.
 </p>
 
-<ol>
-    <li>DataGroups: A data group is a way to merge together data from multiple
-        data sets, where the data should be considered as a single biological sample.
-        You would use this if, for example, you did several sequencing runs on the
-        same library and wanted to be able to look at the results all together.
-        DataGroups can be quantitated but they can't be used to assess the reproducibility
-        of the values in the datasets from which they are built.
-    </li>
-    <li>Replicate Sets: A replicate set is a way to group together DataSets and
-        DataGroups which represent biological replicates of related samples. They don't
-        store any data and they aren't quantitated - their quantiation merely shows the
-        mean of the quantitated values for their component DataStores. Replicate Sets
-        are used to provide sample grouping for statistical filters which compare two
-        groups of samples.
-    </li>
+<div align="center"><img src="../../img/fig.2.4.png" alt=""/></div>
 
+<p class="imgname">Fig. 2.4 Connect to MySQL DBMS</p>
 
-    <p> Because quantitation in SeqMonk must be performed on both DataSets and
-        DataGroups it is important that you create your groups as early as possible.
-    </p>
+<p>With successful connection, the program will detect whether there is an database with imported data before and then make a relevant notification for the
+    next step.</p>
+<ul>
+    <li><strong>Null in Database</strong></li>
+</ul>
+<p>If the database is empty (or null), the program will tell what you need to prepare for data import.</p>
 
-    <p>
-        You can create data groups by selecting Data &gt; Edit Groups. You can make
-        as many groups as you like and assign as many samples as you like to each
-        group. If it makes sense you can assign the same sample to more than one
-        group - for example in the screenshot below the Male WT sample could be
-        part of the male and WT groups.
-    </p>
+<div align="center"><img src="../../img/fig.2.5.png" alt=""/></div>
 
-    <p>
-        <img src="data_groups.png" alt="Data Group Editor">
-    </p>
+<p class="imgname">Fig. 2.5 Data import notification</p>
 
-    <p>
-        The data group editor allows you to:
-    </p>
-    <ul>
-        <li>Create New groups</li>
-        <li>Add or remove samples from existing groups</li>
-        <li>Rename groups</li>
-        <li>Delete Groups (note that this will NOT delete the samples in the group)</li>
-    </ul>
-    <p>
-        If you need to create groups in your experiment then it's a good idea to
-        put all samples into groups (even if the group only contains one DataSet). This
-        is beacuse when you come to doing quantitation this will act by default on
-        just the DataGroups if you have any defined (although you can change this if
-        you need to).
-    </p>
+<div align="center"><img src="../../img/fig.2.6.png" alt="" id="fig_2_6"/></div>
 
-    <p>
-        You create replicate sets in much the same way as data groups. First select
-        Data &gt; Edit Replicate Sets and then from the dialog which opens you can
-        create or delete replicate sets and add or remove DataStores from sets which
-        already exist. You can put a data store into more than one replicate set if
-        this makes sense for your data.
-    </p>
+<p class="imgname">Fig. 2.6 Data import dialog</p>
 
-</ol>
+<p>A simple explanation for each kind of importing file was shown. It helps you locate what kind of data file should be imported when you select browse
+    button.</p>
+
+<div align="center"><img src="../../img/fig.2.7.png" alt=""/></div>
+
+<p class="imgname">Fig. 2.7 Importing data</p>
+
+<p>After selecting all paths, press <em>Import</em> button and wait for a moment, all data will be imported to database.</p>
+<ul>
+    <li><strong>Data Which Don't Meet Your Demand in Database</strong></li>
+</ul>
+<p>
+    After database is connected using database connection panel, <i><a href="#fig_2_6">Fig. 2.6</a></i> is present by selecting <em>File &gt; Import Data &gt;
+    Database…</em> and you can import another data for further demand.
+</p>
+<ul>
+    <li><strong>Data Which Meets Your Demand in Database</strong></li>
+</ul>
+
+<div align="center"><img src="../../img/fig.2.8.png" alt="" height=402px width=500px/></div>
+
+<p class="imgname">Fig. 2.8 Notification of successful database connection and data loaded to database</p>
+
+<p>If data have been loaded into database system, then you can filter spurious variants for detecting potential RNA-editing sites.</p>
 </body>
 </html>

@@ -1,35 +1,54 @@
+<!DOCTYPE html>
+<!--
+~ RED: RNA Editing Detector
+~     Copyright (C) <2014>  <Xing Li>
+~
+~     RED is free software: you can redistribute it and/or modify
+~     it under the terms of the GNU General Public License as published by
+~     the Free Software Foundation, either version 3 of the License, or
+~     (at your option) any later version.
+~
+~     RED is distributed in the hope that it will be useful,
+~     but WITHOUT ANY WARRANTY; without even the implied warranty of
+~     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+~     GNU General Public License for more details.
+~
+~     You should have received a copy of the GNU General Public License
+~     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
 <html>
-
 <head>
-    <title>The Genome View</title>
+    <title>Blocks Status</title>
     <style type="text/css">
         body {
-        font-family: sans-serif;
+        font-family: Times New Roman;
+        }
+        p,ul {
+        font-size: 18px;
         }
         li {
-        padding-bottom: 1em
+        padding-bottom: 1 em
+        }
+        .imgname {
+        text-align: center;
+        font-size: 10px;
+        font-style: italic;
         }
     </style>
 </head>
 <body>
-<h1>The Genome View</h1>
-
-<p>The Genome View shows an overview of all the chromosomes in your current genome.
-    Once you have quantitated your data it will also show a whole genome view of the
-    quantitation.</p>
-
-<p><img src="genome_view.png" alt="The Genome View"></p>
+<h4>3.5.3.1 Blocks Status</h4>
 
 <p>
-    The chromosomes are drawn to scale so you can see their relative size. The outlined
-    box indicates the region currently being shown in the chr view. This will update
-    as you move along the chr view.
-</p>
+    RED shows sequence reads as gray blocks with the reads were mapped/aligned with the reference genome.
+    <i><a href="../3.5%20Chromosome%20Panel.html#fig_3_9">Fig. 3.9</a></i> and <a href="#fig_3_13"><em>the following figure</em></a>
+    show read as blocks status. The former view length is 9.77 MB while the latter is 2.54KB (1MB = 1000 KB = 1000000 bp). </p>
 
-<p>
-    You can use the genome view to move the chr view to a different chr, or
-    to a different part of the current chr. You can either click on a region to
-    jump to that location, or drag a box to select the exact region you want to view.
-</p>
+<div align="center"><img src="../../../img/fig.3.13.png" id="fig_3_13"></div>
+
+<p class="imgname">Fig. 3.13 Block status in small areas</p>
+
+<p>If you put your mouse over a read it will be highlighted in yellow. The status bar at the bottom will show the details of the position and length of the
+    read.</p>
 </body>
 </html>

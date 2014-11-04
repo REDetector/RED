@@ -1,45 +1,60 @@
-<html>
+<!DOCTYPE html>
+<!--
+~ RED: RNA Editing Detector
+~     Copyright (C) <2014>  <Xing Li>
+~
+~     RED is free software: you can redistribute it and/or modify
+~     it under the terms of the GNU General Public License as published by
+~     the Free Software Foundation, either version 3 of the License, or
+~     (at your option) any later version.
+~
+~     RED is distributed in the hope that it will be useful,
+~     but WITHOUT ANY WARRANTY; without even the implied warranty of
+~     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+~     GNU General Public License for more details.
+~
+~     You should have received a copy of the GNU General Public License
+~     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
 
+<html>
 <head>
-    <title>Reporting Bugs</title>
+    <title>Credits</title>
     <style type="text/css">
         body {
-        font-family: sans-serif;
+        font-family: Times New Roman;
+        }
+        p,ul {
+        font-size: 18px;
         }
         li {
-        padding-bottom: 1em
+        padding-bottom: 1 em
         }
     </style>
 </head>
 <body>
-<h1>Reporting Bugs</h1>
+<h1 class="page-header" id="chapter9">9 Credits</h1>
 
-<p>
-    If you find a problem with SeqMonk please try the following steps:
-</p>
-<ol>
-    <li>Check our <a href="9.1%20Common%20Problems.html">Common Problems Page</a> to see
-        if there is a solution already listed
-    </li>
-    <li>Check that you are running the latest version of SeqMonk. You can see the
-        version you are running by selecting Help &gt; About and you can check the
-        SeqMonk website (http://www.bioinformatics.bbsrc.ac.uk/projects/seqmonk/) to
-        see what the latest version is
-    </li>
-    <li>Report a bug!</li>
-</ol>
+<p>RED is a free software, and you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software
+    Foundation; either version 3 of the License, or (at your option) any later version .</p>
 
-<p>
-    The easiest way to report a bug is to use our online bug reporting and tracking
-    system at http://www.bioinformatics.bbsrc.ac.uk/bugzilla/. Alternatively you
-    can email the report to simon.andrews@bbsrc.ac.uk.
-</p>
+<p>SeqMonk &amp; Intergrative Genome Viewer (IGV)</p>
 
-<p>
-    We are also keen to hear suggestions for new functionality you would like to
-    see in SeqMonk, or ways in which we could improve the usability of the
-    functions which are already there. You can let us know about these by filing them
-    as a bug with a severity of 'enhancement'.
-</p>
+<p>We thank <a href="http://www.bioinformatics.babraham.ac.uk/projects/seqmonk/"><em>SeqMonk</em></a>
+    (http://www.bioinformatics.babraham.ac.uk/projects/seqmonk/) and <a href="http://www.broadinstitute.org/igv/"><em>IGV</em></a>
+    (http://www.broadinstitute.org/igv/). The framework of the GUI in RED is based on SeqMonk, whose GUI is very brief and operating efficiency is fairly high.
+    Meantime, the genome annotation data (mainly referred to gene.txt/gene.gtf) in <a
+            href="../3%20Visualisation/3.5%20Chromosome%20Panel/3.5.1%20Feature%20track.html"><em>Feature Track</em></a> is obtained from <a
+            href="http://igv.broadinstitute.org/genomes/genomes.txt">genome server</a> of IGV when there is no genome file in the local host.</p>
+
+<p>Xing Li: design the software framework, implement layout, present graphic and text output for RNA editing sites, and prepare the software document.</p>
+
+<p>Di Wu: desigh the software framework, implement multiple filters and formal statistical tests in the software, and perform data analysis.</p>
+
+<p>Qi Pan: prepare RNA-seq and WES data for RNA editing sites analyses</p>
+
+<p>Yongmei Sun: design the software framework, and supervise the project.</p>
+
+<p>Keyue Ding: conceive and design the project, prepare the software document, and perform data analysis, and supervise the project. </p>
 </body>
 </html>

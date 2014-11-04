@@ -1,61 +1,58 @@
+<!DOCTYPE html>
+<!--
+~ RED: RNA Editing Detector
+~     Copyright (C) <2014>  <Xing Li>
+~
+~     RED is free software: you can redistribute it and/or modify
+~     it under the terms of the GNU General Public License as published by
+~     the Free Software Foundation, either version 3 of the License, or
+~     (at your option) any later version.
+~
+~     RED is distributed in the hope that it will be useful,
+~     but WITHOUT ANY WARRANTY; without even the implied warranty of
+~     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+~     GNU General Public License for more details.
+~
+~     You should have received a copy of the GNU General Public License
+~     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+
 <html>
 <head>
-    <title>Searching</title>
+    <title>Genome Panel</title>
     <style type="text/css">
         body {
-        font-family: sans-serif;
+        font-family: Times New Roman;
+        }
+        p,ul {
+        font-size: 18px;
         }
         li {
-        padding-bottom: 1em
+        padding-bottom: 1 em
+        }
+        .imgname {
+        text-align: center;
+        font-size: 10px;
+        font-style: italic;
         }
     </style>
 </head>
 <body>
-<h1>Searching</h1>
+<h3 id="section3.4">3.4 Genome Panel</h3>
 
-<p>
-    Rather than manually moving around the genome there are a couple of
-    different search tools you can use to quickly take you to a region
-    of interest.
-</p>
+<p>The genome panel shows an overview of all chromosomes from the reference genome. Once you have performed RNA editing filters, it will show a whole genome
+    view of the editing sites. We showed the chromosomes in human only (chromosome 1 to 22, X, Y).</p>
 
-<h2>Goto Position</h2>
+<div align="center"><img src="../img/fig.3.7.png" alt=""></div>
 
-<p>
-    If you know the genomic coordinates of the region you want to go to
-    you can select Edit &gt; Goto position and manually enter the position
-    you want to see. The chr view will immediately update to show
-    this region.
-</p>
+<p class="imgname">Fig. 3.7 Genome panel before executing filters</p>
 
-<p><img src="goto_position.png" alt="Goto Position"></p>
+<div align="center"><img src="../img/fig.3.8.png" alt=""></div>
 
-<h2>Search for Features</h2>
+<p class="imgname">Fig. 3.8 Genome panel with RNA-editing sites highlighted</p>
 
-<p>
-    If you want to find a particular annotation feature then you can use
-    the Find Feature tool. To launch this you select Edit &gt; Find Feature.
-</p>
-
-<p>
-    The find feature tool searches for a single word or phrase in the
-    annotation for all of the features in the current genome. You can limit
-    your search to just the feature names, or you can search through the
-    whole set of annotation. You can also limit your search to a particular
-    type of feature.
-</p>
-
-<p><img src="find_features.png" alt="Find Features"></p>
-
-<p>
-    Once you have a list of results you can sort these by clicking on any
-    of the column headers in the results table.
-</p>
-
-<p>
-    If you want to see a feature in the chr view you can double
-    click on any line of the feature results and the view will immediately
-    jump to show the region covered by that feature.
-</p>
+<p>A karyogram view of all chromosomes was shown according to their relative sizes. Each rectangle represents a chromosome. The highlighted box shows a region
+    currently being shown in the chromosome view. You can use the genome view to move the chromosome view to a different chromosome or to a different region
+    of current chromosome.</p>
 </body>
 </html>

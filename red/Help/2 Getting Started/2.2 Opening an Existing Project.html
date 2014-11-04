@@ -1,47 +1,48 @@
-<html>
+<!DOCTYPE html>
+<!--
+~ RED: RNA Editing Detector
+~     Copyright (C) <2014>  <Xing Li>
+~
+~     RED is free software: you can redistribute it and/or modify
+~     it under the terms of the GNU General Public License as published by
+~     the Free Software Foundation, either version 3 of the License, or
+~     (at your option) any later version.
+~
+~     RED is distributed in the hope that it will be useful,
+~     but WITHOUT ANY WARRANTY; without even the implied warranty of
+~     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+~     GNU General Public License for more details.
+~
+~     You should have received a copy of the GNU General Public License
+~     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
 
+<html>
 <head>
     <title>Opening an Existing Project</title>
     <style type="text/css">
         body {
-        font-family: sans-serif;
+        font-family: Times New Roman;
+        }
+        p,ul {
+        font-size: 18px;
         }
         li {
-        padding-bottom: 1em
+        padding-bottom: 1 em
         }
     </style>
 </head>
 <body>
-<h1>Opening an Existing Project</h1>
+<h3 id="section2.2">2.2 Opening an Existing Project</h3>
 
 <p>
-    To open an existing project select File &gt; Open Project from the main menu. All
-    SeqMonk project files use a .smk file extension. The file menu also contains a list
-    of the five most recently opened projects which you can use to quickly re-open them.
-</p>
+    To open an existing project, select <i>File &gt; Open Project</i> from the main menu. All RED project files use a .red file extension. A RED project stor
+    es all of the Data Set, Data Group, Probe Set and Probe List information for your project. It also remembers which data tracks were visible. See <em>
+    <a href="../6%20Saving%20Data/6.1%20Saving%20a%20Project.html">Saving a Project</a></em> section for more details. </p>
 
-<p>
-    A SeqMonk project stores all of the Data Set, Data Group, Probe Set and Probe List
-    information for your project. It also remembers which annotation and data tracks
-    were visible.
-</p>
+<p>Although it stores the name of the genome you were using, it doesn't contain the actual genome data. If you are using RED on a new machine, it will
+    automatically download and install the required genome when you open a project file. If you want to use RED when not connected to a network, you need to
+    ensure that the correct genome has been installed locally. Once downloaded, genomes will be cached on your machine for future use.</p>
 
-<p>
-    Although it stores the name of the genome you were using it doesn't
-    contain the actual genome data. If you are using SeqMonk on a new machine it will
-    therefore automatically download and install the required genome when you open a
-    project file. If you want to use SeqMonk when not connected to a network you
-    therefore need to ensure that the correct genome has been installed on your machine
-    before disconnecting it from the internet. Once downloaded, genomes will be cached
-    on your machine for future use.
-</p>
-
-<p>
-    When opening a project SeqMonk checks to see if the project file is compatible with
-    the version of SeqMonk you are using. If you try to open a project file from a newer
-    version of SeqMonk on an older SeqMonk version you may get an error telling you you
-    need to upgrade to the newest version of SeqMonk. Newer versions of SeqMonk can
-    always open project files from older versions of the program.
-</p>
 </body>
 </html>

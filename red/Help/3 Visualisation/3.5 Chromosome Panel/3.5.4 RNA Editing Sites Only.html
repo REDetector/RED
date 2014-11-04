@@ -1,35 +1,58 @@
+<!DOCTYPE html>
+<!--
+~ RED: RNA Editing Detector
+~     Copyright (C) <2014>  <Xing Li>
+~
+~     RED is free software: you can redistribute it and/or modify
+~     it under the terms of the GNU General Public License as published by
+~     the Free Software Foundation, either version 3 of the License, or
+~     (at your option) any later version.
+~
+~     RED is distributed in the hope that it will be useful,
+~     but WITHOUT ANY WARRANTY; without even the implied warranty of
+~     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+~     GNU General Public License for more details.
+~
+~     You should have received a copy of the GNU General Public License
+~     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
 <html>
-
 <head>
-    <title>The Genome View</title>
+    <title>RNA Editing Sites Only</title>
     <style type="text/css">
         body {
-        font-family: sans-serif;
+        font-family: Times New Roman;
+        }
+        p,ul {
+        font-size: 18px;
         }
         li {
-        padding-bottom: 1em
+        padding-bottom: 1 em
+        }
+        .imgname {
+        text-align: center;
+        font-size: 10px;
+        font-style: italic;
         }
     </style>
 </head>
 <body>
-<h1>The Genome View</h1>
+<h4>3.5.4 RNA Editing Sites Only</h4>
 
-<p>The Genome View shows an overview of all the chromosomes in your current genome.
-    Once you have quantitated your data it will also show a whole genome view of the
-    quantitation.</p>
+<p>We provide the RNA editing sites information when you choose <em>Show only Probes</em> or <em>Show Reads and Probes</em>. We highlight the position of a RNA
+    editing site with different colours.</p>
+<ul>
+    <li>Green = 'G'-&gt;'A'</li>
+    <li>Black = 'A'-&gt;'G'</li>
+    <li>Blue = 'A'-&gt;'C'</li>
+    <li>Red = 'C'-&gt;'T'</li>
+</ul>
+<div align="center"><img src="../../img/fig.3.15.png" alt=""></div>
 
-<p><img src="genome_view.png" alt="The Genome View"></p>
+<p class="imgname">Fig. 3.15 Show only Probes</p>
 
-<p>
-    The chromosomes are drawn to scale so you can see their relative size. The outlined
-    box indicates the region currently being shown in the chr view. This will update
-    as you move along the chr view.
-</p>
+<div align="center"><img src="../../img/fig.3.16.png" alt=""></div>
 
-<p>
-    You can use the genome view to move the chr view to a different chr, or
-    to a different part of the current chr. You can either click on a region to
-    jump to that location, or drag a box to select the exact region you want to view.
-</p>
+<p class="imgname">Fig. 3.16 Show Reads and Probes</p>
 </body>
 </html>

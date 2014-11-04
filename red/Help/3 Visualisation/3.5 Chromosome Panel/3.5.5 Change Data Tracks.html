@@ -1,35 +1,59 @@
+<!DOCTYPE html>
+<!--
+~ RED: RNA Editing Detector
+~     Copyright (C) <2014>  <Xing Li>
+~
+~     RED is free software: you can redistribute it and/or modify
+~     it under the terms of the GNU General Public License as published by
+~     the Free Software Foundation, either version 3 of the License, or
+~     (at your option) any later version.
+~
+~     RED is distributed in the hope that it will be useful,
+~     but WITHOUT ANY WARRANTY; without even the implied warranty of
+~     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+~     GNU General Public License for more details.
+~
+~     You should have received a copy of the GNU General Public License
+~     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
 <html>
-
 <head>
-    <title>The Genome View</title>
+    <title>Change Data Tracks</title>
     <style type="text/css">
         body {
-        font-family: sans-serif;
+        font-family: Times New Roman;
+        }
+        p,ul {
+        font-size: 18px;
         }
         li {
-        padding-bottom: 1em
+        padding-bottom: 1 em
+        }
+        .imgname {
+        text-align: center;
+        font-size: 10px;
+        font-style: italic;
         }
     </style>
 </head>
 <body>
-<h1>The Genome View</h1>
-
-<p>The Genome View shows an overview of all the chromosomes in your current genome.
-    Once you have quantitated your data it will also show a whole genome view of the
-    quantitation.</p>
-
-<p><img src="genome_view.png" alt="The Genome View"></p>
+<h4>3.5.5 Change Data Tracks</h4>
 
 <p>
-    The chromosomes are drawn to scale so you can see their relative size. The outlined
-    box indicates the region currently being shown in the chr view. This will update
-    as you move along the chr view.
+    You can change which data tracks are shown and the order of the tracks by selecting <em>Edit &gt; Set Data Tracks</em>, or by using the toolbar shortcut.
 </p>
 
-<p>
-    You can use the genome view to move the chr view to a different chr, or
-    to a different part of the current chr. You can either click on a region to
-    jump to that location, or drag a box to select the exact region you want to view.
-</p>
+<div align="center"><img src="../../img/fig.3.17.png" alt=""></div>
+
+<p class="imgname">Fig. 3.17 Select data tracks displayed on the screen</p>
+
+<p>The list of tracks on the right is the tracks which will be displayed in the chromosome view. The lists on the left are tracks which aren't currently being
+    displayed. You can move tracks from one side to another, and move the visible tracks up and down the list to get the set you want.</p>
+
+<p>Within the data track area you can mix DataSets and DataStores however you wish. DataSets are shown with red names and DataGroups with blue names.</p>
+
+<p>In addition to the dialog for changing the displayed data tracks you can also add and remove individual tracks by using the popup menus available in the
+    <a href="../3.3%20Directory%20Panel/3.3%20Directory%20Panel.html"><em>Directory Panel</em></a>.</p>
+
 </body>
 </html>

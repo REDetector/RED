@@ -1,28 +1,69 @@
-<html>
+<!DOCTYPE html>
+<!--
+~ RED: RNA Editing Detector
+~     Copyright (C) <2014>  <Xing Li>
+~
+~     RED is free software: you can redistribute it and/or modify
+~     it under the terms of the GNU General Public License as published by
+~     the Free Software Foundation, either version 3 of the License, or
+~     (at your option) any later version.
+~
+~     RED is distributed in the hope that it will be useful,
+~     but WITHOUT ANY WARRANTY; without even the implied warranty of
+~     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+~     GNU General Public License for more details.
+~
+~     You should have received a copy of the GNU General Public License
+~     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
 
+
+<html>
 <head>
-    <title>Starting a New Project</title>
+    <title>Loading a BAM/SAM File</title>
     <style type="text/css">
         body {
-        font-family: sans-serif;
+        font-family: Times New Roman;
+        }
+        p,ul {
+        font-size: 18px;
         }
         li {
-        padding-bottom: 1em
+        padding-bottom: 1 em
+        }
+        .imgname {
+        text-align: center;
+        font-size: 10px;
+        font-style: italic;
         }
     </style>
 </head>
 <body>
-<h1>Starting a New Project</h1>
+<h4>2.1.3 Loading a BAM/SAM File (using both RNA-Seq and DNA-sequencing data; or only RNA-Seq data)</h4>
 
-<p>
-    The process of creating a new project occurs in several steps which
-    should be performed in order.
-</p>
-<ol>
-    <li><a href="2.2.1%20Selecting%20a%20Genome.html">Selecting a Genome</a></li>
-    <li><a href="2.2.2%20Importing%20Data/2.2.2%20Importing%20Data.html">Importing Data</a></li>
-    <li><a href="2.2.3%20Grouping%20Samples.html">Grouping Samples</a></li>
-    <li><a href="../../4%20Quantitation/4%20Quantitation.html">Quantitate your data</a></li>
-</ol>
+<p>In order to make a full landscape of all potential RNA-editing sites at the genomic scale, the sequence alignment/map file (BAM/SAM), as well as variant
+    calling format file (VCF), which has been imported to database, is needed. All potential RNA-editing sites will be shown in
+    <a href="../../3%20Visualisation/3.5%20Chromosome%20Panel/3.5%20Chromosome%20Panel.html"><em>Chromosome Panel</em></a>.
+    The program only supports paired-end reads in the current release.</p>
+
+<p>The SAM/BAM format has been well defined in <a href="../../1%20Introduction/1.4%20Terminology/1.4%20Terminology.html"><em>Terminology</em></a> section. We
+    provided an option dialog to help import BAM/SAM data so you don't need to specify much information.</p>
+
+<div align="center"><img src="../../img/fig.2.9.png" alt=""/></div>
+
+<p class="imgname">Fig. 2.9 An option dialog for importing BAM/SAM file</p>
+<ul>
+    <li><strong>Remove duplicate reads</strong></li>
+</ul>
+<p>Removing duplicate reads (reads of the same length and sequence identity) is a widely used practice to correct bias when analyzing NGS data. Tick if you
+    want to remove. We strongly recommend you remove them because it may influence the result of coverage.</p>
+<ul>
+    <li><strong>Minimal mapping quality</strong></li>
+</ul>
+<p>Control the minimum mapping quality when importing data. You can choose to filter some reads in
+    <a href="../../1%20Introduction/1.4%20Terminology/1.4%20Terminology.html"><em>Chromosome Panel</em></a>
+    when importing data based on their mapping quality scores. The quality score ranges from 0 to 255 (with higher scores being better), and if you set a filter
+    value then only mapped reads with a score above this value will be imported. Not all read mappers will include a score value so depending on where the
+    file you are importing came from this option may have no effect.</p>
 </body>
 </html>

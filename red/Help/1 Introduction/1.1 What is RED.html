@@ -19,59 +19,50 @@
 
 <html>
 <head>
-    <title>What is SeqMonk?</title>
+    <title>What is RED</title>
     <style type="text/css">
         body {
-        font-family: sans-serif;
+        font-family: Times New Roman;
+        }
+        p,ul {
+        font-size: 18px;
         }
         li {
-        padding-bottom: 1em
+        padding-bottom: 1 em
+        }
+        .imgname {
+        text-align: center;
+        font-size: 10px;
+        font-style: italic;
         }
     </style>
 </head>
 <body>
-<h1 id="chapter1">1 Introduction</h1>
-
 <h3 id="section1.1">1.1 What is RED</h3>
 
-<p>RNA editing is one of the post- or co-transcriptional
-    processes with modification of RNA nucleotides from their
-    genome-encoded sequence. In human, RNA editing event occurs mostly
-    by deamination of adenosine to inosine (A-to-I) conversion through
-    ADAR enzymes.</p>
+<p>RNA editing is one of the post- or co-transcriptional processes with modification of RNA nucleotides from their genome-encoded sequence. In human, RNA
+    editing event occurs mostly by deamination of adenosine to inosine (A-to-I) conversion through ADAR enzymes.</p>
 
-<p>RED (RNA Editing Detector) is a program to detect and
-    visualize RNA editing events at the genomic scale using
-    next-generation sequencing (NGS) data. The software intergrates
-    multiple steps to filter spurisous variant sites, and then
-    performs formal statistical tests to identify reliable RNA editing
-    sites. A potential RNA editing site can be visualized in the
-    context of reference genome (/gene).</p>
-<img src="../img/fig.1.1.png" alt=""/>
+<p>RED (RNA Editing Detector) is a program to detect and visualize RNA editing events at the genomic scale using next-generation sequencing (NGS) data. Th
+    e software integrates multiple steps to filter spurious variant sites, and then performs formal statistical tests to identify reliable RNA editing
+    sites. A potential RNA editing site can be visualized in the context of reference genome (/gene).</p>
 
+<div align="center"><img src="../img/fig.1.1.png"/></div>
 <p class="imgname">Fig. 1.1 A screen shot of RED</p>
 
-<p>RED is a Java-based program with Graphic User Interface
-    (GUI), which works on mainstream operating systems (e.g., Windows,
-    Linux and Mac OS X). To make it more efficient, everlasting and
-    faster-saving, we use MySQL database management system (DBMS) in
-    manuplicating huge NGS data. In addition, we use
-    functions in <em>R</em> to perform statistical
-    analysis. However, you'll never manipulate R and MySQL when you
-    use RED. All of the operation relative to <em>R</em> and MySQL is
-    completed by RED automatically. RED enables the analysis of RNA
-    editing events at two levels (illustrated below) using VCF files
-    from different sources and the presentation of full mapped
-    sequence data using BAM/SAM file:</p>
+<p>RED is a Java-based program with Graphic User Interface (GUI), which works on mainstream operating systems (e.g., Windows, Linux and Mac OS X). To make
+    it more efficient, everlasting and faster-saving, we use MySQL database management system (DBMS) in manipulating huge NGS data. In addition, we use
+    functions in <em>R</em> to perform statistical analysis. However, you'll never manipulate R and MySQL when you use RED. All of the operation relative to
+    <em>R</em> and MySQL is completed by RED automatically. RED enables the analysis of RNA editing events at two levels (illustrated below) using VCF files
+    from different sources and the presentation of full mapped sequence data using BAM/SAM file:</p>
 <ul>
-    <li>Detection of RNA editing sites using RNA-seq data alone
-        (i.e., <em>De Novo</em> identification)
+    <li>
+        Detection of RNA editing sites using RNA-seq data alone (i.e., <em>De Novo</em> identification)
     </li>
-    <li>Detection of RNA editing sites using both DNA-seq
-        data (e.g., whole exome sequencing) and RNA-Seq data
+    <li>
+        Detection of RNA editing sites using both DNA-seq data (e.g., whole exome sequencing) and RNA-Seq data
     </li>
 </ul>
 
 </body>
-
 </html>

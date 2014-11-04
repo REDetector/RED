@@ -1,69 +1,42 @@
-<html>
+<!DOCTYPE html>
+<!--
+~ RED: RNA Editing Detector
+~     Copyright (C) <2014>  <Xing Li>
+~
+~     RED is free software: you can redistribute it and/or modify
+~     it under the terms of the GNU General Public License as published by
+~     the Free Software Foundation, either version 3 of the License, or
+~     (at your option) any later version.
+~
+~     RED is distributed in the hope that it will be useful,
+~     but WITHOUT ANY WARRANTY; without even the implied warranty of
+~     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+~     GNU General Public License for more details.
+~
+~     You should have received a copy of the GNU General Public License
+~     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
 
+<html>
 <head>
-    <title>The Wiggle pipeline</title>
+    <title>Likelihood Ratio (LLR) Test</title>
     <style type="text/css">
         body {
-        font-family: sans-serif;
+        font-family: Times New Roman;
+        }
+        p,ul {
+        font-size: 18px;
         }
         li {
-        padding-bottom: 1em
+        padding-bottom: 1 em
         }
     </style>
 </head>
 <body>
-<h1>The Wiggle pipeline</h1>
+<h4>4.3.2 Likelihood Ratio (LLR) Test</h4>
 
-<p>
-    The wiggle pipeline produces something equivalent to a wiggle plot commonly
-    seen when viewing NGS data in generic genome browsing systems. This provides
-    a simple view of the quantitated density of reads along either a specific
-    region, or over the whole genome, giving a more quantitative way of looking
-    at your raw data than looking at the raw reads directly, but with no bias
-    for specific regions.
-</p>
-
-<p>
-    The wiggle view isn't particularly useful for analysing your data, but is
-    mostly used as a better way to take an initial view of how your data is
-    distributed over your genome.
-</p>
-
-
-<h2>Options</h2>
-
-<p>The options you can set for this pipeline are:</p>
-<ol>
-    <li>Which area you want to look at. You can choose to cover either the
-        whole genome, the current chr or the currently visible region. Looking
-        at smaller regions will allow you to place your probes more densely, since it
-        is the total number of probes which tends to be limiting. When you change
-        this selection SeqMonk will automatically suggest sensible values for the
-        width of your probes, but you are free to igore these and set your own size.
-    </li>
-
-    <li>The width and step size for your probes. These will be set automatically
-        based on the size of the region you're analysing (the program aims to make
-        10 million probes and adjusts the size of each probe to try to match this
-        figure). By default the step size and probe width will be the same so probes
-        don't overlap, but you can alter this value to whatever you like. You should
-        be aware that reducing the suggested step size could generate very large numbers
-        of probes which could take a long time and a lot of resources to calculate.
-    </li>
-
-    <li>Whether the results should be log2 transformed. The default is to
-        quantitate on a linear scale to emphasize any differences, but you can choose
-        to use a log scale if this makes more sense for your data. If your data is
-        on a linear scale you will probably need to adjust the automatically calibrated
-        y-scale to allow you to see the high outliers.
-    </li>
-
-    <li>Whether you want to adjust your counts based on the total number of reads in
-        your datasets. Setting this option will allow for a more direct comparison of
-        your samples
-    </li>
-
-</ol>
-
+<p>We used the method in Chepelev {Chepelev:2011ia} to calculate LLR. The ratio between LLR calculated by the current editing level and non-editing level is set
+    by user (while 4 is recommended). The number represent probability ratio which can be calculated as pow(10,number). 4 represent 10000 times and 3 represent
+    1000 times and so on. The specificity will improve while sensitivity will decline with ratio increasing. </p>
 </body>
 </html>

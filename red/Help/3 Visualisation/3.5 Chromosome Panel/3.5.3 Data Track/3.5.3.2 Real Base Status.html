@@ -1,35 +1,57 @@
+<!DOCTYPE html>
+<!--
+~ RED: RNA Editing Detector
+~     Copyright (C) <2014>  <Xing Li>
+~
+~     RED is free software: you can redistribute it and/or modify
+~     it under the terms of the GNU General Public License as published by
+~     the Free Software Foundation, either version 3 of the License, or
+~     (at your option) any later version.
+~
+~     RED is distributed in the hope that it will be useful,
+~     but WITHOUT ANY WARRANTY; without even the implied warranty of
+~     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+~     GNU General Public License for more details.
+~
+~     You should have received a copy of the GNU General Public License
+~     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
 <html>
-
 <head>
-    <title>The Genome View</title>
+    <title>Real Base Status</title>
     <style type="text/css">
         body {
-        font-family: sans-serif;
+        font-family: Times New Roman;
+        }
+        p,ul {
+        font-size: 18px;
         }
         li {
-        padding-bottom: 1em
+        padding-bottom: 1 em
+        }
+        .imgname {
+        text-align: center;
+        font-size: 10px;
+        font-style: italic;
         }
     </style>
 </head>
 <body>
-<h1>The Genome View</h1>
+<h4 id="section3.5.3.2">3.5.3.2 Real Base Status</h4>
 
-<p>The Genome View shows an overview of all the chromosomes in your current genome.
-    Once you have quantitated your data it will also show a whole genome view of the
-    quantitation.</p>
+<p>In the real base status, the reference genome base and mapped read base will appear in the same time. In order to distinguish all bases, we show bases in
+    different colours.</p>
 
-<p><img src="genome_view.png" alt="The Genome View"></p>
+<div align="center"><img src="../../../img/fig.3.14.png" alt=""></div>
 
-<p>
-    The chromosomes are drawn to scale so you can see their relative size. The outlined
-    box indicates the region currently being shown in the chr view. This will update
-    as you move along the chr view.
-</p>
-
-<p>
-    You can use the genome view to move the chr view to a different chr, or
-    to a different part of the current chr. You can either click on a region to
-    jump to that location, or drag a box to select the exact region you want to view.
-</p>
+<p class="imgname">Fig. 3.14 A given sequenced regions with bases shown in different colors</p>
+<ul>
+    <li>Green = 'A'</li>
+    <li>Black = 'G'</li>
+    <li>Blue = 'C'</li>
+    <li>Red = 'T'</li>
+</ul>
+<p>Thus, it is convenient to discover whether a position has editing base and other editing information. We will provide more editing information with the
+    following RED version released.</p>
 </body>
 </html>

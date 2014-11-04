@@ -1,81 +1,83 @@
+<!DOCTYPE html>
+<!--
+~ RED: RNA Editing Detector
+~     Copyright (C) <2014>  <Xing Li>
+~
+~     RED is free software: you can redistribute it and/or modify
+~     it under the terms of the GNU General Public License as published by
+~     the Free Software Foundation, either version 3 of the License, or
+~     (at your option) any later version.
+~
+~     RED is distributed in the hope that it will be useful,
+~     but WITHOUT ANY WARRANTY; without even the implied warranty of
+~     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+~     GNU General Public License for more details.
+~
+~     You should have received a copy of the GNU General Public License
+~     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+
 <html>
 <head>
-    <title>Movement Controls</title>
+    <title>Main Window</title>
     <style type="text/css">
         body {
-        font-family: sans-serif;
+        font-family: Times New Roman;
+        }
+        p,ul {
+        font-size: 18px;
         }
         li {
-        padding-bottom: 1em
+        padding-bottom: 1 em
+        }
+        .imgname {
+        text-align: center;
+        font-size: 10px;
+        font-style: italic;
         }
     </style>
 </head>
 <body>
-<h1>Movement Controls</h1>
+<h3 id="section3.1">3.1 Main Window</h3>
 
-<p>
-    Much of your time working with SeqMonk will be spent moving around the chr
-    view. There are a simple set of movement controls performed using the mouse
-    which allow you to quickly find your region of interest and show the information
-    you want to see.
-</p>
+<div align="center"><img src="../img/fig.3.1.png" alt=""></div>
 
-<h2>Basic Movement Controls</h2>
+<p class="imgname">Fig. 3.1 Main window</p>
 
-<h3>Zooming in and out</h3>
+<br>
 
-<p>
-    Zooming is usually performed using the mouse. To zoom into a region simply click
-    and drag the mouse over the area you want to see. As you drag you will see a
-    green box appear on the display, and when you release the mouse this green region
-    will be expanded to fill the entire view.
-
-<p>
-
-<p>When you drag a green box appears</p>
-
-<p>
-    <img src="whilst_zooming.png" alt="A Green box appears when zooming">
-</p>
-
-<p>And when you release, the green shaded area is expanded to fill the whole view</p>
-
-<p>
-    <img src="after_zooming.png" alt="After zooming">
-</p>
-
-<p>
-    To zoom out simply press the right mouse button (apple+click on a mac). The
-    view will expand to show you twice as much sequence as you could see before.
-</p>
-
-<h3>Moving Laterally</h3>
-
-<p>
-    Often the easiest way to move laterally along a chr is to zoom out and
-    then select the new region you want to see. Alternatively you can drag the
-    scroll bar which appears under the chr to quickly scan along the current
-    region.
-</p>
-
-<h2>Keyboard Shortcuts</h2>
-
-<p>
-    If you prefer to use the keyboard to move around the genome you can do this. The
-    available keyboard shortcuts are:
-</p>
-<ul>
-    <li>Move right: Right Arrow</li>
-    <li>Move left: Left Arrow</li>
-    <li>Zoom in: Up arrow</li>
-    <li>Zoom out: Down arrow</li>
-</ul>
-
-<h2>Changing chr</h2>
-
-<p>
-    To change chr simply click on the chr you want to view in the
-    genome view. The chr view will change to show the region you clicked
-    on. You can also use this method to quickly jump to a different region of
-    the same chr.
-</p>
+<table border="1" align="center">
+    <Caption>
+        <i>Table 1. Panel Explanation</i>
+    </Caption>
+    <tr>
+        <th>Panel</th>
+        <th>Explanation</th>
+    </tr>
+    <tr>
+        <td>1</td>
+        <td>Toolbar Panel</td>
+    </tr>
+    <tr>
+        <td>2</td>
+        <td>Directory Panel</td>
+    </tr>
+    <tr>
+        <td>3</td>
+        <td>Genome Panel</td>
+    </tr>
+    <tr>
+        <td>4</td>
+        <td>Feature Panel</td>
+    </tr>
+    <tr>
+        <td>5</td>
+        <td>Chromosome Panel</td>
+    </tr>
+    <tr>
+        <td>6</td>
+        <td>Status-bar Panel</td>
+    </tr>
+</table>
+</body>
+</html>

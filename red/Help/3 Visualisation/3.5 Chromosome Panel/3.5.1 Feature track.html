@@ -1,30 +1,61 @@
+<!DOCTYPE html>
+<!--
+~ RED: RNA Editing Detector
+~     Copyright (C) <2014>  <Xing Li>
+~
+~     RED is free software: you can redistribute it and/or modify
+~     it under the terms of the GNU General Public License as published by
+~     the Free Software Foundation, either version 3 of the License, or
+~     (at your option) any later version.
+~
+~     RED is distributed in the hope that it will be useful,
+~     but WITHOUT ANY WARRANTY; without even the implied warranty of
+~     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+~     GNU General Public License for more details.
+~
+~     You should have received a copy of the GNU General Public License
+~     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
 <html>
-
 <head>
-    <title>The Main Display</title>
+    <title>Feature track</title>
     <style type="text/css">
         body {
-        font-family: sans-serif;
+        font-family: Times New Roman;
+        }
+        p,ul {
+        font-size: 18px;
         }
         li {
-        padding-bottom: 1em
+        padding-bottom: 1 em
+        }
+        .imgname {
+        text-align: center;
+        font-size: 10px;
+        font-style: italic;
         }
     </style>
 </head>
 <body>
-<h1>The Main Display</h1>
+<h4 id="section3.5.1">3.5.1 Feature track</h4>
 
-<p>The main display in SeqMonk comes in several sections</p>
+<p>The feature track mainly shows the feature from <a href="http://genome.ucsc.edu/cgi-bin/hgTables"><em>NCBI RefSeq Genes</em></a>, which includes the
+    information of transcription, coding region and exons. Features in this track are coloured in blue.</p>
 
-<ol>
-    <li><a href="3.1.4%20The%20Toolbar.html">The Toolbar</a></li>
-    <li><a href="3.1.1%20The%20Data%20View.html">The Data View</a></li>
-    <li><a href="3.1.2%20The%20Genome%20View.html">The Genome View</a></li>
-    <li><a href="3.1.3%20The%20Chromosome%20View.html">The Chromosome View</a></li>
-    <li><a href="3.1.5%20The%20Status%20Bar.html">The Status Bar</a></li>
-</ol>
+<div align="center"><img src="../../img/fig.3.10.png" alt=""></div>
 
-<p><img src="main_display.png" alt="The Main Display"></p>
+<p class="imgname">Fig. 3.10 Feature track with one complete feature</p>
 
+<p>The feature is represented as a filled block of colour. There are three kinds of height in a feature. The most oblate region stands for the tran
+    scribed region, the fattest region stands for exons region within this feature, while the height between transcription and exon is coding region.</p>
+
+<p>If you put your mouse over a feature it will display the feature name below the track. If you want to see more details about the feature you can
+    double-left-click on it and a feature information window will open up.</p>
+
+<div align="center"><img src="../../img/fig.3.11.png" alt=""></div>
+
+<p class="imgname">Fig. 3.11 A popup dialog when clicking on the feature</p>
+
+<p>In this popup window, you can double-click on the location to have an overview of this feature.</p>
 </body>
 </html>

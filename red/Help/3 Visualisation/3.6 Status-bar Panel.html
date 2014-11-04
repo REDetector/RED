@@ -1,61 +1,69 @@
+<!DOCTYPE html>
+<!--
+~ RED: RNA Editing Detector
+~     Copyright (C) <2014>  <Xing Li>
+~
+~     RED is free software: you can redistribute it and/or modify
+~     it under the terms of the GNU General Public License as published by
+~     the Free Software Foundation, either version 3 of the License, or
+~     (at your option) any later version.
+~
+~     RED is distributed in the hope that it will be useful,
+~     but WITHOUT ANY WARRANTY; without even the implied warranty of
+~     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+~     GNU General Public License for more details.
+~
+~     You should have received a copy of the GNU General Public License
+~     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
 <html>
 <head>
-    <title>Searching</title>
+    <title>Change Data Tracks</title>
     <style type="text/css">
         body {
-        font-family: sans-serif;
+        font-family: Times New Roman;
+        }
+        p,ul {
+        font-size: 18px;
         }
         li {
-        padding-bottom: 1em
+        padding-bottom: 1 em
+        }
+        .imgname {
+        text-align: center;
+        font-size: 10px;
+        font-style: italic;
         }
     </style>
 </head>
 <body>
-<h1>Searching</h1>
+<h3 id="section3.6">3.6 Status-bar Panel</h3>
 
-<p>
-    Rather than manually moving around the genome there are a couple of
-    different search tools you can use to quickly take you to a region
-    of interest.
-</p>
+<div align="center"><img src="../img/fig.3.18.png" alt=""></div>
 
-<h2>Goto Position</h2>
+<p class="imgname">Fig. 3.18 The status bar</p>
 
-<p>
-    If you know the genomic coordinates of the region you want to go to
-    you can select Edit &gt; Goto position and manually enter the position
-    you want to see. The chr view will immediately update to show
-    this region.
-</p>
+<p>The status bar is a notification area which usually shows relevant information for whatever object your mouse is over at the time.</p>
 
-<p><img src="goto_position.png" alt="Goto Position"></p>
+<p>Near the right hand end of the status bar is a small graph showing RED's current memory usage. It is worth keeping an eye on your memory usage since running
+    out of memory will cause RED to run very slowly, and eventually to stop altogether.</p>
 
-<h2>Search for Features</h2>
+<p>The memory usage graph is in three parts:</p>
+<ul>
+    <li>The red part indicates the memory currently being used by RED</li>
+    <li>The orange part indicates memory which RED has reserved but isn't currently using</li>
+    <li>The green part indicates memory which is available to RED but it isn't using</li>
+</ul>
+<p>To get an accurate view of the current memory usage you can double click on this graph which will cause RED to pause and clean up all of its memory. What
+    you then see will be the actual amount of memory which is being consumed by the program. At other times the usage will include inactive memory which RED
+    hasn't got round to cleaning up.</p>
 
-<p>
-    If you want to find a particular annotation feature then you can use
-    the Find Feature tool. To launch this you select Edit &gt; Find Feature.
-</p>
+<p>The percentage value shown is the percentage of total available memory (green) which is currently being used (red). When this percentage reaches 90% you
+    will get a warning since you are coming close to running out of available memory. In this case you should look at the memory settings and preferences
+    documentation to see how you can enable more memory or reduce the amount of memory RED requires.</p>
 
-<p>
-    The find feature tool searches for a single word or phrase in the
-    annotation for all of the features in the current genome. You can limit
-    your search to just the feature names, or you can search through the
-    whole set of annotation. You can also limit your search to a particular
-    type of feature.
-</p>
-
-<p><img src="find_features.png" alt="Find Features"></p>
-
-<p>
-    Once you have a list of results you can sort these by clicking on any
-    of the column headers in the results table.
-</p>
-
-<p>
-    If you want to see a feature in the chr view you can double
-    click on any line of the feature results and the view will immediately
-    jump to show the region covered by that feature.
-</p>
+<p> At the right hand end of the bar is a small icon which shows the current status of your disk cache. If this icon is red then caching is not being used. If
+    it is green then caching is enabled but inactive. If it is orange then caching is enabled and data is currently being read from the cache. You can double
+    click on this icon to turn disk caching on/off, but the change will not take effect until RED is restarted.</p>
 </body>
 </html>

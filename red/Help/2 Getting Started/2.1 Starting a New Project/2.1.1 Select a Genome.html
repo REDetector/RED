@@ -1,59 +1,69 @@
-<html>
+<!DOCTYPE html>
+<!--
+~ RED: RNA Editing Detector
+~     Copyright (C) <2014>  <Xing Li>
+~
+~     RED is free software: you can redistribute it and/or modify
+~     it under the terms of the GNU General Public License as published by
+~     the Free Software Foundation, either version 3 of the License, or
+~     (at your option) any later version.
+~
+~     RED is distributed in the hope that it will be useful,
+~     but WITHOUT ANY WARRANTY; without even the implied warranty of
+~     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+~     GNU General Public License for more details.
+~
+~     You should have received a copy of the GNU General Public License
+~     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
 
+
+<html>
 <head>
-    <title>Selecting a Genome</title>
+    <title>Select a Genome</title>
     <style type="text/css">
         body {
-        font-family: sans-serif;
+        font-family: Times New Roman;
+        }
+        p,ul {
+        font-size: 18px;
         }
         li {
-        padding-bottom: 1em
+        padding-bottom: 1 em
+        }
+        .imgname {
+        text-align: center;
+        font-size: 10px;
+        font-style: italic;
         }
     </style>
+
 </head>
 <body>
-<h1>Selecting a Genome</h1>
+<h4>2.1.1 Select a Genome</h4>
 
 <p>
-    The first step in creating a new project is selecting a genome. To get started
-    select File &gt; New Project.
+    To start a new project, you may first select a new genome of interest. When the program is open, select <em>File &gt; New Project…</em> to select a new
+    genome. If there isn't any genome file in the local host, a warning notification will pop up as the following illustrated and tell you what you should do.
 </p>
 
-<p>
-    You will initially be presented with a list of all of the genomes you currently have
-    installed on your system.
-</p>
+<div align="center"><img src="../../img/fig.2.1.png" alt=""></div>
 
-<p>
-    <img src="genome_selector.png" alt="Genome Selector">
-</p>
+<p class="imgname">Fig. 2.1 Warning when there is no genome in genome directory</p>
 
-<p>
-    If you can see the genome you want you can simply select it and press OK. If it
-    is not present then you can import it from the SeqMonk genome server.
-</p>
+<p>If you choose to download a new genome, click Import New button and find out the new genome you need.</p>
 
-<h2>Importing a New Genome</h2>
+<div align="center"><img src="../../img/fig.2.2.png" alt=""/></div>
 
-<p>
-    There are a large collection of genomes available on the SeqMonk genome server. To
-    import one of these onto your machine press the &quot;Import New&quot; button on
-    the genome selector. A second selector should open up displaying the genomes available
-    on the server.
-</p>
+<p class="imgname">Fig. 2.2 Select a new genome to download</p>
 
-<p>
-    <img src="remote_genome_selector.png" alt="Remote Genome Selector">
-</p>
+<p>After the download completes, the following dialog of <em>Select Genome…</em> will pop up.</p>
 
-<p>
-    To import the genome simply select it and press download. The genome will be installed
-    onto your system. You will then need to reselect File &gt> New Project to start creating
-    your project using your newly imported genome.
-</p>
+<div align="center"><img src="../../img/fig.2.3.png" alt=""/></div>
 
-<p>
-    Once you have selected your genome and it has loaded you can move on to
-    <a href="2.2.2%20Importing%20Data/2.2.2%20Importing%20Data.html">Importing your Data</a>.
+<p class="imgname">Fig. 2.3 Select a new genome to import</p>
+
+<p>It is noteworthy that it may take a little bit longer when importing genome data into RED for the first time. We have a cache mechanism to make it faster
+    when you reload the same genome. Once you have selected your genome and it has been loaded, you can move on to the next step.</p>
 </body>
 </html>
