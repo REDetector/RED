@@ -49,13 +49,11 @@ public class HelpPage extends DefaultMutableTreeNode {
      */
     public HelpPage(File file) {
         this.file = file;
-        name = file.getName();
-        name = this.name.replaceFirst("\\.[hH][tT][mM][lL]?$", "");
+        name = file.getName().replaceFirst("\\.[hH][tT][mM][lL]?$", "");
 
         String[] nameSections = name.split(" ");
         if (nameSections.length > 1) {
-            // We have two sections so check if the first is just integers
-            // separated by dots.  If it is then we can lose it.
+            // We have two sections so check if the first is just integers separated by dots.  If it is then we can lose it.
             String[] numbers = nameSections[0].split("\\.");
             for (int n = 0; n < numbers.length; n++) {
                 try {
@@ -85,15 +83,7 @@ public class HelpPage extends DefaultMutableTreeNode {
      * @param hits       the hits
      * @throws IOException Signals that an I/O exception has occurred.
      */
-    @SuppressWarnings("rawtypes")
     public void containsString(String searchTerm, Vector<HelpPage> hits) throws IOException {
-
-        // Since this will be part of a search thread then take a quick
-        // break in case we're trying to do anything else.
-//		try {
-//			Thread.sleep(10);
-//		} 
-//		catch (InterruptedException e) {}
 
         // We don't want to be trying to open directories
         if (isLeaf()) {
@@ -103,8 +93,7 @@ public class HelpPage extends DefaultMutableTreeNode {
                 searchTerm = searchTerm.toLowerCase();
                 String line;
                 while ((line = br.readLine()) != null) {
-                    // System.out.println("Read line "+line);
-                    if (line.toLowerCase().indexOf(searchTerm) != -1) {
+                    if (line.toLowerCase().contains(searchTerm)) {
                         hits.add(this);
                         break;
                     }
@@ -112,7 +101,9 @@ public class HelpPage extends DefaultMutableTreeNode {
             } catch (Exception e) {
                 e.printStackTrace();
             } finally {
-                br.close();
+                if (br != null) {
+                    br.close();
+                }
             }
         }
 
@@ -137,8 +128,7 @@ public class HelpPage extends DefaultMutableTreeNode {
      * @see javax.swing.tree.DefaultMutableTreeNode#isLeaf()
      */
     public boolean isLeaf() {
-        if (file.isDirectory()) return false;
-        else return true;
+        return !file.isDirectory();
     }
 
     /**

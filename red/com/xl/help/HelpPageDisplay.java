@@ -25,7 +25,7 @@ import javax.swing.event.HyperlinkListener;
 import java.awt.*;
 import java.io.IOException;
 import java.net.MalformedURLException;
-import java.net.URL;
+import java.net.URISyntaxException;
 
 /**
  * The Class HelpPageDisplay provides a panel which can display a single help page.
@@ -46,7 +46,7 @@ public class HelpPageDisplay extends JPanel implements HyperlinkListener {
 
         if (page != null) {
             try {
-                htmlPane = new HelpEditor(page.getFile().toURI().toURL());
+                htmlPane = new JEditorPane(page.getFile().toURI().toURL());
             } catch (MalformedURLException e) {
                 e.printStackTrace();
             } catch (IOException e) {
@@ -68,38 +68,16 @@ public class HelpPageDisplay extends JPanel implements HyperlinkListener {
     public void hyperlinkUpdate(HyperlinkEvent h) {
         if (h.getEventType() == HyperlinkEvent.EventType.ACTIVATED) {
             try {
-                htmlPane.setPage(h.getURL());
+                if (h.getURL().getProtocol().startsWith("http")) {
+                    Desktop.getDesktop().browse(h.getURL().toURI());
+                } else {
+                    htmlPane.setPage(h.getURL());
+                }
             } catch (IOException e) {
+                e.printStackTrace();
+            } catch (URISyntaxException e) {
                 e.printStackTrace();
             }
         }
     }
-
-    /**
-     * The Class HelpEditor.
-     */
-    private class HelpEditor extends JEditorPane {
-
-        /**
-         * Instantiates a new help editor.
-         *
-         * @param u the u
-         * @throws IOException Signals that an I/O exception has occurred.
-         */
-        public HelpEditor(URL u) throws IOException {
-            super(u);
-        }
-
-        /* (non-Javadoc)
-         * @see javax.swing.JComponent#paint(java.awt.Graphics)
-         */
-        public void paint(Graphics g) {
-            if (g instanceof Graphics2D) {
-                Graphics2D g2 = (Graphics2D) g;
-                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-            }
-            super.paint(g);
-        }
-    }
-
 }

@@ -1,22 +1,3 @@
-/**
- * Copyright 2009-13 Simon Andrews
- *
- *    This file is part of SeqMonk.
- *
- *    SeqMonk is free software; you can redistribute it and/or modify
- *    it under the terms of the GNU General Public License as published by
- *    the Free Software Foundation; either version 3 of the License, or
- *    (at your option) any later version.
- *
- *    SeqMonk is distributed in the hope that it will be useful,
- *    but WITHOUT ANY WARRANTY; without even the implied warranty of
- *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *    GNU General Public License for more details.
- *
- *    You should have received a copy of the GNU General Public License
- *    along with SeqMonk; if not, write to the Free Software
- *    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
- */
 package com.xl.help;
 
 import javax.swing.tree.DefaultMutableTreeNode;
@@ -28,15 +9,9 @@ import java.util.Enumeration;
 import java.util.Vector;
 
 /**
- * The Class HelpIndexRoot is the root of the whole help system, ie the
- * folder in which all of the help documents can be found.
+ * The Class HelpIndexRoot is the root of the whole help system, ie the folder in which all of the help documents can be found.
  */
 public class HelpIndexRoot extends DefaultMutableTreeNode {
-
-    /**
-     * The fs.
-     */
-    public FileSorter fs = new FileSorter();
 
     /**
      * Instantiates a new help index root.
@@ -61,18 +36,20 @@ public class HelpIndexRoot extends DefaultMutableTreeNode {
      */
     private void addSubfiles(File directory, DefaultMutableTreeNode node) {
         File[] files = directory.listFiles();
+        if (files == null || files.length == 0) {
+            return;
+        }
+        Arrays.sort(files, new FileSorter());
 
-        Arrays.sort(files, fs);
-        for (int f = 0; f < files.length; f++) {
-            if (files[f].isDirectory()) {
-                HelpPage h = new HelpPage(files[f]);
+        for (File file : files) {
+            if (file.isDirectory() && !file.getName().equals("img")) {
+                HelpPage h = new HelpPage(file);
                 node.add(h);
-                addSubfiles(files[f], h);
-            } else if (files[f].getName().toLowerCase().endsWith(".html") || files[f].getName().toLowerCase().endsWith(".htm")) {
-                HelpPage h = new HelpPage(files[f]);
+                addSubfiles(file, h);
+            } else if (file.getName().toLowerCase().endsWith(".html")) {
+                HelpPage h = new HelpPage(file);
                 node.add(h);
             }
-            // Skip files which aren't html (eg images etc)
         }
     }
 
@@ -83,7 +60,6 @@ public class HelpIndexRoot extends DefaultMutableTreeNode {
      * @return the help page[]
      * @throws IOException Signals that an I/O exception has occurred.
      */
-    @SuppressWarnings("rawtypes")
     public HelpPage[] findPagesForTerm(String searchTerm) throws IOException {
         Vector<HelpPage> hits = new Vector<HelpPage>();
 
@@ -109,9 +85,8 @@ public class HelpIndexRoot extends DefaultMutableTreeNode {
          */
         public int compare(File f1, File f2) {
 
-            // The file names should be preceeded by a series of
-            // integers separated by dots (eg 1.2.1).  We therefore
-            // split these out to compare the individual sections
+            // The file names should be proceeded by a series of integers separated by dots (eg 1.2.1).  We therefore split these out to compare the
+            // individual sections
 
             int[] numbers1;
             int[] numbers2;
@@ -124,8 +99,7 @@ public class HelpIndexRoot extends DefaultMutableTreeNode {
                 return f1.getName().compareTo(f2.getName());
             }
 
-            int shortest = numbers1.length;
-            if (numbers2.length < shortest) shortest = numbers2.length;
+            int shortest = numbers1.length > numbers2.length ? numbers2.length : numbers1.length;
 
             for (int i = 0; i < shortest; i++) {
                 if (numbers1[i] != numbers2[i]) {

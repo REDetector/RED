@@ -29,8 +29,7 @@ import javax.swing.tree.DefaultTreeModel;
 import java.io.File;
 
 /**
- * The Class HelpDialog shows the contents of the help system and
- * allows searching and navigation within it.
+ * The Class HelpDialog shows the contents of the help system and allows searching and navigation within it.
  */
 public class HelpDialog extends JDialog implements TreeSelectionListener {
 
