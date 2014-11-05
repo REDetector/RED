@@ -86,7 +86,9 @@ public class RepeatRegionsFilter {
                 rin.readLine();
                 while ((line = rin.readLine()) != null) {
                     String section[] = line.trim().split("\\s+");
-                    progressBar.progressUpdated("Importing " + count + " lines from " + repeatPath + " to " + repeatTable, 0, 0);
+                    if (count % 1000 == 0) {
+                        progressBar.progressUpdated("Importing " + count + " lines from " + repeatPath + " to " + repeatTable, 0, 0);
+                    }
                     databaseManager.executeSQL("insert into " + repeatTable + "(chrom,begin,end,type) values('" +
                             section[4] + "','" + section[5] + "','" + section[6] + "','" + section[10] + "')");
                     if (++count % DatabaseManager.COMMIT_COUNTS_PER_ONCE == 0)

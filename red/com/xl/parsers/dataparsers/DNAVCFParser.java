@@ -186,7 +186,9 @@ public class DNAVCFParser {
                 // 'valueK','valueK+1','valueK+2',...,'valueN')
                 sqlClause.append(")");
                 databaseManager.executeSQL(sqlClause.toString());
-                progressBar.progressUpdated("Import " + lineCount + " lines from " + vcfPath + " to " + vcfTable, 0, 0);
+                if (lineCount % 1000 == 0) {
+                    progressBar.progressUpdated("Importing " + lineCount + " lines from " + vcfPath + " to " + vcfTable, 0, 0);
+                }
                 if (++lineCount % DatabaseManager.COMMIT_COUNTS_PER_ONCE == 0)
                     databaseManager.commit();
             }

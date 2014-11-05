@@ -172,8 +172,9 @@ public class RNAVCFParser {
                 sqlClause.append(")");
 //                System.out.println(lineCount+"\t"+sqlClause.toString());
                 databaseManager.executeSQL(sqlClause.toString());
-                progressBar.progressUpdated("Importing " + lineCount + " lines from " + vcfPath + " to " + vcfTable, 0, 0);
-
+                if (lineCount % 1000 == 0) {
+                    progressBar.progressUpdated("Importing " + lineCount + " lines from " + vcfPath + " to " + vcfTable, 0, 0);
+                }
                 if (++lineCount % DatabaseManager.COMMIT_COUNTS_PER_ONCE == 0) {
                     databaseManager.commit();
                 }
