@@ -118,7 +118,7 @@ public class UpdateChecker {
 
         try {
 
-            URL updateURL = new URL("http", "iluhcm.github.io", "/version.txt");
+            URL updateURL = new URL("http", "redetector.github.io", "/version.txt");
 
             URLConnection connection = updateURL.openConnection();
             connection.setUseCaches(false);
