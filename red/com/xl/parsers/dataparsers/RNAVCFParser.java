@@ -80,7 +80,7 @@ public class RNAVCFParser {
                     tableBuilders.append(columnStrings[0]).append(" varchar(15),")
                             .append(columnStrings[1]).append(" int,")
                             .append(columnStrings[2]).append(" varchar(30),")
-                            .append(columnStrings[3]).append(" varchar(3),")
+                            .append(columnStrings[3]).append(" varchar(5),")
                             .append(columnStrings[4]).append(" varchar(5),")
                             .append(columnStrings[5]).append(" float(8,2),")
                             .append(columnStrings[6]).append(" text,")
@@ -170,6 +170,7 @@ public class RNAVCFParser {
                 // insert into table_name (col1,col2,...,colK,colK+1,colK+2,...,colN) values('value1','value2',...,
                 // 'valueK','valueK+1','valueK+2',...,'valueN')
                 sqlClause.append(")");
+//                System.out.println(lineCount+"\t"+sqlClause.toString());
                 databaseManager.executeSQL(sqlClause.toString());
                 progressBar.progressUpdated("Importing " + lineCount + " lines from " + vcfPath + " to " + vcfTable, 0, 0);
 
