@@ -117,7 +117,9 @@ public class FisherExactTestFilter {
                         }
                     }
                     stringBuilder.deleteCharAt(stringBuilder.length() - 1).append(")");
-                    progressBar.progressUpdated("Importing " + count + " lines from " + pvaluePath + " to " + pvalueTable, 0, 0);
+                    if (count % 1000 == 0) {
+                        progressBar.progressUpdated("Importing " + count + " lines from " + pvaluePath + " to " + pvalueTable, 0, 0);
+                    }
                     databaseManager.executeSQL(stringBuilder.toString());
                     if (++count % DatabaseManager.COMMIT_COUNTS_PER_ONCE == 0)
                         databaseManager.commit();
@@ -148,7 +150,7 @@ public class FisherExactTestFilter {
                 // 10.AD text,11.DP text,12.GQ text,13.PL text
                 PValueInfo info = new PValueInfo(rs.getString(1), rs.getInt(2), rs.getString(3), rs.getString(4).charAt(0), rs.getString(5).charAt(0),
                         rs.getFloat(6), rs.getString(7), rs.getString(8), rs.getString(9), rs.getString(10), rs.getString(11), rs.getString(12),
-                        rs.getString(13));
+                        rs.getString(13), rs.getString(14));
                 String[] sections = info.getAd().split("/");
                 info.refCount = Integer.parseInt(sections[0]);
                 info.altCount = Integer.parseInt(sections[1]);
@@ -213,7 +215,7 @@ public class FisherExactTestFilter {
             pValueInfo.setPValue(pValue);
             pValueInfo.setLevel(level);
             try {
-                databaseManager.executeSQL("insert into " + pvalueResultTable + "(chrom,pos,id,ref,alt,qual,filter,info,gt,ad,dp,gq,pl,level," +
+                databaseManager.executeSQL("insert into " + pvalueResultTable + "(chrom,pos,id,ref,alt,qual,filter,info,gt,ad,dp,gq,pl,alu,level," +
                         "pvalue) values( " + pValueInfo.toString() + "," + dF.format(level) + "," + pValue + ")");
             } catch (SQLException e) {
                 System.err.println("Error execute sql clause in " + FisherExactTestFilter.class.getName() + ":executePValueFilter()");
@@ -272,8 +274,8 @@ public class FisherExactTestFilter {
         }
 
         public PValueInfo(String chr, int pos, String id, char ref, char alt, float qual, String filter, String info, String gt, String ad, String dp, String gq,
-                          String pl) {
-            super(chr, pos, id, ref, alt, qual, filter, info, gt, ad, dp, gq, pl);
+                          String pl, String alu) {
+            super(chr, pos, id, ref, alt, qual, filter, info, gt, ad, dp, gq, pl, alu);
         }
 
         public void setInDarnedDB(boolean isInDarnedDB) {
@@ -282,8 +284,9 @@ public class FisherExactTestFilter {
 
         @Override
         public String toString() {
+
             return "'" + getChr() + "'," + getPos() + ",'" + getId() + "','" + getRef() + "','" + getAlt() + "'," + getQual() + ",'" + getFilter() + "'," +
-                    "'" + getInfo() + "','" + getGt() + "','" + getAd() + "','" + getDp() + "','" + getGq() + "','" + getPl() + "'";
+                    "'" + getInfo() + "','" + getGt() + "','" + getAd() + "','" + getDp() + "','" + getGq() + "','" + getPl() + "','" + getIsAlu() + "'";
         }
 
         @Override

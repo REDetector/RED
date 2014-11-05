@@ -117,8 +117,9 @@ public class DatabaseManager {
 
     public void createPValueTable(String darnedResultTable) {
         try {
-            stmt.executeUpdate("create table " + darnedResultTable + "(CHROM varchar(15),POS int,ID varchar(30),REF varchar(3),ALT varchar(5)," +
-                    "QUAL float(8,2), FILTER text,INFO text,GT text,AD text,DP text,GQ text,PL text ,level float,pvalue float,fdr float,index(chrom,pos))");
+            stmt.executeUpdate("create table " + darnedResultTable + "(CHROM varchar(15),POS int,ID varchar(30),REF varchar(3),ALT varchar(5), QUAL float(8," +
+                    "2), FILTER text,INFO text,GT text,AD text,DP text,GQ text,PL text ,alu varchar(1) default 'F', level float, pvalue float," +
+                    "fdr float,index(chrom,pos))");
         } catch (SQLException e) {
             System.err.println("Error create table '" + darnedResultTable + "'");
             e.printStackTrace();

@@ -32,11 +32,11 @@ public class Query {
             while (rs.next()) {
                 SiteBean p = new SiteBean(rs.getString(1), rs.getInt(2), rs.getString(3), rs.getString(4).charAt(0), rs.getString(5).charAt(0),
                         rs.getFloat(6), rs.getString(7), rs.getString(8), rs.getString(9), rs.getString(10), rs.getString(11), rs.getString(12),
-                        rs.getString(13));
+                        rs.getString(13), rs.getString(14));
                 if (tableName.equals(DatabaseManager.PVALUE_FILTER_RESULT_TABLE_NAME)) {
-                    p.setLevel(rs.getDouble(14));
-                    p.setPValue(rs.getDouble(15));
-                    p.setFdr(rs.getDouble(16));
+                    p.setLevel(rs.getDouble(15));
+                    p.setPValue(rs.getDouble(16));
+                    p.setFdr(rs.getDouble(17));
                 }
                 siteBeans.add(p);
             }
