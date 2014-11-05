@@ -21,8 +21,11 @@ public class SiteBean {
     private double pvalue = -1;
     private double fdr = -1;
 
+
+    private String isAlu;
+
     public SiteBean(String chr, int pos, String id, char ref, char alt, float qual, String filter, String info, String gt, String ad, String dp, String gq,
-                    String pl) {
+                    String pl, String isAlu) {
         this.chr = chr;
         this.pos = pos;
         this.id = id;
@@ -36,6 +39,7 @@ public class SiteBean {
         this.dp = dp;
         this.gq = gq;
         this.pl = pl;
+        this.isAlu = isAlu;
     }
 
     public SiteBean(String chr, int pos) {
@@ -45,6 +49,14 @@ public class SiteBean {
 
     public String getChr() {
         return chr;
+    }
+
+    public String getIsAlu() {
+        return isAlu;
+    }
+
+    public void setIsAlu(String isAlu) {
+        this.isAlu = isAlu;
     }
 
     public int getPos() {
