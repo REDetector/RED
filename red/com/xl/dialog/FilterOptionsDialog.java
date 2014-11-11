@@ -32,7 +32,7 @@ public class FilterOptionsDialog extends JDialog implements OptionsListener, Pro
         getContentPane().setLayout(new BorderLayout());
 
         JLabel siteListLabel = new JLabel("Filtering sites in '" + collection.siteSet().getActiveList().name() + "' (" + collection.siteSet().getActiveList()
-                .getAllSiteLists().length + " sites)", JLabel.CENTER);
+                .getAllSites().length + " sites)", JLabel.CENTER);
         siteListLabel.setFont(new Font("Default", Font.BOLD, 12));
         siteListLabel.setBorder(BorderFactory.createEmptyBorder(3, 0, 3, 0));
         getContentPane().add(siteListLabel, BorderLayout.NORTH);
@@ -118,7 +118,7 @@ public class FilterOptionsDialog extends JDialog implements OptionsListener, Pro
         // Ask for a name for the list
         String groupName;
         while (true) {
-            groupName = (String) JOptionPane.showInputDialog(this, "Enter list name", "Found " + newList.getAllSiteLists().length + " sites",
+            groupName = (String) JOptionPane.showInputDialog(this, "Enter list name", "Found " + newList.getAllSites().length + " sites",
                     JOptionPane.QUESTION_MESSAGE, null, null, newList.name());
             if (groupName == null) {
                 // Since the list will automatically have been added to
