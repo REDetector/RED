@@ -9,4 +9,6 @@ public class FontManager {
     public static Font defaultFont = new Font("Times New Roman", Font.PLAIN, 10);
 
     public static Font reportFont = new Font("Default", Font.BOLD, 12);
+
+    public static Font copyrightFont = new Font("Dialog", Font.PLAIN, 14);
 }

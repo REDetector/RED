@@ -1,25 +1,5 @@
 package com.xl.utils;
 
-/**
- * Copyright 2009-13 Simon Andrews
- *
- *    This file is part of SeqMonk.
- *
- *    SeqMonk is free software; you can redistribute it and/or modify
- *    it under the terms of the GNU General Public License as published by
- *    the Free Software Foundation; either version 3 of the License, or
- *    (at your option) any later version.
- *
- *    SeqMonk is distributed in the hope that it will be useful,
- *    but WITHOUT ANY WARRANTY; without even the implied warranty of
- *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *    GNU General Public License for more details.
- *
- *    You should have received a copy of the GNU General Public License
- *    along with SeqMonk; if not, write to the Free Software
- *    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
- */
-
 import com.xl.interfaces.CacheListener;
 import com.xl.main.REDApplication;
 
@@ -89,22 +69,23 @@ public class MemoryMonitor extends JPanel implements Runnable, MouseListener, Mo
      * @see java.lang.Runnable#run()
      */
     public void run() {
+        try {
+            while (true) {
 
-        while (true) {
-
-            if (!registered) {
-                if (REDApplication.getInstance() != null) {
-                    REDApplication.getInstance().addCacheListener(this);
-                    registered = true;
+                if (!registered) {
+                    if (REDApplication.getInstance() != null) {
+                        REDApplication.getInstance().addCacheListener(this);
+                        registered = true;
+                    }
                 }
-            }
 
-            try {
                 Thread.sleep(1000);
-            } catch (InterruptedException e) {
+
+                if (needToShowWarning && !shownWarning) showMemoryWarning();
+                repaint();
             }
-            if (needToShowWarning && !shownWarning) showMemoryWarning();
-            repaint();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
     }
 
@@ -122,7 +103,8 @@ public class MemoryMonitor extends JPanel implements Runnable, MouseListener, Mo
         if (shownWarning) return;
         shownWarning = true;
 
-        JOptionPane.showMessageDialog(null, "You are running short of available memory.\n Please look at Help > Contents > Configuration to see what you can do about this.", "Low Memory Warning", JOptionPane.WARNING_MESSAGE);
+        JOptionPane.showMessageDialog(null, "You are running short of available memory.\n Please look at Help > Help Contents > Configuration to see what you" +
+                " can do about this.", "Low Memory Warning", JOptionPane.WARNING_MESSAGE);
 
     }
 
@@ -152,7 +134,7 @@ public class MemoryMonitor extends JPanel implements Runnable, MouseListener, Mo
 
         // We set the background depending on whether we're using
         // caching or not.
-        Color usedColor = DARK_RED;
+        Color usedColor;
         if (cacheActive) {
             usedColor = DARK_ORANGE;
             cacheActive = false;
@@ -162,10 +144,7 @@ public class MemoryMonitor extends JPanel implements Runnable, MouseListener, Mo
         cacheToolTip = "Disk Cache Active";
 
 
-        // We have a common disk image over which we overlay
-        // some other image to say whether we're using this or
-        // not.
-
+        // We have a common disk image over which we overlay some other image to say whether we're using this or not.
 
         // Bottom circle first (outlined)
         g.setColor(usedColor);

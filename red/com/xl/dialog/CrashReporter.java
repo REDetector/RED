@@ -27,7 +27,7 @@ public class CrashReporter extends JDialog implements ActionListener {
     /**
      * The Constant reportURLString.
      */
-    public static final String reportURLString = "http://www.bioinformatics.babraham.ac.uk/cgi-bin/public/crashreporter.cgi";
+    public static final String reportURLString = "sam.lxing@gmail.com";
 
     /**
      * The e.

@@ -21,6 +21,7 @@ package com.xl.panel;
 
 import com.xl.main.REDApplication;
 import com.xl.utils.ColourScheme;
+import com.xl.utils.FontManager;
 import com.xl.utils.namemanager.IconUtils;
 
 import javax.swing.*;
@@ -117,25 +118,25 @@ public class REDTitlePanel extends JPanel {
         jPanel.add(webPane, gridBagConstraints);
         gridBagConstraints.gridy++;
 
-        JLabel buptCopyright = new JLabel("\u00a9Xing Li, Di Wu, Yongmei Sun, Internet of Things, Beijing University of Posts and Telecommunications",
+        JLabel buptCopyright = new JLabel("\u00a9Xing Li, Di Wu, Yongmei Sun, Beijing University of Posts and Telecommunications",
                 JLabel.CENTER);
-        buptCopyright.setFont(new Font("Dialog", Font.PLAIN, 14));
+        buptCopyright.setFont(FontManager.copyrightFont);
         jPanel.add(buptCopyright, gridBagConstraints);
         gridBagConstraints.gridy++;
 
         JLabel cqmuCopyright = new JLabel(
                 "\u00a9Qi Pan, Keyue Ding, Key Laboratory of Molecular Biology for Infectious Diseases, Ministry of Education of China", JLabel.CENTER);
-        cqmuCopyright.setFont(new Font("Dialog", Font.PLAIN, 14));
+        cqmuCopyright.setFont(FontManager.copyrightFont);
         jPanel.add(cqmuCopyright, gridBagConstraints);
         gridBagConstraints.gridy++;
 
         JLabel cqmuCopyright2 = new JLabel("The Second Affiliated Hospital of Chongqing Medical University, Chongqing, P. R. China ", JLabel.CENTER);
-        cqmuCopyright2.setFont(new Font("Dialog", Font.PLAIN, 14));
+        cqmuCopyright2.setFont(FontManager.copyrightFont);
         jPanel.add(cqmuCopyright2, gridBagConstraints);
         gridBagConstraints.gridy++;
 
         JLabel copyright = new JLabel("Distributed under the GNU General Public License, Version 3", JLabel.CENTER);
-        copyright.setFont(new Font("Dialog", Font.PLAIN, 14));
+        copyright.setFont(FontManager.copyrightFont);
         copyright.setForeground(ColourScheme.PROGRAM_VERSION);
         jPanel.add(copyright, gridBagConstraints);
 

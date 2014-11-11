@@ -19,9 +19,7 @@ public class ChromosomeComparator implements Comparator<Chromosome> {
         this.minSizeImportant = minSizeImportant;
     }
 
-    public static LinkedHashMap<String, Chromosome> sortChromosomeList(
-            List<Chromosome> tmpChromos, int minBig,
-            LinkedHashMap<String, Chromosome> chromosomeMap) {
+    public static LinkedHashMap<String, Chromosome> sortChromosomeList(List<Chromosome> tmpChromos, int minBig, LinkedHashMap<String, Chromosome> chromosomeMap) {
         chromosomeMap.clear();
         Collections.sort(tmpChromos, new ChromosomeComparator(minBig));
         for (int i = 0; i < tmpChromos.size(); i++) {
@@ -50,8 +48,7 @@ public class ChromosomeComparator implements Comparator<Chromosome> {
     private boolean isImportant(Chromosome chromo) {
         if (chromo.getLength() > minSizeImportant)
             return true;
-        if (chromo.getName().toLowerCase().startsWith("chr")
-                && chromo.getName().length() <= 6)
+        if (chromo.getName().toLowerCase().startsWith("chr") && chromo.getName().length() <= 6)
             return true;
         return false;
     }
