@@ -19,7 +19,7 @@
  */
 package com.xl.help;
 
-import com.xl.dialog.CrashReporter;
+import com.xl.net.crashreport.CrashReporter;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;

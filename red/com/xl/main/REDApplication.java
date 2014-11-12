@@ -17,7 +17,6 @@ import com.xl.datatypes.sites.SiteList;
 import com.xl.datatypes.sites.SiteSet;
 import com.xl.datatypes.sites.SiteSetChangeListener;
 import com.xl.datawriters.REDDataWriter;
-import com.xl.dialog.CrashReporter;
 import com.xl.dialog.DataParserOptionsDialog;
 import com.xl.dialog.GenomeSelector;
 import com.xl.dialog.ProgressDialog;
@@ -33,6 +32,7 @@ import com.xl.interfaces.CacheListener;
 import com.xl.interfaces.DataChangeListener;
 import com.xl.interfaces.ProgressListener;
 import com.xl.menu.REDMenu;
+import com.xl.net.crashreport.CrashReporter;
 import com.xl.net.genomes.GenomeDownloader;
 import com.xl.panel.REDPreviewPanel;
 import com.xl.panel.StatusPanel;
@@ -49,10 +49,7 @@ import javax.swing.*;
 import javax.swing.filechooser.FileFilter;
 import java.awt.*;
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Enumeration;
-import java.util.Vector;
+import java.util.*;
 
 /**
  * @author Xing Li
@@ -196,6 +193,7 @@ public class REDApplication extends JFrame implements ProgressListener, DataChan
         try {
             Thread.setDefaultUncaughtExceptionHandler(new ErrorCatcher());
             application = new REDApplication();
+            application.setLocale(Locale.US);
             application.setVisible(true);
             if (!application.welcomePanel.cacheDirectoryValid()) {
                 JOptionPane.showMessageDialog(application, WELCOME_CONTENT,

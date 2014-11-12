@@ -19,8 +19,8 @@
  */
 package com.xl.panel;
 
-import com.xl.dialog.CrashReporter;
 import com.xl.main.REDApplication;
+import com.xl.net.crashreport.CrashReporter;
 import com.xl.net.genomes.UpdateChecker;
 import com.xl.preferences.LocationPreferences;
 import com.xl.preferences.REDPreferences;

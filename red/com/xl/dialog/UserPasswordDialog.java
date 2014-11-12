@@ -3,6 +3,7 @@ package com.xl.dialog;
 import com.dw.dbutils.DatabaseManager;
 import com.xl.interfaces.ProgressListener;
 import com.xl.main.REDApplication;
+import com.xl.net.crashreport.CrashReporter;
 import com.xl.preferences.REDPreferences;
 
 import javax.swing.*;

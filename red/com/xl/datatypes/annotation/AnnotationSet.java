@@ -2,8 +2,8 @@ package com.xl.datatypes.annotation;
 
 import com.xl.datatypes.feature.Feature;
 import com.xl.datatypes.genome.Genome;
-import com.xl.dialog.CrashReporter;
 import com.xl.main.REDApplication;
+import com.xl.net.crashreport.CrashReporter;
 import com.xl.preferences.LocationPreferences;
 import com.xl.utils.FileUtils;
 import com.xl.utils.namemanager.SuffixUtils;

@@ -267,8 +267,7 @@ public class DisplayPreferences {
     }
 
     public void writeConfiguration(PrintStream p) {
-        // Make sure this number at the end equates to the number of
-        // configuration lines to be written
+        // Make sure this number at the end equates to the number of configuration lines to be written
         p.println(ParsingUtils.DISPLAY_PREFERENCES + "\t5");
 
         p.println("DisplayMode\t" + getDisplayMode());
@@ -279,8 +278,7 @@ public class DisplayPreferences {
 
         p.println("Fasta\t" + fastaEnable);
 
-        p.println("CurrentView\t" + currentChromosome.getName() + "\t"
-                + currentStartLocation + "\t" + currentEndLocation);
+        p.println("CurrentView\t" + currentChromosome.getName() + "\t" + currentStartLocation + "\t" + currentEndLocation);
     }
 
     private boolean equalsAny(int[] valid, int test) {

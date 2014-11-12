@@ -22,6 +22,7 @@ package com.xl.dialog;
 import com.xl.interfaces.Cancellable;
 import com.xl.interfaces.ProgressListener;
 import com.xl.main.REDApplication;
+import com.xl.net.crashreport.CrashReporter;
 
 import javax.swing.*;
 import java.awt.*;

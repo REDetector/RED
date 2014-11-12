@@ -1,7 +1,6 @@
-package com.xl.dialog;
+package com.xl.net.crashreport;
 
 import com.xl.main.REDApplication;
-import com.xl.net.crashreport.HTMLDisplayDialog;
 import com.xl.preferences.REDPreferences;
 import com.xl.utils.FontManager;
 
@@ -141,8 +140,7 @@ public class CrashReporter extends JDialog implements ActionListener {
     /**
      * The Class ReportSender.
      */
-    private class ReportSender extends JDialog implements ActionListener,
-            Runnable {
+    private class ReportSender extends JDialog implements ActionListener, Runnable {
 
         /**
          * The report text.
@@ -201,9 +199,7 @@ public class CrashReporter extends JDialog implements ActionListener {
             gbc.weighty = 0.1;
             gbc.fill = GridBagConstraints.HORIZONTAL;
 
-            JLabel introLabel = new JLabel(
-                    "The contents of the report are shown below:",
-                    JLabel.CENTER);
+            JLabel introLabel = new JLabel("The contents of the report are shown below:", JLabel.CENTER);
             getContentPane().add(introLabel, gbc);
 
             JTextArea reportTextArea = new JTextArea(reportText);
@@ -218,9 +214,7 @@ public class CrashReporter extends JDialog implements ActionListener {
             gbc.weighty = 0.1;
             gbc.fill = GridBagConstraints.HORIZONTAL;
 
-            JLabel notifyLabel = new JLabel(
-                    "Enter your email below to allow us to help you with this problem",
-                    JLabel.CENTER);
+            JLabel notifyLabel = new JLabel("Enter your email below to allow us to help you with this problem", JLabel.CENTER);
 
             getContentPane().add(notifyLabel, gbc);
 
@@ -235,12 +229,10 @@ public class CrashReporter extends JDialog implements ActionListener {
             getContentPane().add(emailPanel, gbc);
 
             JPanel rememberPanel = new JPanel();
-            rememberPanel.add(new JLabel(
-                    "Remember this address for future reports "));
+            rememberPanel.add(new JLabel("Remember this address for future reports "));
             rememberEmail = new JCheckBox();
 
-            // We don't initially remember their email - but we will
-            // once they have supplied one.
+            // We don't initially remember their email - but we will once they have supplied one.
             if (REDPreferences.getInstance().getCrashEmail().length() > 0) {
                 rememberEmail.setSelected(true);
             }
@@ -298,8 +290,7 @@ public class CrashReporter extends JDialog implements ActionListener {
             }
             sb.append("\n");
             sb.append(e.getMessage());
-            if (e.getMessage() != null
-                    && e.getMessage().contains("RED")) {
+            if (e.getMessage() != null && e.getMessage().contains("RED")) {
                 foundREDClass = true;
             }
             sb.append("\n\n");
@@ -322,15 +313,14 @@ public class CrashReporter extends JDialog implements ActionListener {
             } else if (ae.getActionCommand().equals("send_report")) {
 
                 if (!foundREDClass) {
-                    int reply = JOptionPane
-                            .showConfirmDialog(
-                                    this,
-                                    "<html>This error doesn't appear to come from within RED but is a bug in the core" +
-                                            " Java classes.<br>You can still submit this report, but the RED authors may " +
-                                            "not be able to fix it!<br><br>Do you still want to send the report?</html>",
-                                    "Not our fault!",
-                                    JOptionPane.YES_NO_OPTION,
-                                    JOptionPane.WARNING_MESSAGE);
+                    int reply = JOptionPane.showConfirmDialog(
+                            this,
+                            "<html>This error doesn't appear to come from within RED but is a bug in the core" +
+                                    " Java classes.<br>You can still submit this report, but the RED authors may " +
+                                    "not be able to fix it!<br><br>Do you still want to send the report?</html>",
+                            "Not our fault!",
+                            JOptionPane.YES_NO_OPTION,
+                            JOptionPane.WARNING_MESSAGE);
                     if (reply == JOptionPane.NO_OPTION)
                         return;
                 }
@@ -375,28 +365,22 @@ public class CrashReporter extends JDialog implements ActionListener {
 
             // Send the actual report.
 
-            // We don't need to worry about proxy settings as these
-            // will have been put into the System properties by the
-            // SeqMonkPreferences class and should be picked up
-            // automatically.
+            // We don't need to worry about proxy settings as these will have been put into the System properties by the REDPreferences class and should be
+            // picked up automatically.
 
             try {
                 URL url = new URL(reportURLString);
-                String data = URLEncoder.encode("email", "ISO-8859-1") + "="
-                        + URLEncoder.encode(email.getText(), "ISO-8859-1")
-                        + "&" + URLEncoder.encode("stacktrace", "ISO-8859-1")
-                        + "=" + URLEncoder.encode(reportText, "ISO-8859-1");
+                String data = URLEncoder.encode("email", "ISO-8859-1") + "=" + URLEncoder.encode(email.getText(), "ISO-8859-1")
+                        + "&" + URLEncoder.encode("stacktrace", "ISO-8859-1") + "=" + URLEncoder.encode(reportText, "ISO-8859-1");
 
                 URLConnection conn = url.openConnection();
                 conn.setDoOutput(true);
 
-                OutputStreamWriter writer = new OutputStreamWriter(
-                        conn.getOutputStream());
+                OutputStreamWriter writer = new OutputStreamWriter(conn.getOutputStream());
                 writer.write(data);
                 writer.flush();
 
-                BufferedReader reader = new BufferedReader(
-                        new InputStreamReader(conn.getInputStream()));
+                BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
 
                 StringBuffer htmlResponse = new StringBuffer();
                 String line;
@@ -410,12 +394,8 @@ public class CrashReporter extends JDialog implements ActionListener {
 
                 if (!htmlResponse.toString().startsWith("Report Sent")) {
 
-                    JOptionPane
-                            .showMessageDialog(
-                                    cr,
-                                    "We found some information which might help solve the problem you hit",
-                                    "Help found",
-                                    JOptionPane.INFORMATION_MESSAGE);
+                    JOptionPane.showMessageDialog(cr, "We found some information which might help solve the problem you hit", "Help found",
+                            JOptionPane.INFORMATION_MESSAGE);
 
                     // We've been returned a possible solution
                     new HTMLDisplayDialog(htmlResponse.toString());
@@ -426,13 +406,7 @@ public class CrashReporter extends JDialog implements ActionListener {
 
             } catch (Exception e) {
                 e.printStackTrace();
-                JOptionPane
-                        .showMessageDialog(
-                                this,
-                                "Error Sending Report: "
-                                        + e.getLocalizedMessage(),
-                                "Error sending crash Report",
-                                JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(this, "Error Sending Report: " + e.getLocalizedMessage(), "Error sending crash Report", JOptionPane.ERROR_MESSAGE);
 
                 sendButton.setText("Sending Failed...");
                 cancelButton.setEnabled(true);

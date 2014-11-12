@@ -8,11 +8,15 @@ import com.xl.datatypes.annotation.AnnotationSet;
 import com.xl.datatypes.annotation.CoreAnnotationSet;
 import com.xl.datatypes.sites.SiteList;
 import com.xl.datatypes.sites.SiteSet;
-import com.xl.dialog.*;
+import com.xl.dialog.AnnotationSetPropertiesDialog;
+import com.xl.dialog.DataStorePropertiesDialog;
+import com.xl.dialog.SiteListCommentEditDialog;
+import com.xl.dialog.SiteListViewer;
 import com.xl.display.report.SitesDistributionHistogram;
 import com.xl.display.report.VariantDistributionHistogram;
 import com.xl.exception.REDException;
 import com.xl.main.REDApplication;
+import com.xl.net.crashreport.CrashReporter;
 
 import javax.swing.*;
 import javax.swing.event.TreeSelectionEvent;

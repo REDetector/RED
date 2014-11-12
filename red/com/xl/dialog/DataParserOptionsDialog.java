@@ -21,6 +21,7 @@ package com.xl.dialog;
 
 import com.xl.exception.REDException;
 import com.xl.main.REDApplication;
+import com.xl.net.crashreport.CrashReporter;
 import com.xl.parsers.dataparsers.DataParser;
 
 import javax.swing.*;

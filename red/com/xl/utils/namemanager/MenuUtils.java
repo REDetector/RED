@@ -17,8 +17,8 @@ public class MenuUtils {
     public static final String ANNOTATION = "Annotation...";
     public static final String LOAD_GENOME = "Load Genome...";
     public static final String EXPORT_IMAGE = "Export Image";
-    public static final String GENOME_VIEW = "Genome View...";
-    public static final String CHROMOSOME_VIEW = "Chromosome View...";
+    public static final String GENOME_VIEW = "Genome Panel...";
+    public static final String CHROMOSOME_VIEW = "Chromosome Panel...";
     public static final String EXIT = "Exit";
 
     /*Edit menu*/

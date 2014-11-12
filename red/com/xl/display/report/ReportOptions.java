@@ -4,11 +4,11 @@ package com.xl.display.report;
  * Created by Administrator on 2014/9/18.
  */
 
-import com.xl.dialog.CrashReporter;
 import com.xl.dialog.ProgressDialog;
 import com.xl.interfaces.OptionsListener;
 import com.xl.interfaces.ProgressListener;
 import com.xl.main.REDApplication;
+import com.xl.net.crashreport.CrashReporter;
 import com.xl.utils.FontManager;
 
 import javax.swing.*;

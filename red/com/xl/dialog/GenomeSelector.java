@@ -1,6 +1,7 @@
 package com.xl.dialog;
 
 import com.xl.main.REDApplication;
+import com.xl.net.crashreport.CrashReporter;
 import com.xl.preferences.LocationPreferences;
 import com.xl.utils.ChromosomeNameComparator;
 import com.xl.utils.FileUtils;

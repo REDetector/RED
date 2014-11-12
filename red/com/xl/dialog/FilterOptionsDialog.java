@@ -7,6 +7,7 @@ import com.xl.filter.AbstractSiteFilter;
 import com.xl.interfaces.OptionsListener;
 import com.xl.interfaces.ProgressListener;
 import com.xl.main.REDApplication;
+import com.xl.net.crashreport.CrashReporter;
 
 import javax.swing.*;
 import java.awt.*;

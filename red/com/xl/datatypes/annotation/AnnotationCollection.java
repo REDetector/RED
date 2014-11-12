@@ -3,9 +3,9 @@ package com.xl.datatypes.annotation;
 import com.xl.datatypes.feature.Feature;
 import com.xl.datatypes.genome.Chromosome;
 import com.xl.datatypes.genome.Genome;
-import com.xl.dialog.CrashReporter;
 import com.xl.exception.REDException;
 import com.xl.interfaces.AnnotationCollectionListener;
+import com.xl.net.crashreport.CrashReporter;
 import com.xl.preferences.LocationPreferences;
 import com.xl.utils.namemanager.SuffixUtils;
 

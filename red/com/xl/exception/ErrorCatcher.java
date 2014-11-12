@@ -1,6 +1,6 @@
 package com.xl.exception;
 
-import com.xl.dialog.CrashReporter;
+import com.xl.net.crashreport.CrashReporter;
 
 import java.lang.Thread.UncaughtExceptionHandler;
 

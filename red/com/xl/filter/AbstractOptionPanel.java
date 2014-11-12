@@ -3,7 +3,6 @@ package com.xl.filter;
 import com.xl.datatypes.DataCollection;
 import com.xl.datatypes.DataStore;
 import com.xl.dialog.TypeColourRenderer;
-import com.xl.utils.ListDefaultSelector;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionListener;
@@ -31,7 +30,7 @@ public abstract class AbstractOptionPanel extends JPanel implements ListSelectio
         }
 
         dataList = new JList(dataModel);
-        ListDefaultSelector.selectDefaultStores(dataList);
+//        ListDefaultSelector.selectDefaultStores(dataList);
         dataList.setCellRenderer(new TypeColourRenderer());
         dataList.addListSelectionListener(this);
         dataPanel.add(new JScrollPane(dataList), BorderLayout.CENTER);

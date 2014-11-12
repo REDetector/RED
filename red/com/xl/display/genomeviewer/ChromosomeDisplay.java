@@ -8,9 +8,9 @@ import com.xl.datatypes.genome.Genome;
 import com.xl.datatypes.sites.Site;
 import com.xl.datatypes.sites.SiteList;
 import com.xl.datatypes.sites.SiteSet;
-import com.xl.dialog.CrashReporter;
 import com.xl.exception.REDException;
 import com.xl.interfaces.DataChangeListener;
+import com.xl.net.crashreport.CrashReporter;
 import com.xl.preferences.DisplayPreferences;
 import com.xl.utils.ColourScheme;
 

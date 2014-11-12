@@ -1,8 +1,8 @@
 package com.xl.display.report;
 
 import com.xl.datatypes.DataStore;
-import com.xl.dialog.CrashReporter;
 import com.xl.main.REDApplication;
+import com.xl.net.crashreport.CrashReporter;
 import com.xl.preferences.LocationPreferences;
 import com.xl.utils.filefilters.TxtFileFilter;
 import com.xl.utils.imagemanager.ImageSaver;
