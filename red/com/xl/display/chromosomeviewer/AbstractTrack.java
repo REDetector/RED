@@ -18,7 +18,6 @@
 
 package com.xl.display.chromosomeviewer;
 
-import com.xl.datatypes.DataCollection;
 import com.xl.datatypes.genome.Chromosome;
 import com.xl.preferences.DisplayPreferences;
 import com.xl.utils.ColourScheme;
@@ -31,21 +30,42 @@ import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 
 /**
- * Created by Administrator on 2014/10/12.
+ * Created by Xing Li on 2014/10/12.
+ * <p/>
+ * The Class AbstractTrack represents a track which is shown on the chromosome viewer.
  */
 public abstract class AbstractTrack extends JPanel implements MouseListener, MouseMotionListener {
+    /**
+     * The viewer.
+     */
     protected ChromosomeViewer chromosomeViewer;
-    protected DataCollection dataCollection;
+    /**
+     * Track name.
+     */
     protected String trackName;
+    /**
+     * The screen width pixel.
+     */
     protected int displayWidth;
+    /**
+     * The screen height pixel.
+     */
     protected int displayHeight;
+    /**
+     * The start position refer to the genome.
+     */
     protected int currentViewerStart;
+    /**
+     * The end position refer to the genome.
+     */
     protected int currentViewerEnd;
+    /**
+     * Pixels that a base takes up.
+     */
     protected int basePixel;
 
-    public AbstractTrack(ChromosomeViewer chromosomeViewer, DataCollection dataCollection, String trackName) {
+    public AbstractTrack(ChromosomeViewer chromosomeViewer, String trackName) {
         this.chromosomeViewer = chromosomeViewer;
-        this.dataCollection = dataCollection;
         this.trackName = trackName;
         displayWidth = getWidth();
         displayHeight = getHeight();
@@ -56,10 +76,20 @@ public abstract class AbstractTrack extends JPanel implements MouseListener, Mou
         addMouseMotionListener(this);
     }
 
+    /**
+     * Return the viewer length.
+     *
+     * @return the viewer length
+     */
     protected int getViewerLength() {
         return currentViewerEnd - currentViewerStart + 1;
     }
 
+    /**
+     * Update the track by chromosome.
+     *
+     * @param chromosome the chromosome
+     */
     protected abstract void updateTrack(Chromosome chromosome);
 
     @Override
@@ -98,38 +128,82 @@ public abstract class AbstractTrack extends JPanel implements MouseListener, Mou
         g.drawString(trackName, 2, nameHeight + 2);
     }
 
+    /**
+     * Draw the base by a given coordinate refer to the genome.
+     *
+     * @param g    the g
+     * @param base the base
+     * @param x    the x position
+     * @param y    the y position
+     */
     protected void drawBase(Graphics g, char base, int x, int y) {
         g.setColor(ColourScheme.getBaseColor(base));
         g.drawString(String.valueOf(base).toUpperCase(), bpToPixel(x), y);
     }
 
-    protected void fillRect(Graphics g, int positionLeft, int positionRight, int yStart, int height) {
-        int width = (int) ((double) (positionRight - positionLeft) / getViewerLength() * displayWidth);
+    /**
+     * Fill a solid rectangle by the given info refer to the genome.
+     *
+     * @param g      the g
+     * @param x1     The left position of the rectangle refer to the genome.
+     * @param x2     The right position of the rectangle refer to the genome.
+     * @param y1     The bottom position of the rectangle refer to the screen pixel.
+     * @param height The height of this rectangle, not the top position.
+     */
+    protected void fillRect(Graphics g, int x1, int x2, int y1, int height) {
+        int width = (int) ((double) (x2 - x1) / getViewerLength() * displayWidth);
         if (width < 1) {
             width = 1;
         }
-        int xStart = bpToPixel(positionLeft);
-        g.fillRect(xStart, yStart, width, height);
+        int xStart = bpToPixel(x1);
+        g.fillRect(xStart, y1, width, height);
     }
 
-    protected void drawRoundRect(Graphics g, int positionLeft, int positionRight, int yStart, int height) {
-        int width = (int) ((double) (positionRight - positionLeft) / getViewerLength() * displayWidth);
+    /**
+     * Draw a hollow round rectangle by the given info refer to the genome.
+     *
+     * @param g      the g
+     * @param x1     The left position of the rectangle refer to the genome.
+     * @param x2     The right position of the rectangle refer to the genome.
+     * @param y1     The bottom position of the rectangle refer to the screen pixel.
+     * @param height The height of this rectangle, not the top position.
+     */
+    protected void drawRoundRect(Graphics g, int x1, int x2, int y1, int height) {
+        int width = (int) ((double) (x2 - x1) / getViewerLength() * displayWidth);
         if (width < 1) {
             width = 1;
         }
-        int xStart = bpToPixel(positionLeft);
-        g.drawRoundRect(xStart, yStart, width, height, 3, 3);
+        int xStart = bpToPixel(x1);
+        g.drawRoundRect(xStart, y1, width, height, 3, 3);
     }
 
-    protected void drawRect(Graphics g, int positionLeft, int positionRight, int yStart, int height) {
-        int width = (int) ((double) (positionRight - positionLeft) / getViewerLength() * displayWidth);
+    /**
+     * Draw a hollow rectangle by the given info refer to the genome.
+     *
+     * @param g      the g
+     * @param x1     The left position of the rectangle refer to the genome.
+     * @param x2     The right position of the rectangle refer to the genome.
+     * @param y1     The bottom position of the rectangle refer to the screen pixel.
+     * @param height The height of this rectangle, not the top position.
+     */
+    protected void drawRect(Graphics g, int x1, int x2, int y1, int height) {
+        int width = (int) ((double) (x2 - x1) / getViewerLength() * displayWidth);
         if (width < 1) {
             width = 1;
         }
-        int xStart = bpToPixel(positionLeft);
-        g.drawRect(xStart, yStart, width, height);
+        int xStart = bpToPixel(x1);
+        g.drawRect(xStart, y1, width, height);
     }
 
+    /**
+     * Draw a line by the given info refer to the genome.
+     *
+     * @param g  the g
+     * @param x1 The start x position of the line refer to the genome.
+     * @param x2 The end x position of the line refer to the genome.
+     * @param y1 The start y position of the line refer to the screen pixel.
+     * @param y2 The end y position of the line refer to the screen pixel.
+     */
     protected void drawLine(Graphics g, int x1, int x2, int y1, int y2) {
         int xStart = bpToPixel(x1);
         int xEnd = bpToPixel(x2);
@@ -174,6 +248,11 @@ public abstract class AbstractTrack extends JPanel implements MouseListener, Mou
     public void mouseMoved(MouseEvent e) {
     }
 
+    /**
+     * Single left click to zoom in and single right click to zoom out.
+     *
+     * @param me the mouse event
+     */
     @Override
     public void mouseClicked(MouseEvent me) {
         if ((me.getModifiers() & InputEvent.BUTTON3_MASK) == InputEvent.BUTTON3_MASK && me.getClickCount() == 1) {
