@@ -1,26 +1,40 @@
+/*
+ * RED: RNA Editing Detector
+ *     Copyright (C) <2014>  <Xing Li>
+ *
+ *     RED is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU General Public License as published by
+ *     the Free Software Foundation, either version 3 of the License, or
+ *     (at your option) any later version.
+ *
+ *     RED is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     GNU General Public License for more details.
+ *
+ *     You should have received a copy of the GNU General Public License
+ *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package com.xl.datatypes.annotation;
 
 import java.io.Serializable;
 
+/**
+ * The Cytoband file format is used to specify the cytobands for an imported genome. We uses this file to draw the chromosome ideograms for the genome, with the
+ * idea put forward by IGV.
+ */
 public class Cytoband implements Serializable {
     String chromosome;
     String name;
-    String longName;
     int end;
     int start;
     char type; // p, n, or c
     short stain;
 
-
     public Cytoband(String chromosome) {
         this.chromosome = chromosome;
         this.name = "";
-    }
-
-
-    public void trim() {
-
-        // @todo -- trim arrays
     }
 
     public String getChr() {
@@ -33,13 +47,6 @@ public class Cytoband implements Serializable {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public String getLongName() {
-        if (longName == null) {
-            longName = chromosome.replace("chr", "") + name;
-        }
-        return longName;
     }
 
     public int getEnd() {
