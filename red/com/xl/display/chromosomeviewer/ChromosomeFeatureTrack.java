@@ -1,3 +1,21 @@
+/*
+ * RED: RNA Editing Detector
+ *     Copyright (C) <2014>  <Xing Li>
+ *
+ *     RED is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU General Public License as published by
+ *     the Free Software Foundation, either version 3 of the License, or
+ *     (at your option) any later version.
+ *
+ *     RED is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     GNU General Public License for more details.
+ *
+ *     You should have received a copy of the GNU General Public License
+ *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package com.xl.display.chromosomeviewer;
 
 import com.xl.datatypes.DataCollection;
@@ -12,14 +30,12 @@ import com.xl.utils.PositionFormat;
 import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.Enumeration;
 import java.util.Vector;
 
 /**
- * The ChromosomeFeatureTrack is a display which shows one feature type in the
- * chromosome view. It is usually only created and managed by a surrounding
- * instance of ChromsomeViewer.
+ * The ChromosomeFeatureTrack is a display which shows the feature from gene annotation file (e.g., UCSC) in the chromosome view. It is usually only created and
+ * managed by a surrounding instance of ChromosomeViewer.
  */
 public class ChromosomeFeatureTrack extends AbstractTrack {
 
@@ -29,38 +45,58 @@ public class ChromosomeFeatureTrack extends AbstractTrack {
     private Feature activeFeature = null;
 
     /**
-     * The features shown in this track
+     * The features shown in this track.
      */
     private java.util.List<Feature> features;
-
-    private long currentTime = 0;
-
-    private int yLableHeight = 0;
-
+    /**
+     * The height of the label.
+     */
+    private int yLabelHeight = 0;
+    /**
+     * Exon height.
+     */
     private int exonHeight = 20;
+    /**
+     * Coding regions height
+     */
     private int cdsHeight = exonHeight / 2;
+    /**
+     * The transcriptome position.
+     */
     private int txYPosition;
+    /**
+     * The coding regions position.
+     */
     private int cdsYPosition;
+    /**
+     * The exon position.
+     */
     private int exonYPosition;
-
+    /**
+     * The cursor's X position.
+     */
     private int cursorXPosition = 0;
+    /**
+     * The collection.
+     */
+    private DataCollection collection;
 
     /**
-     * A list of drawn features, used for lookups when finding an active feature
+     * A list of drawn features, used for look-ups when finding an active feature
      */
     private Vector<DrawnFeature> drawnFeatures = new Vector<DrawnFeature>();
 
     /**
-     * Instantiates a new chromosome feature track. We have to send the name of
-     * the feature type explicitly in case there aren't any features of a given
-     * type on a chromosome and we couldn't then work out the name of the track
-     * from the features themselves.
+     * Instantiates a new chromosome feature track. We have to send the name of the feature type explicitly in case there aren't any features of a given type on
+     * a chromosome and we couldn't then work out the name of the track from the features themselves.
      *
      * @param viewer      The chromosome viewer which holds this track
+     * @param collection  The data collection
      * @param featureName The name of the type of features we're going to show
      */
     public ChromosomeFeatureTrack(ChromosomeViewer viewer, DataCollection collection, String featureName) {
-        super(viewer, collection, featureName);
+        super(viewer, featureName);
+        this.collection = collection;
         drawnFeatures = new Vector<DrawnFeature>();
     }
 
@@ -79,7 +115,7 @@ public class ChromosomeFeatureTrack extends AbstractTrack {
 
         g.setColor(ColourScheme.FEATURE_TRACK);
         for (Feature feature : features) {
-            if (isFeatureVisible(feature, currentViewerStart, currentViewerEnd)) {
+            if (isFeatureVisible(feature)) {
                 // We always draw the active feature last so skip it here.
                 if (feature != activeFeature) {
                     drawFeature(feature, g);
@@ -94,6 +130,7 @@ public class ChromosomeFeatureTrack extends AbstractTrack {
         }
     }
 
+    @Override
     public Dimension getMinimumSize() {
         return new Dimension(30, 30);
     }
@@ -109,40 +146,57 @@ public class ChromosomeFeatureTrack extends AbstractTrack {
         boolean drawLabel = false;
         if (displayHeight > 25) {
             drawLabel = true;
-            yLableHeight = 5;
+            yLabelHeight = 5;
         }
         ArrayList<Location> allLocation = (ArrayList<Location>) feature.getAllLocations();
 
         int wholeXStart = allLocation.get(0).getStart();
         int wholeXEnd = allLocation.get(0).getEnd();
         drawnFeatures.add(new DrawnFeature(wholeXStart, wholeXEnd, feature));
-        fillRect(g, wholeXStart, wholeXEnd, txYPosition - yLableHeight, 2);
+        fillRect(g, wholeXStart, wholeXEnd, txYPosition - yLabelHeight, 2);
 
         int cdsStart = allLocation.get(1).getStart();
         int cdsEnd = allLocation.get(1).getEnd();
-        fillRect(g, cdsStart, cdsEnd, cdsYPosition - yLableHeight, cdsHeight);
+        fillRect(g, cdsStart, cdsEnd, cdsYPosition - yLabelHeight, cdsHeight);
 
         for (int i = 2, len = allLocation.size(); i < len; i++) {
             int exonStart = allLocation.get(i).getStart();
             int exonEnd = allLocation.get(i).getEnd();
             if (exonStart > cdsStart && exonEnd < cdsEnd) {
-                fillRect(g, exonStart, exonEnd, exonYPosition - yLableHeight, exonHeight);
-            }
-            if (drawLabel && (feature == activeFeature)) {
-//                g.setColor(Color.DARK_GRAY);
-                g.drawString(feature.getChr() + ":" + feature.getAliasName(), cursorXPosition, ((displayHeight + exonHeight) / 2 + yLableHeight));
+                fillRect(g, exonStart, exonEnd, exonYPosition - yLabelHeight, exonHeight);
             }
         }
+        if (drawLabel) {
+            String featureName = feature.getAliasName();
+            int baseWidth = g.getFontMetrics().stringWidth(String.valueOf(featureName));
+            if (getViewerLength() < getWidth()) {
+                g.drawString(featureName, cursorXPosition, ((displayHeight + exonHeight) / 2 + yLabelHeight));
+            } else if (getViewerLength() < 500000) {
+                g.drawString(featureName, (bpToPixel(wholeXStart) + bpToPixel(wholeXEnd) - baseWidth) / 2, ((displayHeight + exonHeight) / 2 + yLabelHeight));
+            }
+        }
+
     }
 
+    /**
+     * Update track from annotation collection.
+     *
+     * @param chromosome the chromosome
+     */
     @Override
     protected void updateTrack(Chromosome chromosome) {
-        features = dataCollection.genome().getAnnotationCollection().getFeaturesForChr(chromosome);
+        features = collection.genome().getAnnotationCollection().getFeaturesForChr(chromosome);
         repaint();
     }
 
-    private boolean isFeatureVisible(Feature feature, int currentStart, int currentEnd) {
-        return (feature.getTxLocation().getStart() < currentEnd && feature.getTxLocation().getEnd() > currentStart);
+    /**
+     * A simple way to tell RED whether a feature should be drawn.
+     *
+     * @param feature The feature
+     * @return true if it is visible
+     */
+    private boolean isFeatureVisible(Feature feature) {
+        return (feature.getTxLocation().getStart() < currentViewerEnd && feature.getTxLocation().getEnd() > currentViewerStart);
     }
 
     @Override
@@ -172,7 +226,7 @@ public class ChromosomeFeatureTrack extends AbstractTrack {
                     return;
                 }
             } else {
-                chromosomeViewer.application().setStatusText("Chromsome " + DisplayPreferences.getInstance().getCurrentChromosome().getName() + " "
+                chromosomeViewer.application().setStatusText("Chromosome " + DisplayPreferences.getInstance().getCurrentChromosome().getName() + " "
                         + pixelToBp(me.getX()) + "bp");
             }
         }
@@ -181,21 +235,11 @@ public class ChromosomeFeatureTrack extends AbstractTrack {
     @Override
     public void mouseClicked(MouseEvent me) {
         super.mouseClicked(me);
-        if (checkClickTime() && me.getClickCount() >= 2) {
+        if (me.getClickCount() >= 2) {
             if (activeFeature != null) {
                 new FeatureViewer(activeFeature);
             }
         }
-    }
-
-    public boolean checkClickTime() {
-        long nowTime = (new Date()).getTime();
-        if ((nowTime - currentTime) < 300) {
-            currentTime = nowTime;
-            return true;
-        }
-        currentTime = nowTime;
-        return false;
     }
 
     @Override
@@ -211,9 +255,7 @@ public class ChromosomeFeatureTrack extends AbstractTrack {
     }
 
     /**
-     * A container class which stores a feature and its last drawn position in
-     * the display. Split location features will use a separate DrawnFeature for
-     * each exon.
+     * A container class which stores a feature and its last drawn position in the display.
      */
     private class DrawnFeature {
 
@@ -249,8 +291,7 @@ public class ChromosomeFeatureTrack extends AbstractTrack {
          * Checks if a given pixel position is inside this feature.
          *
          * @param x the x pixel position
-         * @return true, if this falls within the last drawn position of this
-         * feature
+         * @return true, if this falls within the last drawn position of this feature
          */
         public boolean isInFeature(int x) {
             return (x >= start && x <= end);
