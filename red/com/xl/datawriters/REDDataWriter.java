@@ -1,21 +1,19 @@
-/**
- * Copyright Copyright 2007-13 Simon Andrews
+/*
+ * RED: RNA Editing Detector
+ *     Copyright (C) <2014>  <Xing Li>
  *
- *    This file is part of SeqMonk.
+ *     RED is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU General Public License as published by
+ *     the Free Software Foundation, either version 3 of the License, or
+ *     (at your option) any later version.
  *
- *    SeqMonk is free software; you can redistribute it and/or modify
- *    it under the terms of the GNU General Public License as published by
- *    the Free Software Foundation; either version 3 of the License, or
- *    (at your option) any later version.
+ *     RED is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     GNU General Public License for more details.
  *
- *    SeqMonk is distributed in the hope that it will be useful,
- *    but WITHOUT ANY WARRANTY; without even the implied warranty of
- *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *    GNU General Public License for more details.
- *
- *    You should have received a copy of the GNU General Public License
- *    along with SeqMonk; if not, write to the Free Software
- *    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+ *     You should have received a copy of the GNU General Public License
+ *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 package com.xl.datawriters;
 
@@ -26,7 +24,6 @@ import com.xl.datatypes.DataStore;
 import com.xl.datatypes.annotation.AnnotationSet;
 import com.xl.datatypes.annotation.CoreAnnotationSet;
 import com.xl.datatypes.feature.Feature;
-import com.xl.datatypes.genome.Genome;
 import com.xl.datatypes.genome.GenomeDescriptor;
 import com.xl.datatypes.sequence.Location;
 import com.xl.datatypes.sites.Site;
@@ -37,7 +34,6 @@ import com.xl.interfaces.Cancellable;
 import com.xl.interfaces.ProgressListener;
 import com.xl.main.REDApplication;
 import com.xl.preferences.DisplayPreferences;
-import com.xl.preferences.REDPreferences;
 import com.xl.utils.ParsingUtils;
 import com.xl.utils.Strand;
 
@@ -45,36 +41,17 @@ import java.io.*;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Vector;
-import java.util.zip.GZIPOutputStream;
 
 /**
- * The Class SeqMonkDataWriter serialises a SeqMonk project to a single file.
+ * The Class REDDataWriter serialises a RED project to a single file. It contains only configurations but not the real data.
  */
 public class REDDataWriter implements Runnable, Cancellable {
 
+
     /**
-     * The Constant DATA_VERSION.
+     * The constant data version for RED project.
      */
     public static final int DATA_VERSION = 1;
-
-    // If you make ANY changes to the format written by this class
-    // you MUST increment this value to stop older parsers from
-    // trying to parse it. Once you have updated the parser to
-    // read the new format you can then update the corresponding
-    // value in the parser so that it will work.
-
-	/*
-     * TODO: Some of these data sets take a *long* time to save due to the
-	 * volume of data. Often when people are saving they're just saving display
-	 * preferences. In these cases it would be nice to have a mode where the
-	 * display preferences were just appended to the end of an existing file,
-	 * rather than having to put out the whole thing again. Since the size of
-	 * the preferences section is pretty small it won't affect overall file size
-	 * much.
-	 * 
-	 * If the data (sites, groups or quantitation) changes then we'll have to
-	 * do a full rewrite.
-	 */
 
     /**
      * The listeners.
@@ -87,12 +64,7 @@ public class REDDataWriter implements Runnable, Cancellable {
     private DataCollection data;
 
     /**
-     * The genome.
-     */
-    private Genome genome;
-
-    /**
-     * The final file to save to file.
+     * The final file to save to.
      */
     private File file;
 
@@ -112,7 +84,7 @@ public class REDDataWriter implements Runnable, Cancellable {
     private boolean cancel = false;
 
     /**
-     * Instantiates a new seq monk data writer.
+     * Instantiates a new RED data writer.
      */
     public REDDataWriter() {
     }
@@ -145,18 +117,25 @@ public class REDDataWriter implements Runnable, Cancellable {
      */
     public void writeData(REDApplication application, File file) {
         data = application.dataCollection();
-        // System.out.println(this.getClass().getDisplayName()+":"+data.getGenome().species());
-        this.genome = data.genome();
         this.file = file;
         visibleStores = application.drawnDataStores();
         Thread t = new Thread(this);
         t.start();
     }
 
+    /**
+     * Cancel the saving progress.
+     */
     public void cancel() {
         cancel = true;
     }
 
+    /**
+     * If cancel==true, then this method will be called to deal with the remaining work.
+     *
+     * @param p The print stream to be cancelled.
+     * @throws IOException If the temp file can not be deleted, then throw this IOException.
+     */
     private void cancelled(PrintStream p) throws IOException {
         p.close();
 
@@ -174,71 +153,42 @@ public class REDDataWriter implements Runnable, Cancellable {
             // Generate a temp file in the same directory as the final destination
             tempFile = File.createTempFile("red", ".temp", file.getParentFile());
 
-            BufferedOutputStream bos;
-
-            if (REDPreferences.getInstance().compressOutput()) {
-                bos = new BufferedOutputStream(new GZIPOutputStream(new FileOutputStream(tempFile), 2048));
-            } else {
-                bos = new BufferedOutputStream(new FileOutputStream(tempFile));
-            }
+            BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(tempFile));
             PrintStream p = new PrintStream(bos);
 
+            // Print data version.
             printDataVersion(p);
-
+            //Print the genome annotation file.
             printGenome(p);
-
+            //Print information of current data sets and data group.
             DataSet[] dataSets = data.getAllDataSets();
             DataGroup[] dataGroups = data.getAllDataGroups();
-
-            if (!printDataSets(dataSets, p)) {
-                return; // They cancelled
-            }
-
+            printDataSets(dataSets, p);
             printDataGroups(dataSets, dataGroups, p);
-
-            AnnotationSet[] annotationSets = data.genome()
-                    .getAnnotationCollection().anotationSets();
-            for (int a = 0; a < annotationSets.length; a++) {
-                if (annotationSets[a] instanceof CoreAnnotationSet) {
+            //Print annotation file, NOT including core annotation set(i.e., RefSeq Gene).
+            AnnotationSet[] annotationSets = data.genome().getAnnotationCollection().annotationSets();
+            for (AnnotationSet annotationSet : annotationSets) {
+                if (annotationSet instanceof CoreAnnotationSet) {
                     continue;
                 }
-                if (!printAnnotationSet(annotationSets[a], p)) {
+                if (!printAnnotationSet(annotationSet, p)) {
                     // They cancelled
                     return;
                 }
             }
-
-            Site[] sites = null;
-
-            if (data.siteSet() != null) {
-                sites = data.siteSet().getAllSites();
-            }
-
-            if (sites != null) {
-                if (!printSiteSet(data.siteSet(), sites, p)) {
-                    return; // They cancelled
-                }
-            }
-
+            //Print visible data stores, including visible data sets and visible data groups.
             printVisibleDataStores(dataSets, dataGroups, p);
-
-            if (sites != null) {
-                if (!printSiteLists(p)) {
-                    return; // They cancelled
-                }
-            }
-
+            //Print display preferences.
             printDisplayPreferences(p);
-
+            //Flush and close the stream.
+            p.flush();
             p.close();
 
             // We can now overwrite the original file
             if (file.exists()) {
                 if (!file.delete()) {
-                    throw new IOException(
-                            "Couldn't delete old project file when making new one");
+                    throw new IOException("Couldn't delete old project file when making new one");
                 }
-
             }
 
             if (!tempFile.renameTo(file)) {
@@ -256,48 +206,45 @@ public class REDDataWriter implements Runnable, Cancellable {
             }
             ex.printStackTrace();
         }
-
     }
 
     /**
-     * Prints the data version.
+     * Print the data version. The first line of the file will be the version of the data format we're using. This will help us out should we need to update the
+     * format in the future.
      *
      * @param p the p
      */
     private void printDataVersion(PrintStream p) {
-        // The first line of the file will be the version of the data
-        // format we're using. This will help us out should we need
-        // to update the format in the future.
         p.println(ParsingUtils.RED_DATA_VERSION + "\t" + DATA_VERSION);
     }
 
     /**
-     * Prints the assembly.
+     * Print the genome information, output the details of the genome we're using. We set the start and end flag to make it easy retrieve.
      *
      * @param p the p
      */
     private void printGenome(PrintStream p) {
-        // The next thing we need to do is to output the details of the genome
-        // we're using
         p.println(ParsingUtils.GENOME_INFORMATION_START);
         p.println(GenomeDescriptor.getInstance().toString());
         p.println(ParsingUtils.GENOME_INFORMATION_END);
     }
 
     /**
-     * Prints the data sets.
+     * Prints the data sets. The first line is the sample flag and the count of data set. Then for each data set, we print the basic information and the site
+     * set tree if the data set has.
      *
      * @param dataSets the data sets
      * @param p        the p
-     * @return false if cancelled, else true
      */
-    private boolean printDataSets(DataSet[] dataSets, PrintStream p) throws IOException, REDException {
+    private void printDataSets(DataSet[] dataSets, PrintStream p) throws IOException, REDException {
         p.println(ParsingUtils.SAMPLES + "\t" + dataSets.length);
         for (DataSet dataSet : dataSets) {
-            p.println(dataSet.name() + "\t" + dataSet.fileName() + "\t" + dataSet.isStandardChromosomeName());
-            p.println(dataSet.getTotalReadCount() + "\t" + dataSet.getTotalReadLength() + "\t" + dataSet.getForwardReadCount() + "\t" + dataSet.getReverseReadCount());
+            p.println(dataSet.name() + "\t" + dataSet.fileName() + "\t" + dataSet.isStandardChromosomeName() + "\t" + dataSet.getTotalReadCount() + "\t" + dataSet
+                    .getTotalReadLength() + "\t" + dataSet.getForwardReadCount() + "\t" + dataSet.getReverseReadCount() + "\t" + (dataSet.siteSet() != null));
+            if (dataSet.siteSet() != null) {
+                printSiteSetTree(p, dataSet.siteSet());
+            }
         }
-        return true;
     }
 
     /**
@@ -310,27 +257,24 @@ public class REDDataWriter implements Runnable, Cancellable {
     private void printDataGroups(DataSet[] dataSets, DataGroup[] dataGroups, PrintStream p) {
 
         p.println(ParsingUtils.DATA_GROUPS + "\t" + dataGroups.length);
-        for (int i = 0; i < dataGroups.length; i++) {
-            DataSet[] groupSets = dataGroups[i].dataSets();
-
-            // We used to use the name of the dataset to populate the group
-            // but this caused problems when we had duplicated dataset names
-            // we therefore have to figure out the index of each dataset in
-            // each group
+        for (DataGroup dataGroup : dataGroups) {
+            DataSet[] groupSets = dataGroup.dataSets();
+            // We used to use the name of the data set to populate the group but this caused problems when we had duplicated data set names we therefore have
+            // to figure out the index of each data set in each group
 
             StringBuffer b = new StringBuffer();
-            b.append(dataGroups[i].name());
-            for (int j = 0; j < groupSets.length; j++) {
+            b.append(dataGroup.name());
+            for (DataSet groupSet : groupSets) {
                 for (int d = 0; d < dataSets.length; d++) {
-                    if (groupSets[j] == dataSets[d]) {
+                    if (groupSet == dataSets[d]) {
                         b.append("\t");
                         b.append(d);
                     }
                 }
             }
-
             p.println(b);
         }
+
     }
 
     /**
@@ -340,8 +284,7 @@ public class REDDataWriter implements Runnable, Cancellable {
      * @param p the p
      * @return false if cancelled, else true;
      */
-    private boolean printAnnotationSet(AnnotationSet a, PrintStream p)
-            throws IOException {
+    private boolean printAnnotationSet(AnnotationSet a, PrintStream p) throws IOException {
         List<Feature> features = a.getAllFeatures();
         p.println(ParsingUtils.ANNOTATION + "\t" + a.name() + "\t" + features.size());
 
@@ -351,7 +294,6 @@ public class REDDataWriter implements Runnable, Cancellable {
         }
 
         for (Feature feature : features) {
-
             if (cancel) {
                 cancelled(p);
                 return false;
@@ -370,43 +312,68 @@ public class REDDataWriter implements Runnable, Cancellable {
     /**
      * Prints the site set.
      *
-     * @param siteSet the site set
-     * @param sites   the sites
      * @param p       the p
-     * @return false if cancelled, else true
+     * @param siteSet the site set
      */
-    private boolean printSiteSet(SiteSet siteSet, Site[] sites, PrintStream p) throws IOException {
+    private void printSiteSetTree(PrintStream p, SiteSet siteSet) throws IOException {
 
-        // We need the saved string to be linear so we replace the line breaks
-        // with ` (which we've replaced with ' in the
-        // comment. We put back the line breaks when we load the comments back.
+        // We need the saved string to be linear so we replace the line breaks with ` (which we've replaced with ' in the comment. We put back the line
+        // breaks when we load the comments back.
 
-        String comments = siteSet.comments().replaceAll("[\\r\\n]", "`");
-
-        p.println(ParsingUtils.SITES + "\t" + sites.length + "\t" + siteSet.getTableName() + "\t" + siteSet
-                .justDescription() + "\t" + comments);
+        Site[] allSites = siteSet.getAllSites();
+        p.println(ParsingUtils.SITES + "\t" + allSites.length + "\t" + siteSet.toWrite());
 
         // Next we print out the data
 
-        for (int i = 0; i < sites.length; i++) {
+        for (int i = 0; i < allSites.length; i++) {
 
             if (cancel) {
                 cancelled(p);
-                return false;
+                return;
             }
 
             if (i % 1000 == 0) {
                 Enumeration<ProgressListener> e = listeners.elements();
                 while (e.hasMoreElements()) {
-                    e.nextElement().progressUpdated(
-                            "Written data for " + i + " sites out of "
-                                    + sites.length, i, sites.length);
+                    e.nextElement().progressUpdated("Written data for " + i + " sites out of " + allSites.length, i, allSites.length);
                 }
             }
 
-            p.println(sites[i].getChr() + "\t" + sites[i].getStart() + "\t" + sites[i].getRefBase() + "\t" + sites[i].getAltBase());
+            p.println(allSites[i]);
         }
-        return true;
+
+        // Now we print out the list of site lists
+        /*
+         * We rely on this list coming in tree order, that is to say that when we see a node at depth n we assume that all subsequent nodes at depth n+1 are
+         * children of the first node, until we see another node at depth n.
+		 *
+		 * This should be how the nodes are created anyway.
+		 */
+        SiteList[] lists = siteSet.getAllSiteLists();
+
+        // We start at the second list since the first list will always be "All sites" which we'll sort out some other way.
+        p.println(ParsingUtils.LISTS + "\t" + (lists.length - 1));
+
+        for (int i = 1, len = lists.length; i < len; i++) {
+            Site[] sites = lists[i].getAllSites();
+            int siteLength = sites.length;
+            p.println(getListDepth(lists[i]) + "\t" + siteLength + "\t" + lists[i].toWrite());
+
+            for (int j = 0; j < siteLength; j++) {
+                if (j % 1000 == 0) {
+                    if (cancel) {
+                        cancelled(p);
+                        return;
+                    }
+                    Enumeration<ProgressListener> e = listeners.elements();
+                    while (e.hasMoreElements()) {
+                        e.nextElement().progressUpdated("Written lists for " + j + " sites out of " + siteLength, j, siteLength);
+                    }
+                }
+                p.println(sites[j]);
+            }
+        }
+
     }
 
     /**
@@ -416,22 +383,19 @@ public class REDDataWriter implements Runnable, Cancellable {
      * @param dataGroups the data groups
      * @param p          the p
      */
-    private void printVisibleDataStores(DataSet[] dataSets,
-                                        DataGroup[] dataGroups, PrintStream p) {
-        // Now we can put out the list of visible stores
-        // We have to refer to these by position rather than name
-        // since names are not guaranteed to be unique.
+    private void printVisibleDataStores(DataSet[] dataSets, DataGroup[] dataGroups, PrintStream p) {
+        // Now we can put out the list of visible stores We have to refer to these by position rather than name since names are not guaranteed to be unique.
         p.println(ParsingUtils.VISIBLE_STORES + "\t" + visibleStores.length);
-        for (int i = 0; i < visibleStores.length; i++) {
-            if (visibleStores[i] instanceof DataSet) {
+        for (DataStore visibleStore : visibleStores) {
+            if (visibleStore instanceof DataSet) {
                 for (int s = 0; s < dataSets.length; s++) {
-                    if (visibleStores[i] == dataSets[s]) {
+                    if (visibleStore == dataSets[s]) {
                         p.println(s + "\t" + "set");
                     }
                 }
-            } else if (visibleStores[i] instanceof DataGroup) {
+            } else if (visibleStore instanceof DataGroup) {
                 for (int g = 0; g < dataGroups.length; g++) {
-                    if (visibleStores[i] == dataGroups[g]) {
+                    if (visibleStore == dataGroups[g]) {
                         p.println(g + "\t" + "group");
                     }
                 }
@@ -440,63 +404,11 @@ public class REDDataWriter implements Runnable, Cancellable {
     }
 
     /**
-     * Prints the site lists.
-     *
-     * @param p the p
-     */
-    private boolean printSiteLists(PrintStream p) throws REDException, IOException {
-        // Now we print out the list of site lists
-
-		/*
-         * We rely on this list coming in tree order, that is to say that when
-		 * we see a node at depth n we assume that all subsequent nodes at depth
-		 * n+1 are children of the first node, until we see another node at
-		 * depth n.
-		 * 
-		 * This should be how the nodes are created anyway.
-		 */
-        SiteList[] lists = data.siteSet().getAllSiteLists();
-
-        // We start at the second list since the first list will always
-        // be "All sites" which we'll sort out some other way.
-
-        p.println(ParsingUtils.LISTS + "\t" + (lists.length - 1));
-
-        for (int i = 1, len = lists.length; i < len; i++) {
-            String listComments = lists[i].comments().replaceAll("[\\r\\n]", "`");
-            Site[] currentSiteLists = lists[i].getAllSites();
-            int siteLength = currentSiteLists.length;
-            p.println(getListDepth(lists[i]) + "\t" + lists[i].name() + "\t" + lists[i].description() + "\t" +
-                    lists[i].getTableName() + "\t" + siteLength + "\t" + listComments);
-
-            for (int j = 0; j < siteLength; j++) {
-                if (j % 1000 == 0) {
-                    if (cancel) {
-                        cancelled(p);
-                        return false;
-                    }
-                    Enumeration<ProgressListener> e = listeners.elements();
-                    while (e.hasMoreElements()) {
-                        e.nextElement().progressUpdated(
-                                "Written lists for " + j + " sites out of "
-                                        + siteLength, j, siteLength);
-                    }
-                }
-                p.println(currentSiteLists[j].getChr() + "\t" + currentSiteLists[j].getStart() + "\t" + currentSiteLists[j].getRefBase() + "\t" +
-                        currentSiteLists[j].getAltBase());
-            }
-        }
-
-        return true;
-    }
-
-    /**
      * Prints the display preferences.
      *
      * @param p the print stream to write the preferences to
      */
     private void printDisplayPreferences(PrintStream p) {
-        // Now write out some display preferences
         DisplayPreferences.getInstance().writeConfiguration(p);
     }
 
