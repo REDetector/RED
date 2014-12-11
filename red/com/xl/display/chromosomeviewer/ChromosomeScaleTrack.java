@@ -1,3 +1,21 @@
+/*
+ * RED: RNA Editing Detector
+ *     Copyright (C) <2014>  <Xing Li>
+ *
+ *     RED is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU General Public License as published by
+ *     the Free Software Foundation, either version 3 of the License, or
+ *     (at your option) any later version.
+ *
+ *     RED is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     GNU General Public License for more details.
+ *
+ *     You should have received a copy of the GNU General Public License
+ *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package com.xl.display.chromosomeviewer;
 
 import com.xl.preferences.DisplayPreferences;
@@ -7,14 +25,13 @@ import javax.swing.*;
 import java.awt.*;
 
 /**
- * The ChromosomeScaleTrack shows the current genome position on a sensible
- * scale. It is usually only created and managed by a surrounding instance of
- * ChromsomeViewer.
+ * The ChromosomeScaleTrack shows the current genome position on a sensible scale. It is usually only created and managed by a surrounding instance of
+ * ChromosomeViewer.
  */
 public class ChromosomeScaleTrack extends JPanel {
 
     /**
-     * The chromosome viewer which contains this track *
+     * The chromosome viewer which contains this track.
      */
     private ChromosomeViewer viewer;
 
@@ -25,12 +42,7 @@ public class ChromosomeScaleTrack extends JPanel {
     private int lastEndLocation = -1;
 
     /**
-     * The height of this track
-     */
-    private int height;
-    /**
-     * A cached value of the width of the visible portion of this track inside
-     * the surrounding JScrollPane
+     * A cached value of the width of the visible portion of this track inside the surrounding JScrollPane
      */
     private int width;
 
@@ -43,14 +55,12 @@ public class ChromosomeScaleTrack extends JPanel {
      */
     public ChromosomeScaleTrack(ChromosomeViewer viewer) {
         this.viewer = viewer;
-
     }
 
-    private static String commify(int number) {
+    private String commify(int number) {
         char[] numbers = ("" + number).toCharArray();
 
-        char[] commaNumbers = new char[numbers.length
-                + ((numbers.length - 1) / 3)];
+        char[] commaNumbers = new char[numbers.length + ((numbers.length - 1) / 3)];
 
         int commaPos = commaNumbers.length - 1;
         for (int numberPos = 0; numberPos < numbers.length; numberPos++) {
@@ -76,15 +86,14 @@ public class ChromosomeScaleTrack extends JPanel {
 
         DisplayPreferences dp = DisplayPreferences.getInstance();
 
-        if (dp.getCurrentStartLocation() != lastStartLocation
-                && dp.getCurrentEndLocation() != lastEndLocation) {
+        if (dp.getCurrentStartLocation() != lastStartLocation && dp.getCurrentEndLocation() != lastEndLocation) {
             // We need to rescale the frequency with which we're drawing points
             scale = new AxisScale(0, dp.getCurrentLength());
             lastStartLocation = dp.getCurrentStartLocation();
             lastEndLocation = dp.getCurrentEndLocation();
         }
 
-        height = getHeight();
+        int height = getHeight();
         width = getWidth();
 
         g.setColor(Color.WHITE);
@@ -95,8 +104,7 @@ public class ChromosomeScaleTrack extends JPanel {
         // Draw a line along the top
         g.drawLine(0, 3, width, 3);
 
-        // Now go through all the scale positions figuring out whether they
-        // need to be displayed
+        // Now go through all the scale positions figuring out whether they need to be displayed
 
         int startBp = lastStartLocation;
         int endBp = lastEndLocation;
@@ -133,13 +141,10 @@ public class ChromosomeScaleTrack extends JPanel {
      * @return the int
      */
     private int bpToPixel(int bp) {
-        return (int) (((double) (bp - viewer.currentStart()) / ((viewer
-                .currentEnd() - viewer.currentStart()))) * width);
+        return (int) (((double) (bp - viewer.currentStart()) / ((viewer.currentEnd() - viewer.currentStart()))) * width);
     }
 
-    // There's no sense in letting the annotation tracks get too tall. We're
-    // better
-    // off using that space for data tracks.
+    // There's no sense in letting the annotation tracks get too tall. We're better off using that space for data tracks.
     /*
      * (non-Javadoc)
 	 * 
