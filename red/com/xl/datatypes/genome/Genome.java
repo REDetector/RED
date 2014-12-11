@@ -1,3 +1,21 @@
+/*
+ * RED: RNA Editing Detector
+ *     Copyright (C) <2014>  <Xing Li>
+ *
+ *     RED is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU General Public License as published by
+ *     the Free Software Foundation, either version 3 of the License, or
+ *     (at your option) any later version.
+ *
+ *     RED is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     GNU General Public License for more details.
+ *
+ *     You should have received a copy of the GNU General Public License
+ *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package com.xl.datatypes.genome;
 
 import com.xl.datatypes.annotation.AnnotationCollection;
@@ -16,7 +34,6 @@ import java.util.*;
  */
 public class Genome {
 
-    // TODO A hack (obviously), we need to record a species in the genome definitions
     private static Map<String, String> ucscSpeciesMap;
     /**
      * The genome id.
@@ -162,8 +179,7 @@ public class Genome {
     }
 
     /**
-     * Return the nucleotide sequence on the + strand for the genomic interval.
-     * This method can return null if sequence is not available.
+     * Return the nucleotide sequence on the + strand for the genomic interval. This method can return null if sequence is not available.
      *
      * @param chr
      * @param start start position in "zero-based" coordinates
