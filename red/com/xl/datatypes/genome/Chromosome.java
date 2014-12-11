@@ -1,24 +1,22 @@
-package com.xl.datatypes.genome;
-
-/**
- * Copyright Copyright 2007-13 Simon Andrews
+/*
+ * RED: RNA Editing Detector
+ *     Copyright (C) <2014>  <Xing Li>
  *
- *    This file is part of SeqMonk.
+ *     RED is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU General Public License as published by
+ *     the Free Software Foundation, either version 3 of the License, or
+ *     (at your option) any later version.
  *
- *    SeqMonk is free software; you can redistribute it and/or modify
- *    it under the terms of the GNU General Public License as published by
- *    the Free Software Foundation; either version 3 of the License, or
- *    (at your option) any later version.
+ *     RED is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     GNU General Public License for more details.
  *
- *    SeqMonk is distributed in the hope that it will be useful,
- *    but WITHOUT ANY WARRANTY; without even the implied warranty of
- *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *    GNU General Public License for more details.
- *
- *    You should have received a copy of the GNU General Public License
- *    along with SeqMonk; if not, write to the Free Software
- *    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+ *     You should have received a copy of the GNU General Public License
+ *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+
+package com.xl.datatypes.genome;
 
 import com.xl.datatypes.annotation.Cytoband;
 
@@ -27,7 +25,7 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * The Class Chromosome represents a single chromsome in a genome
+ * The Class Chromosome represents a single chromosome in a genome
  */
 public class Chromosome implements Comparable<Chromosome>, Serializable {
 
@@ -41,6 +39,9 @@ public class Chromosome implements Comparable<Chromosome>, Serializable {
      */
     private int length = 0;
 
+    /**
+     * The list of cytobands with this chromosome.
+     */
     private List<Cytoband> cytobands;
 
     /**
@@ -52,6 +53,12 @@ public class Chromosome implements Comparable<Chromosome>, Serializable {
         this.name = name;
     }
 
+    /**
+     * Instantiates a new chromosome with the chromosome length. It is used in annotation parser.
+     *
+     * @param name   The chromosome name
+     * @param length The chromosome length
+     */
     public Chromosome(String name, int length) {
         this.name = name;
         this.length = length;
@@ -86,14 +93,21 @@ public class Chromosome implements Comparable<Chromosome>, Serializable {
         return cytobands;
     }
 
+    /**
+     * Set cytoband.
+     *
+     * @param cytobands The cytobands
+     */
     public void setCytobands(List<Cytoband> cytobands) {
         this.cytobands = cytobands;
     }
 
+    @Override
     public String toString() {
         return name;
     }
 
+    @Override
     public int compareTo(Chromosome o) {
         try {
             return (new Integer(Integer.parseInt(name)).compareTo(Integer.parseInt(o.getName())));
