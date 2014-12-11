@@ -123,13 +123,17 @@ public class DatabaseTreeModel implements TreeModel {
                 return 1;
             }
         } else if (parent.equals(modes[0])) {
-            return denovoTableNodes.indexOf(child);
+            if (child instanceof TableNode) {
+                return denovoTableNodes.indexOf(child);
+            }
         } else if (parent.equals(modes[1])) {
-            return dnarnaTableNodes.indexOf(child);
+            if (child instanceof TableNode) {
+                return dnarnaTableNodes.indexOf(child);
+            }
         } else {
             new CrashReporter(new REDException("Could not get the index of child '" + child + "'from parent '" + parent + "'"));
-            return 0;
         }
+        return 0;
     }
 
     @Override
