@@ -1,11 +1,28 @@
+/*
+ * RED: RNA Editing Detector
+ *     Copyright (C) <2014>  <Xing Li>
+ *
+ *     RED is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU General Public License as published by
+ *     the Free Software Foundation, either version 3 of the License, or
+ *     (at your option) any later version.
+ *
+ *     RED is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     GNU General Public License for more details.
+ *
+ *     You should have received a copy of the GNU General Public License
+ *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package com.xl.datatypes.sequence;
 
 import java.util.LinkedHashMap;
 import java.util.List;
 
 /**
- * A wrapper class that provides caching for on-disk, queried, and web-service
- * Sequence implementations.
+ * A wrapper class that provides caching for on-disk, queried, and web-service Sequence implementations.
  *
  * @author jrobinso
  */
@@ -23,9 +40,8 @@ public class SequenceWrapper implements Sequence {
     }
 
     /**
-     * Generate unique key to be used to store/retrieve tiles. We combined the
-     * chr and tileNo, with a delimiter in between to ensure that chr1 12
-     * doesn't clash with chr11 2
+     * Generate unique key to be used to store/retrieve tiles. We combined the chr and tileNo, with a delimiter in between to ensure that chr1 12 doesn't clash
+     * with chr11 2
      *
      * @param chr
      * @param tileNo
