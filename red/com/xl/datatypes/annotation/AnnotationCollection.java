@@ -1,3 +1,21 @@
+/*
+ * RED: RNA Editing Detector
+ *     Copyright (C) <2014>  <Xing Li>
+ *
+ *     RED is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU General Public License as published by
+ *     the Free Software Foundation, either version 3 of the License, or
+ *     (at your option) any later version.
+ *
+ *     RED is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     GNU General Public License for more details.
+ *
+ *     You should have received a copy of the GNU General Public License
+ *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package com.xl.datatypes.annotation;
 
 import com.xl.datatypes.feature.Feature;
@@ -15,8 +33,7 @@ import java.io.RandomAccessFile;
 import java.util.*;
 
 /**
- * The Class AnnotationCollection is the main object through which annotation
- * objects can be accessed
+ * The Class AnnotationCollection is the main object through which annotation objects can be accessed
  */
 public class AnnotationCollection {
 
@@ -30,28 +47,29 @@ public class AnnotationCollection {
      */
     private Vector<AnnotationSet> annotationSets = new Vector<AnnotationSet>();
 
+    /**
+     * The fasta files relative to annotation set.
+     */
     private Map<Chromosome, RandomAccessFile> fastaFile = new HashMap<Chromosome, RandomAccessFile>();
 
     /**
-     * The listeners.
+     * The annotation collection listeners.
      */
     private Vector<AnnotationCollectionListener> listeners = new Vector<AnnotationCollectionListener>();
 
     /**
      * Instantiates a new annotation collection.
-     *
-     * @param genome the genome
      */
     public AnnotationCollection(Genome genome) {
         this.genome = genome;
     }
 
     /**
-     * Anotation sets.
+     * Annotation sets.
      *
-     * @return the annotation set[]
+     * @return The array of annotation set.
      */
-    public AnnotationSet[] anotationSets() {
+    public AnnotationSet[] annotationSets() {
         return annotationSets.toArray(new AnnotationSet[0]);
     }
 
@@ -79,29 +97,25 @@ public class AnnotationCollection {
     }
 
     /**
-     * Adds multiple annotation sets in an efficient manner.
+     * Adds an annotation set in an efficient manner.
      *
-     * @param newSets the annotation sets to add
+     * @param newSet The annotation set to be added
      */
-    public void addAnnotationSet(AnnotationSet newSets) {
-        System.out.println(AnnotationCollection.class.getName() + ":addAnnotationSet(AnnotationSet[] newSets)\t" + newSets.name());
-//        for (int s = 0; s < newSets.length; s++) {
-
-        if (newSets.getGenome() != genome) {
+    public void addAnnotationSet(AnnotationSet newSet) {
+        if (newSet.getGenome() != genome) {
             throw new IllegalArgumentException("Annotation set genome doesn't match annotation collection");
         }
-        annotationSets.add(newSets);
-        newSets.setCollection(this);
-//        }
+        annotationSets.add(newSet);
+        newSet.setCollection(this);
 
         Enumeration<AnnotationCollectionListener> l = listeners.elements();
         while (l.hasMoreElements()) {
-            l.nextElement().annotationSetAdded(newSets);
+            l.nextElement().annotationSetAdded(newSet);
         }
     }
 
     /**
-     * Removes the annotation set.
+     * Remove the annotation set.
      *
      * @param annotationSet the annotation set
      */
@@ -112,7 +126,6 @@ public class AnnotationCollection {
         while (l.hasMoreElements()) {
             l.nextElement().annotationSetRemoved(annotationSet);
         }
-
         annotationSets.remove(annotationSet);
     }
 
@@ -129,36 +142,27 @@ public class AnnotationCollection {
     }
 
     /**
-     * Annotation features renamed.
+     * Return the fasta file by a given chromosome. If the fasta file for this chromosome has been loaded into memory, then we just reload the from the HashMap,
+     * else we load the cache fasta file from fasta directory.
      *
-     * @param set the set
+     * @param chromosome The chromosome
+     * @return The fasta file
      */
-    protected void annotationFeaturesRenamed(AnnotationSet set, String name) {
-        Enumeration<AnnotationCollectionListener> l = listeners.elements();
-        while (l.hasMoreElements()) {
-            l.nextElement().annotationFeaturesRenamed(set, name);
-        }
-    }
-
     public RandomAccessFile getFastaForChr(Chromosome chromosome) {
-        System.out.println(this.getClass().getName() + ":getFastaForChr():" + chromosome.getName());
         if (fastaFile.containsKey(chromosome)) {
             return fastaFile.get(chromosome);
         } else {
-            RandomAccessFile raf;
+            RandomAccessFile raf = null;
             try {
                 File f = new File(LocationPreferences.getInstance().getCacheDirectory() + File.separator +
                         genome.getDisplayName() + File.separator + chromosome.getName() + SuffixUtils.CACHE_FASTA);
-                if (!f.exists()) {
-                    return null;
-                } else {
+                if (f.exists()) {
                     raf = new RandomAccessFile(f, "r");
                     fastaFile.put(chromosome, raf);
                 }
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
-                new CrashReporter(new REDException("The fasta file has not been loaded or this file could not be " +
-                        "cache correctly..."));
+                new CrashReporter(new REDException("The fasta file has not been loaded or this file could not be cache correctly..."));
                 return null;
             }
             return raf;
@@ -182,6 +186,12 @@ public class AnnotationCollection {
         return features;
     }
 
+    /**
+     * Return all features relative to a given name.
+     *
+     * @param name The name.
+     * @return Features relative to a given name.
+     */
     public Feature[] getFeaturesForName(String name) {
         Vector<Feature> features = new Vector<Feature>();
         Enumeration<AnnotationSet> sets = annotationSets.elements();
@@ -196,6 +206,12 @@ public class AnnotationCollection {
         return allFeatures;
     }
 
+    /**
+     * Return all features relative to a given location.
+     *
+     * @param location The location.
+     * @return Features relative to a given location.
+     */
     public Feature[] getFeatureForLocation(int location) {
         Vector<Feature> features = new Vector<Feature>();
         Enumeration<AnnotationSet> sets = annotationSets.elements();
