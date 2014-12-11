@@ -27,19 +27,36 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * The Class SequenceRead is used in places where both the read
- * and chromsome need to passed together. Sequence Reads do not store their
- * chromosome by default to save memory
+ * The Class SequenceRead represents a read parsed from a BAM file.
  */
-public class SequenceRead extends Alignment {
-
+public class SequenceRead extends Location {
+    /**
+     * The chromosome name.
+     */
+    String chr;
+    /**
+     * The strand.
+     */
+    Strand strand;
+    /**
+     * The bases of this read.
+     */
     private byte[] readBases = null;
+    /**
+     * The qualities of the read. If there is no data for qualities, then we fill them with the highest quality(i.e., 127).
+     */
     private byte[] qualities = null;
 
     private List<AlignmentBlock> alignmentBlocks = null;
 
     public SequenceRead(SAMRecord record) {
-        super(record.getReferenceName(), record.getAlignmentStart(), record.getAlignmentEnd(), record.getReadNegativeStrandFlag());
+        super(record.getAlignmentStart(), record.getAlignmentEnd());
+        this.chr = record.getReferenceName();
+        if (record.getReadNegativeStrandFlag()) {
+            strand = Strand.NEGATIVE;
+        } else {
+            strand = Strand.POSITIVE;
+        }
         this.readBases = record.getReadBases();
         this.qualities = record.getBaseQualities();
         this.alignmentBlocks = record.getAlignmentBlocks();
@@ -48,14 +65,17 @@ public class SequenceRead extends Alignment {
     /**
      * Instantiates a new sequence read with chromosome.
      *
-     * @param chr       the chromosome
-     * @param start
-     * @param strand
-     * @param readBases
-     * @param qualities
+     * @param chr       The chromosome
+     * @param start     Read start
+     * @param end       Read end
+     * @param strand    Read strand
+     * @param readBases Read bases
+     * @param qualities Read qualities
      */
     public SequenceRead(String chr, int start, int end, Strand strand, byte[] readBases, byte[] qualities) {
-        super(chr, start, end, strand);
+        super(start, end);
+        this.chr = chr;
+        this.strand = strand;
         this.readBases = readBases;
         if (readBases != null) {
             if (qualities == null || qualities.length < readBases.length) {
@@ -67,6 +87,11 @@ public class SequenceRead extends Alignment {
         }
     }
 
+    /**
+     * An adapter to parse alignment block from AlignmentBlock class.
+     *
+     * @return A list of alignment reads.
+     */
     public List<SmallPieceSequence> getAlignmentBlocks() {
         List<SmallPieceSequence> list = new ArrayList<SmallPieceSequence>(alignmentBlocks.size());
         for (AlignmentBlock block : alignmentBlocks) {
@@ -91,6 +116,13 @@ public class SequenceRead extends Alignment {
         return qualities[index];
     }
 
+    public String getChr() {
+        return chr;
+    }
+
+    public Strand getStrand() {
+        return strand;
+    }
 
     public boolean contains(int position) {
         if (position > getStart() && position < getEnd()) {
