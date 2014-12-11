@@ -1,3 +1,21 @@
+/*
+ * RED: RNA Editing Detector
+ *     Copyright (C) <2014>  <Xing Li>
+ *
+ *     RED is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU General Public License as published by
+ *     the Free Software Foundation, either version 3 of the License, or
+ *     (at your option) any later version.
+ *
+ *     RED is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     GNU General Public License for more details.
+ *
+ *     You should have received a copy of the GNU General Public License
+ *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package com.xl.datatypes;
 
 import com.xl.datatypes.sequence.Location;
@@ -9,23 +27,28 @@ import com.xl.utils.Strand;
 import java.util.List;
 
 /**
- * The Class DataStore is a generic representation of a set
- * of data and its associated quantitation values.  The two
- * common representations are DataSet for real data and
- * DataGroup for virtual datasets.
+ * The Class DataStore is a generic representation of a set of data and its associated site lists. The two common representations are DataSet for real data and
+ * DataGroup for virtual data sets.
  */
 public abstract class DataStore implements Comparable<DataStore> {
-
+    /**
+     * The collection.
+     */
+    protected DataCollection collection = null;
+    /**
+     *
+     */
     protected DataParser dataParser = null;
     /**
      * The name.
      */
     private String name;
-    /**
-     * The collection.
-     */
-    private DataCollection collection = null;
     private boolean isStandardChromosomeName = true;
+
+    /**
+     * The site set.
+     */
+    private SiteSet siteSet = null;
 
     /**
      * Instantiates a new data store.
@@ -34,6 +57,28 @@ public abstract class DataStore implements Comparable<DataStore> {
      */
     public DataStore(String name) {
         this.name = name;
+    }
+
+    /**
+     * Sets the site set.
+     *
+     * @param newSiteSet the new site set
+     */
+    public void setSiteSet(SiteSet newSiteSet) {
+        if (siteSet != null) {
+            siteSet.delete();
+        }
+        siteSet = newSiteSet;
+        siteSet.setDataStore(this);
+    }
+
+    /**
+     * Site set.
+     *
+     * @return the site set
+     */
+    public SiteSet siteSet() {
+        return siteSet;
     }
 
     /**
@@ -82,7 +127,7 @@ public abstract class DataStore implements Comparable<DataStore> {
      * Gets the reads for chromosome.
      *
      * @param chr the chromosome
-     * @return the reads for chromsome
+     * @return the reads for chromosome
      */
     public abstract List<? extends Location> getReadsForChromosome(String chr);
 
@@ -134,15 +179,6 @@ public abstract class DataStore implements Comparable<DataStore> {
         this.name = name;
     }
 
-    /**
-     * Site set replaced.
-     *
-     * @param sites the sites
-     */
-    public void siteSetReplaced(SiteSet sites) {
-
-    }
-
     public String toString() {
         return name();
     }
@@ -151,6 +187,7 @@ public abstract class DataStore implements Comparable<DataStore> {
         // Sort alphabetically
         return name().toLowerCase().compareTo(s.name().toLowerCase());
     }
+
 
     @Override
     public boolean equals(Object o) {
