@@ -1,26 +1,37 @@
+/*
+ * RED: RNA Editing Detector
+ *     Copyright (C) <2014>  <Xing Li>
+ *
+ *     RED is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU General Public License as published by
+ *     the Free Software Foundation, either version 3 of the License, or
+ *     (at your option) any later version.
+ *
+ *     RED is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     GNU General Public License for more details.
+ *
+ *     You should have received a copy of the GNU General Public License
+ *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package com.xl.datatypes;
 
 import com.xl.datatypes.genome.Genome;
 import com.xl.datatypes.sites.SiteList;
-import com.xl.datatypes.sites.SiteSet;
 import com.xl.exception.REDException;
-import com.xl.interfaces.DataChangeListener;
+import com.xl.interfaces.ActiveDataChangedListener;
+import com.xl.interfaces.DataStoreChangeListener;
 import com.xl.main.REDApplication;
 
-import java.util.Arrays;
-import java.util.Enumeration;
-import java.util.Vector;
+import java.util.*;
 
 /**
- * The Class DataCollection is the main data storage object through
- * which all of the data in a project can be accessed.
+ * The Class DataCollection is the main data storage object through which all of the data in a project can be accessed.
  */
 public class DataCollection {
 
-    /**
-     * The site set.
-     */
-    private SiteSet siteSet = null;
 
     /**
      * The data sets.
@@ -38,9 +49,19 @@ public class DataCollection {
     private DataStore activeDataStore = null;
 
     /**
+     * The active site list.
+     */
+    private SiteList activeSiteList = null;
+
+    /**
      * The data change listeners.
      */
-    private Vector<DataChangeListener> listeners = new Vector<DataChangeListener>();
+    private Vector<DataStoreChangeListener> dataStoreChangeListeners = new Vector<DataStoreChangeListener>();
+
+    /**
+     * The active data store change listeners.
+     */
+    private Vector<ActiveDataChangedListener> activeDataChangedListeners = new Vector<ActiveDataChangedListener>();
 
     /**
      * The genome.
@@ -95,129 +116,49 @@ public class DataCollection {
         return null;
     }
 
-    /**
-     * Sets the site set.
-     *
-     * @param newSiteSet the new site set
-     */
-    public void setSiteSet(SiteSet newSiteSet) {
-        if (siteSet != null) {
-            siteSet.delete();
-        }
-        siteSet = newSiteSet;
-        siteSet.setCollection(this);
-        Enumeration<DataChangeListener> e = listeners.elements();
-        while (e.hasMoreElements()) {
-            e.nextElement().siteSetReplaced(siteSet);
-        }
-
-        // We need to tell all of the DataSets and Groups about the new site set
-        DataStore[] stores = getAllDataStores();
-        for (int i = 0; i < stores.length; i++) {
-            stores[i].siteSetReplaced(newSiteSet);
-        }
-    }
-
-    /**
-     * Site set.
-     *
-     * @return the site set
-     */
-    public SiteSet siteSet() {
-        return siteSet;
-    }
 
     /**
      * Adds the data set.
      *
-     * @param data the data
+     * @param dataStore the data
      */
-    public void addDataSet(DataSet data) {
-        dataSets.add(data);
-        data.setCollection(this);
-        System.out.println(DataCollection.class.getName() + ":addDataSet (DataSet data)" + dataSets.size());
-
-        // We need to let this dataset know about the
-        // current probset.
-        data.siteSetReplaced(siteSet());
-
-        Enumeration<DataChangeListener> e = listeners.elements();
-        while (e.hasMoreElements()) {
-            e.nextElement().dataSetAdded(data);
+    public void addDataStore(DataStore dataStore) {
+        if (dataStore instanceof DataSet) {
+            dataSets.add((DataSet) dataStore);
+        } else {
+            dataGroups.add((DataGroup) dataStore);
         }
-    }
-
-    /**
-     * Adds the data group.
-     *
-     * @param group the group
-     */
-    public void addDataGroup(DataGroup group) {
-        dataGroups.add(group);
-        group.setCollection(this);
-
-        // We need to let this datagroup know about the
-        // current probset.
-        group.siteSetReplaced(siteSet());
-
-        Enumeration<DataChangeListener> e = listeners.elements();
+        dataStore.setCollection(this);
+        Enumeration<DataStoreChangeListener> e = dataStoreChangeListeners.elements();
         while (e.hasMoreElements()) {
-            e.nextElement().dataGroupAdded(group);
+            e.nextElement().dataStoreAdded(dataStore);
         }
     }
 
     /**
      * Removes the data groups.
      *
-     * @param groups the groups
+     * @param dataStore the data store
      */
-    public void removeDataGroups(DataGroup[] groups) {
-
-        // We inform the listeners first to give
-        // a chance for the tree to update.
-        Enumeration<DataChangeListener> e = listeners.elements();
-        while (e.hasMoreElements()) {
-            e.nextElement().dataGroupsRemoved(groups);
-        }
-
-        for (int g = 0; g < groups.length; g++) {
-            dataGroups.remove(groups[g]);
-            groups[g].setCollection(null);
-        }
-
-    }
-
-    /**
-     * Removes the data set.
-     *
-     * @param data the data
-     */
-    public void removeDataSets(DataSet[] data) {
-
-        for (int d = 0; d < data.length; d++) {
-
+    public void removeDataStore(DataStore dataStore) {
+        if (dataStore instanceof DataSet) {
             Enumeration<DataGroup> e = dataGroups.elements();
             while (e.hasMoreElements()) {
                 DataGroup g = e.nextElement();
-
-                if (g.containsDataSet(data[d])) {
-                    g.removeDataSet(data[d]);
+                if (g.containsDataSet((DataSet) dataStore)) {
+                    g.removeDataSet((DataSet) dataStore);
                 }
             }
+            dataSets.remove(dataStore);
+        } else if (dataStore instanceof DataGroup) {
+            dataGroups.remove(dataStore);
         }
+        dataStore.setCollection(null);
 
-        // Notify listeners before actually removing to allow the
-        // tree to pick up the changes correctly
-        Enumeration<DataChangeListener> e3 = listeners.elements();
-        while (e3.hasMoreElements()) {
-            (e3.nextElement()).dataSetsRemoved(data);
+        Enumeration<DataStoreChangeListener> e = dataStoreChangeListeners.elements();
+        while (e.hasMoreElements()) {
+            e.nextElement().dataStoreRemoved(dataStore);
         }
-
-        for (int d = 0; d < data.length; d++) {
-            dataSets.remove(data[d]);
-            data[d].setCollection(null);
-        }
-
     }
 
     /**
@@ -250,23 +191,10 @@ public class DataCollection {
     public DataStore[] getAllDataStores() {
         DataSet[] sets = getAllDataSets();
         DataGroup[] groups = getAllDataGroups();
-
         DataStore[] stores = new DataStore[sets.length + groups.length];
-
-        for (int i = 0; i < groups.length; i++) {
-            stores[i] = groups[i];
-        }
-        for (int i = 0; i < sets.length; i++) {
-            stores[groups.length + i] = sets[i];
-        }
+        System.arraycopy(groups, 0, stores, 0, groups.length);
+        System.arraycopy(sets, 0, stores, groups.length, groups.length + sets.length);
         return stores;
-    }
-
-    public void activeSiteListChanged(SiteList list) {
-        Enumeration<DataChangeListener> e = listeners.elements();
-        while (e.hasMoreElements()) {
-            e.nextElement().activeSiteListChanged(list);
-        }
     }
 
     /**
@@ -287,23 +215,56 @@ public class DataCollection {
     }
 
     /**
-     * Sets the active data store.
+     * Get current active site list. Only one active list can be shown on the data viewer tree.
      *
-     * @param d the new active data store
-     * @throws REDException the seq monk exception
+     * @return the active site list
      */
-    public void setActiveDataStore(DataStore d) throws REDException {
-        if (d == null || dataSets.contains(d) || dataGroups.contains(d)) {
-            activeDataStore = d;
+    public SiteList getActiveSiteList() {
+        if (activeSiteList == null || activeDataStore == null || activeDataStore.siteSet() == null) {
+            return null;
+        }
+        if (activeSiteList != null) {
+            return activeSiteList;
+        } else {
+            return activeDataStore.siteSet().getActiveList();
+        }
+    }
 
-            Enumeration<DataChangeListener> e = listeners.elements();
-            while (e.hasMoreElements()) {
-                e.nextElement().activeDataStoreChanged(d);
+    /**
+     * A top way to tell all ActiveDataChangedListeners the changed data store or site list.
+     *
+     * @param dataStore The active data store
+     * @param siteList  The active site list.
+     * @throws REDException If there is wrong data store or site list, then throw this exception.
+     */
+    public void setActiveData(DataStore dataStore, SiteList siteList) throws REDException {
+        if (dataStore == null) {
+            activeDataStore = null;
+            activeSiteList = null;
+        } else if ((dataStore instanceof DataSet && dataSets.contains(dataStore)) || (dataStore instanceof DataGroup && dataGroups.contains(dataStore))) {
+            activeDataStore = dataStore;
+            if (dataStore.siteSet() == null) {
+                activeSiteList = null;
+            } else {
+                List<SiteList> siteLists = new ArrayList<SiteList>(Arrays.asList(dataStore.siteSet().getAllSiteLists()));
+                if (siteList == null) {
+                    activeSiteList = null;
+                } else if (siteLists.contains(siteList)) {
+                    activeSiteList = siteList;
+                    dataStore.siteSet().setActiveList(siteList);
+                } else {
+                    throw new REDException("Data store '" + dataStore.name() + "' does not have this site list " + siteList.getListName());
+                }
             }
 
+            Enumeration<ActiveDataChangedListener> e = activeDataChangedListeners.elements();
+            while (e.hasMoreElements()) {
+                e.nextElement().activeDataChanged(dataStore, siteList);
+            }
         } else {
-            throw new REDException("Data store " + d.name() + " could not be found in the data collection");
+            throw new REDException("Data store " + dataStore.name() + " could not be found in the data collection");
         }
+
     }
 
     /**
@@ -311,9 +272,9 @@ public class DataCollection {
      *
      * @param l the l
      */
-    public void addDataChangeListener(DataChangeListener l) {
-        if (l != null && !listeners.contains(l)) {
-            listeners.add(l);
+    public void addDataChangeListener(DataStoreChangeListener l) {
+        if (l != null && !dataStoreChangeListeners.contains(l)) {
+            dataStoreChangeListeners.add(l);
         }
     }
 
@@ -322,34 +283,43 @@ public class DataCollection {
      *
      * @param l the l
      */
-    public void removeDataChangeListener(DataChangeListener l) {
-        if (l != null && listeners.contains(l)) {
-            listeners.remove(l);
+    public void removeDataChangeListener(DataStoreChangeListener l) {
+        if (l != null && dataStoreChangeListeners.contains(l)) {
+            dataStoreChangeListeners.remove(l);
         }
     }
 
+    /**
+     * Adds the data change listener.
+     *
+     * @param l the l
+     */
+    public void addActiveDataListener(ActiveDataChangedListener l) {
+        if (l != null && !activeDataChangedListeners.contains(l)) {
+            activeDataChangedListeners.add(l);
+        }
+    }
+
+    /**
+     * Removes the data change listener.
+     *
+     * @param l the l
+     */
+    public void removeActiveDataListener(ActiveDataChangedListener l) {
+        if (l != null && activeDataChangedListeners.contains(l)) {
+            activeDataChangedListeners.remove(l);
+        }
+    }
 
     /**
      * Data group renamed.
      *
-     * @param g the g
+     * @param d the new active data store name
      */
-    public void dataGroupRenamed(DataGroup g) {
-        Enumeration<DataChangeListener> e = listeners.elements();
+    public void dataStoreRenamed(DataStore d) {
+        Enumeration<DataStoreChangeListener> e = dataStoreChangeListeners.elements();
         while (e.hasMoreElements()) {
-            e.nextElement().dataGroupRenamed(g);
-        }
-    }
-
-    /**
-     * Data set renamed.
-     *
-     * @param s the s
-     */
-    public void dataSetRenamed(DataSet s) {
-        Enumeration<DataChangeListener> e = listeners.elements();
-        while (e.hasMoreElements()) {
-            e.nextElement().dataSetRenamed(s);
+            e.nextElement().dataStoreRenamed(d);
         }
     }
 
@@ -359,7 +329,7 @@ public class DataCollection {
      * @param g the g
      */
     public void dataGroupSamplesChanged(DataGroup g) {
-        Enumeration<DataChangeListener> e = listeners.elements();
+        Enumeration<DataStoreChangeListener> e = dataStoreChangeListeners.elements();
         while (e.hasMoreElements()) {
             e.nextElement().dataGroupSamplesChanged(g);
         }
