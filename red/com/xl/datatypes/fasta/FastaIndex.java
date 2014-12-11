@@ -1,3 +1,21 @@
+/*
+ * RED: RNA Editing Detector
+ *     Copyright (C) <2014>  <Xing Li>
+ *
+ *     RED is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU General Public License as published by
+ *     the Free Software Foundation, either version 3 of the License, or
+ *     (at your option) any later version.
+ *
+ *     RED is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     GNU General Public License for more details.
+ *
+ *     You should have received a copy of the GNU General Public License
+ *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package com.xl.datatypes.fasta;
 
 import com.xl.datatypes.genome.GenomeDescriptor;
@@ -11,8 +29,7 @@ import java.util.LinkedHashMap;
 import java.util.Set;
 
 /**
- * Representation of a fasta (.fai) index. This is a modified version of a
- * similar class in Picard, but extended to handle loading by URLs.
+ * Representation of a fasta (.fai) index. This is a modified version of a similar class in Picard, but extended to handle loading by URLs.
  *
  * @auther jrobinso
  * @since 2011 Aug 7
@@ -20,8 +37,7 @@ import java.util.Set;
 public class FastaIndex {
 
     /**
-     * Store the entries. Use a LinkedHashMap for consistent iteration in
-     * insertion order.
+     * Store the entries. Use a LinkedHashMap for consistent iteration in insertion order.
      */
     private final LinkedHashMap<String, FastaSequenceIndexEntry> sequenceEntries = new LinkedHashMap<String, FastaSequenceIndexEntry>();
     private long totalSize = -1;
@@ -52,10 +68,7 @@ public class FastaIndex {
      * <p/>
      * Example index file
      * <p/>
-     * sequenceName size locationInFile basesPerLine bytesPerLine
-     * chr01p 6220112 8 50 51
-     * chr02q 8059593 6344531 50 51
-     * chr03q 5803340 14565324 50 51
+     * sequenceName size locationInFile basesPerLine bytesPerLine chr01p 6220112 8 50 51 chr02q 8059593 6344531 50 51 chr03q 5803340 14565324 50 51
      *
      * @param indexFile File to parse.
      * @throws java.io.FileNotFoundException Thrown if file could not be opened.
@@ -150,8 +163,7 @@ public class FastaIndex {
          * @param position     Location (byte coordinate) in the fasta file.
          * @param size         The number of bases in the contig.
          * @param basesPerLine How many bases are on each line.
-         * @param bytesPerLine How many bytes are on each line (includes newline
-         *                     characters).
+         * @param bytesPerLine How many bytes are on each line (includes newline characters).
          */
         public FastaSequenceIndexEntry(String contig, long position, long size,
                                        int basesPerLine, int bytesPerLine) {

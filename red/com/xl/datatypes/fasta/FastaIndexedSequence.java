@@ -1,3 +1,21 @@
+/*
+ * RED: RNA Editing Detector
+ *     Copyright (C) <2014>  <Xing Li>
+ *
+ *     RED is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU General Public License as published by
+ *     the Free Software Foundation, either version 3 of the License, or
+ *     (at your option) any later version.
+ *
+ *     RED is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     GNU General Public License for more details.
+ *
+ *     You should have received a copy of the GNU General Public License
+ *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package com.xl.datatypes.fasta;
 
 import com.xl.datatypes.genome.GenomeDescriptor;
@@ -44,17 +62,13 @@ public class FastaIndexedSequence implements Sequence {
     }
 
     /**
-     * Return the sequence for the query interval as a byte array. Coordinates
-     * are "ucsc" style (0 based)
+     * Return the sequence for the query interval as a byte array. Coordinates are "ucsc" style (0 based)
      * <p/>
      * Example: 5 bases per line, 6 bytes per line
      * <p/>
-     * Bases 0 1 2 3 4 * | 5 6 7 8 9 * | 10 11 12 13 14 * etc
-     * Offset 0 1 2 3 4 0 1 2 3 4 0 1 2 3 4
-     * Bytes 0 1 2 3 4 5 | 6 7 8 9 10 | 11 12 13 14 15 16
+     * Bases 0 1 2 3 4 * | 5 6 7 8 9 * | 10 11 12 13 14 * etc Offset 0 1 2 3 4 0 1 2 3 4 0 1 2 3 4 Bytes 0 1 2 3 4 5 | 6 7 8 9 10 | 11 12 13 14 15 16
      * <p/>
-     * query 9 - 13 start line = 1 base0 = 1*5 = 5 offset = (9 - 5) = 4 start
-     * byte = (1*6) + 3 = 10 end line = 2
+     * query 9 - 13 start line = 1 base0 = 1*5 = 5 offset = (9 - 5) = 4 start byte = (1*6) + 3 = 10 end line = 2
      *
      * @param chr
      * @param qstart
