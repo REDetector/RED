@@ -1,3 +1,21 @@
+/*
+ * RED: RNA Editing Detector
+ *     Copyright (C) <2014>  <Xing Li>
+ *
+ *     RED is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU General Public License as published by
+ *     the Free Software Foundation, either version 3 of the License, or
+ *     (at your option) any later version.
+ *
+ *     RED is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     GNU General Public License for more details.
+ *
+ *     You should have received a copy of the GNU General Public License
+ *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package com.xl.display.dataviewer;
 
 import com.xl.datatypes.DataCollection;
@@ -8,10 +26,10 @@ import com.xl.datatypes.annotation.AnnotationSet;
 import com.xl.datatypes.annotation.CoreAnnotationSet;
 import com.xl.datatypes.sites.SiteList;
 import com.xl.datatypes.sites.SiteSet;
-import com.xl.dialog.AnnotationSetPropertiesDialog;
-import com.xl.dialog.DataStorePropertiesDialog;
-import com.xl.dialog.SiteListCommentEditDialog;
-import com.xl.dialog.SiteListViewer;
+import com.xl.display.dialog.AnnotationSetPropertiesDialog;
+import com.xl.display.dialog.DataStorePropertiesDialog;
+import com.xl.display.dialog.SiteListCommentEditDialog;
+import com.xl.display.dialog.SiteListViewer;
 import com.xl.display.report.SitesDistributionHistogram;
 import com.xl.display.report.VariantDistributionHistogram;
 import com.xl.exception.REDException;
@@ -27,9 +45,8 @@ import java.awt.event.*;
 
 
 /**
- * The DataViewer is a panel which shows a tree based overview of a data
- * collection.  It also provides a mechanism to select DataStores and
- * SiteLists and can launch various tools via popup menus.
+ * The DataViewer is a panel which shows a tree based overview of a data collection.  It also provides a mechanism to select DataStores and SiteLists and can
+ * launch various tools via popup menus.
  */
 public class DataViewer extends JPanel implements MouseListener, TreeSelectionListener {
 
@@ -37,11 +54,12 @@ public class DataViewer extends JPanel implements MouseListener, TreeSelectionLi
     private REDApplication application;
     private JTree dataTree;
     private JTree siteSetTree;
+    private SiteSetTreeModel siteModel;
 
     /**
      * Instantiates a new data viewer.
      *
-     * @param application
+     * @param application the application
      */
     public DataViewer(REDApplication application) {
         this.application = application;
@@ -61,20 +79,19 @@ public class DataViewer extends JPanel implements MouseListener, TreeSelectionLi
         dataTree.addMouseListener(this);
         dataTree.addTreeSelectionListener(this);
         dataTree.setCellRenderer(new DataTreeRenderer());
+        dataTree.setExpandsSelectedPaths(true);
         add(dataTree, con);
 
         con.gridy++;
 
-        SiteSetTreeModel siteModel = new SiteSetTreeModel(collection);
+        siteModel = new SiteSetTreeModel(collection.getActiveDataStore());
         siteSetTree = new UnfocusableTree(siteModel);
         siteSetTree.addMouseListener(this);
         siteSetTree.addTreeSelectionListener(this);
         siteSetTree.setCellRenderer(new DataTreeRenderer());
         add(siteSetTree, con);
 
-
-        // This nasty bit just makes the trees squash up to the top of the display
-        // area.
+        // This nasty bit just makes the trees squash up to the top of the display area.
         con.gridy++;
         con.weighty = 1;
         con.fill = GridBagConstraints.BOTH;
@@ -128,8 +145,6 @@ public class DataViewer extends JPanel implements MouseListener, TreeSelectionLi
                 new DataPopupMenu((DataSet) clickedItem).actionPerformed(new ActionEvent(this, 0, "properties"));
             } else if (clickedItem instanceof DataGroup) {
                 new GroupPopupMenu((DataGroup) clickedItem).actionPerformed(new ActionEvent(this, 0, "properties"));
-            } else if (clickedItem instanceof SiteList) {
-//                new SitePopupMenu((SiteList) clickedItem).actionPerformed(new ActionEvent(this, 0, "view"));
             } else if (clickedItem instanceof AnnotationSet) {
                 new AnnotationPopupMenu((AnnotationSet) clickedItem).actionPerformed(new ActionEvent(this, 0, "properties"));
             }
@@ -163,29 +178,30 @@ public class DataViewer extends JPanel implements MouseListener, TreeSelectionLi
 
         try {
             if (tse.getSource() == dataTree) {
-
                 if (dataTree.getSelectionPath() == null) {
-                    collection.setActiveDataStore(null);
+                    collection.setActiveData(null, null);
                 } else {
                     Object selectedItem = dataTree.getSelectionPath().getLastPathComponent();
                     if (selectedItem instanceof DataStore) {
-                        collection.setActiveDataStore((DataStore) (selectedItem));
+                        DataStore d = (DataStore) selectedItem;
+                        if (d.siteSet() != null) {
+                            siteModel.siteSetReplaced(d.siteSet());
+                        }
+                        collection.setActiveData(d, d.siteSet());
                     } else {
-                        collection.setActiveDataStore(null);
+                        collection.setActiveData(null, null);
                     }
                 }
 
             } else if (tse.getSource() == siteSetTree) {
                 if (siteSetTree.getSelectionPath() == null) {
-                    collection.siteSet().setActiveList(null);
+                    collection.setActiveData(collection.getActiveDataStore(), null);
                 } else {
                     Object selectedItem = siteSetTree.getSelectionPath().getLastPathComponent();
                     if (selectedItem instanceof SiteList) {
-                        collection.siteSet().setActiveList((SiteList) selectedItem);
+                        collection.setActiveData(collection.getActiveDataStore(), (SiteList) selectedItem);
                     } else {
-                        if (collection.siteSet() != null) {
-                            collection.siteSet().setActiveList(null);
-                        }
+                        collection.setActiveData(collection.getActiveDataStore(), null);
                     }
                 }
             }
@@ -196,8 +212,7 @@ public class DataViewer extends JPanel implements MouseListener, TreeSelectionLi
     }
 
     /**
-     * Provides a small popup dialog which can be used when renaming
-     * an object.
+     * Provides a small popup dialog which can be used when renaming an object.
      *
      * @param initialName The objects current name name
      * @return The new name provided by the user.  Null if the user cancelled or didn't change the name.
@@ -230,12 +245,12 @@ public class DataViewer extends JPanel implements MouseListener, TreeSelectionLi
         /**
          * Instantiates a new data popup menu.
          *
-         * @param d
+         * @param d the data set
          */
         public DataPopupMenu(DataSet d) {
             this.d = d;
 
-            JCheckBoxMenuItem displayTrack = new JCheckBoxMenuItem("Show Track in Chromosome View");
+            JCheckBoxMenuItem displayTrack = new JCheckBoxMenuItem("Show Track in Chromosome Panel");
             displayTrack.setActionCommand("display_track");
             displayTrack.addActionListener(this);
             if (application.dataStoreIsDrawn(d)) {
@@ -254,17 +269,6 @@ public class DataViewer extends JPanel implements MouseListener, TreeSelectionLi
             properties.setActionCommand("properties");
             properties.addActionListener(this);
             add(properties);
-
-            // I'm not sure at the moment whether I should allow
-            // deletion of a data set.  There are lots of places
-            // this would affect - I'm not going to implement this
-            // at the moment.
-//			JMenuItem delete = new JMenuItem("Delete");
-//			delete.setActionCommand("delete");
-//			delete.addActionListener(this);
-//			add(delete);
-
-
         }
 
 
@@ -301,11 +305,11 @@ public class DataViewer extends JPanel implements MouseListener, TreeSelectionLi
         /**
          * Instantiates a new group popup menu.
          *
-         * @param d
+         * @param d the data group
          */
         public GroupPopupMenu(DataGroup d) {
             this.d = d;
-            JCheckBoxMenuItem displayTrack = new JCheckBoxMenuItem("Show Track in Chromosome View");
+            JCheckBoxMenuItem displayTrack = new JCheckBoxMenuItem("Show Track in Chromosome Panel");
             displayTrack.setActionCommand("display_track");
             displayTrack.addActionListener(this);
             if (application.dataStoreIsDrawn(d)) {
@@ -349,7 +353,7 @@ public class DataViewer extends JPanel implements MouseListener, TreeSelectionLi
                     d.setName(name);
                 }
             } else if (ae.getActionCommand().equals("delete")) {
-                collection.removeDataGroups(new DataGroup[]{d});
+                collection.removeDataStore(d);
             } else if (ae.getActionCommand().equals("properties")) {
                 new DataStorePropertiesDialog(d);
             } else {
@@ -368,7 +372,7 @@ public class DataViewer extends JPanel implements MouseListener, TreeSelectionLi
         /**
          * Instantiates a new site popup menu.
          *
-         * @param p
+         * @param p the site list
          */
         public SitePopupMenu(SiteList p) {
             this.p = p;
@@ -421,9 +425,9 @@ public class DataViewer extends JPanel implements MouseListener, TreeSelectionLi
             } else if (ae.getActionCommand().equals("variant distribution")) {
                 new VariantDistributionHistogram(collection.getActiveDataStore());
             } else if (ae.getActionCommand().equals("rename")) {
-                String name = getNewName(p.name());
+                String name = getNewName(p.getListName());
                 if (name != null) {
-                    p.setName(name);
+                    p.setListName(name);
                 }
             } else if (ae.getActionCommand().equals("comments")) {
                 new SiteListCommentEditDialog(p, this);
@@ -447,12 +451,12 @@ public class DataViewer extends JPanel implements MouseListener, TreeSelectionLi
         /**
          * Instantiates a new annotation popup menu.
          *
-         * @param annotation
+         * @param annotation the annotation set
          */
         public AnnotationPopupMenu(AnnotationSet annotation) {
             this.annotationSet = annotation;
 
-            JCheckBoxMenuItem displayTrack = new JCheckBoxMenuItem("Show Track in Chromosome View");
+            JCheckBoxMenuItem displayTrack = new JCheckBoxMenuItem("Show Track in Chromosome Panel");
             displayTrack.setActionCommand("display_track");
             displayTrack.addActionListener(this);
             if (application.chromosomeViewer().getFeatureTrack().isVisible()) {
@@ -511,10 +515,8 @@ public class DataViewer extends JPanel implements MouseListener, TreeSelectionLi
     /**
      * An extension of JTree which is unable to take keyboard focus.
      * <p/>
-     * This class is needed to make sure the arrow key navigation
-     * always works in the chromosome view.  If either of the JTrees
-     * can grab focus they will intercept the arrow key events and
-     * just move the selections on the tree.
+     * This class is needed to make sure the arrow key navigation always works in the chromosome view. If either of the JTrees can grab focus they will
+     * intercept the arrow key events and just move the selections on the tree.
      */
     private class UnfocusableTree extends JTree {
 
@@ -526,10 +528,11 @@ public class DataViewer extends JPanel implements MouseListener, TreeSelectionLi
         /**
          * Instantiates a new unfocusable tree.
          *
-         * @param m
+         * @param m the tree model
          */
         public UnfocusableTree(TreeModel m) {
             super(m);
+            this.setExpandsSelectedPaths(true);
             this.setFocusable(false);
         }
 
