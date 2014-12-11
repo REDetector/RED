@@ -1,13 +1,27 @@
+/*
+ * RED: RNA Editing Detector
+ *     Copyright (C) <2014>  <Xing Li>
+ *
+ *     RED is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU General Public License as published by
+ *     the Free Software Foundation, either version 3 of the License, or
+ *     (at your option) any later version.
+ *
+ *     RED is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     GNU General Public License for more details.
+ *
+ *     You should have received a copy of the GNU General Public License
+ *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package com.xl.display.dataviewer;
 
-import com.xl.datatypes.DataCollection;
-import com.xl.datatypes.DataGroup;
-import com.xl.datatypes.DataSet;
 import com.xl.datatypes.DataStore;
 import com.xl.datatypes.sites.SiteList;
+import com.xl.datatypes.sites.SiteListChangeListener;
 import com.xl.datatypes.sites.SiteSet;
-import com.xl.datatypes.sites.SiteSetChangeListener;
-import com.xl.interfaces.DataChangeListener;
 
 import javax.swing.event.TreeModelEvent;
 import javax.swing.event.TreeModelListener;
@@ -18,20 +32,19 @@ import java.util.LinkedList;
 import java.util.Vector;
 
 /**
- * The Class SiteSetTreeModel provides a tree model which describes the
- * relationships between site sets.
+ * The Class SiteSetTreeModel provides a tree model which describes the relationships between site sets.
  */
-public class SiteSetTreeModel implements TreeModel, SiteSetChangeListener, DataChangeListener {
-
-    /**
-     * The sites.
-     */
-    private SiteSet sites;
+public class SiteSetTreeModel implements TreeModel, SiteListChangeListener {
 
     /**
      * The listeners.
      */
     private Vector<TreeModelListener> listeners = new Vector<TreeModelListener>();
+
+    /**
+     * The site set.
+     */
+    private SiteSet siteSet;
 
     /**
      * The root node.
@@ -41,17 +54,18 @@ public class SiteSetTreeModel implements TreeModel, SiteSetChangeListener, DataC
     /**
      * Instantiates a new site set tree model.
      *
-     * @param collection the collection
+     * @param dataStore the data store
      */
-    public SiteSetTreeModel(DataCollection collection) {
-        if (collection != null) {
-            collection.addDataChangeListener(this);
-            sites = collection.siteSet();
+    public SiteSetTreeModel(DataStore dataStore) {
+        if (dataStore != null) {
+            siteSet = dataStore.siteSet();
+            if (siteSet != null) {
+                dataStore.siteSet().addSiteSetChangeListener(this);
+            }
+            rootNode = new FolderNode(dataStore.name());
+        } else {
+            rootNode = new FolderNode("Site Lists");
         }
-        if (sites != null) {
-            collection.siteSet().addSiteSetChangeListener(this);
-        }
-        rootNode = new FolderNode("Site Lists");
     }
 
     public void addTreeModelListener(TreeModelListener tl) {
@@ -66,27 +80,30 @@ public class SiteSetTreeModel implements TreeModel, SiteSetChangeListener, DataC
         }
     }
 
+    @Override
     public Object getChild(Object node, int index) {
         if (node instanceof SiteList) {
             return ((SiteList) node).children()[index];
         } else if (node.equals(rootNode)) {
-            if (index == 0) return sites;
+            if (index == 0) return siteSet;
         }
 
         throw new NullPointerException("Null child from " + node + " at index " + index);
     }
 
+    @Override
     public int getChildCount(Object node) {
         if (node instanceof SiteList) {
             return ((SiteList) node).children().length;
         } else if (node.equals(rootNode)) {
-            if (sites == null) return 0;
+            if (siteSet == null) return 0;
             return 1;
         } else {
             return 0;
         }
     }
 
+    @Override
     public int getIndexOfChild(Object node, Object child) {
         if (node instanceof SiteList) {
             SiteList[] children = ((SiteList) node).children();
@@ -96,7 +113,7 @@ public class SiteSetTreeModel implements TreeModel, SiteSetChangeListener, DataC
                 }
             }
         } else if (node.equals(rootNode)) {
-            if (child == sites) {
+            if (child == siteSet) {
                 return 0;
             }
         }
@@ -105,11 +122,12 @@ public class SiteSetTreeModel implements TreeModel, SiteSetChangeListener, DataC
 
     }
 
+    @Override
     public Object getRoot() {
         return rootNode;
     }
 
-
+    @Override
     public boolean isLeaf(Object node) {
         if (node instanceof SiteList) {
             return ((SiteList) node).children().length == 0;
@@ -119,11 +137,13 @@ public class SiteSetTreeModel implements TreeModel, SiteSetChangeListener, DataC
         return true;
     }
 
+    @Override
     public void valueForPathChanged(TreePath tp, Object node) {
         // This only applies to editable trees - which this isn't.
         System.out.println("Value for path changed called on node " + node);
     }
 
+    @Override
     public void siteListAdded(SiteList l) {
         Object[] pathToRoot = getPathToRoot(l.getParent());
         TreeModelEvent me = new TreeModelEvent(l, pathToRoot, new int[]{getIndexOfChild(l.getParent(), l)}, new SiteList[]{l});
@@ -134,6 +154,7 @@ public class SiteSetTreeModel implements TreeModel, SiteSetChangeListener, DataC
         }
     }
 
+    @Override
     public void siteListRemoved(SiteList l) {
         TreeModelEvent me;
         if (l instanceof SiteSet) {
@@ -147,6 +168,7 @@ public class SiteSetTreeModel implements TreeModel, SiteSetChangeListener, DataC
         }
     }
 
+    @Override
     public void siteListRenamed(SiteList l) {
         TreeModelEvent me = new TreeModelEvent(l, getPathToRoot(l));
         Enumeration<TreeModelListener> e = listeners.elements();
@@ -155,49 +177,21 @@ public class SiteSetTreeModel implements TreeModel, SiteSetChangeListener, DataC
         }
     }
 
-    public void dataGroupAdded(DataGroup g) {
-    }
-
-    public void dataGroupsRemoved(DataGroup[] g) {
-    }
-
-    public void dataGroupRenamed(DataGroup g) {
-    }
-
-    public void dataGroupSamplesChanged(DataGroup g) {
-    }
-
-    public void dataSetAdded(DataSet d) {
-    }
-
-    public void dataSetsRemoved(DataSet[] d) {
-    }
-
-    public void dataSetRenamed(DataSet d) {
-    }
-
     public void siteSetReplaced(SiteSet sites) {
-        if (this.sites != null) {
-            this.sites.removeSiteSetChangeListener(this);
+        if (this.siteSet != null) {
+            this.siteSet.removeSiteSetChangeListener(this);
         }
-        this.sites = sites;
+        this.siteSet = sites;
 
         if (sites != null) {
             sites.addSiteSetChangeListener(this);
+            rootNode = new FolderNode(sites.getDataStore().name());
         }
 
         Enumeration<TreeModelListener> e = listeners.elements();
         while (e.hasMoreElements()) {
             e.nextElement().treeStructureChanged(new TreeModelEvent(rootNode, new SiteList[]{sites}));
         }
-    }
-
-    public void activeDataStoreChanged(DataStore s) {
-
-    }
-
-    public void activeSiteListChanged(SiteList l) {
-
     }
 
     /**
@@ -221,10 +215,8 @@ public class SiteSetTreeModel implements TreeModel, SiteSetChangeListener, DataC
 
         nodes.addFirst(rootNode);
 
-        // Now make this into an array
-        Object[] pathToNode = nodes.toArray(new Object[0]);
-
-        return pathToNode;
+        // Make this into an array
+        return nodes.toArray(new Object[0]);
     }
 
     /**
