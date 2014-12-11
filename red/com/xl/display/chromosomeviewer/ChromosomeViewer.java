@@ -1,14 +1,29 @@
+/*
+ * RED: RNA Editing Detector
+ *     Copyright (C) <2014>  <Xing Li>
+ *
+ *     RED is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU General Public License as published by
+ *     the Free Software Foundation, either version 3 of the License, or
+ *     (at your option) any later version.
+ *
+ *     RED is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     GNU General Public License for more details.
+ *
+ *     You should have received a copy of the GNU General Public License
+ *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package com.xl.display.chromosomeviewer;
 
 import com.xl.datatypes.DataCollection;
-import com.xl.datatypes.DataGroup;
-import com.xl.datatypes.DataSet;
 import com.xl.datatypes.DataStore;
 import com.xl.datatypes.genome.Chromosome;
 import com.xl.datatypes.genome.GenomeDescriptor;
 import com.xl.datatypes.sites.SiteList;
-import com.xl.datatypes.sites.SiteSet;
-import com.xl.interfaces.DataChangeListener;
+import com.xl.interfaces.ActiveDataChangedListener;
 import com.xl.interfaces.DisplayPreferencesListener;
 import com.xl.main.REDApplication;
 import com.xl.preferences.DisplayPreferences;
@@ -21,41 +36,63 @@ import java.awt.event.MouseWheelListener;
 import java.util.ArrayList;
 
 /**
- * The ChromosomeViewer represents all of the tracks contained in the chromosome
- * view. It is responsible for organising and laying out these tracks and
- * passing information back from them to other parts of the application.
+ * The ChromosomeViewer represents all of the tracks contained in the chromosome view. It is responsible for organising and laying out these tracks and passing
+ * information back from them to other parts of the application.
  * <p/>
- * In general the rest of the program shouldn't deal with anything below the
- * chromosome viewer.
+ * In general the rest of the program shouldn't deal with anything below the chromosome viewer.
  */
-public class ChromosomeViewer extends JPanel implements DataChangeListener, DisplayPreferencesListener, MouseWheelListener {
+public class ChromosomeViewer extends JPanel implements ActiveDataChangedListener, DisplayPreferencesListener, MouseWheelListener {
 
-	/*
-     * DO NOT CHANGE THESE CONSTANTS.
-	 * 
-	 * Although they are arbitrary numbers they are used in the SeqMonk file
-	 * format and if they are changed the settings will not be restored
-	 * correctly and we'll probably get errors.
-	 */
-
+    /**
+     * A list to collect all track, which can be added or removed.
+     */
     java.util.List<AbstractTrack> tracks = new ArrayList<AbstractTrack>();
+    /**
+     * The application.
+     */
     private REDApplication application;
+    /**
+     * Current using chromosome.
+     */
     private Chromosome chromosome;
+    /**
+     * A panel to place all tracks, not including the title label.
+     */
     private JPanel featurePanel;
-    private JLabel titleLabel; // Tried using a TextField to get Copy/Paste, but this broke SVG export
+    /**
+     * The title label.
+     */
+    private JLabel titleLabel;
+    /**
+     * The start position when using mouse to drag in the chromosome view.
+     */
     private int selectionStart = 0;
+    /**
+     * The end position when using mouse to drag in the chromosome view.
+     */
     private int selectionEnd = 0;
+    /**
+     * A status to judge whether the mouse drags or not.
+     */
     private boolean makingSelection = false;
+    /**
+     * Current view start.
+     */
     private int currentStart = 0;
+    /**
+     * Current view end.
+     */
     private int currentEnd = 1;
-
+    /**
+     * A scroll pane for sequence track.
+     */
     private JScrollPane sequenceScrollPane = null;
 
     /**
      * Instantiates a new chromosome viewer.
      *
-     * @param application
-     * @param chromosome
+     * @param application the application
+     * @param chromosome  the chromosome
      */
     public ChromosomeViewer(REDApplication application, Chromosome chromosome) {
         this.application = application;
@@ -76,13 +113,11 @@ public class ChromosomeViewer extends JPanel implements DataChangeListener, Disp
     }
 
     /**
-     * This allows you to change the chromsome the viewer is looking at without
-     * altering the list of tracks which are displayed.
+     * This allows you to change the chromosome the viewer is looking at without altering the list of tracks which are displayed.
      *
      * @param chromosome The new chromosome to display.
      */
     private void setChromosome(Chromosome chromosome) {
-        System.out.println(this.getClass().getName() + ":setChr(Chromosome chromosome)");
         if (chromosome == null)
             throw new IllegalArgumentException("Chromosome can't be null");
         if (chromosome != this.chromosome) {
@@ -94,32 +129,27 @@ public class ChromosomeViewer extends JPanel implements DataChangeListener, Disp
     }
 
     /**
-     * This is quite a heavyweight call to make. It forces the recalculation of
-     * the layout of all tracks. In many cases it is sufficient to call repaint
-     * on the chromosome viewer which will update existing information (name
-     * changes, selection changes etc). Only use this when the actual data has
-     * changed.
+     * This is quite a heavyweight call to make. It forces the recalculation of the layout of all tracks. In many cases it is sufficient to call repaint on the
+     * chromosome viewer which will update existing information (name changes, selection changes etc). Only use this when the actual data has been changed.
      */
     public synchronized void tracksUpdated() {
         System.out.println(this.getClass().getName() + "\ttracksUpdated()");
 
         if (featurePanel == null)
             return;
-
-        String currentFeatureTrackName = GenomeDescriptor.getInstance().getGeneTrackName();
-        if (currentFeatureTrackName == null) {
-            currentFeatureTrackName = "Feature Track";
-        }
+        // Clear all tracks in chromosome view.
         tracks.clear();
         DataCollection collection = application.dataCollection();
-        AbstractTrack featureTrack = new ChromosomeFeatureTrack(this, collection, currentFeatureTrackName);
+        // Feature track
+        AbstractTrack featureTrack = new ChromosomeFeatureTrack(this, collection, GenomeDescriptor.getInstance().getGeneTrackName());
         tracks.add(featureTrack);
+        //Sequence track
         AbstractTrack sequenceTrack = new ChromosomeSequenceTrack(this, collection, application.dataCollection().genome().getDisplayName());
         tracks.add(sequenceTrack);
-
+        //Data track
         DataStore[] dataStores = application.drawnDataStores();
         for (DataStore dataStore : dataStores) {
-            tracks.add(new ChromosomeDataTrack(this, application.dataCollection(), dataStore));
+            tracks.add(new ChromosomeDataTrack(this, dataStore));
         }
         for (AbstractTrack track : tracks) {
             track.updateTrack(chromosome);
@@ -168,8 +198,7 @@ public class ChromosomeViewer extends JPanel implements DataChangeListener, Disp
      */
     private void setView(int start, int end) {
 
-        // If the view is a reversed section we need to swap
-        // start and end
+        // If the view is a reversed section we need to swap start and end
         if (start > end) {
             int temp = start;
             start = end;
@@ -178,6 +207,7 @@ public class ChromosomeViewer extends JPanel implements DataChangeListener, Disp
         currentStart = start;
         currentEnd = end;
 
+        // If the view length is shorter than screen pixel, we show the sequence track.
         if (currentEnd - currentStart < getWidth() && DisplayPreferences.getInstance().isFastaEnable()) {
             sequenceScrollPane.setVisible(true);
         } else {
@@ -187,8 +217,7 @@ public class ChromosomeViewer extends JPanel implements DataChangeListener, Disp
     }
 
     /**
-     * Doubles the area of the current view keeping the same midpoint if
-     * possible.
+     * Doubles the area of the current view keeping the same midpoint if possible.
      */
     public synchronized void zoomOut() {
         int midBase = currentStart + ((currentEnd - currentStart) / 2);
@@ -227,13 +256,11 @@ public class ChromosomeViewer extends JPanel implements DataChangeListener, Disp
      * Moves the view a small amount left
      */
     public void moveLeft() {
-        // System.out.println(this.getClass().getDisplayName()+":moveLeft()");
         int currentWidth = (currentEnd - currentStart) + 1;
         int interval = currentWidth / 10;
         if (currentStart < interval + 1)
             interval = currentStart - 1;
-        DisplayPreferences.getInstance().setLocation(currentStart - interval,
-                currentEnd - interval);
+        DisplayPreferences.getInstance().setLocation(currentStart - interval, currentEnd - interval);
         currentStart -= interval;
         currentEnd -= interval;
     }
@@ -242,21 +269,19 @@ public class ChromosomeViewer extends JPanel implements DataChangeListener, Disp
      * Moves the view a small amount right.
      */
     public void moveRight() {
-        // System.out.println(this.getClass().getDisplayName()+":moveRight()");
         int currentWidth = (currentEnd - currentStart) + 1;
         int interval = currentWidth / 10;
         if (currentEnd + interval > chromosome.getLength())
             interval = chromosome.getLength() - currentEnd;
-        DisplayPreferences.getInstance().setLocation(currentStart + interval,
-                currentEnd + interval);
+        DisplayPreferences.getInstance().setLocation(currentStart + interval, currentEnd + interval);
         currentStart += interval;
         currentEnd += interval;
     }
 
     /**
-     * Says that we're starting to make a selction
+     * Says that we're starting to make a selection.
      *
-     * @param b
+     * @param b true if making a selection
      */
     public void setMakingSelection(boolean b) {
         makingSelection = b;
@@ -320,10 +345,20 @@ public class ChromosomeViewer extends JPanel implements DataChangeListener, Disp
         return selectionEnd;
     }
 
+    /**
+     * Current view start.
+     *
+     * @return view start
+     */
     public int currentStart() {
         return currentStart;
     }
 
+    /**
+     * Current view end.
+     *
+     * @return view end
+     */
     public int currentEnd() {
         return currentEnd;
     }
@@ -331,13 +366,17 @@ public class ChromosomeViewer extends JPanel implements DataChangeListener, Disp
     /**
      * Application.
      *
-     * @return The seq monk application
+     * @return The RED application
      */
     public REDApplication application() {
-        // TODO: Remove this dependency so messages pass in a nicer way
         return application;
     }
 
+    /**
+     * Get feature track.
+     *
+     * @return the feature track
+     */
     public ChromosomeFeatureTrack getFeatureTrack() {
         for (AbstractTrack track : tracks) {
             if (track instanceof ChromosomeFeatureTrack) {
@@ -347,16 +386,11 @@ public class ChromosomeViewer extends JPanel implements DataChangeListener, Disp
         return null;
     }
 
-    public java.util.List<AbstractTrack> getTrackSets() {
-        return tracks;
-    }
-
     /**
      * Gets the positional index of a data track
      *
      * @param t The track to query
-     * @return The position of this track in the current set of displayed data
-     * tracks.
+     * @return The position of this track in the current set of displayed data tracks.
      */
     public int getIndex(AbstractTrack t) {
         int index = 0;
@@ -378,79 +412,45 @@ public class ChromosomeViewer extends JPanel implements DataChangeListener, Disp
         return chromosome;
     }
 
-    public void activeDataStoreChanged(DataStore s) {
-        repaint();
-    }
-
-    public void activeSiteListChanged(SiteList l) {
+    @Override
+    public void activeDataChanged(DataStore d, SiteList l) {
         for (AbstractTrack abstractTrack : tracks) {
             if (abstractTrack instanceof ChromosomeDataTrack)
-                ((ChromosomeDataTrack) abstractTrack).activeSiteListChanged(l);
-        }
-    }
-
-    public void dataGroupAdded(DataGroup g) {
-    }
-
-    public void dataGroupsRemoved(DataGroup[] g) {
-    }
-
-    public void dataGroupRenamed(DataGroup g) {
-        repaint();
-    }
-
-    public void dataGroupSamplesChanged(DataGroup g) {
-    }
-
-    public void dataSetAdded(DataSet d) {
-    }
-
-    public void dataSetsRemoved(DataSet[] d) {
-    }
-
-    public void dataSetRenamed(DataSet d) {
-        repaint();
-    }
-
-    public void siteSetReplaced(SiteSet p) {
-        // TODO: Do we need to do anything here? Probably not as active site
-        // list replaced will be called
-        for (AbstractTrack abstractTrack : tracks) {
-            if (abstractTrack instanceof ChromosomeDataTrack)
-                ((ChromosomeDataTrack) abstractTrack).siteSetReplaced(p);
+                ((ChromosomeDataTrack) abstractTrack).activeDataChanged(d, l);
         }
     }
 
     /**
-     * Finds the max value from a set of ints.
+     * Finds the max value from a set of integers.
      *
-     * @param ints the ints
+     * @param integers the integers
      * @return the max value
      */
-    private int findMax(int[] ints) {
-        int max = ints[0];
-        for (int i = 1; i < ints.length; i++) {
-            if (ints[i] > max)
-                max = ints[i];
+    private int findMax(int[] integers) {
+        int max = integers[0];
+        for (int i = 1; i < integers.length; i++) {
+            if (integers[i] > max)
+                max = integers[i];
         }
         return max;
     }
 
     /**
-     * Finds the min value from a set of ints
+     * Finds the min value from a set of integers
      *
-     * @param ints the ints
+     * @param integers the integers
      * @return the int
      */
-    private int findMin(int[] ints) {
-        int min = ints[0];
-        for (int i = 1; i < ints.length; i++) {
-            if (ints[i] < min)
-                min = ints[i];
+    private int findMin(int[] integers) {
+        int min = integers[0];
+        for (int i = 1; i < integers.length; i++) {
+            if (integers[i] < min)
+                min = integers[i];
         }
         return min;
     }
 
+    @Override
     public void displayPreferencesUpdated(DisplayPreferences displayPrefs) {
         if (displayPrefs.getCurrentChromosome() != null && !chromosome.equals(displayPrefs.getCurrentChromosome())) {
             setChromosome(displayPrefs.getCurrentChromosome());
@@ -460,11 +460,12 @@ public class ChromosomeViewer extends JPanel implements DataChangeListener, Disp
             int currentLength = (currentEnd - currentStart) + 1;
             String currentLengthString = PositionFormat.formatLength(currentLength, PositionFormat.UNIT_BASEPAIR);
 
-            titleLabel.setText(application.dataCollection().genome().getDisplayName() + "  " + chromosome.getName() + ":" + currentStart + "-" + currentEnd +
+            titleLabel.setText(application.dataCollection().genome().getDisplayName() + " " + chromosome.getName() + ":" + currentStart + "-" + currentEnd +
                     " (" + currentLengthString + ")");
         }
     }
 
+    @Override
     public void mouseWheelMoved(MouseWheelEvent mwe) {
 
         if (mwe.getWheelRotation() > 0) {
