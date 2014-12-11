@@ -1,3 +1,21 @@
+/*
+ * RED: RNA Editing Detector
+ *     Copyright (C) <2014>  <Xing Li>
+ *
+ *     RED is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU General Public License as published by
+ *     the Free Software Foundation, either version 3 of the License, or
+ *     (at your option) any later version.
+ *
+ *     RED is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     GNU General Public License for more details.
+ *
+ *     You should have received a copy of the GNU General Public License
+ *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package com.xl.datatypes.sequence;
 
 import com.xl.datatypes.annotation.Cytoband;
@@ -11,9 +29,8 @@ import java.io.IOException;
 import java.util.*;
 
 /**
- * Represents a sequence database composed of plain text files with no white
- * space, one per chromosome, in a directory. This is the original IGV
- * "sequence" format, replaced in favor of indexed fasta files.
+ * Represents a sequence database composed of plain text files with no white space, one per chromosome, in a directory. This is the original IGV "sequence"
+ * format, replaced in favor of indexed fasta files.
  *
  * @author jrobinso
  * @Date 8/8/11
@@ -98,8 +115,7 @@ public class IGVSequence implements Sequence {
     }
 
     /**
-     * Get a "legal" chromosome file name from the chr name. This method
-     * supports "old" style .genome files.
+     * Get a "legal" chromosome file name from the chr name. This method supports "old" style .genome files.
      *
      * @param chr
      * @return
@@ -118,8 +134,7 @@ public class IGVSequence implements Sequence {
     }
 
     /**
-     * Generate chromosomes from the list of cytobands. This method is provided
-     * for backward compatibility for pre V2.1 genomes.
+     * Generate chromosomes from the list of cytobands. This method is provided for backward compatibility for pre V2.1 genomes.
      *
      * @param chrCytoMap
      * @param chromosomesAreOrdered
