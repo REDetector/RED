@@ -1,3 +1,21 @@
+/*
+ * RED: RNA Editing Detector
+ *     Copyright (C) <2014>  <Xing Li>
+ *
+ *     RED is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU General Public License as published by
+ *     the Free Software Foundation, either version 3 of the License, or
+ *     (at your option) any later version.
+ *
+ *     RED is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     GNU General Public License for more details.
+ *
+ *     You should have received a copy of the GNU General Public License
+ *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package com.xl.datatypes;
 
 import com.xl.datatypes.sequence.Location;
@@ -12,26 +30,21 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * A DataSet represents a set of reads coming from a single source (usually a
- * file). It is able to store and retrieve reads in a very efficient manner. If
- * the user has requested that data be cached the DataSet is also responsible
- * for saving and loading this data.
+ * A DataSet represents a set of reads coming from a single source (usually a file). It is able to store and retrieve reads in a very efficient manner. If the
+ * user has requested that data be cached the DataSet is also responsible for saving and loading this data.
  */
 public class DataSet extends DataStore {
 
     /**
-     * We cache the forward read count to save having to reload every chromosome
-     * just to get the read count
+     * We cache the forward read count to save having to reload every chromosome just to get the read count
      */
     protected int forwardReadCount = 0;
     /**
-     * We cache the reverse read count to save having to reload every chromosome
-     * just to get the read count
+     * We cache the reverse read count to save having to reload every chromosome just to get the read count
      */
     protected int reverseReadCount = 0;
     /**
-     * We cache the total read count to save having to reload every chromosome
-     * just to get the read count
+     * We cache the total read count to save having to reload every chromosome just to get the read count
      */
     protected int totalReadCount = 0;
     /**
@@ -51,8 +64,7 @@ public class DataSet extends DataStore {
      * Instantiates a new data set.
      *
      * @param name     The initial value for the user changeable name
-     * @param fileName The name of the data source - which can't be changed by the
-     *                 user
+     * @param fileName The name of the data source - which can't be changed by the user
      */
     public DataSet(String name, String fileName) {
         super(name);
@@ -63,13 +75,12 @@ public class DataSet extends DataStore {
     public void setName(String name) {
         super.setName(name);
         if (collection() != null) {
-            collection().dataSetRenamed(this);
+            collection().dataStoreRenamed(this);
         }
     }
 
     /**
-     * Gets the original data source name for this DataSet - usually the name of
-     * the file from which it was parsed.
+     * Gets the original data source name for this DataSet - usually the name of the file from which it was parsed.
      *
      * @return the file name
      */
