@@ -1,28 +1,26 @@
-/**
- * Copyright 2010-13 Simon Andrews
+/*
+ * RED: RNA Editing Detector
+ *     Copyright (C) <2014>  <Xing Li>
  *
- *    This file is part of SeqMonk.
+ *     RED is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU General Public License as published by
+ *     the Free Software Foundation, either version 3 of the License, or
+ *     (at your option) any later version.
  *
- *    SeqMonk is free software; you can redistribute it and/or modify
- *    it under the terms of the GNU General Public License as published by
- *    the Free Software Foundation; either version 3 of the License, or
- *    (at your option) any later version.
+ *     RED is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     GNU General Public License for more details.
  *
- *    SeqMonk is distributed in the hope that it will be useful,
- *    but WITHOUT ANY WARRANTY; without even the implied warranty of
- *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *    GNU General Public License for more details.
- *
- *    You should have received a copy of the GNU General Public License
- *    along with SeqMonk; if not, write to the Free Software
- *    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+ *     You should have received a copy of the GNU General Public License
+ *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.xl.panel;
+package com.xl.display.panel;
 
-import com.xl.main.REDApplication;
+import com.xl.main.Global;
 import com.xl.utils.ColourScheme;
 import com.xl.utils.FontManager;
-import com.xl.utils.namemanager.IconUtils;
+import com.xl.utils.ui.IconLoader;
 
 import javax.swing.*;
 import javax.swing.text.Style;
@@ -37,19 +35,15 @@ import java.net.URI;
 import java.net.URISyntaxException;
 
 /**
- * The Class SeqMonkTitlePanel.
+ * The Class REDTitlePanel provides a small panel which gives details of the RED version and copyright. Used in both the welcome panel and the about dialog.
  */
 public class REDTitlePanel extends JPanel {
 
-    /**
-     * Provides a small panel which gives details of the RED version and
-     * copyright. Used in both the welcome panel and the about dialog.
-     */
     public REDTitlePanel() {
         setLayout(new BorderLayout(5, 1));
 
-        add(new JLabel("", IconUtils.LOGO_1, JLabel.CENTER), BorderLayout.WEST);
-        add(new JLabel("", IconUtils.LOGO_2, JLabel.CENTER), BorderLayout.EAST);
+        add(new JLabel("", IconLoader.LOGO_1, JLabel.CENTER), BorderLayout.WEST);
+        add(new JLabel("", IconLoader.LOGO_2, JLabel.CENTER), BorderLayout.EAST);
         JPanel jPanel = new JPanel();
         jPanel.setLayout(new GridBagLayout());
 
@@ -67,8 +61,7 @@ public class REDTitlePanel extends JPanel {
         jPanel.add(program, gridBagConstraints);
 
         gridBagConstraints.gridy++;
-        JLabel version = new SmoothJLabel("Version: " + REDApplication.VERSION,
-                JLabel.CENTER);
+        JLabel version = new SmoothJLabel("Version: " + Global.VERSION, JLabel.CENTER);
         version.setFont(new Font("Dialog", Font.BOLD, 15));
         version.setForeground(ColourScheme.PROGRAM_VERSION);
         jPanel.add(version, gridBagConstraints);
@@ -76,13 +69,14 @@ public class REDTitlePanel extends JPanel {
         gridBagConstraints.gridy++;
 
         JTextPane webPane = new JTextPane();
-        webPane.setText("https://github.com/REDetector/RED");
+        webPane.setText(Global.HOME_PAGE);
         webPane.setEditable(false);
         StyledDocument doc = (StyledDocument) webPane.getDocument();
         Style s = new StyleContext().getStyle(StyleContext.DEFAULT_STYLE);
         StyleConstants.setUnderline(s, true);
         doc.setCharacterAttributes(0, webPane.getText().length(), s, false);
         webPane.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        webPane.setBackground(getBackground());
         webPane.addMouseListener(new MouseListener() {
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -96,7 +90,7 @@ public class REDTitlePanel extends JPanel {
             public void mouseReleased(MouseEvent e) {
                 URI uri = null;
                 try {
-                    uri = new URI("https://github.com/REDetector/RED");
+                    uri = new URI(Global.HOME_PAGE);
                 } catch (URISyntaxException e1) {
                     e1.printStackTrace();
                 }
@@ -120,23 +114,23 @@ public class REDTitlePanel extends JPanel {
 
         JLabel buptCopyright = new JLabel("\u00a9Xing Li, Di Wu, Yongmei Sun, Beijing University of Posts and Telecommunications",
                 JLabel.CENTER);
-        buptCopyright.setFont(FontManager.copyrightFont);
+        buptCopyright.setFont(FontManager.COPYRIGHT_FONT);
         jPanel.add(buptCopyright, gridBagConstraints);
         gridBagConstraints.gridy++;
 
         JLabel cqmuCopyright = new JLabel(
                 "\u00a9Qi Pan, Keyue Ding, Key Laboratory of Molecular Biology for Infectious Diseases, Ministry of Education of China", JLabel.CENTER);
-        cqmuCopyright.setFont(FontManager.copyrightFont);
+        cqmuCopyright.setFont(FontManager.COPYRIGHT_FONT);
         jPanel.add(cqmuCopyright, gridBagConstraints);
         gridBagConstraints.gridy++;
 
         JLabel cqmuCopyright2 = new JLabel("The Second Affiliated Hospital of Chongqing Medical University, Chongqing, P. R. China ", JLabel.CENTER);
-        cqmuCopyright2.setFont(FontManager.copyrightFont);
+        cqmuCopyright2.setFont(FontManager.COPYRIGHT_FONT);
         jPanel.add(cqmuCopyright2, gridBagConstraints);
         gridBagConstraints.gridy++;
 
         JLabel copyright = new JLabel("Distributed under the GNU General Public License, Version 3", JLabel.CENTER);
-        copyright.setFont(FontManager.copyrightFont);
+        copyright.setFont(FontManager.COPYRIGHT_FONT);
         copyright.setForeground(ColourScheme.PROGRAM_VERSION);
         jPanel.add(copyright, gridBagConstraints);
 
@@ -146,8 +140,7 @@ public class REDTitlePanel extends JPanel {
     }
 
     /**
-     * A JLabel with anti-aliasing enabled. Takes the same constructor
-     * arguements as JLabel
+     * A JLabel with anti-aliasing enabled. Takes the same constructor arguments as JLabel
      */
     private class SmoothJLabel extends JLabel {
 
