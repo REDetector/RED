@@ -1,50 +1,64 @@
-package com.xl.display.featureviewer;
-
-/**
- * Copyright 2010-13 Simon Andrews
+/*
+ * RED: RNA Editing Detector
+ *     Copyright (C) <2014>  <Xing Li>
  *
- *    This file is part of SeqMonk.
+ *     RED is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU General Public License as published by
+ *     the Free Software Foundation, either version 3 of the License, or
+ *     (at your option) any later version.
  *
- *    SeqMonk is free software; you can redistribute it and/or modify
- *    it under the terms of the GNU General Public License as published by
- *    the Free Software Foundation; either version 3 of the License, or
- *    (at your option) any later version.
+ *     RED is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     GNU General Public License for more details.
  *
- *    SeqMonk is distributed in the hope that it will be useful,
- *    but WITHOUT ANY WARRANTY; without even the implied warranty of
- *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *    GNU General Public License for more details.
- *
- *    You should have received a copy of the GNU General Public License
- *    along with SeqMonk; if not, write to the Free Software
- *    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+ *     You should have received a copy of the GNU General Public License
+ *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+
+package com.xl.display.featureviewer;
 
 import com.xl.datatypes.feature.Feature;
 import com.xl.utils.Strand;
 
 import javax.swing.table.AbstractTableModel;
 
+/**
+ * The Class FeatureAttributeTable provides a table to view some properties for a feature, which is shown when double click the activated feature on Feature
+ * Track.
+ */
 public class FeatureAttributeTable extends AbstractTableModel {
-
+    /**
+     * The feature.
+     */
     private Feature feature = null;
 
+    /**
+     * Initiate a new feature attribute table.
+     *
+     * @param feature the feature.
+     */
     public FeatureAttributeTable(Feature feature) {
         this.feature = feature;
     }
 
+    @Override
     public int getColumnCount() {
         return 2;
     }
 
+    @Override
     public int getRowCount() {
         return 7;
     }
 
+
+    @Override
     public Class<?> getColumnClass(int col) {
         return String.class;
     }
 
+    @Override
     public String getColumnName(int col) {
         switch (col) {
             case 0:
@@ -56,6 +70,7 @@ public class FeatureAttributeTable extends AbstractTableModel {
         }
     }
 
+    @Override
     public Object getValueAt(int row, int col) {
 
         switch (col) {
