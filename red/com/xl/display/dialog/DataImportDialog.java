@@ -1,14 +1,30 @@
-package com.xl.dialog;
-
-/**
- * Created by Administrator on 2014/6/25.
+/*
+ * RED: RNA Editing Detector
+ *     Copyright (C) <2014>  <Xing Li>
+ *
+ *     RED is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU General Public License as published by
+ *     the Free Software Foundation, either version 3 of the License, or
+ *     (at your option) any later version.
+ *
+ *     RED is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     GNU General Public License for more details.
+ *
+ *     You should have received a copy of the GNU General Public License
+ *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+package com.xl.display.dialog;
+
+
+import com.xl.display.panel.DataIntroductionPanel;
 import com.xl.main.REDApplication;
-import com.xl.panel.DataIntroductionPanel;
 import com.xl.preferences.LocationPreferences;
 import com.xl.thread.ThreadDenovoInput;
 import com.xl.thread.ThreadNonDenovoInput;
+import com.xl.utils.namemanager.MenuUtils;
 
 import javax.swing.*;
 import java.awt.*;
@@ -17,51 +33,62 @@ import java.awt.event.ActionListener;
 import java.io.File;
 
 /**
- * A Dialog to allow the viewing and editing of all SeqMonk preferences.
+ * Created by Xing Li on 2014/6/25.
+ * <p/>
+ * A Dialog for importing data to MySQL database.
  */
 public class DataImportDialog extends JDialog implements ActionListener {
-    private final int NON_DENOVO_INDEX = 0;
-    private final int DENOVO_INDEX = 1;
-    private REDApplication application;
+    /**
+     * Location preferences.
+     */
     private LocationPreferences preferences = LocationPreferences.getInstance();
-
+    /**
+     * RScript or RExecutable path.
+     */
     private JTextField rScriptPath;
-
-    private JTextField rnaVcfFileField;
-
-    private JTextField dnaVcfFileField;
-
-    private JTextField repeatFileField;
-
-    private JTextField refSeqFileField;
-
-    private JTextField dbSNPFileField;
-
     private JTextField denovoRScriptPath;
-
-    private JTextField darnedFileField;
-
+    /**
+     * RNA VCF file path.
+     */
+    private JTextField rnaVcfFileField;
     private JTextField denovoRnaVcfFileField;
-
+    /**
+     * DNA VCF file path.
+     */
+    private JTextField dnaVcfFileField;
+    /**
+     * Repeat regions file path.
+     */
+    private JTextField repeatFileField;
     private JTextField denovoRepeatFileField;
-
+    /**
+     * Gene annotation file path.
+     */
+    private JTextField refSeqFileField;
     private JTextField denovoRefSeqFileField;
-
+    /**
+     * dbSNP database file path.
+     */
+    private JTextField dbSNPFileField;
     private JTextField denovoDbSNPFileField;
-
+    /**
+     * DARNED database file path.
+     */
+    private JTextField darnedFileField;
     private JTextField denovoDarnedFileField;
 
     private JTabbedPane tabs = new JTabbedPane();
 
     /**
-     * Instantiates a new edits the preferences dialog.
+     * Instantiates a new data import dialog.
      */
     public DataImportDialog(REDApplication application) {
-        super(application, "Inport Data Into Database...");
-        this.application = application;
+        super(application, "Import Data into Database...");
         setSize(600, 300);
         setLocationRelativeTo(REDApplication.getInstance());
         setModal(true);
+        getRootPane().setLayout(new BorderLayout());
+
         String rScript = preferences.getRScriptPath();
         String rnaVcfFile = preferences.getRnaVcfFile();
         String dnaVcfFile = preferences.getDnaVcfFile();
@@ -76,7 +103,7 @@ public class DataImportDialog extends JDialog implements ActionListener {
 
         GridBagConstraints c = new GridBagConstraints();
         c.gridy = 0;
-        JLabel rScriptLable = new JLabel(LocationPreferences.R_SCRIPT_PATH);
+        JLabel rScriptLabel = new JLabel(LocationPreferences.R_SCRIPT_PATH);
         rScriptPath = new JTextField();
         if (rScript != null) {
             rScriptPath.setText(rScript);
@@ -84,13 +111,13 @@ public class DataImportDialog extends JDialog implements ActionListener {
             rScriptPath.setText("");
         }
         rScriptPath.setEditable(false);
-        JButton rScriptButton = new JButton("Browse");
+        JButton rScriptButton = new JButton(MenuUtils.BROWSE_BUTTON);
         rScriptButton.setActionCommand(LocationPreferences.R_SCRIPT_PATH);
         rScriptButton.addActionListener(this);
-        addItem(c, nonDenovoPanel, rScriptLable, rScriptPath, rScriptButton);
+        addItem(c, nonDenovoPanel, rScriptLabel, rScriptPath, rScriptButton);
 
         c.gridy++;
-        JLabel rnaVcfLable = new JLabel(LocationPreferences.RNA_VCF_FILE);
+        JLabel rnaVcfLabel = new JLabel(LocationPreferences.RNA_VCF_FILE);
         rnaVcfFileField = new JTextField();
         if (rnaVcfFile != null) {
             rnaVcfFileField.setText(rnaVcfFile);
@@ -98,13 +125,13 @@ public class DataImportDialog extends JDialog implements ActionListener {
             rnaVcfFileField.setText("");
         }
         rnaVcfFileField.setEditable(false);
-        JButton rnaVcfButton = new JButton("Browse");
+        JButton rnaVcfButton = new JButton(MenuUtils.BROWSE_BUTTON);
         rnaVcfButton.setActionCommand(LocationPreferences.RNA_VCF_FILE);
         rnaVcfButton.addActionListener(this);
-        addItem(c, nonDenovoPanel, rnaVcfLable, rnaVcfFileField, rnaVcfButton);
+        addItem(c, nonDenovoPanel, rnaVcfLabel, rnaVcfFileField, rnaVcfButton);
 
         c.gridy++;
-        JLabel dnaVcfLable = new JLabel(LocationPreferences.DNA_VCF_FILE);
+        JLabel dnaVcfLabel = new JLabel(LocationPreferences.DNA_VCF_FILE);
         dnaVcfFileField = new JTextField();
         if (dnaVcfFile != null) {
             dnaVcfFileField.setText(dnaVcfFile);
@@ -112,13 +139,13 @@ public class DataImportDialog extends JDialog implements ActionListener {
             dnaVcfFileField.setText("");
         }
         dnaVcfFileField.setEditable(false);
-        JButton dnaVcfButton = new JButton("Browse");
+        JButton dnaVcfButton = new JButton(MenuUtils.BROWSE_BUTTON);
         dnaVcfButton.setActionCommand(LocationPreferences.DNA_VCF_FILE);
         dnaVcfButton.addActionListener(this);
-        addItem(c, nonDenovoPanel, dnaVcfLable, dnaVcfFileField, dnaVcfButton);
+        addItem(c, nonDenovoPanel, dnaVcfLabel, dnaVcfFileField, dnaVcfButton);
 
         c.gridy++;
-        JLabel repeatLable = new JLabel(LocationPreferences.REPEAT_FILE);
+        JLabel repeatLabel = new JLabel(LocationPreferences.REPEAT_FILE);
         repeatFileField = new JTextField();
         if (repeatFile != null) {
             repeatFileField.setText(repeatFile);
@@ -126,10 +153,10 @@ public class DataImportDialog extends JDialog implements ActionListener {
             repeatFileField.setText("");
         }
         repeatFileField.setEditable(false);
-        JButton repeatButton = new JButton("Browse");
+        JButton repeatButton = new JButton(MenuUtils.BROWSE_BUTTON);
         repeatButton.setActionCommand(LocationPreferences.REPEAT_FILE);
         repeatButton.addActionListener(this);
-        addItem(c, nonDenovoPanel, repeatLable, repeatFileField, repeatButton);
+        addItem(c, nonDenovoPanel, repeatLabel, repeatFileField, repeatButton);
 
         c.gridy++;
         JLabel refSeqLabel = new JLabel(LocationPreferences.REF_SEQ_FILE);
@@ -140,13 +167,13 @@ public class DataImportDialog extends JDialog implements ActionListener {
             refSeqFileField.setText("");
         }
         refSeqFileField.setEditable(false);
-        JButton refSeqButton = new JButton("Browse");
+        JButton refSeqButton = new JButton(MenuUtils.BROWSE_BUTTON);
         refSeqButton.setActionCommand(LocationPreferences.REF_SEQ_FILE);
         refSeqButton.addActionListener(this);
         addItem(c, nonDenovoPanel, refSeqLabel, refSeqFileField, refSeqButton);
 
         c.gridy++;
-        JLabel dbsnpLabel = new JLabel(LocationPreferences.DBSNP_FILE);
+        JLabel dbSNPLabel = new JLabel(LocationPreferences.DBSNP_FILE);
         dbSNPFileField = new JTextField();
         if (dbSNPFile != null) {
             dbSNPFileField.setText(dbSNPFile);
@@ -154,10 +181,10 @@ public class DataImportDialog extends JDialog implements ActionListener {
             dbSNPFileField.setText("");
         }
         dbSNPFileField.setEditable(false);
-        JButton dbSNPButton = new JButton("Browse");
+        JButton dbSNPButton = new JButton(MenuUtils.BROWSE_BUTTON);
         dbSNPButton.setActionCommand(LocationPreferences.DBSNP_FILE);
         dbSNPButton.addActionListener(this);
-        addItem(c, nonDenovoPanel, dbsnpLabel, dbSNPFileField, dbSNPButton);
+        addItem(c, nonDenovoPanel, dbSNPLabel, dbSNPFileField, dbSNPButton);
 
         c.gridy++;
         JLabel darnedLabel = new JLabel(LocationPreferences.DARNED_FILE);
@@ -168,11 +195,11 @@ public class DataImportDialog extends JDialog implements ActionListener {
             darnedFileField.setText("");
         }
         darnedFileField.setEditable(false);
-        JButton darnedButton = new JButton("Browse");
+        JButton darnedButton = new JButton(MenuUtils.BROWSE_BUTTON);
         darnedButton.setActionCommand(LocationPreferences.DARNED_FILE);
         darnedButton.addActionListener(this);
         addItem(c, nonDenovoPanel, darnedLabel, darnedFileField, darnedButton);
-        tabs.addTab("Non-Denovo", nonDenovoPanel);
+        tabs.addTab("DNA-RNA Mode", nonDenovoPanel);
 
 
         JPanel denovoPanel = new JPanel();
@@ -181,7 +208,7 @@ public class DataImportDialog extends JDialog implements ActionListener {
 
         c = new GridBagConstraints();
         c.gridy = 0;
-        JLabel denovoRSciptLable = new JLabel(LocationPreferences.R_SCRIPT_PATH);
+        JLabel denovoRSciptLabel = new JLabel(LocationPreferences.R_SCRIPT_PATH);
         denovoRScriptPath = new JTextField();
         if (rScript != null) {
             denovoRScriptPath.setText(rScript);
@@ -189,13 +216,13 @@ public class DataImportDialog extends JDialog implements ActionListener {
             denovoRScriptPath.setText("");
         }
         denovoRScriptPath.setEditable(false);
-        JButton denovoRScriptButton = new JButton("Browse");
+        JButton denovoRScriptButton = new JButton(MenuUtils.BROWSE_BUTTON);
         denovoRScriptButton.setActionCommand(LocationPreferences.R_SCRIPT_PATH);
         denovoRScriptButton.addActionListener(this);
-        addItem(c, denovoPanel, denovoRSciptLable, denovoRScriptPath, denovoRScriptButton);
+        addItem(c, denovoPanel, denovoRSciptLabel, denovoRScriptPath, denovoRScriptButton);
 
         c.gridy++;
-        JLabel denovoRnaVcfLable = new JLabel(LocationPreferences.RNA_VCF_FILE);
+        JLabel denovoRnaVcfLabel = new JLabel(LocationPreferences.RNA_VCF_FILE);
         denovoRnaVcfFileField = new JTextField();
         denovoRnaVcfFileField.setText(preferences.getRnaVcfFile());
         if (rnaVcfFile != null) {
@@ -204,13 +231,13 @@ public class DataImportDialog extends JDialog implements ActionListener {
             denovoRnaVcfFileField.setText("");
         }
         denovoRnaVcfFileField.setEditable(false);
-        JButton devonoRnaVcfButton = new JButton("Browse");
+        JButton devonoRnaVcfButton = new JButton(MenuUtils.BROWSE_BUTTON);
         devonoRnaVcfButton.setActionCommand(LocationPreferences.RNA_VCF_FILE);
         devonoRnaVcfButton.addActionListener(this);
-        addItem(c, denovoPanel, denovoRnaVcfLable, denovoRnaVcfFileField, devonoRnaVcfButton);
+        addItem(c, denovoPanel, denovoRnaVcfLabel, denovoRnaVcfFileField, devonoRnaVcfButton);
 
         c.gridy++;
-        JLabel denovoRepeatLable = new JLabel(LocationPreferences.REPEAT_FILE);
+        JLabel denovoRepeatLabel = new JLabel(LocationPreferences.REPEAT_FILE);
         denovoRepeatFileField = new JTextField();
         if (repeatFile != null) {
             denovoRepeatFileField.setText(repeatFile);
@@ -218,10 +245,10 @@ public class DataImportDialog extends JDialog implements ActionListener {
             denovoRepeatFileField.setText("");
         }
         denovoRepeatFileField.setEditable(false);
-        JButton denovoRepeatButton = new JButton("Browse");
+        JButton denovoRepeatButton = new JButton(MenuUtils.BROWSE_BUTTON);
         denovoRepeatButton.setActionCommand(LocationPreferences.REPEAT_FILE);
         denovoRepeatButton.addActionListener(this);
-        addItem(c, denovoPanel, denovoRepeatLable, denovoRepeatFileField, denovoRepeatButton);
+        addItem(c, denovoPanel, denovoRepeatLabel, denovoRepeatFileField, denovoRepeatButton);
 
         c.gridy++;
         JLabel denovoRefSeqLabel = new JLabel(LocationPreferences.REF_SEQ_FILE);
@@ -232,7 +259,7 @@ public class DataImportDialog extends JDialog implements ActionListener {
             denovoRefSeqFileField.setText("");
         }
         denovoRefSeqFileField.setEditable(false);
-        JButton denovoRefSeqButton = new JButton("Browse");
+        JButton denovoRefSeqButton = new JButton(MenuUtils.BROWSE_BUTTON);
         denovoRefSeqButton.setActionCommand(LocationPreferences.REF_SEQ_FILE);
         denovoRefSeqButton.addActionListener(this);
         addItem(c, denovoPanel, denovoRefSeqLabel, denovoRefSeqFileField, denovoRefSeqButton);
@@ -246,7 +273,7 @@ public class DataImportDialog extends JDialog implements ActionListener {
             denovoDbSNPFileField.setText("");
         }
         denovoDbSNPFileField.setEditable(false);
-        JButton denovoDbSNPButton = new JButton("Browse");
+        JButton denovoDbSNPButton = new JButton(MenuUtils.BROWSE_BUTTON);
         denovoDbSNPButton.setActionCommand(LocationPreferences.DBSNP_FILE);
         denovoDbSNPButton.addActionListener(this);
         addItem(c, denovoPanel, denovoDbSNPLabel, denovoDbSNPFileField, denovoDbSNPButton);
@@ -260,15 +287,14 @@ public class DataImportDialog extends JDialog implements ActionListener {
             denovoDarnedFileField.setText("");
         }
         denovoDarnedFileField.setEditable(false);
-        JButton denovoDarnedButton = new JButton("Browse");
+        JButton denovoDarnedButton = new JButton(MenuUtils.BROWSE_BUTTON);
         denovoDarnedButton.setActionCommand(LocationPreferences.DARNED_FILE);
         denovoDarnedButton.addActionListener(this);
         addItem(c, denovoPanel, denovoDarnedLabel, denovoDarnedFileField, denovoDarnedButton);
 
-        tabs.addTab("Denovo", denovoPanel);
+        tabs.addTab("Denovo Mode", denovoPanel);
 
-        getContentPane().setLayout(new BorderLayout());
-        getContentPane().add(tabs, BorderLayout.CENTER);
+        getRootPane().add(tabs, BorderLayout.CENTER);
 
         JPanel buttonPanel = new JPanel();
 
@@ -282,7 +308,7 @@ public class DataImportDialog extends JDialog implements ActionListener {
         okButton.addActionListener(this);
         buttonPanel.add(okButton);
 
-        getContentPane().add(buttonPanel, BorderLayout.SOUTH);
+        getRootPane().add(buttonPanel, BorderLayout.SOUTH);
 
         setVisible(true);
     }
@@ -305,7 +331,7 @@ public class DataImportDialog extends JDialog implements ActionListener {
      * Launches a file browser to select a directory
      *
      * @param dataType The action.
-     * @param f        the TextFild from which to take the starting directory
+     * @param f        the TextField from which to take the starting directory
      */
     private void getFile(String dataType, JTextField f) {
         JFileChooser chooser = new JFileChooser(preferences.getProjectSaveLocation());
@@ -323,6 +349,8 @@ public class DataImportDialog extends JDialog implements ActionListener {
 
     public void actionPerformed(ActionEvent ae) {
         String action = ae.getActionCommand();
+        final int NON_DENOVO_INDEX = 0;
+        final int DENOVO_INDEX = 1;
         int currentIndex = tabs.getSelectedIndex();
         if (action.equals(LocationPreferences.RNA_VCF_FILE)) {
             if (currentIndex == NON_DENOVO_INDEX) {
@@ -382,16 +410,17 @@ public class DataImportDialog extends JDialog implements ActionListener {
             dispose();
         } else if (action.equals("import")) {
             switch (currentIndex) {
+                //DNA-RNA index
                 case NON_DENOVO_INDEX:
-                    new Thread(new ThreadNonDenovoInput(application.dataCollection())).start();
+                    new Thread(new ThreadNonDenovoInput()).start();
                     break;
+                //denovo index
                 case DENOVO_INDEX:
-                    new Thread(new ThreadDenovoInput(application.dataCollection())).start();
+                    new Thread(new ThreadDenovoInput()).start();
                     break;
             }
             setVisible(false);
             dispose();
         }
     }
-
 }
