@@ -1,29 +1,26 @@
-/**
- * Copyright Copyright 2007-13 Simon Andrews
+/*
+ * RED: RNA Editing Detector
+ *     Copyright (C) <2014>  <Xing Li>
  *
- *    This file is part of SeqMonk.
+ *     RED is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU General Public License as published by
+ *     the Free Software Foundation, either version 3 of the License, or
+ *     (at your option) any later version.
  *
- *    SeqMonk is free software; you can redistribute it and/or modify
- *    it under the terms of the GNU General Public License as published by
- *    the Free Software Foundation; either version 3 of the License, or
- *    (at your option) any later version.
+ *     RED is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     GNU General Public License for more details.
  *
- *    SeqMonk is distributed in the hope that it will be useful,
- *    but WITHOUT ANY WARRANTY; without even the implied warranty of
- *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *    GNU General Public License for more details.
- *
- *    You should have received a copy of the GNU General Public License
- *    along with SeqMonk; if not, write to the Free Software
- *    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+ *     You should have received a copy of the GNU General Public License
+ *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.xl.dialog.gotodialog;
+package com.xl.display.dialog.gotodialog;
 
 import com.xl.datatypes.genome.Chromosome;
 import com.xl.main.REDApplication;
 import com.xl.preferences.DisplayPreferences;
 import com.xl.utils.NumberKeyListener;
-import com.xl.utils.SequenceReadUtils;
 
 import javax.swing.*;
 import java.awt.*;
@@ -33,11 +30,9 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
 /**
- * The Class GotoDialog provides a quick way to jump to a known position in the
- * genome.
+ * The Class GoToWindowDialog provides a quick way to jump to a known position in the genome.
  */
-public class GotoWindowDialog extends JDialog implements ActionListener,
-        KeyListener {
+public class GoToWindowDialog extends JDialog implements ActionListener, KeyListener {
 
     /**
      * The chromosome.
@@ -64,7 +59,7 @@ public class GotoWindowDialog extends JDialog implements ActionListener,
      *
      * @param application the application
      */
-    public GotoWindowDialog(REDApplication application) {
+    public GoToWindowDialog(REDApplication application) {
         super(application, "Jump to window...");
         setSize(300, 200);
         setLocationRelativeTo(application);
@@ -89,21 +84,11 @@ public class GotoWindowDialog extends JDialog implements ActionListener,
         gbc.gridx++;
         gbc.weightx = 0.6;
 
-        Chromosome[] chrs = application.dataCollection().genome()
-                .getAllChromosomes();
-
-        chromosome = new JComboBox(chrs);
-
+        Chromosome[] chrNames = application.dataCollection().genome().getAllChromosomes();
+        chromosome = new JComboBox(chrNames);
         choicePanel.add(chromosome, gbc);
-
-        Chromosome currentChromosome = DisplayPreferences.getInstance()
-                .getCurrentChromosome();
-        for (int i = 0; i < chrs.length; i++) {
-            if (chrs[i] == currentChromosome) {
-                chromosome.setSelectedIndex(i);
-                break;
-            }
-        }
+        Chromosome currentChromosome = DisplayPreferences.getInstance().getCurrentChromosome();
+        chromosome.setSelectedItem(currentChromosome);
 
         gbc.gridx = 0;
         gbc.gridy++;
@@ -114,10 +99,7 @@ public class GotoWindowDialog extends JDialog implements ActionListener,
         gbc.gridx++;
         gbc.weightx = 0.6;
 
-        centre = new JTextField(""
-                + SequenceReadUtils.midPoint(DisplayPreferences.getInstance()
-                .getCurrentStartLocation(), DisplayPreferences
-                .getInstance().getCurrentEndLocation()), 5);
+        centre = new JTextField("" + DisplayPreferences.getInstance().getCurrentMidPoint(), 5);
         centre.addKeyListener(new NumberKeyListener(false, false));
         centre.addKeyListener(this);
         choicePanel.add(centre, gbc);
@@ -131,8 +113,7 @@ public class GotoWindowDialog extends JDialog implements ActionListener,
         gbc.gridx++;
         gbc.weightx = 0.6;
 
-        window = new JTextField(""
-                + DisplayPreferences.getInstance().getCurrentLength(), 5);
+        window = new JTextField("" + DisplayPreferences.getInstance().getCurrentLength(), 5);
         window.addKeyListener(new NumberKeyListener(false, false));
         window.addKeyListener(this);
         choicePanel.add(window, gbc);
@@ -160,7 +141,7 @@ public class GotoWindowDialog extends JDialog implements ActionListener,
     /**
      * Do goto.
      */
-    private void doGoto() {
+    private void doGoTo() {
 
         Chromosome chr = (Chromosome) chromosome.getSelectedItem();
         int centreValue = chr.getLength() / 2;
@@ -191,36 +172,6 @@ public class GotoWindowDialog extends JDialog implements ActionListener,
 
     }
 
-    /**
-     * Check ok.
-     */
-    private void checkOK() {
-        // Check to see if enough information has been added to allow us to
-        // enable the OK button.
-
-        // We need a start value
-
-        // I've provided a default value so this is no longer needed
-
-        // if (start.getText().length()==0) {
-        // okButton.setEnabled(false);
-        // return;
-        // }
-
-        // We need an end value
-
-        // I've provided a default value so this is no longer needed
-
-        // if (end.getText().length()==0) {
-        // okButton.setEnabled(false);
-        // return;
-        // }
-
-        // If we get here then we're good to go
-        okButton.setEnabled(true);
-
-    }
-
     /*
      * (non-Javadoc)
      *
@@ -232,7 +183,7 @@ public class GotoWindowDialog extends JDialog implements ActionListener,
             setVisible(false);
             dispose();
         } else if (ae.getActionCommand().equals("ok")) {
-            doGoto();
+            doGoTo();
         }
     }
 
@@ -259,8 +210,11 @@ public class GotoWindowDialog extends JDialog implements ActionListener,
      * @see java.awt.event.KeyListener#keyReleased(java.awt.event.KeyEvent)
      */
     public void keyReleased(KeyEvent ke) {
-
-        checkOK();
+        if (centre.getText().length() == 0 || window.getText().length() == 0) {
+            okButton.setEnabled(false);
+        } else {
+            okButton.setEnabled(true);
+        }
     }
 
 }
