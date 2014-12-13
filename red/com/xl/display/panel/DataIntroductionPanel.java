@@ -1,30 +1,30 @@
-/**
- * Copyright 2011-13 Simon Andrews
+/*
+ * RED: RNA Editing Detector
+ *     Copyright (C) <2014>  <Xing Li>
  *
- *    This file is part of SeqMonk.
+ *     RED is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU General Public License as published by
+ *     the Free Software Foundation, either version 3 of the License, or
+ *     (at your option) any later version.
  *
- *    SeqMonk is free software; you can redistribute it and/or modify
- *    it under the terms of the GNU General Public License as published by
- *    the Free Software Foundation; either version 3 of the License, or
- *    (at your option) any later version.
+ *     RED is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     GNU General Public License for more details.
  *
- *    SeqMonk is distributed in the hope that it will be useful,
- *    but WITHOUT ANY WARRANTY; without even the implied warranty of
- *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *    GNU General Public License for more details.
- *
- *    You should have received a copy of the GNU General Public License
- *    along with SeqMonk; if not, write to the Free Software
- *    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+ *     You should have received a copy of the GNU General Public License
+ *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.xl.panel;
+package com.xl.display.panel;
 
 import com.xl.preferences.LocationPreferences;
 
 import javax.swing.*;
 import java.awt.*;
 
-
+/**
+ * An explanation panel when you select a file to import to the database relative to a data type.
+ */
 public class DataIntroductionPanel extends JPanel {
 
     public DataIntroductionPanel(String dataType) {
@@ -59,7 +59,7 @@ public class DataIntroductionPanel extends JPanel {
             sb.append("<br>");
             sb.append("\t We will use the RNA vcf file to do <I>denovo</I> or <I>non-denovo</I> sequencing.");
             sb.append("<br><br>");
-            sb.append("<b>Example</b>: BJ22.RNA.chr8.snvs.vcf");
+            sb.append("<b>Example</b>: BJ22.snvs.hard.filtered.vcf");
             sb.append("<br>");
             sb.append("<b>From</b>: GATK");
             label.setText(sb.toString());
@@ -70,7 +70,7 @@ public class DataIntroductionPanel extends JPanel {
             sb.append("<br>");
             sb.append("\tWe will use the DNA vcf file to do <I>non-denovo</I> sequencing.");
             sb.append("<br><br>");
-            sb.append("<b>Example</b>: BJ22.DNA.chr8.snvs.vcf");
+            sb.append("<b>Example</b>: BJ22_sites.hard.filtered.vcf");
             sb.append("<br>");
             sb.append("<b>From</b>: GATK");
             label.setText(sb.toString());
