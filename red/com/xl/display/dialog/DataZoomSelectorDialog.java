@@ -16,7 +16,7 @@
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.xl.dialog;
+package com.xl.display.dialog;
 
 import com.xl.main.REDApplication;
 
@@ -26,15 +26,14 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 /**
- * Provides a small dialog which allows the user to select a suitable data zoom
- * level. Applies the selected level to currently visible data tracks
+ * Provides a small dialog which allows the user to select a suitable data zoom level. Applies the selected level to currently visible data tracks.
  */
 public class DataZoomSelectorDialog extends DataZoomSelector implements ActionListener {
 
     /**
      * Instantiates a new data zoom selector.
      *
-     * @param application
+     * @param application the application
      */
     public DataZoomSelectorDialog(REDApplication application) {
         super(application);
