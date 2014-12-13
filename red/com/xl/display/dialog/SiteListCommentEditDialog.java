@@ -1,45 +1,47 @@
-/**
- * Copyright 2013 Simon Andrews
+/*
+ * RED: RNA Editing Detector
+ *     Copyright (C) <2014>  <Xing Li>
  *
- *    This file is part of SeqMonk.
+ *     RED is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU General Public License as published by
+ *     the Free Software Foundation, either version 3 of the License, or
+ *     (at your option) any later version.
  *
- *    SeqMonk is free software; you can redistribute it and/or modify
- *    it under the terms of the GNU General Public License as published by
- *    the Free Software Foundation; either version 3 of the License, or
- *    (at your option) any later version.
+ *     RED is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     GNU General Public License for more details.
  *
- *    SeqMonk is distributed in the hope that it will be useful,
- *    but WITHOUT ANY WARRANTY; without even the implied warranty of
- *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *    GNU General Public License for more details.
- *
- *    You should have received a copy of the GNU General Public License
- *    along with SeqMonk; if not, write to the Free Software
- *    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+ *     You should have received a copy of the GNU General Public License
+ *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.xl.dialog;
+package com.xl.display.dialog;
 
 import com.xl.datatypes.sites.SiteList;
 import com.xl.main.REDApplication;
+import com.xl.utils.namemanager.MenuUtils;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+/**
+ * The Class SiteListCommentEditDialog provide a dialog for user to write comments for a site list.
+ */
 public class SiteListCommentEditDialog extends JDialog implements ActionListener {
-
-
+    /**
+     * The site list to be commented.
+     */
     private SiteList list;
+    /**
+     * The text area.
+     */
     private JTextArea editor;
-
-    public SiteListCommentEditDialog(SiteList list) {
-        this(list, REDApplication.getInstance());
-    }
 
     public SiteListCommentEditDialog(SiteList list, Component c) {
 
-        super(REDApplication.getInstance(), "Edit comments for " + list.name());
+        super(REDApplication.getInstance(), "Edit comments for " + list.getListName());
 
         this.list = list;
 
@@ -58,13 +60,13 @@ public class SiteListCommentEditDialog extends JDialog implements ActionListener
 
         JPanel buttonPanel = new JPanel();
 
-        JButton closeButton = new JButton("Close");
+        JButton closeButton = new JButton(MenuUtils.CLOSE_BUTTON);
         closeButton.addActionListener(this);
-        closeButton.setActionCommand("close");
+        closeButton.setActionCommand(MenuUtils.CLOSE_BUTTON);
         buttonPanel.add(closeButton);
 
-        JButton saveButton = new JButton("Save Comments");
-        saveButton.setActionCommand("save");
+        JButton saveButton = new JButton(MenuUtils.SAVE_BUTTON);
+        saveButton.setActionCommand(MenuUtils.SAVE_BUTTON);
         saveButton.addActionListener(this);
         buttonPanel.add(saveButton);
 
@@ -79,7 +81,7 @@ public class SiteListCommentEditDialog extends JDialog implements ActionListener
 
     public void actionPerformed(ActionEvent ae) {
 
-        if (ae.getActionCommand().equals("save")) {
+        if (ae.getActionCommand().equals(MenuUtils.SAVE_BUTTON)) {
             list.setComments(editor.getText());
         }
 
