@@ -16,7 +16,7 @@
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.xl.dialog;
+package com.xl.display.dialog;
 
 import com.xl.interfaces.ProgressListener;
 
@@ -24,11 +24,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by Administrator on 2014/10/20.
+ * Created by Xing Li on 2014/10/20.
+ * <p/>
+ * A progress manager for progress dialog.
  */
 public class REDProgressBar implements ProgressListener {
+    /**
+     * The instance of REDProgressBar.
+     */
     private static REDProgressBar progressBar = new REDProgressBar();
-
+    /**
+     * Listeners.
+     */
     protected List<ProgressListener> listeners;
 
     private REDProgressBar() {
