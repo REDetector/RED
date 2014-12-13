@@ -58,6 +58,10 @@ public class Feature implements Comparable<Feature>, Serializable {
         this.aliasName = aliasName;
     }
 
+    public boolean isInFeature(int position) {
+        return getTxLocation().getStart() <= position && getTxLocation().getEnd() >= position;
+    }
+
     public String getName() {
         return name;
     }
@@ -86,9 +90,13 @@ public class Feature implements Comparable<Feature>, Serializable {
         return allLocations;
     }
 
-
     public String getAliasName() {
         return aliasName;
+    }
+
+    @Override
+    public String toString() {
+        return name;
     }
 
     @Override
