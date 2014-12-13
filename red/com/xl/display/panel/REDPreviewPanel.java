@@ -1,23 +1,21 @@
-/**
- * Copyright 2011-13 Simon Andrews
+/*
+ * RED: RNA Editing Detector
+ *     Copyright (C) <2014>  <Xing Li>
  *
- *    This file is part of SeqMonk.
+ *     RED is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU General Public License as published by
+ *     the Free Software Foundation, either version 3 of the License, or
+ *     (at your option) any later version.
  *
- *    SeqMonk is free software; you can redistribute it and/or modify
- *    it under the terms of the GNU General Public License as published by
- *    the Free Software Foundation; either version 3 of the License, or
- *    (at your option) any later version.
+ *     RED is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     GNU General Public License for more details.
  *
- *    SeqMonk is distributed in the hope that it will be useful,
- *    but WITHOUT ANY WARRANTY; without even the implied warranty of
- *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *    GNU General Public License for more details.
- *
- *    You should have received a copy of the GNU General Public License
- *    along with SeqMonk; if not, write to the Free Software
- *    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+ *     You should have received a copy of the GNU General Public License
+ *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.xl.panel;
+package com.xl.display.panel;
 
 import com.xl.utils.ParsingUtils;
 
@@ -28,9 +26,13 @@ import java.beans.PropertyChangeListener;
 import java.io.*;
 import java.util.zip.GZIPInputStream;
 
-
+/**
+ * A preview panel before opening a RED project file, which will show the samples in the RED project file.
+ */
 public class REDPreviewPanel extends JPanel implements PropertyChangeListener {
-
+    /**
+     * The label.
+     */
     private JLabel label;
 
     public REDPreviewPanel() {
@@ -45,6 +47,7 @@ public class REDPreviewPanel extends JPanel implements PropertyChangeListener {
 
     }
 
+    @Override
     public void propertyChange(PropertyChangeEvent e) {
         String propertyName = e.getPropertyName();
 
@@ -61,26 +64,32 @@ public class REDPreviewPanel extends JPanel implements PropertyChangeListener {
         }
     }
 
+    /**
+     * Reset the label.
+     */
     private void clearText() {
         label.setText("No file selected");
     }
 
+    /**
+     * Read the genome and samples information by a given RED project file.
+     *
+     * @param file the RED project file.
+     */
     private void previewFile(File file) {
 
         FileInputStream fis = null;
         BufferedReader br;
-
         try {
             fis = new FileInputStream(file);
             br = new BufferedReader(new InputStreamReader(new GZIPInputStream(fis)));
         } catch (IOException ioe) {
-
             try {
                 if (fis != null) {
                     fis.close();
                 }
                 br = new BufferedReader(new FileReader(file));
-            } catch (IOException ioex) {
+            } catch (IOException ioe1) {
                 label.setText("Failed to read file");
                 return;
             }
@@ -88,9 +97,8 @@ public class REDPreviewPanel extends JPanel implements PropertyChangeListener {
 
         try {
 
-            // Read the header into a separate variable in case they've clicked on
-            // an empty file.  This way we can check for a null value from reading
-            // the first line.
+            // Read the header into a separate variable in case they've clicked on an empty file.  This way we can check for a null value from reading the
+            // first line.
             String header = br.readLine();
 
             if (header == null || !header.startsWith(ParsingUtils.RED_DATA_VERSION)) {
@@ -99,11 +107,10 @@ public class REDPreviewPanel extends JPanel implements PropertyChangeListener {
                 return;
             }
 
-            StringBuffer sb = new StringBuffer();
+            StringBuilder sb = new StringBuilder();
             sb.append("<html>");
 
             // The next line should be the genome species and version
-
             String genome = br.readLine();
             if (!genome.equals(ParsingUtils.GENOME_INFORMATION_START)) {
                 label.setText("Not a RED file");
@@ -116,34 +123,25 @@ public class REDPreviewPanel extends JPanel implements PropertyChangeListener {
             sb.append(genome);
             sb.append("<br><br>");
 
-            int linesRead = 0;
-            // Next we keep going until we hit the samples line, but we'll
-            // give up if we haven't found the sample information after
-            // 10k lines
-            while (linesRead < 100000) {
-                ++linesRead;
-                String line = br.readLine();
-                if (line == null) {
-                    break;
-                }
-
+            int sampleCount = 0;
+            String line;
+            // Next we keep going until we hit the samples line, but we'll give up if we haven't found the sample information after 10k lines
+            while ((line = br.readLine()) != null) {
+                String[] sections = line.split("\\t");
                 if (line.startsWith(ParsingUtils.SAMPLES)) {
                     sb.append("Samples:<br>");
-                    int sampleCount = Integer.parseInt((line.split("\t"))[1]);
-                    for (int i = 0; i < sampleCount; i++) {
-                        line = br.readLine();
-                        sb.append((line.split("\t"))[0]);
-                        sb.append("<br>");
-                    }
-                    sb.append("<br>");
-                    break;
+                    sampleCount = Integer.parseInt(sections[1]);
+                    continue;
                 }
-
+                if (sections.length == 8) {
+                    sb.append(sections[0]);
+                    sb.append("<br>");
+                    if (--sampleCount == 0) {
+                        break;
+                    }
+                }
             }
-
-            if (linesRead >= 100000) {
-                sb.append("Couldn't find samples at top of file");
-            }
+            sb.append("<br>");
 
             br.close();
             sb.append("</html>");
