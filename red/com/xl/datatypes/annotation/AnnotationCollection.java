@@ -193,13 +193,10 @@ public class AnnotationCollection {
      * @return Features relative to a given name.
      */
     public Feature[] getFeaturesForName(String name) {
-        Vector<Feature> features = new Vector<Feature>();
+        List<Feature> features = new ArrayList<Feature>();
         Enumeration<AnnotationSet> sets = annotationSets.elements();
         while (sets.hasMoreElements()) {
-            Feature f = sets.nextElement().getFeaturesForName(name);
-            if (f != null) {
-                features.add(f);
-            }
+            features.addAll(sets.nextElement().getFeaturesForName(name));
         }
         Feature[] allFeatures = features.toArray(new Feature[0]);
         Arrays.sort(allFeatures);
@@ -213,13 +210,10 @@ public class AnnotationCollection {
      * @return Features relative to a given location.
      */
     public Feature[] getFeatureForLocation(int location) {
-        Vector<Feature> features = new Vector<Feature>();
+        List<Feature> features = new ArrayList<Feature>();
         Enumeration<AnnotationSet> sets = annotationSets.elements();
         while (sets.hasMoreElements()) {
-            Feature f = sets.nextElement().getFeatrueForLocation(location);
-            if (f != null) {
-                features.add(f);
-            }
+            features.addAll(sets.nextElement().getFeatureForLocation(location));
         }
         Feature[] allFeatures = features.toArray(new Feature[0]);
         Arrays.sort(allFeatures);
