@@ -1,9 +1,28 @@
-package com.xl.dialog;
+/*
+ * RED: RNA Editing Detector
+ *     Copyright (C) <2014>  <Xing Li>
+ *
+ *     RED is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU General Public License as published by
+ *     the Free Software Foundation, either version 3 of the License, or
+ *     (at your option) any later version.
+ *
+ *     RED is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     GNU General Public License for more details.
+ *
+ *     You should have received a copy of the GNU General Public License
+ *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+package com.xl.display.dialog;
 
 import com.xl.datatypes.annotation.AnnotationSet;
 import com.xl.datatypes.feature.Feature;
 import com.xl.main.REDApplication;
 import com.xl.utils.ChromosomeNameComparator;
+import com.xl.utils.namemanager.MenuUtils;
 
 import javax.swing.*;
 import javax.swing.table.AbstractTableModel;
@@ -13,20 +32,25 @@ import java.awt.event.ActionListener;
 import java.util.TreeSet;
 
 /**
- * Displays a dialog showing the different types of feature contained
- * in an annotation set and the counts for each.  The counts are
- * calculated asynchronously so the dialog displays quickly even if
- * lots of number crunching needs to be done to get the annotation back
- * off disk.
+ * Displays a dialog showing the different types of feature contained in an annotation set and the counts for each. The counts are calculated asynchronously so
+ * the dialog displays quickly even if lots of number crunching needs to be done to get the annotation back off disk.
  */
 public class AnnotationSetPropertiesDialog extends JDialog implements Runnable {
-
+    /**
+     * The annotation set.
+     */
     private AnnotationSet set = null;
-
+    /**
+     * The annotation set table model.
+     */
     private AnnotationSetTableModel model = null;
-
+    /**
+     * The count of features for each chromosome.
+     */
     private int[] counts = null;
-
+    /**
+     * The chromosome names.
+     */
     private String[] chrNames = null;
 
     /**
@@ -47,7 +71,7 @@ public class AnnotationSetPropertiesDialog extends JDialog implements Runnable {
         getContentPane().add(new JScrollPane(table), BorderLayout.CENTER);
 
         JPanel buttonPanel = new JPanel();
-        JButton closeButton = new JButton("Close");
+        JButton closeButton = new JButton(MenuUtils.CLOSE_BUTTON);
         closeButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 setVisible(false);
