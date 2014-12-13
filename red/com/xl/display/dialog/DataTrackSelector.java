@@ -1,23 +1,21 @@
-/**
- * Copyright Copyright 2007-13 Simon Andrews
+/*
+ * RED: RNA Editing Detector
+ *     Copyright (C) <2014>  <Xing Li>
  *
- *    This file is part of SeqMonk.
+ *     RED is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU General Public License as published by
+ *     the Free Software Foundation, either version 3 of the License, or
+ *     (at your option) any later version.
  *
- *    SeqMonk is free software; you can redistribute it and/or modify
- *    it under the terms of the GNU General Public License as published by
- *    the Free Software Foundation; either version 3 of the License, or
- *    (at your option) any later version.
+ *     RED is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     GNU General Public License for more details.
  *
- *    SeqMonk is distributed in the hope that it will be useful,
- *    but WITHOUT ANY WARRANTY; without even the implied warranty of
- *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *    GNU General Public License for more details.
- *
- *    You should have received a copy of the GNU General Public License
- *    along with SeqMonk; if not, write to the Free Software
- *    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+ *     You should have received a copy of the GNU General Public License
+ *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.xl.dialog;
+package com.xl.display.dialog;
 
 import com.xl.datatypes.DataGroup;
 import com.xl.datatypes.DataSet;
@@ -34,71 +32,54 @@ import java.awt.event.ActionListener;
 import java.util.Arrays;
 
 /**
- * The Class DataTrackSelector provides a mean to select the data
- * tracks which are shown in the chromosome view.
+ * The Class DataTrackSelector provides a mean to select the data tracks which are shown in the chromosome view.
  */
 public class DataTrackSelector extends JDialog implements ActionListener, ListSelectionListener {
-
     /**
      * The application.
      */
     private REDApplication application;
-
     /**
      * The available group model.
      */
     private DefaultListModel availableGroupModel = new DefaultListModel();
-
     /**
      * The available set model.
      */
     private DefaultListModel availableSetModel = new DefaultListModel();
-
-
     /**
      * The available group list.
      */
     private JList availableGroupList;
-
     /**
      * The available set list.
      */
     private JList availableSetList;
-
     /**
      * The used model.
      */
     private DefaultListModel usedModel = new DefaultListModel();
-
     /**
      * The used list.
      */
     private JList usedList;
-
     /**
      * The add button.
      */
     private JButton addButton;
-
     /**
      * The remove button.
      */
     private JButton removeButton;
-
     /**
      * The up button.
      */
     private JButton upButton;
-
     /**
      * The down button.
      */
     private JButton downButton;
 
-    /**
-     * The renderer.
-     */
-    private TypeColourRenderer renderer = new TypeColourRenderer();
 
     /**
      * Instantiates a new data track selector.
@@ -111,6 +92,7 @@ public class DataTrackSelector extends JDialog implements ActionListener, ListSe
         setLocationRelativeTo(application);
 
         this.application = application;
+        TypeColourRenderer renderer = new TypeColourRenderer();
 
         getContentPane().setLayout(new GridBagLayout());
         GridBagConstraints c = new GridBagConstraints();
@@ -246,8 +228,7 @@ public class DataTrackSelector extends JDialog implements ActionListener, ListSe
 
         setVisible(true);
 
-        // A bit of a hack to make sure all lists
-        // resize as they should...
+        // A bit of a hack to make sure all lists resize as they should...
         availableSetModel.addElement("temp");
         availableGroupModel.addElement("temp");
         usedModel.addElement("temp");
@@ -270,7 +251,6 @@ public class DataTrackSelector extends JDialog implements ActionListener, ListSe
                 usedModel.addElement(add);
                 availableGroupModel.removeElement(add);
             }
-
             adds = availableSetList.getSelectedValues();
             for (Object add : adds) {
                 usedModel.addElement(add);
@@ -279,14 +259,14 @@ public class DataTrackSelector extends JDialog implements ActionListener, ListSe
 
         } else if (c.equals("remove")) {
             Object[] removes = usedList.getSelectedValues();
-            for (int i = 0; i < removes.length; i++) {
-                usedModel.removeElement(removes[i]);
-                if (removes[i] instanceof DataSet) {
-                    availableSetModel.addElement(removes[i]);
-                } else if (removes[i] instanceof DataGroup) {
-                    availableGroupModel.addElement(removes[i]);
+            for (Object remove : removes) {
+                usedModel.removeElement(remove);
+                if (remove instanceof DataSet) {
+                    availableSetModel.addElement(remove);
+                } else if (remove instanceof DataGroup) {
+                    availableGroupModel.addElement(remove);
                 } else {
-                    new CrashReporter(new Exception("Unknown type of removed store " + removes[i]));
+                    new CrashReporter(new Exception("Unknown type of removed store " + remove));
                 }
             }
         } else if (c.equals("up")) {
