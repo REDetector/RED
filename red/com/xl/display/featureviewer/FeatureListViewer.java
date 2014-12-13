@@ -1,9 +1,28 @@
+/*
+ * RED: RNA Editing Detector
+ *     Copyright (C) <2014>  <Xing Li>
+ *
+ *     RED is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU General Public License as published by
+ *     the Free Software Foundation, either version 3 of the License, or
+ *     (at your option) any later version.
+ *
+ *     RED is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     GNU General Public License for more details.
+ *
+ *     You should have received a copy of the GNU General Public License
+ *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package com.xl.display.featureviewer;
 
 import com.sun.java.TableSorter;
 import com.xl.datatypes.feature.Feature;
 import com.xl.main.REDApplication;
 import com.xl.preferences.DisplayPreferences;
+import com.xl.utils.Strand;
 
 import javax.swing.*;
 import javax.swing.table.AbstractTableModel;
@@ -11,8 +30,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
 /**
- * The Class FeatureListViewer displays the hits when searching through the
- * features.
+ * The Class FeatureListViewer displays the hits when searching through the features.
  */
 
 public class FeatureListViewer extends JTable implements MouseListener {
@@ -28,30 +46,22 @@ public class FeatureListViewer extends JTable implements MouseListener {
 
         this.application = REDApplication.getInstance();
 
-        String[] headers = new String[]{"Feature", "Name", "Alias Name",
-                "Chromosome", "Transcription", "CDS", "EXON"};
-        Class[] classes = new Class[]{String.class, String.class,
-                String.class, String.class, String.class, String.class,
-                String.class};
+        String[] headers = new String[]{"ID", "Name", "Strand", "Chromosome", "Transcription", "CDS", "EXON"};
+        Class[] classes = new Class[]{String.class, String.class, String.class, String.class, String.class, String.class, String.class};
 
         Object[][] rowData = new Object[features.length][headers.length];
 
         for (int i = 0; i < features.length; i++) {
             rowData[i][0] = features[i];
-            rowData[i][1] = features[i].getName();
-            rowData[i][2] = features[i].getAliasName();
-            if (features[i].getChr() != null) {
-                rowData[i][3] = features[i].getChr();
-            } else {
-                rowData[i][3] = "No chr";
-            }
+            rowData[i][1] = features[i].getAliasName();
+            rowData[i][2] = Strand.parseStrand(features[i].getStrand());
+            rowData[i][3] = features[i].getChr();
             rowData[i][4] = features[i].getTxLocation().toString();
             rowData[i][5] = features[i].getCdsLocation().toString();
             rowData[i][6] = features[i].getExonLocations();
         }
 
-        TableSorter sorter = new TableSorter(new FeatureTableModel(rowData,
-                headers, classes));
+        TableSorter sorter = new TableSorter(new FeatureTableModel(rowData, headers, classes));
         setModel(sorter);
         addMouseListener(this);
         sorter.setTableHeader(getTableHeader());
@@ -83,12 +93,8 @@ public class FeatureListViewer extends JTable implements MouseListener {
         int r = t.getSelectedRow();
         Feature f = (Feature) t.getValueAt(r, 0);
 
-        DisplayPreferences.getInstance()
-                .setLocation(
-                        application.dataCollection().genome()
-                                .getChromosome(f.getChr()),
-                        f.getTxLocation().getStart(),
-                        f.getTxLocation().getEnd());
+        DisplayPreferences.getInstance().setLocation(application.dataCollection().genome().getChromosome(f.getChr()), f.getTxLocation().getStart(),
+                f.getTxLocation().getEnd());
     }
 
     /*
@@ -151,9 +157,7 @@ public class FeatureListViewer extends JTable implements MouseListener {
          * @param headers the headers
          * @param classes the classes
          */
-        public FeatureTableModel(Object[][] data, String[] headers,
-                                 Class[] classes) {
-            super();
+        public FeatureTableModel(Object[][] data, String[] headers, Class[] classes) {
             this.data = data;
             this.headers = headers;
             this.classes = classes;
