@@ -1,13 +1,28 @@
+/*
+ * RED: RNA Editing Detector
+ *     Copyright (C) <2014>  <Xing Li>
+ *
+ *     RED is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU General Public License as published by
+ *     the Free Software Foundation, either version 3 of the License, or
+ *     (at your option) any later version.
+ *
+ *     RED is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     GNU General Public License for more details.
+ *
+ *     You should have received a copy of the GNU General Public License
+ *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package com.xl.display.genomeviewer;
 
-import com.xl.datatypes.DataGroup;
-import com.xl.datatypes.DataSet;
 import com.xl.datatypes.DataStore;
 import com.xl.datatypes.genome.Chromosome;
 import com.xl.datatypes.genome.Genome;
 import com.xl.datatypes.sites.SiteList;
-import com.xl.datatypes.sites.SiteSet;
-import com.xl.interfaces.DataChangeListener;
+import com.xl.interfaces.ActiveDataChangedListener;
 import com.xl.interfaces.DisplayPreferencesListener;
 import com.xl.main.REDApplication;
 import com.xl.preferences.DisplayPreferences;
@@ -20,7 +35,7 @@ import java.awt.event.MouseListener;
 /**
  * The Class GenomeViewer provides a graphical overview of a whole genome
  */
-public class GenomeViewer extends JPanel implements DataChangeListener, DisplayPreferencesListener {
+public class GenomeViewer extends JPanel implements ActiveDataChangedListener, DisplayPreferencesListener {
 
     /**
      * The chromosome displays.
@@ -31,6 +46,10 @@ public class GenomeViewer extends JPanel implements DataChangeListener, DisplayP
      * The application.
      */
     private REDApplication application;
+    /**
+     * Since that we want to export the genome view without any highlighted place, so we temporarily cancel painting the highlight when exporting image and
+     * restore it after export has been finished.
+     */
     private boolean isExportImage = false;
 
     /**
@@ -106,7 +125,7 @@ public class GenomeViewer extends JPanel implements DataChangeListener, DisplayP
     /**
      * Application.
      *
-     * @return the seq monk application
+     * @return the RED application
      */
     public REDApplication application() {
         return application;
@@ -148,7 +167,7 @@ public class GenomeViewer extends JPanel implements DataChangeListener, DisplayP
                 drawSites = false;
         }
         for (ChromosomeDisplay display : chromosomeDisplays) {
-            display.setShowSites(drawSites);
+            display.showSites(drawSites);
             if (!isExportImage) {
                 display.setView(c, start, end);
             } else {
@@ -157,70 +176,16 @@ public class GenomeViewer extends JPanel implements DataChangeListener, DisplayP
         }
     }
 
-    // For all of the listener events we merely forward these to the individual chromosome views
-    public void activeDataStoreChanged(DataStore s) {
-        for (ChromosomeDisplay display : chromosomeDisplays) {
-            display.activeDataStoreChanged(s);
-        }
-    }
-
-    public void activeSiteListChanged(SiteList l) {
-        for (ChromosomeDisplay display : chromosomeDisplays) {
-            display.activeSiteListChanged(l);
-        }
-    }
-
-    public void dataGroupAdded(DataGroup g) {
-        for (ChromosomeDisplay display : chromosomeDisplays) {
-            display.dataGroupAdded(g);
-        }
-    }
-
-    public void dataGroupsRemoved(DataGroup[] g) {
-        for (ChromosomeDisplay display : chromosomeDisplays) {
-            display.dataGroupsRemoved(g);
-        }
-    }
-
-    public void dataGroupRenamed(DataGroup g) {
-        for (ChromosomeDisplay display : chromosomeDisplays) {
-            display.dataGroupRenamed(g);
-        }
-
-    }
-
-    public void dataGroupSamplesChanged(DataGroup g) {
-        for (ChromosomeDisplay display : chromosomeDisplays) {
-            display.dataGroupSamplesChanged(g);
-        }
-    }
-
-    public void dataSetAdded(DataSet d) {
-        for (ChromosomeDisplay display : chromosomeDisplays) {
-            display.dataSetAdded(d);
-        }
-    }
-
-    public void dataSetsRemoved(DataSet[] d) {
-        for (ChromosomeDisplay display : chromosomeDisplays) {
-            display.dataSetsRemoved(d);
-        }
-    }
-
-    public void dataSetRenamed(DataSet d) {
-        for (ChromosomeDisplay display : chromosomeDisplays) {
-            display.dataSetRenamed(d);
-        }
-    }
-
-    public void siteSetReplaced(SiteSet p) {
-        for (ChromosomeDisplay display : chromosomeDisplays) {
-            display.siteSetReplaced(p);
-        }
-    }
-
+    @Override
     public void displayPreferencesUpdated(DisplayPreferences prefs) {
         setView(prefs.getCurrentChromosome(), prefs.getCurrentStartLocation(), prefs.getCurrentEndLocation());
         repaint();
+    }
+
+    @Override
+    public void activeDataChanged(DataStore d, SiteList l) {
+        for (ChromosomeDisplay display : chromosomeDisplays) {
+            display.activeDataChanged(d, l);
+        }
     }
 }
