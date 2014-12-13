@@ -1,31 +1,31 @@
-/**
- * Copyright 2010-13 Simon Andrews
+/*
+ * RED: RNA Editing Detector
+ *     Copyright (C) <2014>  <Xing Li>
  *
- *    This file is part of SeqMonk.
+ *     RED is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU General Public License as published by
+ *     the Free Software Foundation, either version 3 of the License, or
+ *     (at your option) any later version.
  *
- *    SeqMonk is free software; you can redistribute it and/or modify
- *    it under the terms of the GNU General Public License as published by
- *    the Free Software Foundation; either version 3 of the License, or
- *    (at your option) any later version.
+ *     RED is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     GNU General Public License for more details.
  *
- *    SeqMonk is distributed in the hope that it will be useful,
- *    but WITHOUT ANY WARRANTY; without even the implied warranty of
- *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *    GNU General Public License for more details.
- *
- *    You should have received a copy of the GNU General Public License
- *    along with SeqMonk; if not, write to the Free Software
- *    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+ *     You should have received a copy of the GNU General Public License
+ *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.xl.panel;
+package com.xl.display.panel;
 
+import com.xl.main.Global;
 import com.xl.main.REDApplication;
 import com.xl.net.crashreport.CrashReporter;
 import com.xl.net.genomes.UpdateChecker;
 import com.xl.preferences.LocationPreferences;
 import com.xl.preferences.REDPreferences;
-import com.xl.utils.namemanager.IconUtils;
+import com.xl.utils.FileUtils;
 import com.xl.utils.namemanager.InfoPanelUtils;
+import com.xl.utils.ui.IconLoader;
 
 import javax.swing.*;
 import java.awt.*;
@@ -37,19 +37,9 @@ import java.io.IOException;
 import java.text.DecimalFormat;
 
 /**
- * This panel is displayed when the program first starts. It shows information
- * about the current RED install
+ * This panel is displayed when the program first starts. It shows information about the current RED install
  */
 public class REDInfoPanel extends JPanel implements Runnable, ActionListener {
-
-	/*
-     * We tried to use the standard OptionPanel icons here, but some systems
-	 * didn't have sensible icons and used horrible defaults so now we specify
-	 * our own. The error icon is a public domain icon from
-	 * http://www.clker.com/clipart-12247.html The others are modifications of
-	 * that icon done by Simon Andrews as part of this project. The SVG files
-	 * for these icons are in the same folder as the loaded png files.
-	 */
 
     /**
      * The update label.
@@ -60,9 +50,13 @@ public class REDInfoPanel extends JPanel implements Runnable, ActionListener {
      * The update label text.
      */
     private JLabel programUpdateLabelText;
-
+    /**
+     * The application
+     */
     private REDApplication application;
-
+    /**
+     * Check if the cache directory is valid or not.
+     */
     private boolean invalidCacheDirectory = false;
 
     /**
@@ -71,7 +65,7 @@ public class REDInfoPanel extends JPanel implements Runnable, ActionListener {
     private DecimalFormat twoDP = new DecimalFormat("#.##");
 
     /**
-     * Instantiates a new seq monk information panel.
+     * Instantiates a new RED information panel.
      */
     public REDInfoPanel(REDApplication application) {
         this.application = application;
@@ -101,27 +95,23 @@ public class REDInfoPanel extends JPanel implements Runnable, ActionListener {
         gridBagConstraints.insets = new Insets(5, 5, 5, 5);
 
         // First the Memory available
-        JLabel memoryLabel = new JLabel(IconUtils.INFOICON);
+        JLabel memoryLabel = new JLabel(IconLoader.ICON_INFO);
         add(memoryLabel, gridBagConstraints);
         gridBagConstraints.gridx = 1;
         gridBagConstraints.weightx = 0.999;
-        Runtime rt = Runtime.getRuntime();
-        double memory = ((double) Runtime.getRuntime().maxMemory())
-                / (1024 * 1024 * 1024);
-        add(new JLabel(twoDP.format(memory) + " GB of memory in jvm is available",
-                JLabel.LEFT), gridBagConstraints);
+        double memory = ((double) Runtime.getRuntime().maxMemory()) / (1024 * 1024 * 1024);
+        add(new JLabel(twoDP.format(memory) + " GB of memory in jvm is available", JLabel.LEFT), gridBagConstraints);
 
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy++;
         gridBagConstraints.weightx = 0.001;
 
         // Whether we're running the latest version
-        programUpdateLabel = new JLabel(IconUtils.INFOICON);
+        programUpdateLabel = new JLabel(IconLoader.ICON_INFO);
         add(programUpdateLabel, gridBagConstraints);
         gridBagConstraints.gridx = 1;
         gridBagConstraints.weightx = 0.999;
-        programUpdateLabelText = new JLabel(
-                InfoPanelUtils.PROGRAM_UPDATE_CHECK, JLabel.LEFT);
+        programUpdateLabelText = new JLabel(InfoPanelUtils.PROGRAM_UPDATE_CHECK, JLabel.LEFT);
         add(programUpdateLabelText, gridBagConstraints);
 
         gridBagConstraints.gridx = 0;
@@ -143,40 +133,34 @@ public class REDInfoPanel extends JPanel implements Runnable, ActionListener {
 
         File tempDir = new File(LocationPreferences.getInstance().getTempDirectory());
 
-        if (!(tempDir.exists() && tempDir.isDirectory()
-                && tempDir.canRead() && tempDir.canWrite() && tempDir
-                .listFiles() != null)) {
-            JLabel tempLabel = new JLabel(IconUtils.ERRORICON);
+        if (!(tempDir.exists() && tempDir.isDirectory() && tempDir.canRead() && tempDir.canWrite() && tempDir.listFiles() != null)) {
+            JLabel tempLabel = new JLabel(IconLoader.ICON_ERROR);
             add(tempLabel, gridBagConstraints);
             gridBagConstraints.gridx = 1;
             gridBagConstraints.weightx = 0.999;
-            add(new JLabel(InfoPanelUtils.CACHE_DIRECTORY_CONFIGURE_FAIL,
-                    JLabel.LEFT), gridBagConstraints);
+            add(new JLabel(InfoPanelUtils.CACHE_DIRECTORY_CONFIGURE_FAIL, JLabel.LEFT), gridBagConstraints);
             gridBagConstraints.gridx = 2;
             gridBagConstraints.weightx = 0.001;
             add(setTempDirButton, gridBagConstraints);
             invalidCacheDirectory = true;
         } else {
-            // Check if we can actually write something into the cache directory
-            // (don't just trust that we can)
+            // Check if we can actually write something into the cache directory (don't just trust that we can)
 
             try {
-                File tempFile = File.createTempFile("red_test_data",
-                        ".temp", tempDir);
+                File tempFile = File.createTempFile("red_test_data", ".temp", tempDir);
                 FileOutputStream fis = new FileOutputStream(tempFile);
                 fis.write(123456789);
                 fis.close();
-                tempFile.delete();
+                if (!tempFile.delete()) {
+                    throw new IOException();
+                }
             } catch (IOException ioe) {
                 // Something failed when trying to use the cache directory
-                JLabel tempLabel = new JLabel(IconUtils.ERRORICON);
+                JLabel tempLabel = new JLabel(IconLoader.ICON_ERROR);
                 add(tempLabel, gridBagConstraints);
                 gridBagConstraints.gridx = 1;
                 gridBagConstraints.weightx = 0.999;
-                add(new JLabel(
-                        "A test write to your cache directory failed ("
-                                + ioe.getLocalizedMessage()
-                                + "). Please configure a cache directory to allow RED to run.",
+                add(new JLabel("A test write to your cache directory failed (" + ioe.getLocalizedMessage() + "). Please configure a cache directory to allow RED to run.",
                         JLabel.LEFT), gridBagConstraints);
                 gridBagConstraints.gridx = 2;
                 gridBagConstraints.weightx = 0.001;
@@ -189,32 +173,29 @@ public class REDInfoPanel extends JPanel implements Runnable, ActionListener {
                 File[] tempFiles = tempDir.listFiles();
 
                 int staleFiles = 0;
-                for (int f = 0; f < tempFiles.length; f++) {
-                    if (tempFiles[f].isFile()
-                            && tempFiles[f].getName().startsWith("red")
-                            && tempFiles[f].getName().endsWith(".temp")) {
-                        staleFiles++;
+                if (tempFiles != null) {
+                    for (File tempFile : tempFiles) {
+                        if (tempFile.isFile() && tempFile.getName().startsWith("red") && tempFile.getName().endsWith(".temp")) {
+                            staleFiles++;
+                        }
                     }
                 }
+
                 if (staleFiles > 0) {
-                    JLabel tempLabel = new JLabel(IconUtils.WARNINGICON);
+                    JLabel tempLabel = new JLabel(IconLoader.ICON_WARNING);
                     add(tempLabel, gridBagConstraints);
                     gridBagConstraints.gridx = 1;
                     gridBagConstraints.weightx = 0.999;
-                    add(new JLabel(
-                            "Disk caching is available and enabled - but you have "
-                                    + staleFiles + " stale temp files",
-                            JLabel.LEFT), gridBagConstraints);
+                    add(new JLabel("Disk caching is available and enabled - but you have " + staleFiles + " stale temp files", JLabel.LEFT), gridBagConstraints);
                     gridBagConstraints.gridx = 2;
                     gridBagConstraints.weightx = 0.001;
                     add(removeStaleFilesButton, gridBagConstraints);
                 } else {
-                    JLabel tempLabel = new JLabel(IconUtils.TICKICON);
+                    JLabel tempLabel = new JLabel(IconLoader.ICON_TICK);
                     add(tempLabel, gridBagConstraints);
                     gridBagConstraints.gridx = 1;
                     gridBagConstraints.weightx = 0.999;
-                    add(new JLabel("Disk caching is available and enabled",
-                            JLabel.LEFT), gridBagConstraints);
+                    add(new JLabel("Disk caching is available and enabled", JLabel.LEFT), gridBagConstraints);
                 }
 
                 application.cacheFolderChecked();
@@ -225,8 +206,7 @@ public class REDInfoPanel extends JPanel implements Runnable, ActionListener {
         gridBagConstraints.weightx = 0.001;
 
         // Check the genomes directory
-
-        JLabel genomesLabel = new JLabel(IconUtils.ERRORICON);
+        JLabel genomesLabel = new JLabel(IconLoader.ICON_ERROR);
         JLabel genomesLabelText = new JLabel(InfoPanelUtils.GENOMES_CHECK_FOLDER_DISABLE);
 
         // They're using a custom genomes folder
@@ -234,14 +214,14 @@ public class REDInfoPanel extends JPanel implements Runnable, ActionListener {
 
         if (!gb.exists()) {
             // There is no default genomes folder
-            genomesLabel.setIcon(IconUtils.ERRORICON);
+            genomesLabel.setIcon(IconLoader.ICON_ERROR);
             genomesLabelText.setText(InfoPanelUtils.GENOMES_FOLDER_GET_FAIL);
             gridBagConstraints.gridx = 2;
             gridBagConstraints.weightx = 0.001;
             add(setGenomesFolderButton, gridBagConstraints);
         } else if (!gb.canRead()) {
             // The default genomes folder is present but useless
-            genomesLabel.setIcon(IconUtils.ERRORICON);
+            genomesLabel.setIcon(IconLoader.ICON_ERROR);
             genomesLabelText.setText(InfoPanelUtils.PERMISSION_DENIED_READ);
             gridBagConstraints.gridx = 2;
             gridBagConstraints.weightx = 0.001;
@@ -249,17 +229,15 @@ public class REDInfoPanel extends JPanel implements Runnable, ActionListener {
         } else if (!gb.canWrite()) {
             // The default genomes folder is present, but we can't import
             // new genomes
-            genomesLabel.setIcon(IconUtils.WARNINGICON);
-            genomesLabelText
-                    .setText(InfoPanelUtils.PERMISSION_DENIED_WRITE);
+            genomesLabel.setIcon(IconLoader.ICON_WARNING);
+            genomesLabelText.setText(InfoPanelUtils.PERMISSION_DENIED_WRITE);
             gridBagConstraints.gridx = 2;
             gridBagConstraints.weightx = 0.001;
             add(setGenomesFolderButton, gridBagConstraints);
         } else {
             // Everything is OK
-            genomesLabel.setIcon(IconUtils.INFOICON);
-            genomesLabelText
-                    .setText(InfoPanelUtils.GENOMES_USE_CUSTUM_FOLDER);
+            genomesLabel.setIcon(IconLoader.ICON_INFO);
+            genomesLabelText.setText(InfoPanelUtils.GENOMES_USE_CUSTUM_FOLDER);
         }
 
         gridBagConstraints.gridx = 0;
@@ -277,9 +255,8 @@ public class REDInfoPanel extends JPanel implements Runnable, ActionListener {
             Thread t = new Thread(this);
             t.start();
         } else {
-            programUpdateLabel.setIcon(IconUtils.WARNINGICON);
-            programUpdateLabelText
-                    .setText(InfoPanelUtils.PROGRAM_CHECK_UPDATE_DISABLE);
+            programUpdateLabel.setIcon(IconLoader.ICON_WARNING);
+            programUpdateLabelText.setText(InfoPanelUtils.PROGRAM_CHECK_UPDATE_DISABLE);
         }
 
         validate();
@@ -298,49 +275,30 @@ public class REDInfoPanel extends JPanel implements Runnable, ActionListener {
         return jb;
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see java.lang.Runnable#run()
-     */
+    @Override
     public void run() {
-
-        // try {
-        // Thread.sleep(500);
-        // }
-        // catch (InterruptedException e1) {}
-        // Check for an available update to the SeqMonk Program
         try {
-
             if (UpdateChecker.isUpdateAvailable()) {
-
                 String latestVersion = UpdateChecker.getLatestVersionNumber();
-
-                programUpdateLabel.setIcon(IconUtils.WARNINGICON);
-                programUpdateLabelText.setText("A newer version of RED (v"
-                        + latestVersion + ") is available");
+                programUpdateLabel.setIcon(IconLoader.ICON_WARNING);
+                programUpdateLabelText.setText("A newer version of RED (v" + latestVersion + ") is available");
             } else {
-                if (REDApplication.VERSION.contains("devel")) {
-                    programUpdateLabel.setIcon(IconUtils.WARNINGICON);
-                    programUpdateLabelText
-                            .setText("You are running a current development version of RED");
+                if (Global.VERSION.contains("dev")) {
+                    programUpdateLabel.setIcon(IconLoader.ICON_WARNING);
+                    programUpdateLabelText.setText("You are running a current development version of RED");
                 } else {
-                    programUpdateLabel.setIcon(IconUtils.TICKICON);
-                    programUpdateLabelText
-                            .setText("You are running the latest version of RED");
+                    programUpdateLabel.setIcon(IconLoader.ICON_TICK);
+                    programUpdateLabelText.setText("You are running the latest version of RED");
                 }
             }
         } catch (Exception e) {
-            programUpdateLabel.setIcon(IconUtils.ERRORICON);
-            programUpdateLabelText
-                    .setText("Failed to check for RED updates");
+            programUpdateLabel.setIcon(IconLoader.ICON_ERROR);
+            programUpdateLabelText.setText("Failed to check for RED updates");
             e.printStackTrace();
         }
-
     }
 
     public void actionPerformed(ActionEvent e) {
-
         if (e.getActionCommand().equals(InfoPanelUtils.CACHE_DIRECTORY_SET)) {
             JFileChooser chooser = new JFileChooser(LocationPreferences.getInstance().getCacheDirectory());
             chooser.setDialogTitle("Select a Cache Directory");
@@ -370,35 +328,15 @@ public class REDInfoPanel extends JPanel implements Runnable, ActionListener {
                     new CrashReporter(ioe);
                 }
             }
-        } else if (e.getActionCommand().equals(
-                InfoPanelUtils.CACHE_OLD_FILES_DETELE)) {
-            int answer = JOptionPane
-                    .showConfirmDialog(
-                            this,
-                            "Please close any other running instances of RED before cleaning the cache",
-                            "Cleaning cache", JOptionPane.OK_CANCEL_OPTION,
-                            JOptionPane.WARNING_MESSAGE);
+        } else if (e.getActionCommand().equals(InfoPanelUtils.CACHE_OLD_FILES_DETELE)) {
+            int answer = JOptionPane.showConfirmDialog(this, "Please close any other running instances of RED before cleaning the cache", "Cleaning cache",
+                    JOptionPane.OK_CANCEL_OPTION, JOptionPane.WARNING_MESSAGE);
             if (answer == JOptionPane.CANCEL_OPTION)
                 return;
 
-            File tempDirectory = new File(LocationPreferences.getInstance().getTempDirectory());
-            File[] tempFiles = tempDirectory.listFiles();
-
-            // int deletedCount = 0;
-            for (int f = 0; f < tempFiles.length; f++) {
-                if (tempFiles[f].isFile()
-                        && tempFiles[f].getName().startsWith("red")
-                        && tempFiles[f].getName().endsWith(".temp")) {
-                    if (tempFiles[f].delete()) {
-                        // ++deletedCount;
-                    }
-                }
-            }
-
-            // JOptionPane.showMessageDialog(this,
-            // "Deleted "+deletedCount+" old cache files", "Cleaned Cache",
-            // JOptionPane.INFORMATION_MESSAGE);
-            populatePanel();
+            FileUtils.deleteDirectory(LocationPreferences.getInstance().getTempDirectory());
         }
+
+        populatePanel();
     }
 }
