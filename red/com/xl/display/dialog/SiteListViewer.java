@@ -1,4 +1,22 @@
-package com.xl.dialog;
+/*
+ * RED: RNA Editing Detector
+ *     Copyright (C) <2014>  <Xing Li>
+ *
+ *     RED is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU General Public License as published by
+ *     the Free Software Foundation, either version 3 of the License, or
+ *     (at your option) any later version.
+ *
+ *     RED is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     GNU General Public License for more details.
+ *
+ *     You should have received a copy of the GNU General Public License
+ *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+package com.xl.display.dialog;
 
 import com.sun.java.TableSorter;
 import com.xl.datatypes.sites.Site;
@@ -9,6 +27,7 @@ import com.xl.preferences.DisplayPreferences;
 import com.xl.preferences.LocationPreferences;
 import com.xl.utils.FontManager;
 import com.xl.utils.filefilters.FileFilterExt;
+import com.xl.utils.ui.OptionDialogUtils;
 
 import javax.swing.*;
 import javax.swing.table.AbstractTableModel;
@@ -21,8 +40,7 @@ import java.awt.event.MouseListener;
 import java.io.*;
 
 /**
- * The Class SiteListViewer shows a simple view of a site list and
- * its description
+ * The Class SiteListViewer shows a simple view of a site list and its description
  */
 public class SiteListViewer extends JDialog implements MouseListener, ActionListener {
 
@@ -38,7 +56,7 @@ public class SiteListViewer extends JDialog implements MouseListener, ActionList
      * @param application the application
      */
     public SiteListViewer(SiteList list, REDApplication application) {
-        super(application, list.name() + " (" + list.getAllSiteLists().length + " sites)");
+        super(application, list.getListName() + " (" + list.getAllSiteLists().length + " sites)");
 
         Site[] sites = list.getAllSites();
 
@@ -51,7 +69,7 @@ public class SiteListViewer extends JDialog implements MouseListener, ActionList
         description.setWrapStyleWord(true);
         getContentPane().add(new JScrollPane(description, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER), BorderLayout.NORTH);
 
-        String[] headers = new String[]{"Chr", "Position", "Refefence Base", "Alternative Base"};
+        String[] headers = new String[]{"Chr", "Position", "Reference Base", "Alternative Base"};
         Class[] classes = new Class[]{String.class, Integer.class, Character.class, Character.class};
 
         Object[][] rowData = new Object[sites.length][headers.length];
@@ -98,7 +116,7 @@ public class SiteListViewer extends JDialog implements MouseListener, ActionList
 
         JTextArea description = new JTextArea("Description:\n\n" + descriptions, 5, 0);
         description.setEditable(false);
-        description.setFont(FontManager.defaultFont);
+        description.setFont(FontManager.DEFAULT_FONT);
         description.setLineWrap(true);
         description.setWrapStyleWord(true);
         getContentPane().add(new JScrollPane(description, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER), BorderLayout.NORTH);
@@ -214,9 +232,7 @@ public class SiteListViewer extends JDialog implements MouseListener, ActionList
 
             // Check if we're stepping on anyone's toes...
             if (file.exists()) {
-                int answer = JOptionPane.showOptionDialog(this, file.getName() + " exists.  Do you want to overwrite " +
-                                "the existing file?", "Overwrite file?", JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null,
-                        new String[]{"Overwrite and Save", "Cancel"}, "Overwrite and Save");
+                int answer = OptionDialogUtils.showFileExistDialog(this, file.getName());
 
                 if (answer > 0) {
                     return;
