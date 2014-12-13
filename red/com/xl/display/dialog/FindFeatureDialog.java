@@ -1,4 +1,22 @@
-package com.xl.dialog;
+/*
+ * RED: RNA Editing Detector
+ *     Copyright (C) <2014>  <Xing Li>
+ *
+ *     RED is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU General Public License as published by
+ *     the Free Software Foundation, either version 3 of the License, or
+ *     (at your option) any later version.
+ *
+ *     RED is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     GNU General Public License for more details.
+ *
+ *     You should have received a copy of the GNU General Public License
+ *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+package com.xl.display.dialog;
 
 import com.xl.datatypes.DataCollection;
 import com.xl.datatypes.annotation.AnnotationCollection;
@@ -15,67 +33,53 @@ import java.awt.event.ActionListener;
 import java.util.Vector;
 
 /**
- * The Class FindFeatureDialog shows a dialog which the user can use to search
- * for any kind of annotation.
+ * The Class FindFeatureDialog shows a dialog which the user can use to search for any kind of annotation.
  */
-public class FindFeatureDialog extends JDialog implements ActionListener,
-        Runnable, Cancellable {
+public class FindFeatureDialog extends JDialog implements ActionListener, Runnable, Cancellable {
 
     /**
-     * The data collection containing the annotation we want to search *
+     * The data collection containing the annotation we want to search.
      */
     private DataCollection dataCollection;
-
     /**
      * The annotation collection
      */
     private AnnotationCollection collection;
-
     /**
      * The search.
      */
     private JTextField search;
-
     /**
      * The search in.
      */
     private JComboBox searchIn;
-
     /**
-     * The search button.
-     */
-    private JButton searchButton;
-
-    /**
-     * The button to save the current hits *
+     * The button to save the current hits
      */
     private JButton saveAllHitsAsTrackButton;
-
     /**
-     * The button to save the current hits *
+     * The button to save the current hits
      */
     private JButton saveSelectedHitsAsTrackButton;
-
     /**
-     * The last list of hits found *
+     * The last list of hits found
      */
     private Feature[] lastHits = new Feature[0];
-
     /**
      * The viewer.
      */
     private FeatureListViewer viewer = null;
-
     /**
      * The scroll.
      */
     private JScrollPane scroll = null;
-
     /**
-     * The spd.
+     * The progress dialog.
      */
     private ProgressDialog spd = null;
-
+    /**
+     * Cancel the search.
+     */
     private boolean cancelSearch = false;
 
     /**
@@ -94,15 +98,12 @@ public class FindFeatureDialog extends JDialog implements ActionListener,
         getContentPane().setLayout(new BorderLayout());
 
         JPanel choicePanel = new JPanel();
-
         choicePanel.add(new JLabel("Search for "));
         search = new JTextField(15);
         choicePanel.add(search);
         choicePanel.add(new JLabel(" in "));
         searchIn = new JComboBox(new String[]{"name", "location"});
-
         choicePanel.add(searchIn);
-
         getContentPane().add(choicePanel, BorderLayout.NORTH);
 
         JPanel buttonPanel = new JPanel();
@@ -117,15 +118,13 @@ public class FindFeatureDialog extends JDialog implements ActionListener,
         saveAllHitsAsTrackButton.setEnabled(false);
         buttonPanel.add(saveAllHitsAsTrackButton);
 
-        saveSelectedHitsAsTrackButton = new JButton(
-                "Save Selected As Annotation Track");
-        saveSelectedHitsAsTrackButton
-                .setActionCommand("save_annotation_selected");
+        saveSelectedHitsAsTrackButton = new JButton("Save Selected As Annotation Track");
+        saveSelectedHitsAsTrackButton.setActionCommand("save_annotation_selected");
         saveSelectedHitsAsTrackButton.addActionListener(this);
         saveSelectedHitsAsTrackButton.setEnabled(false);
         buttonPanel.add(saveSelectedHitsAsTrackButton);
 
-        searchButton = new JButton("Search");
+        JButton searchButton = new JButton("Search");
         searchButton.setActionCommand("search");
         searchButton.addActionListener(this);
         getRootPane().setDefaultButton(searchButton);
@@ -163,16 +162,18 @@ public class FindFeatureDialog extends JDialog implements ActionListener,
         Vector<Feature> hits = new Vector<Feature>();
         String query = search.getText().toLowerCase().trim();
         Feature[] feature = null;
-        if (((String) searchIn.getSelectedItem()).equals("name")) {
+        if (searchIn.getSelectedItem().equals("name")) {
             feature = collection.getFeaturesForName(query);
-        } else if (((String) searchIn.getSelectedItem()).equals("location")) {
+        } else if (searchIn.getSelectedItem().equals("location")) {
             if (query.matches("^[0-9]+$")) {
-                feature = collection.getFeatureForLocation(Integer
-                        .parseInt(query));
+                feature = collection.getFeatureForLocation(Integer.parseInt(query));
             }
         } else {
-            System.err.println(this.getClass().getName()
-                    + ":makeFeatureList(), Wrong Input");
+            throw new IllegalArgumentException("Wrong item '" + searchIn.getSelectedItem() + "'");
+        }
+        if (feature == null) {
+            spd.progressExceptionReceived(new NullPointerException("No features found!"));
+            return;
         }
         for (int k = 0; k < feature.length; k++) {
             if (cancelSearch) {
@@ -196,10 +197,8 @@ public class FindFeatureDialog extends JDialog implements ActionListener,
             add(scroll, BorderLayout.CENTER);
             validate();
         } else {
-            repaint(); // So we aren't left with a corrupted table showing from
-            // a previous search
-            JOptionPane.showMessageDialog(this, "No hits found",
-                    "Search results", JOptionPane.INFORMATION_MESSAGE);
+            repaint(); // So we aren't left with a corrupted table showing from a previous search
+            JOptionPane.showMessageDialog(this, "No hits found", "Search results", JOptionPane.INFORMATION_MESSAGE);
         }
 
     }
@@ -219,60 +218,40 @@ public class FindFeatureDialog extends JDialog implements ActionListener,
             t.start();
         } else if (ae.getActionCommand().equals("save_annotation_all")) {
             // Find a name for the type of feature they want to create
-            String name = (String) JOptionPane.showInputDialog(this,
-                    "Input an annotation name", "Make Annotation Track",
-                    JOptionPane.QUESTION_MESSAGE, null, null, search.getText()
-                            + " " + searchIn.getSelectedItem());
+            String name = (String) JOptionPane.showInputDialog(this, "Input an annotation name", "Make Annotation Track", JOptionPane.QUESTION_MESSAGE, null,
+                    null, search.getText() + " " + searchIn.getSelectedItem());
 
             if (name == null)
                 return; // They cancelled
 
             // Now we can go ahead and make the new annotation set
-            AnnotationSet searchAnnotations = new AnnotationSet(
-                    dataCollection.genome(), search.getText() + " "
-                    + searchIn.getSelectedItem());
-            for (int f = 0; f < lastHits.length; f++) {
-                searchAnnotations.addFeature(lastHits[f]);
+            AnnotationSet searchAnnotations = new AnnotationSet(dataCollection.genome(), search.getText() + " " + searchIn.getSelectedItem());
+            for (Feature f : lastHits) {
+                searchAnnotations.addFeature(f);
             }
-
             dataCollection.genome().getAnnotationCollection().addAnnotationSet(searchAnnotations);
 
         } else if (ae.getActionCommand().equals("save_annotation_selected")) {
-
             Feature[] selectedHits = viewer.getSelectedFeatures();
-
             if (selectedHits.length == 0) {
-                JOptionPane
-                        .showMessageDialog(
-                                this,
-                                "There are no selected features from which to make a track",
-                                "Can't make track",
-                                JOptionPane.INFORMATION_MESSAGE);
+                JOptionPane.showMessageDialog(this, "There are no selected features from which to make a track", "Can't make track",
+                        JOptionPane.INFORMATION_MESSAGE);
                 return;
             }
 
             // Find a name for the type of feature they want to create
-            String name = (String) JOptionPane.showInputDialog(this,
-                    "Input an annotation name", "Make Annotation Track",
-                    JOptionPane.QUESTION_MESSAGE, null, null, "selected "
-                            + search.getText());
+            String name = (String) JOptionPane.showInputDialog(this, "Input an annotation name", "Make Annotation Track", JOptionPane.QUESTION_MESSAGE, null,
+                    null, "selected " + search.getText());
 
             if (name == null)
                 return; // They cancelled
 
             // Now we can go ahead and make the new annotation set
-            AnnotationSet searchAnnotations = new AnnotationSet(
-                    dataCollection.genome(), search.getText()
-                    + " search results");
-            for (int f = 0; f < selectedHits.length; f++) {
-
-                searchAnnotations.addFeature(selectedHits[f]);
+            AnnotationSet searchAnnotations = new AnnotationSet(dataCollection.genome(), search.getText() + " search results");
+            for (Feature f : selectedHits) {
+                searchAnnotations.addFeature(f);
             }
-
             dataCollection.genome().getAnnotationCollection().addAnnotationSet(searchAnnotations);
-
         }
-
     }
-
 }
