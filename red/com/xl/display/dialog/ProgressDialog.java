@@ -1,23 +1,21 @@
-/**
- * Copyright Copyright 2007-13 Simon Andrews
+/*
+ * RED: RNA Editing Detector
+ *     Copyright (C) <2014>  <Xing Li>
  *
- *    This file is part of SeqMonk.
+ *     RED is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU General Public License as published by
+ *     the Free Software Foundation, either version 3 of the License, or
+ *     (at your option) any later version.
  *
- *    SeqMonk is free software; you can redistribute it and/or modify
- *    it under the terms of the GNU General Public License as published by
- *    the Free Software Foundation; either version 3 of the License, or
- *    (at your option) any later version.
+ *     RED is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     GNU General Public License for more details.
  *
- *    SeqMonk is distributed in the hope that it will be useful,
- *    but WITHOUT ANY WARRANTY; without even the implied warranty of
- *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *    GNU General Public License for more details.
- *
- *    You should have received a copy of the GNU General Public License
- *    along with SeqMonk; if not, write to the Free Software
- *    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+ *     You should have received a copy of the GNU General Public License
+ *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.xl.dialog;
+package com.xl.display.dialog;
 
 import com.xl.interfaces.Cancellable;
 import com.xl.interfaces.ProgressListener;
@@ -31,49 +29,41 @@ import java.awt.event.ActionListener;
 import java.util.Vector;
 
 /**
- * The Class ProgressDialog is a generic progress dialog showing a progress
- * bar and a changing label.  It can also display a cancel button for
- * progress listners which allow it.
+ * The Class ProgressDialog is a generic progress dialog showing a progress bar and a changing label.  It can also display a cancel button for progress
+ * listeners which allow it.
  */
 public class ProgressDialog extends JDialog implements Runnable, ProgressListener, ActionListener {
-
     /**
      * The label.
      */
     private JLabel label;
-
     /**
      * The cancellable.
      */
     private Cancellable cancellable;
-
     /**
      * The current.
      */
     private int current = 0;
-
     /**
      * The total.
      */
     private int total = 1;
-
     /**
      * The progress bar.
      */
     private ProgressBar progressBar = new ProgressBar();
-
     /**
      * The warning count.
      */
     private int warningCount = 0;
-
     /**
      * The warnings.
      */
     private Vector<Exception> warnings = new Vector<Exception>();
 
     /**
-     * A record of any exception we've recevied
+     * A record of any exception we've received
      */
     private Exception reportedException = null;
 
@@ -160,13 +150,13 @@ public class ProgressDialog extends JDialog implements Runnable, ProgressListene
             JButton cancelButton = new JButton("Cancel");
             cancelButton.addActionListener(this);
             cancelButton.setActionCommand("cancel");
-            getContentPane().add(cancelButton, BorderLayout.EAST);
+            getContentPane().add(cancelButton, BorderLayout.SOUTH);
         }
 
-        getContentPane().add(progressBar, BorderLayout.SOUTH);
+        getContentPane().add(progressBar, BorderLayout.CENTER);
         Thread t = new Thread(this);
         t.start();
-        setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
+        setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
         setVisible(true);
 
     }
@@ -209,16 +199,14 @@ public class ProgressDialog extends JDialog implements Runnable, ProgressListene
 
         if (warningCount > 0) {
             // We need to display a list of the warnings
-//			new WarningDisplayDialog(this,warningCount,warnings.toArray(new Exception [0]));
+            new WarningDisplayDialog(this, warningCount, warnings.toArray(new Exception[0]));
         }
         dispose();
     }
 
     public void progressWarningReceived(Exception e) {
         warningCount++;
-        // We just store this warning so we can display all
-        // of them at the end.  We only keep the first 5000
-        // so that things don't get too out of hand
+        // We just store this warning so we can display all of them at the end.  We only keep the first 5000 so that things don't get too out of hand
         if (warningCount <= 5000) {
             warnings.add(e);
         }
