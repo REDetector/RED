@@ -101,7 +101,6 @@ public class Query {
             if (rs.next())
                 return new Site(rs.getString(1), rs.getInt(2), rs.getString(3).toCharArray()[0], rs.getString(4).toCharArray()[0]);
         } catch (SQLException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
             return null;
         }
