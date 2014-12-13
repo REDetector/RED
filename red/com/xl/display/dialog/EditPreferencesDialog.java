@@ -1,10 +1,23 @@
-package com.xl.dialog;
-
-/**
- * Created by Administrator on 2014/6/25.
+/*
+ * RED: RNA Editing Detector
+ *     Copyright (C) <2014>  <Xing Li>
+ *
+ *     RED is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU General Public License as published by
+ *     the Free Software Foundation, either version 3 of the License, or
+ *     (at your option) any later version.
+ *
+ *     RED is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     GNU General Public License for more details.
+ *
+ *     You should have received a copy of the GNU General Public License
+ *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import com.xl.help.HelpDialog;
+package com.xl.display.dialog;
+
 import com.xl.main.REDApplication;
 import com.xl.net.crashreport.CrashReporter;
 import com.xl.preferences.LocationPreferences;
@@ -14,77 +27,71 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.io.File;
 import java.io.IOException;
 import java.util.Collection;
 
 /**
- * A Dialog to allow the viewing and editing of all SeqMonk preferences.
+ * Created by Xing Li on 2014/6/25.
+ * <p/>
+ * A Dialog to allow viewing and editing of all RED preferences.
  */
 public class EditPreferencesDialog extends JDialog implements ActionListener {
-
+    /**
+     * RED preference.
+     */
     REDPreferences preferences = REDPreferences.getInstance();
+    /**
+     * Location preference.
+     */
     LocationPreferences locationPreferences = LocationPreferences.getInstance();
-
     /**
      * The data location.
      */
     private JTextField projectDataDirectory;
-
-    private JTextField fastaDirectory;
-
     /**
-     * The genome base.
+     * Fasta file directory.
+     */
+    private JTextField fastaDirectory;
+    /**
+     * The genome base directory.
      */
     private JTextField genomeDirectory;
-
+    /**
+     * RNA directory.
+     */
     private JTextField rnaDirectory;
-
+    /**
+     * DNA directory.
+     */
     private JTextField dnaDirectory;
-
+    /**
+     * Annotation directory.
+     */
     private JTextField annotationDirectory;
-
     /**
      * The temp directory.
      */
     private JTextField tempDirectory;
-
+    /**
+     * The others directory.
+     */
     private JTextField othersDirectory;
-
-    private JTextField cacheDirectory;
-
     /**
      * The proxy host.
      */
     private JTextField proxyHost;
-
     /**
      * The proxy port.
      */
     private JTextField proxyPort;
-
-    /**
-     * The download location.
-     */
-    private JTextField downloadLists;
-
     /**
      * The check for updates.
      */
     private JCheckBox checkForUpdates;
 
-    private JTextField crashEmail;
-
     /**
-     * Whether to compress output
-     */
-    private JCheckBox compressOutput;
-
-
-    /**
-     * Instantiates a new edits the preferences dialog.
+     * Instantiates a new preferences dialog.
      */
     public EditPreferencesDialog() {
         super(REDApplication.getInstance(), "Edit Preferences...");
@@ -100,148 +107,86 @@ public class EditPreferencesDialog extends JDialog implements ActionListener {
 
         GridBagConstraints c = new GridBagConstraints();
         c.gridy = 0;
-        JLabel projectDataLable = new JLabel("Project Data Directory");
+        JLabel projectDataLabel = new JLabel("Project Data Directory");
         projectDataDirectory = new JTextField();
         projectDataDirectory.setText(locationPreferences.getProjectDataDirectory());
         projectDataDirectory.setEditable(false);
         JButton projectDataButton = new JButton("Browse");
         projectDataButton.setActionCommand(LocationPreferences.PROJECT_DATA_DIRECTORY);
         projectDataButton.addActionListener(this);
-        addItem(c, filePanel, projectDataLable, projectDataDirectory, projectDataButton);
+        addItem(c, filePanel, projectDataLabel, projectDataDirectory, projectDataButton);
 
         c.gridy++;
-        JLabel genomeLable = new JLabel("Genome Directory");
+        JLabel genomeLabel = new JLabel("Genome Directory");
         genomeDirectory = new JTextField();
         genomeDirectory.setText(locationPreferences.getGenomeDirectory());
         genomeDirectory.setEditable(false);
         JButton genomeButton = new JButton("Browse");
         genomeButton.setActionCommand(LocationPreferences.GENOME_DIRECTORY);
         genomeButton.addActionListener(this);
-        addItem(c, filePanel, genomeLable, genomeDirectory, genomeButton);
+        addItem(c, filePanel, genomeLabel, genomeDirectory, genomeButton);
 
         c.gridy++;
-        JLabel fastaLable = new JLabel("Fasta Directory");
+        JLabel fastaLabel = new JLabel("Fasta Directory");
         fastaDirectory = new JTextField();
         fastaDirectory.setText(locationPreferences.getFastaDirectory());
         fastaDirectory.setEditable(false);
         JButton fastaButton = new JButton("Browse");
         fastaButton.setActionCommand(LocationPreferences.FASTA_DIRECTORY);
         fastaButton.addActionListener(this);
-        addItem(c, filePanel, fastaLable, fastaDirectory, fastaButton);
+        addItem(c, filePanel, fastaLabel, fastaDirectory, fastaButton);
 
         c.gridy++;
-        JLabel rnaLable = new JLabel("RNA Directory");
+        JLabel rnaLabel = new JLabel("RNA Directory");
         rnaDirectory = new JTextField();
         rnaDirectory.setText(locationPreferences.getRnaDirectory());
         rnaDirectory.setEditable(false);
         JButton rnaButton = new JButton("Browse");
         rnaButton.setActionCommand(LocationPreferences.RNA_DIRECTORY);
         rnaButton.addActionListener(this);
-        addItem(c, filePanel, rnaLable, rnaDirectory, rnaButton);
+        addItem(c, filePanel, rnaLabel, rnaDirectory, rnaButton);
 
         c.gridy++;
-        JLabel dnaLable = new JLabel("DNA Directory");
+        JLabel dnaLabel = new JLabel("DNA Directory");
         dnaDirectory = new JTextField();
         dnaDirectory.setText(locationPreferences.getDnaDirectory());
         dnaDirectory.setEditable(false);
         JButton dnaButton = new JButton("Browse");
         dnaButton.setActionCommand(LocationPreferences.DNA_DIRECTORY);
         dnaButton.addActionListener(this);
-        addItem(c, filePanel, dnaLable, dnaDirectory, dnaButton);
+        addItem(c, filePanel, dnaLabel, dnaDirectory, dnaButton);
 
         c.gridy++;
-        JLabel annotationLable = new JLabel("Annotation Directory");
+        JLabel annotationLabel = new JLabel("Annotation Directory");
         annotationDirectory = new JTextField();
         annotationDirectory.setText(locationPreferences.getAnnotationDirectory());
         annotationDirectory.setEditable(false);
         JButton annotationButton = new JButton("Browse");
         annotationButton.setActionCommand(LocationPreferences.ANNOTATION_DIRECTORY);
         annotationButton.addActionListener(this);
-        addItem(c, filePanel, annotationLable, annotationDirectory, annotationButton);
+        addItem(c, filePanel, annotationLabel, annotationDirectory, annotationButton);
 
         c.gridy++;
-        JLabel othersLable = new JLabel("Others Directory");
+        JLabel othersLabel = new JLabel("Others Directory");
         othersDirectory = new JTextField();
         othersDirectory.setText(locationPreferences.getOthersDirectory());
         othersDirectory.setEditable(false);
         JButton othersButton = new JButton("Browse");
         othersButton.setActionCommand(LocationPreferences.OTHERS_DIRECTORY);
         othersButton.addActionListener(this);
-        addItem(c, filePanel, othersLable, othersDirectory, othersButton);
+        addItem(c, filePanel, othersLabel, othersDirectory, othersButton);
 
         c.gridy++;
-        JLabel tempLable = new JLabel("Temp Directory");
+        JLabel tempLabel = new JLabel("Temp Directory");
         tempDirectory = new JTextField();
         tempDirectory.setText(locationPreferences.getTempDirectory());
         tempDirectory.setEditable(false);
         JButton tempButton = new JButton("Browse");
         tempButton.setActionCommand(LocationPreferences.TEMP_DIRECTORY);
         tempButton.addActionListener(this);
-        addItem(c, filePanel, tempLable, tempDirectory, tempButton);
+        addItem(c, filePanel, tempLabel, tempDirectory, tempButton);
 
         tabs.addTab("Files", filePanel);
-
-
-        JPanel memoryPanel = new JPanel();
-        memoryPanel.setBorder(BorderFactory.createEmptyBorder(4, 4, 4, 4));
-        memoryPanel.setLayout(new GridBagLayout());
-        c = new GridBagConstraints();
-
-        c.gridy = 0;
-        JLabel cacheLable = new JLabel("Cache read data to disk");
-        cacheDirectory = new JTextField();
-        cacheDirectory.setText(locationPreferences.getCacheDirectory());
-        cacheDirectory.setEditable(false);
-        JButton cacheButton = new JButton("Browse");
-        cacheButton.setActionCommand(LocationPreferences.CACHE_DIRECTORY);
-        cacheButton.addActionListener(this);
-        addItem(c, memoryPanel, cacheLable, cacheDirectory, cacheButton);
-
-        c.gridx = 0;
-        c.gridy++;
-        memoryPanel.add(new JLabel("Compress Output"), c);
-        c.gridx = 1;
-        compressOutput = new JCheckBox();
-        compressOutput.setSelected(preferences.compressOutput());
-        memoryPanel.add(compressOutput, c);
-
-        c.gridx = 0;
-        c.gridy++;
-        c.gridwidth = 2;
-        JTextArea startUpMemory = new JTextArea("See also the help section on memory usage.");
-        startUpMemory.setWrapStyleWord(true);
-        startUpMemory.setLineWrap(true);
-        startUpMemory.setEditable(false);
-        startUpMemory.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-        startUpMemory.setToolTipText("Click here to enter help content.");
-        startUpMemory.addMouseListener(new MouseListener() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                dispose();
-                new HelpDialog(new File(ClassLoader.getSystemResource("Help")
-                        .getFile().replaceAll("%20", " "))).requestFocusInWindow();
-            }
-
-            @Override
-            public void mousePressed(MouseEvent e) {
-            }
-
-            @Override
-            public void mouseReleased(MouseEvent e) {
-            }
-
-            @Override
-            public void mouseEntered(MouseEvent e) {
-            }
-
-            @Override
-            public void mouseExited(MouseEvent e) {
-            }
-        });
-        startUpMemory.setBackground(memoryPanel.getBackground());
-        memoryPanel.add(startUpMemory, c);
-        tabs.addTab("Memory", memoryPanel);
-
 
         JPanel networkPanel = new JPanel();
         networkPanel.setBorder(BorderFactory.createEmptyBorder(4, 4, 4, 4));
@@ -268,24 +213,6 @@ public class EditPreferencesDialog extends JDialog implements ActionListener {
         c.weightx = 0.5;
         proxyPort = new JTextField("" + preferences.proxyPort());
         networkPanel.add(proxyPort, c);
-
-        c.gridx = 0;
-        c.gridy++;
-        c.weightx = 0.1;
-        networkPanel.add(new JLabel("Genome Download URL"), c);
-        c.gridx = 1;
-        c.weightx = 0.5;
-        downloadLists = new JTextField(locationPreferences.getGenomeDownloadLists());
-        networkPanel.add(downloadLists, c);
-
-        c.gridx = 0;
-        c.gridy++;
-        c.weightx = 0.1;
-        networkPanel.add(new JLabel("Email Address:"), c);
-        c.gridx = 1;
-        c.weightx = 0.5;
-        crashEmail = new JTextField(preferences.getCrashEmail());
-        networkPanel.add(crashEmail, c);
 
         tabs.addTab("Network", networkPanel);
 
@@ -329,12 +256,12 @@ public class EditPreferencesDialog extends JDialog implements ActionListener {
         setVisible(true);
     }
 
-    private void addItem(GridBagConstraints c, JPanel filePanel, JLabel jLable, JTextField jTextField, JButton jButton) {
+    private void addItem(GridBagConstraints c, JPanel filePanel, JLabel jLabel, JTextField jTextField, JButton jButton) {
         c.gridx = 0;
         c.weightx = 0.1;
         c.weighty = 0.5;
         c.fill = GridBagConstraints.HORIZONTAL;
-        filePanel.add(jLable, c);
+        filePanel.add(jLabel, c);
         c.gridx = 1;
         c.weightx = 0.5;
         filePanel.add(jTextField, c);
@@ -382,8 +309,6 @@ public class EditPreferencesDialog extends JDialog implements ActionListener {
             getDir(action, annotationDirectory);
         } else if (action.equals(LocationPreferences.OTHERS_DIRECTORY)) {
             getDir(action, othersDirectory);
-        } else if (action.equals(LocationPreferences.CACHE_DIRECTORY)) {
-            getDir(action, cacheDirectory);
         } else if (action.equals(LocationPreferences.TEMP_DIRECTORY)) {
             getDir(action, tempDirectory);
         } else if (action.equals("cancel")) {
@@ -416,17 +341,10 @@ public class EditPreferencesDialog extends JDialog implements ActionListener {
                 return;
             }
 
-
-            // OK that's everything which could have gone wrong.  Let's save it
-            // to the preferences file
-
-
+            // OK that's everything which could have gone wrong.  Let's save it to the preferences file
             preferences.setCheckForUpdates(checkForUpdates.isSelected());
-            preferences.setCompressOutput(compressOutput.isSelected());
             preferences.setProxy(proxyHostValue, proxyPortValue);
-            preferences.setCrashEmail(crashEmail.getText());
 
-            locationPreferences.setGenomeDownloadLists(downloadLists.getText());
             locationPreferences.updateDirectories();
 
             try {
