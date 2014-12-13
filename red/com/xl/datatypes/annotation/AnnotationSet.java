@@ -29,8 +29,8 @@ import java.io.*;
 import java.util.*;
 
 /**
- * AnnotationSet represents a set of genome annotations deriving from a single source (i.e., file). They are combined in an AnnotationCollection to provide
- * the full set of genome annotations used by the program.
+ * AnnotationSet represents a set of genome annotations deriving from a single source (i.e., file). They are combined in an AnnotationCollection to provide the
+ * full set of genome annotations used by the program.
  */
 public class AnnotationSet {
     /**
@@ -53,6 +53,10 @@ public class AnnotationSet {
      * Tell all whether the genome annotation set has been finalised.
      */
     private boolean finalised = false;
+    /**
+     * All features for this set.
+     */
+    private List<Feature> allFeatures = null;
 
     /**
      * Instantiates a new annotation set.
@@ -103,24 +107,20 @@ public class AnnotationSet {
     }
 
     /**
-     * Get the feature by a given name on a given chromosome, the name can be its id or alias name.
-     *
-     * @param chr  The chromosome name
-     * @param name The name or alias name of feature
-     * @return The feature
-     */
-    public Feature getFeaturesForName(String chr, String name) {
-        return featureSet.getFeaturesForName(chr, name);
-    }
-
-    /**
      * Get the feature by a given name, which can be its id or alias name.
      *
      * @param name The name or alias name of feature.
      * @return The feature.
      */
-    public Feature getFeaturesForName(String name) {
-        return featureSet.getFeaturesForName(name);
+    public List<Feature> getFeaturesForName(String name) {
+        List<Feature> features = new ArrayList<Feature>();
+        List<Feature> allFeatures = getAllFeatures();
+        for (Feature feature : allFeatures) {
+            if (feature.getAliasName().toLowerCase().contains(name) || feature.getName().toLowerCase().contains(name)) {
+                features.add(feature);
+            }
+        }
+        return features;
     }
 
     /**
@@ -129,8 +129,15 @@ public class AnnotationSet {
      * @param position The position.
      * @return The feature.
      */
-    public Feature getFeatrueForLocation(int position) {
-        return featureSet.getFeaturesForLocation(position);
+    public List<Feature> getFeatureForLocation(int position) {
+        List<Feature> features = new ArrayList<Feature>();
+        List<Feature> allFeatures = getAllFeatures();
+        for (Feature feature : allFeatures) {
+            if (feature.isInFeature(position)) {
+                features.add(feature);
+            }
+        }
+        return features;
     }
 
     /**
@@ -139,12 +146,12 @@ public class AnnotationSet {
      * @return A list which contains all features.
      */
     public List<Feature> getAllFeatures() {
-
-        List<Feature> allFeatures = new ArrayList<Feature>();
-
-        Set<String> chrNames = featureSet.getChromosomeNames();
-        for (String chrName : chrNames) {
-            allFeatures.addAll(featureSet.getFeatureCollection(chrName).getFeatures());
+        if (allFeatures == null) {
+            allFeatures = new ArrayList<Feature>();
+            Set<String> chrNames = featureSet.getChromosomeNames();
+            for (String chrName : chrNames) {
+                allFeatures.addAll(featureSet.getFeatureCollection(chrName).getFeatures());
+            }
         }
         return allFeatures;
     }
@@ -251,58 +258,6 @@ public class AnnotationSet {
             return chrFeatures.keySet();
         }
 
-
-        /**
-         * Gets a feature by a given name on a chromosome.
-         *
-         * @param chr  The chromosome name
-         * @param name The feature name
-         * @return The feature.
-         */
-        public Feature getFeaturesForName(String chr, String name) {
-            if (chrFeatures.containsKey(chr)) {
-                return chrFeatures.get(chr).getFeatureForName(name);
-            } else {
-                return null;
-            }
-        }
-
-        /**
-         * Gets a feature by a given name.
-         *
-         * @param name The feature name
-         * @return The feature.
-         */
-        public Feature getFeaturesForName(String name) {
-            Set<String> sets = chrFeatures.keySet();
-            Feature feature;
-            for (String keySet : sets) {
-                feature = chrFeatures.get(keySet).getFeatureForName(name);
-                if (feature != null) {
-                    return feature;
-                }
-            }
-            return null;
-        }
-
-        /**
-         * Get the feature by a given position.
-         *
-         * @param position The position.
-         * @return The feature.
-         */
-        public Feature getFeaturesForLocation(int position) {
-            Set<String> sets = chrFeatures.keySet();
-            Feature feature;
-            for (String keySet : sets) {
-                feature = chrFeatures.get(keySet).getFeatureForLocation(position);
-                if (feature != null) {
-                    return feature;
-                }
-            }
-            return null;
-        }
-
         /**
          * Get the feature collection by a given chromosome.
          *
@@ -383,28 +338,6 @@ public class AnnotationSet {
                 throw new IllegalArgumentException("Can't add data to a finalised feature collection");
             }
             buildFeatures.add(f);
-        }
-
-        public Feature getFeatureForName(String name) {
-            if (buildFeatures != null && buildFeatures.size() != 0) {
-                for (Feature feature : buildFeatures) {
-                    if (feature.getAliasName().equals(name) || feature.getName().equals(name)) {
-                        return feature;
-                    }
-                }
-            }
-            return null;
-        }
-
-        public Feature getFeatureForLocation(int location) {
-            if (buildFeatures != null && buildFeatures.size() != 0) {
-                for (Feature feature : buildFeatures) {
-                    if (feature.getTxLocation().getStart() >= location && feature.getTxLocation().getEnd() <= location) {
-                        return feature;
-                    }
-                }
-            }
-            return null;
         }
 
         /**
