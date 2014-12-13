@@ -1,15 +1,30 @@
+/*
+ * RED: RNA Editing Detector
+ *     Copyright (C) <2014>  <Xing Li>
+ *
+ *     RED is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU General Public License as published by
+ *     the Free Software Foundation, either version 3 of the License, or
+ *     (at your option) any later version.
+ *
+ *     RED is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     GNU General Public License for more details.
+ *
+ *     You should have received a copy of the GNU General Public License
+ *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package com.xl.display.genomeviewer;
 
-import com.xl.datatypes.DataGroup;
-import com.xl.datatypes.DataSet;
 import com.xl.datatypes.DataStore;
 import com.xl.datatypes.genome.Chromosome;
 import com.xl.datatypes.genome.Genome;
 import com.xl.datatypes.sites.Site;
 import com.xl.datatypes.sites.SiteList;
-import com.xl.datatypes.sites.SiteSet;
 import com.xl.exception.REDException;
-import com.xl.interfaces.DataChangeListener;
+import com.xl.interfaces.ActiveDataChangedListener;
 import com.xl.net.crashreport.CrashReporter;
 import com.xl.preferences.DisplayPreferences;
 import com.xl.utils.ColourScheme;
@@ -24,40 +39,39 @@ import java.util.Arrays;
 /**
  * The Class ChromosomeDisplay shows a single chromosome within the genome view.
  */
-public class ChromosomeDisplay extends JPanel implements DataChangeListener {
-
+public class ChromosomeDisplay extends JPanel implements ActiveDataChangedListener, MouseListener, MouseMotionListener {
     /**
      * The max len.
      */
     private int maxLen;
-
     /**
      * The chromosome.
      */
     private Chromosome chromosome;
-
     /**
      * The viewer.
      */
     private GenomeViewer viewer;
-
     /**
      * The show view.
      */
     private boolean showView = false;
-
     /**
      * The view start.
      */
     private int viewStart = 0;
-
     /**
      * The view end.
      */
     private int viewEnd = 0;
-
+    /**
+     * The RNA editing sites.
+     */
     private Site[] sites = null;
-
+    /**
+     * A flag to show RNA editing sites or not.
+     */
+    private boolean showSites;
     // Values cached from the last update and used when relating pixels to positions
     private int xOffset = 0;
     private int chrWidth = 0;
@@ -66,8 +80,6 @@ public class ChromosomeDisplay extends JPanel implements DataChangeListener {
     private boolean isSelecting = false;
     private int selectionStart = 0;
     private int selectionEnd = 0;
-    private boolean showSites;
-
 
     /**
      * Instantiates a new chromosome display.
@@ -80,15 +92,20 @@ public class ChromosomeDisplay extends JPanel implements DataChangeListener {
         maxLen = genome.getLongestChromosomeLength();
         this.chromosome = chromosome;
         this.viewer = viewer;
-        PanelListener pl = new PanelListener();
-        addMouseListener(pl);
-        addMouseMotionListener(pl);
+        addMouseListener(this);
+        addMouseMotionListener(this);
     }
 
-    public void setShowSites(boolean showSites) {
+    /**
+     * Set showing the sites or not.
+     *
+     * @param showSites show sites or not.
+     */
+    public void showSites(boolean showSites) {
         this.showSites = showSites;
     }
 
+    @Override
     public void paintComponent(Graphics g) {
         xOffset = getWidth() / 80;
         if (xOffset > 10)
@@ -114,8 +131,8 @@ public class ChromosomeDisplay extends JPanel implements DataChangeListener {
 
             g.setColor(ColourScheme.DATA_BACKGROUND_ODD);
             g.fillRoundRect(xOffset, yOffset, scaleX(width, chromosome.getLength(), maxLen), height, 2, 2);
-            // Now go through all the sites figuring out whether they need to be displayed
 
+            // Now go through all the sites figuring out whether they need to be displayed
             for (Site site : sites) {
                 drawSite(site, g, width, maxLen, yOffset, xOffset, height);
             }
@@ -150,8 +167,8 @@ public class ChromosomeDisplay extends JPanel implements DataChangeListener {
 
                 // Limit how small the box can get so we can always see it
                 int boxWidth = scaleX(width, viewEnd - viewStart, maxLen);
-                if (boxWidth < 2) {
-                    boxWidth = 2;
+                if (boxWidth < 1) {
+                    boxWidth = 1;
                 }
                 g.fillRoundRect(xOffset + scaleX(width, viewStart, maxLen), 1, boxWidth, getHeight() - 2, 2, 2);
             }
@@ -165,14 +182,22 @@ public class ChromosomeDisplay extends JPanel implements DataChangeListener {
 
     }
 
-    private void drawSite(Site p, Graphics g, int chrWidth, int maxLength, int yOffset, int xOffset, int effectiveHeight) {
-
-        int wholeXStart = xOffset + scaleX(chrWidth, p.getStart(), maxLength);
+    /**
+     * Draw a site in the genome view. It is a very thin box like a colored line that the color is the same as the color for alternative base.
+     *
+     * @param site            the editing site
+     * @param g               the g
+     * @param chrWidth        the chromosome width
+     * @param maxLength       the max length of chromosome
+     * @param yOffset         the offset of y position
+     * @param xOffset         the offset of x position
+     * @param effectiveHeight the height
+     */
+    private void drawSite(Site site, Graphics g, int chrWidth, int maxLength, int yOffset, int xOffset, int effectiveHeight) {
+        int wholeXStart = xOffset + scaleX(chrWidth, site.getStart(), maxLength);
         int wholeXEnd = wholeXStart + 1;
-        g.setColor(ColourScheme.getBaseColor(p.getAltBase()));
-
+        g.setColor(ColourScheme.getBaseColor(site.getAltBase()));
         g.fillRect(wholeXStart, yOffset, (wholeXEnd - wholeXStart), effectiveHeight);
-
     }
 
     /**
@@ -185,6 +210,16 @@ public class ChromosomeDisplay extends JPanel implements DataChangeListener {
      */
     private int scaleX(int width, double measure, double max) {
         return (int) (width * (measure / max));
+    }
+
+    private int getBasePosition(int pixelPosition) throws REDException {
+        if (pixelPosition < xOffset) {
+            throw new REDException("Before the start of the chromosome");
+        }
+        if (pixelPosition > (xOffset + chrWidth)) {
+            throw new REDException("After the end of the chromosome");
+        }
+        return (int) (chromosome.getLength() * (((double) (pixelPosition - xOffset)) / chrWidth));
     }
 
     /**
@@ -211,171 +246,86 @@ public class ChromosomeDisplay extends JPanel implements DataChangeListener {
         }
     }
 
-    public void dataGroupAdded(DataGroup g) {
-    }
-
-    public void dataGroupsRemoved(DataGroup[] g) {
-    }
-
-    public void dataGroupRenamed(DataGroup g) {
-    }
-
-    public void dataGroupSamplesChanged(DataGroup g) {
-    }
-
-    public void dataSetAdded(DataSet d) {
-    }
-
-    public void dataSetsRemoved(DataSet[] d) {
-    }
-
-    public void dataSetRenamed(DataSet d) {
-    }
-
-    public void siteSetReplaced(SiteSet p) {
-        if (p == null) {
-            sites = null;
-        } else {
-            sites = p.getSitesForChromosome(chromosome.getName());
-            Arrays.sort(sites);
-        }
-    }
-
-    public void activeDataStoreChanged(DataStore s) {
-    }
-
-    public void activeSiteListChanged(SiteList l) {
-
+    @Override
+    public void activeDataChanged(DataStore d, SiteList l) {
         if (l == null) {
             sites = null;
         } else {
             sites = l.getSitesForChromosome(chromosome.getName());
             Arrays.sort(sites);
         }
-
         repaint();
+    }
+
+    @Override
+    public void mouseClicked(MouseEvent e) {
 
     }
 
-    /**
-     * The listener interface for receiving panel events. The class that is
-     * interested in processing a panel event implements this interface, and the
-     * object created with that class is registered with a component using the
-     * component's <code>addPanelListener<code> method. When
-     * the panel event occurs, that object's appropriate
-     * method is invoked.
-     */
-    private class PanelListener implements MouseListener, MouseMotionListener {
+    @Override
+    public void mousePressed(MouseEvent me) {
+        selectionStart = me.getX();
+        selectionEnd = me.getX();
 
-        /*
-         * (non-Javadoc)
-         *
-         * @see
-         * java.awt.event.MouseListener#mouseClicked(java.awt.event.MouseEvent)
-         */
-        public void mouseClicked(MouseEvent me) {
+        try {
+            getBasePosition(me.getX());
+            isSelecting = true;
+        } catch (REDException e) {
+            // They pressed outside of the chromosome so ignore it.
         }
+    }
 
-        /*
-         * (non-Javadoc)
-         *
-         * @see
-         * java.awt.event.MouseListener#mousePressed(java.awt.event.MouseEvent)
-         */
-        public void mousePressed(MouseEvent me) {
-            selectionStart = me.getX();
+    @Override
+    public void mouseReleased(MouseEvent me) {
+
+        if (!isSelecting)
+            return;
+
+        isSelecting = false;
+
+        try {
+            // If it's a really small selection (ie a click with no drag) give them a small chunk around this point
+            if (selectionEnd == selectionStart) {
+
+                selectionStart = Math.max(selectionStart - 3, xOffset);
+                selectionEnd = Math.min(selectionEnd + 3, xOffset + chrWidth);
+            }
+
+            int start = getBasePosition(Math.min(selectionEnd, selectionStart));
+            int end = getBasePosition(Math.max(selectionEnd, selectionStart));
+
+            DisplayPreferences.getInstance().setLocation(chromosome, start, end);
+        } catch (REDException e) {
+            // This should have been caught before now.
+            new CrashReporter(e);
+        }
+        repaint();
+    }
+
+    @Override
+    public void mouseEntered(MouseEvent arg0) {
+        viewer.setInfo(chromosome);
+    }
+
+    @Override
+    public void mouseExited(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mouseDragged(MouseEvent me) {
+        try {
+            getBasePosition(me.getX());
             selectionEnd = me.getX();
-
-            try {
-                getBasePosition(me.getX());
-                isSelecting = true;
-            } catch (REDException e) {
-                // They pressed outside of the chromosome so ignore it.
-            }
-        }
-
-        /*
-         * (non-Javadoc)
-         *
-         * @see
-         * java.awt.event.MouseListener#mouseReleased(java.awt.event.MouseEvent)
-         */
-        public void mouseReleased(MouseEvent me) {
-
-            if (!isSelecting)
-                return;
-
-            isSelecting = false;
-
-            try {
-                // If it's a really small selection (ie a click with no drag)
-                // give them a small chunk around this point
-                if (selectionEnd == selectionStart) {
-
-                    selectionStart = Math.max(selectionStart - 3, xOffset);
-                    selectionEnd = Math.min(selectionEnd + 3, xOffset
-                            + chrWidth);
-                }
-
-                int start = getBasePosition(Math.min(selectionEnd,
-                        selectionStart));
-                int end = getBasePosition(Math
-                        .max(selectionEnd, selectionStart));
-
-                DisplayPreferences.getInstance().setLocation(chromosome, start,
-                        end);
-            } catch (REDException e) {
-                // This should have been caught before now.
-                new CrashReporter(e);
-            }
-
             repaint();
+        } catch (REDException e) {
+            // This was outside the chromosome so ignore it
         }
 
-        /*
-         * (non-Javadoc)
-         *
-         * @see
-         * java.awt.event.MouseListener#mouseEntered(java.awt.event.MouseEvent)
-         */
-        public void mouseEntered(MouseEvent arg0) {
-            viewer.setInfo(chromosome);
-        }
+    }
 
-        /*
-         * (non-Javadoc)
-         *
-         * @see
-         * java.awt.event.MouseListener#mouseExited(java.awt.event.MouseEvent)
-         */
-        public void mouseExited(MouseEvent arg0) {
-        }
-
-        public void mouseDragged(MouseEvent me) {
-            try {
-                getBasePosition(me.getX());
-                selectionEnd = me.getX();
-                repaint();
-            } catch (REDException e) {
-                // This was outside the chromosome so ignore it
-            }
-
-        }
-
-        public void mouseMoved(MouseEvent arg0) {
-        }
-
-        public int getBasePosition(int pixelPosition) throws REDException {
-
-            if (pixelPosition < xOffset) {
-                throw new REDException("Before the start of the chromosome");
-            }
-            if (pixelPosition > (xOffset + chrWidth)) {
-                throw new REDException("After the end of the chromosome");
-            }
-            return (int) (chromosome.getLength() * (((double) (pixelPosition - xOffset)) / chrWidth));
-
-        }
+    @Override
+    public void mouseMoved(MouseEvent e) {
     }
 
 }
