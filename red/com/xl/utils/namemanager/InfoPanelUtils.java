@@ -1,3 +1,21 @@
+/*
+ * RED: RNA Editing Detector
+ *     Copyright (C) <2014>  <Xing Li>
+ *
+ *     RED is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU General Public License as published by
+ *     the Free Software Foundation, either version 3 of the License, or
+ *     (at your option) any later version.
+ *
+ *     RED is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     GNU General Public License for more details.
+ *
+ *     You should have received a copy of the GNU General Public License
+ *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package com.xl.utils.namemanager;
 
 
@@ -13,11 +31,9 @@ public class InfoPanelUtils {
 
     public static final String PROGRAM_UPDATE_CHECK = "Checking if a program update is available...";
 
-    public static final String GENOMES_UPDATE_CHECK = "Checking if genome updates are available...";
-
     public static final String CACHE_DIRECTORY_CONFIGURE = "Please configure a cache directory to allow RED to run.";
 
-    public static final String CACHE_DIRECTORY_CONFIGURE_FAIL = "Your cache directory is invalid. Please configure a cache directory to allow SeqMonk to run.";
+    public static final String CACHE_DIRECTORY_CONFIGURE_FAIL = "Your cache directory is invalid. Please configure a cache directory to allow RED to run.";
 
     public static final String GENOMES_FOLDER_GET_FAIL = "Can't find your custom genomes folder";
 

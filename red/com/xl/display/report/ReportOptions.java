@@ -1,10 +1,29 @@
+/*
+ * RED: RNA Editing Detector
+ *     Copyright (C) <2014>  <Xing Li>
+ *
+ *     RED is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU General Public License as published by
+ *     the Free Software Foundation, either version 3 of the License, or
+ *     (at your option) any later version.
+ *
+ *     RED is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     GNU General Public License for more details.
+ *
+ *     You should have received a copy of the GNU General Public License
+ *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package com.xl.display.report;
 
 /**
- * Created by Administrator on 2014/9/18.
+ * Created by Xing Li on 2014/9/18.
  */
 
-import com.xl.dialog.ProgressDialog;
+import com.xl.datatypes.sites.SiteList;
+import com.xl.display.dialog.ProgressDialog;
 import com.xl.interfaces.OptionsListener;
 import com.xl.interfaces.ProgressListener;
 import com.xl.main.REDApplication;
@@ -18,8 +37,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 /**
- * The Class ReportOptions displays a dialog containing the options panel
- * for a report.
+ * The Class ReportOptions displays a dialog containing the options panel for a report.
  */
 public class ReportOptions extends JDialog implements ActionListener, ProgressListener, OptionsListener {
 
@@ -63,12 +81,13 @@ public class ReportOptions extends JDialog implements ActionListener, ProgressLi
 
         JLabel siteListLabel;
 
-        if (report.dataCollection().siteSet() != null) {
-            siteListLabel = new JLabel("Reporting on sites in '" + report.dataCollection().siteSet().getActiveList().name() + "' (" + report.dataCollection().siteSet().getActiveList().getAllSites().length + " sites)", JLabel.CENTER);
+        SiteList l = report.collection.getActiveSiteList();
+        if (l != null) {
+            siteListLabel = new JLabel("Reporting on sites in '" + l.getFilterName() + "' (" + l.getAllSites().length + " sites)", JLabel.CENTER);
         } else {
             siteListLabel = new JLabel("Reporting on all data", JLabel.CENTER);
         }
-        siteListLabel.setFont(FontManager.defaultFont);
+        siteListLabel.setFont(FontManager.DEFAULT_FONT);
         topPanel.add(siteListLabel);
 
         getContentPane().add(topPanel, BorderLayout.NORTH);

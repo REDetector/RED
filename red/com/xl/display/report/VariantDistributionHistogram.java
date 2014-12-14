@@ -1,3 +1,21 @@
+/*
+ * RED: RNA Editing Detector
+ *     Copyright (C) <2014>  <Xing Li>
+ *
+ *     RED is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU General Public License as published by
+ *     the Free Software Foundation, either version 3 of the License, or
+ *     (at your option) any later version.
+ *
+ *     RED is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     GNU General Public License for more details.
+ *
+ *     You should have received a copy of the GNU General Public License
+ *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package com.xl.display.report;
 
 import com.xl.datatypes.DataStore;
@@ -6,6 +24,7 @@ import com.xl.net.crashreport.CrashReporter;
 import com.xl.preferences.LocationPreferences;
 import com.xl.utils.filefilters.TxtFileFilter;
 import com.xl.utils.imagemanager.ImageSaver;
+import com.xl.utils.ui.OptionDialogUtils;
 
 import javax.swing.*;
 import java.awt.*;
@@ -15,8 +34,7 @@ import java.io.File;
 import java.io.IOException;
 
 /**
- * The Class EditingSitesDistributionHistogram shows the distribution of read lengths
- * in a data store.
+ * The Class EditingSitesDistributionHistogram shows the distribution of read lengths in a data store.
  */
 public class VariantDistributionHistogram extends JDialog implements ActionListener {
 
@@ -38,7 +56,7 @@ public class VariantDistributionHistogram extends JDialog implements ActionListe
         setSize(800, 600);
         setLocationRelativeTo(REDApplication.getInstance());
         setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-        plotPanel = new VariantHistogramPanel(d.collection().siteSet().getActiveList().getAllSites());
+        plotPanel = new VariantHistogramPanel(d.siteSet().getActiveList().getAllSites());
         getContentPane().setLayout(new BorderLayout());
         getContentPane().add(plotPanel, BorderLayout.CENTER);
 
@@ -91,7 +109,7 @@ public class VariantDistributionHistogram extends JDialog implements ActionListe
 
             // Check if we're stepping on anyone's toes...
             if (file.exists()) {
-                int answer = JOptionPane.showOptionDialog(this, file.getName() + " exists.  Do you want to overwrite the existing file?", "Overwrite file?", 0, JOptionPane.QUESTION_MESSAGE, null, new String[]{"Overwrite and Save", "Cancel"}, "Overwrite and Save");
+                int answer = OptionDialogUtils.showFileExistDialog(this, file.getName());
 
                 if (answer > 0) {
                     return;

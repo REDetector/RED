@@ -1,3 +1,21 @@
+/*
+ * RED: RNA Editing Detector
+ *     Copyright (C) <2014>  <Xing Li>
+ *
+ *     RED is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU General Public License as published by
+ *     the Free Software Foundation, either version 3 of the License, or
+ *     (at your option) any later version.
+ *
+ *     RED is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     GNU General Public License for more details.
+ *
+ *     You should have received a copy of the GNU General Public License
+ *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package com.xl.parsers.annotationparsers;
 
 import com.xl.datatypes.annotation.AnnotationSet;
@@ -11,8 +29,9 @@ import com.xl.datatypes.genome.GenomeDescriptor;
 import com.xl.datatypes.sequence.IGVSequence;
 import com.xl.datatypes.sequence.Sequence;
 import com.xl.datatypes.sequence.SequenceWrapper;
-import com.xl.dialog.ProgressDialog;
+import com.xl.display.dialog.ProgressDialog;
 import com.xl.interfaces.ProgressListener;
+import com.xl.main.Global;
 import com.xl.main.REDApplication;
 import com.xl.preferences.DisplayPreferences;
 import com.xl.preferences.LocationPreferences;
@@ -82,9 +101,9 @@ public class IGVGenomeParser implements Runnable {
                         foundCacheFile = true;
                         displayNameInCacheFile = properties.getProperty(GenomeUtils.KEY_DISPLAY_NAME);
                         String version = properties.getProperty(GenomeUtils.KEY_VERSION_NAME);
-                        if (!REDApplication.VERSION.equals(version)) {
+                        if (!Global.VERSION.equals(version)) {
                             System.err.println("Version mismatch between cache version ('" + version + "') " +
-                                    "and current version ('" + REDApplication.VERSION + "') - reparsing");
+                                    "and current version ('" + Global.VERSION + "') - re-parsing");
                             cacheFailed = true;
                             if (!cacheCompleteFile.delete()) {
                                 System.err.println("Can not delete 'cache.complete' file. Please delete it individually...");
@@ -132,7 +151,7 @@ public class IGVGenomeParser implements Runnable {
             try {
                 properties.load(new FileReader(fastaCacheCompleteFile));
                 String version = properties.getProperty(GenomeUtils.KEY_VERSION_NAME);
-                if (REDApplication.VERSION.equals(version)) {
+                if (Global.VERSION.equals(version)) {
                     DisplayPreferences.getInstance().setFastaEnable(true);
                     break;
                 }
@@ -190,8 +209,7 @@ public class IGVGenomeParser implements Runnable {
         }
 
         File cacheDir = new File(LocationPreferences.getInstance().getCacheDirectory() + File.separator + genome.getDisplayName());
-        // First we need to get the list of chromosomes and set those
-        // up before we go on to add the actual feature sets.
+        // First we need to get the list of chromosomes and set those up before we go on to add the actual feature sets.
         File chrListFile = new File(cacheDir.getAbsoluteFile() + File.separator + "chr_list.txt");
         BufferedReader br = ParsingUtils.openBufferedReader(chrListFile);
         String line;

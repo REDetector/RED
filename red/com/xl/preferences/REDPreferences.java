@@ -1,21 +1,19 @@
-/**
- * Copyright Copyright 2007-13 Simon Andrews
+/*
+ * RED: RNA Editing Detector
+ *     Copyright (C) <2014>  <Xing Li>
  *
- *    This file is part of SeqMonk.
+ *     RED is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU General Public License as published by
+ *     the Free Software Foundation, either version 3 of the License, or
+ *     (at your option) any later version.
  *
- *    SeqMonk is free software; you can redistribute it and/or modify
- *    it under the terms of the GNU General Public License as published by
- *    the Free Software Foundation; either version 3 of the License, or
- *    (at your option) any later version.
+ *     RED is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     GNU General Public License for more details.
  *
- *    SeqMonk is distributed in the hope that it will be useful,
- *    but WITHOUT ANY WARRANTY; without even the implied warranty of
- *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *    GNU General Public License for more details.
- *
- *    You should have received a copy of the GNU General Public License
- *    along with SeqMonk; if not, write to the Free Software
- *    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+ *     You should have received a copy of the GNU General Public License
+ *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 package com.xl.preferences;
 
@@ -23,39 +21,22 @@ import java.io.*;
 import java.util.Properties;
 
 /**
- * A set of redPreferences, both temporary and permanent which are used throughout
- * SeqMonk. Permanent redPreferences can be loaded from and saved to a redPreferences
- * file allowing persistence between sessions.
+ * A set of REDPreferences, both temporary and permanent which are used throughout RED. Permanent REDPreferences can be loaded from and saved to a
+ * REDPreferences file allowing persistence between sessions.
  */
 public class REDPreferences {
     public static final String PROXY = "Proxy";
-    public static final String CRASH_EMAIL = "CrashEmail";
-    public static final String COMPRESS_OUTPUT = "CompressOutput";
     public static final String CHECK_FOR_UPDATE = "CheckForUpdate";
-    public static final String DATA_LOADED_TO_DATABASE = "DataLoaded";
-    public static final String DATABASE_HOST = "Host";
-    public static final String DATABASE_PORT = "Port";
-    public static final String DATABASE_USER = "User";
-    public static final String DENOVO = "Denovo";
-    public static final String DATABASE_TABLE_BUILDER = "TableBuilder";
-
     /**
      * The single instantiated instance of redPreferences
      */
     private static REDPreferences redPreferences = new REDPreferences();
-
     private LocationPreferences locationPreferences = LocationPreferences.getInstance();
-
+    private DatabasePreferences databasePreferences = DatabasePreferences.getInstance();
     /**
      * The redPreferences file.
      */
     private File preferencesFile = null;
-
-    /**
-     * Whether we've opted to compress our output files
-     */
-    private boolean compressOutput = false;
-
 
     /**
      * Whether we're using a network proxy
@@ -77,29 +58,9 @@ public class REDPreferences {
      */
     private boolean checkForUpdates = true;
 
-    /**
-     * The email address we should attach to crash reports
-     */
-    private String crashEmail = "";
-
-
-    private boolean dataLoadedToDatabase = false;
-
-    private String databaseHost = "";
-    private String databasePort = "";
-    private String databaseUser = "";
-
-
-    private String databaseTableBuilder = "";
-    private boolean isDenovo = false;
-
-
-    private boolean databaseConnected = false;
-
 
     /**
-     * Instantiates a redPreferences object. Only ever called once from inside this
-     * class. External access is via the getInstnace() method.
+     * Instantiates a redPreferences object. Only ever called once from inside this class. External access is via the getInstnace() method.
      */
     private REDPreferences() {
         try {
@@ -117,9 +78,9 @@ public class REDPreferences {
     }
 
     /**
-     * Gets the single instance of SeqMonkPreferences.
+     * Gets the single instance of REDPreferences.
      *
-     * @return single instance of SeqMonkPreferences
+     * @return single instance of REDPreferences
      */
     public static REDPreferences getInstance() {
         return redPreferences;
@@ -131,15 +92,7 @@ public class REDPreferences {
     private void loadPreferences() throws IOException {
         Properties properties = new Properties();
         properties.load(new FileReader(preferencesFile));
-        setCrashEmail(properties.getProperty(CRASH_EMAIL));
-        setCompressOutput(Boolean.parseBoolean(properties.getProperty(COMPRESS_OUTPUT)));
         setCheckForUpdates(Boolean.parseBoolean(properties.getProperty(CHECK_FOR_UPDATE)));
-        setDataLoadedToDatabase(Boolean.parseBoolean(properties.getProperty(DATA_LOADED_TO_DATABASE)));
-        setDatabaseHost(properties.getProperty(DATABASE_HOST));
-        setDatabasePort(properties.getProperty(DATABASE_PORT));
-        setDatabaseUser(properties.getProperty(DATABASE_USER));
-        setDenovo(Boolean.parseBoolean(properties.getProperty(DENOVO)));
-        setDatabaseTableBuilder(properties.getProperty(DATABASE_TABLE_BUILDER));
         String[] proxys = properties.getProperty(PROXY).split(",");
         if (proxys.length == 2) {
             setProxy(proxys[0], Integer.parseInt(proxys[1]));
@@ -147,10 +100,11 @@ public class REDPreferences {
             setProxy(proxyHost, proxyPort);
         }
         locationPreferences.loadPreferences(properties);
+        databasePreferences.loadPreferences(properties);
     }
 
     /**
-     * Save redPreferences.
+     * Save REDPreferences.
      *
      * @throws IOException
      */
@@ -159,47 +113,21 @@ public class REDPreferences {
 
         Properties properties = new Properties();
         properties.setProperty(PROXY, proxyHost + "," + proxyPort);
-        properties.setProperty(CRASH_EMAIL, crashEmail);
-        properties.setProperty(COMPRESS_OUTPUT, Boolean.toString(compressOutput));
         properties.setProperty(CHECK_FOR_UPDATE, Boolean.toString(checkForUpdates));
-        properties.setProperty(DATA_LOADED_TO_DATABASE, Boolean.toString(dataLoadedToDatabase));
-        properties.setProperty(DENOVO, Boolean.toString(isDenovo));
-        properties.setProperty(DATABASE_HOST, databaseHost);
-        properties.setProperty(DATABASE_PORT, databasePort);
-        properties.setProperty(DATABASE_USER, databaseUser);
-        properties.setProperty(DATABASE_TABLE_BUILDER, databaseTableBuilder);
         locationPreferences.savePreferences(properties);
+        databasePreferences.savePreferences(properties);
         properties.store(p, "RED Preferences. DO NOT Edit This File Individually.");
         p.close();
     }
 
     /**
-     * Asks whether we should check for updated versions of SeqMonk
+     * Asks whether we should check for updated versions of RED
      *
      * @return true, if we should check for updates
      */
     public boolean checkForUpdates() {
         return checkForUpdates;
     }
-
-    /**
-     * Should seqmonk format output files be gzip compressed
-     *
-     * @return true if output should be compressed
-     */
-    public boolean compressOutput() {
-        return compressOutput;
-    }
-
-    /**
-     * Sets whether seqmonk output should be compressed
-     *
-     * @param compressOutput if output should be compressed
-     */
-    public void setCompressOutput(boolean compressOutput) {
-        this.compressOutput = compressOutput;
-    }
-
 
     /**
      * Sets the flag to say if we should check for updates
@@ -222,8 +150,7 @@ public class REDPreferences {
     /**
      * Proxy host.
      *
-     * @return The name of the proxy to use. Only use this if the useProxy flag
-     * is set.
+     * @return The name of the proxy to use. Only use this if the useProxy flag is set.
      */
     public String proxyHost() {
         return proxyHost;
@@ -232,8 +159,7 @@ public class REDPreferences {
     /**
      * Proxy port.
      *
-     * @return The port to access the proxy on. Only use this if the useProxy
-     * flag is set
+     * @return The port to access the proxy on. Only use this if the useProxy flag is set
      */
     public int proxyPort() {
         return proxyPort;
@@ -252,33 +178,8 @@ public class REDPreferences {
     }
 
     /**
-     * Gets the stored email address which should be attached to crash reports.
-     *
-     * @return The stored email address, or an empty string
-     */
-    public String getCrashEmail() {
-        if (crashEmail != null)
-            return crashEmail;
-        return "";
-    }
-
-    /**
-     * Stores the email address used in a crash report so that this is
-     * automatically added the next time a crash report happens and they don't
-     * have to fill it out each time.
-     *
-     * @param email The email address to store
-     */
-    public void setCrashEmail(String email) {
-        // We're not even going to try to validate this
-        crashEmail = email;
-    }
-
-    /**
-     * Applies the stored proxy information to the environment of the current
-     * session so it is picked up automatically by any network calls made within
-     * the program. No further configuration is required within classes
-     * requiring network access.
+     * Applies the stored proxy information to the environment of the current session so it is picked up automatically by any network calls made within the
+     * program. No further configuration is required within classes requiring network access.
      */
     private void updateProxyInfo() {
         if (useProxy) {
@@ -290,60 +191,5 @@ public class REDPreferences {
         }
     }
 
-    public boolean isDataLoadedToDatabase() {
-        return dataLoadedToDatabase;
-    }
-
-    public void setDataLoadedToDatabase(boolean dataLoadedToDatabase) {
-        this.dataLoadedToDatabase = dataLoadedToDatabase;
-    }
-
-    public String getDatabaseHost() {
-        return databaseHost;
-    }
-
-    public void setDatabaseHost(String databaseHost) {
-        this.databaseHost = databaseHost;
-    }
-
-    public String getDatabasePort() {
-        return databasePort;
-    }
-
-    public void setDatabasePort(String databasePort) {
-        this.databasePort = databasePort;
-    }
-
-    public String getDatabaseUser() {
-        return databaseUser;
-    }
-
-    public void setDatabaseUser(String databaseUser) {
-        this.databaseUser = databaseUser;
-    }
-
-    public boolean isDenovo() {
-        return isDenovo;
-    }
-
-    public void setDenovo(boolean isDenovo) {
-        this.isDenovo = isDenovo;
-    }
-
-    public String getDatabaseTableBuilder() {
-        return databaseTableBuilder;
-    }
-
-    public void setDatabaseTableBuilder(String databaseTableBuilder) {
-        this.databaseTableBuilder = databaseTableBuilder;
-    }
-
-    public boolean isDatabaseConnected() {
-        return databaseConnected;
-    }
-
-    public void setDatabaseConnected(boolean databaseConnected) {
-        this.databaseConnected = databaseConnected;
-    }
 
 }

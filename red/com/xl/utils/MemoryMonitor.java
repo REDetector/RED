@@ -1,6 +1,23 @@
+/*
+ * RED: RNA Editing Detector
+ *     Copyright (C) <2014>  <Xing Li>
+ *
+ *     RED is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU General Public License as published by
+ *     the Free Software Foundation, either version 3 of the License, or
+ *     (at your option) any later version.
+ *
+ *     RED is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     GNU General Public License for more details.
+ *
+ *     You should have received a copy of the GNU General Public License
+ *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package com.xl.utils;
 
-import com.xl.interfaces.CacheListener;
 import com.xl.main.REDApplication;
 
 import javax.swing.*;
@@ -10,10 +27,9 @@ import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 
 /**
- * The Class MemoryMonitor provides a display which summarises the current
- * memory usage and cache state.
+ * The Class MemoryMonitor provides a display which summarises the current memory usage and cache state.
  */
-public class MemoryMonitor extends JPanel implements Runnable, MouseListener, MouseMotionListener, CacheListener {
+public class MemoryMonitor extends JPanel implements Runnable, MouseListener, MouseMotionListener {
 
     /**
      * The Constant DARK_GREEN.
@@ -41,14 +57,6 @@ public class MemoryMonitor extends JPanel implements Runnable, MouseListener, Mo
      * The monitor tool tip.
      */
     private String monitorToolTip;
-    /**
-     * The cache tool tip.
-     */
-    private String cacheToolTip;
-    /**
-     * Whether the cache was active since the last update
-     */
-    private boolean cacheActive = false;
 
     /**
      * Horrible hack to work around an initialisation order problem when loading
@@ -74,7 +82,6 @@ public class MemoryMonitor extends JPanel implements Runnable, MouseListener, Mo
 
                 if (!registered) {
                     if (REDApplication.getInstance() != null) {
-                        REDApplication.getInstance().addCacheListener(this);
                         registered = true;
                     }
                 }
@@ -115,56 +122,7 @@ public class MemoryMonitor extends JPanel implements Runnable, MouseListener, Mo
 
         super.paintComponent(g);
 
-        paintDiskCache(g);
         paintMemoryMonitor(g);
-
-    }
-
-    /**
-     * Paint disk cache.
-     *
-     * @param g the g
-     */
-    private void paintDiskCache(Graphics g) {
-        // The disk cache is drawn on the right 1/4 of the display
-
-        int xStart = (getWidth() * 3) / 4;
-        int width = getWidth() - xStart;
-
-
-        // We set the background depending on whether we're using
-        // caching or not.
-        Color usedColor;
-        if (cacheActive) {
-            usedColor = DARK_ORANGE;
-            cacheActive = false;
-        } else {
-            usedColor = DARK_GREEN;
-        }
-        cacheToolTip = "Disk Cache Active";
-
-
-        // We have a common disk image over which we overlay some other image to say whether we're using this or not.
-
-        // Bottom circle first (outlined)
-        g.setColor(usedColor);
-        g.fillOval(xStart + 2, getHeight() - 6, width - 4, 4);
-        g.setColor(Color.BLACK);
-        g.drawOval(xStart + 2, getHeight() - 6, width - 4, 4);
-
-        // Then the main body
-        g.setColor(usedColor);
-        g.fillRect(xStart + 2, 5, width - 4, getHeight() - 9);
-        g.setColor(Color.BLACK);
-        g.drawLine(xStart + 2, 5, xStart + 2, getHeight() - 5);
-        g.drawLine(xStart + (width - 2), 5, xStart + (width - 2), getHeight() - 5);
-
-        // Then the top circle
-
-        g.setColor(usedColor);
-        g.fillOval(xStart + 2, 2, width - 4, 4);
-        g.setColor(Color.BLACK);
-        g.drawOval(xStart + 2, 2, width - 4, 4);
 
     }
 
@@ -258,14 +216,6 @@ public class MemoryMonitor extends JPanel implements Runnable, MouseListener, Mo
     public void mouseMoved(MouseEvent e) {
         if (e.getX() < (getWidth() * 3) / 4) {
             setToolTipText(monitorToolTip);
-        } else {
-            setToolTipText(cacheToolTip);
         }
     }
-
-    public void cacheUsed() {
-        cacheActive = true;
-    }
-
-
 }

@@ -1,62 +1,71 @@
+/*
+ * RED: RNA Editing Detector
+ *     Copyright (C) <2014>  <Xing Li>
+ *
+ *     RED is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU General Public License as published by
+ *     the Free Software Foundation, either version 3 of the License, or
+ *     (at your option) any later version.
+ *
+ *     RED is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     GNU General Public License for more details.
+ *
+ *     You should have received a copy of the GNU General Public License
+ *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package com.xl.thread;
 
-import com.dw.dbutils.DatabaseManager;
-import com.dw.dbutils.Query;
-import com.dw.denovo.FisherExactTestFilter;
-import com.dw.denovo.KnownSNPFilter;
-import com.dw.denovo.RepeatRegionsFilter;
-import com.dw.denovo.SpliceJunctionFilter;
-import com.xl.datatypes.DataCollection;
-import com.xl.datatypes.sites.Site;
-import com.xl.datatypes.sites.SiteSet;
+import com.xl.database.DatabaseManager;
+import com.xl.database.DatabaseSelector;
+import com.xl.database.TableCreator;
+import com.xl.filter.denovo.FisherExactTestFilter;
+import com.xl.filter.denovo.KnownSNPFilter;
+import com.xl.filter.denovo.RepeatRegionsFilter;
+import com.xl.filter.denovo.SpliceJunctionFilter;
 import com.xl.main.REDApplication;
-import com.xl.parsers.dataparsers.RNAVCFParser;
+import com.xl.parsers.dataparsers.RNAVCFMultiParser;
 import com.xl.preferences.LocationPreferences;
-import com.xl.preferences.REDPreferences;
-
-import java.util.Vector;
 
 /**
- * Created by Administrator on 2014/7/22.
+ * Created by Xing Li on 2014/7/22.
  */
 public class ThreadDenovoInput implements Runnable {
-    protected boolean cancel = false;
-    private DataCollection dataCollection;
-
-    public ThreadDenovoInput(DataCollection dataCollection) {
-        this.dataCollection = dataCollection;
-    }
 
     @Override
     public void run() {
         DatabaseManager manager = DatabaseManager.getInstance();
         LocationPreferences locationPreferences = LocationPreferences.getInstance();
-        REDPreferences.getInstance().setDenovo(true);
         manager.setAutoCommit(true);
 
         manager.createDatabase(DatabaseManager.DENOVO_DATABASE_NAME);
         manager.useDatabase(DatabaseManager.DENOVO_DATABASE_NAME);
 
-        RNAVCFParser rnaVCFParser = new RNAVCFParser();
-        rnaVCFParser.parseVCFFile(DatabaseManager.RNA_VCF_RESULT_TABLE_NAME, locationPreferences.getRnaVcfFile());
+        RNAVCFMultiParser multiParser = new RNAVCFMultiParser();
+        multiParser.parseMultiVCFFile(locationPreferences.getRnaVcfFile());
 
-        Vector<Site> sites = Query.queryAllEditingSites(DatabaseManager.RNA_VCF_RESULT_TABLE_NAME);
-        Site[] siteArray = sites.toArray(new Site[0]);
-        dataCollection.setSiteSet(new SiteSet("Original RNA editing sites by RNA vcf file", siteArray, DatabaseManager.RNA_VCF_RESULT_TABLE_NAME));
+//        RNAVCFParser rnaVCFParser = new RNAVCFParser();
+//        rnaVCFParser.parseVCFFile(sampleName + "_" + DatabaseManager.RNA_VCF_RESULT_TABLE_NAME, locationPreferences.getRnaVcfFile());
 
         RepeatRegionsFilter rf = new RepeatRegionsFilter(manager);
-        rf.loadRepeatTable(DatabaseManager.REPEAT_FILTER_TABLE_NAME, locationPreferences.getRepeatFile());
+        TableCreator.createRepeatRegionsTable(DatabaseManager.REPEAT_MASKER_TABLE_NAME);
+        rf.loadRepeatTable(DatabaseManager.REPEAT_MASKER_TABLE_NAME, locationPreferences.getRepeatFile());
 
         SpliceJunctionFilter cf = new SpliceJunctionFilter(manager);
-        cf.loadSpliceJunctionTable(DatabaseManager.SPLICE_JUNCTION_FILTER_TABLE_NAME, locationPreferences.getRefSeqFile());
+        TableCreator.createSpliceJunctionTable(DatabaseManager.SPLICE_JUNCTION_TABLE_NAME);
+        cf.loadSpliceJunctionTable(DatabaseManager.SPLICE_JUNCTION_TABLE_NAME, locationPreferences.getRefSeqFile());
 
         KnownSNPFilter sf = new KnownSNPFilter(manager);
-        sf.loadDbSNPTable(DatabaseManager.DBSNP_FILTER_TABLE_NAME, locationPreferences.getDbSNPFile());
+        TableCreator.createDBSNPTable(DatabaseManager.DBSNP_DATABASE_TABLE_NAME);
+        sf.loadDbSNPTable(DatabaseManager.DBSNP_DATABASE_TABLE_NAME, locationPreferences.getDbSNPFile());
 
         FisherExactTestFilter pv = new FisherExactTestFilter(manager);
-        pv.loadDarnedTable(DatabaseManager.PVALUE_FILTER_TABLE_NAME, locationPreferences.getDarnedFile());
+        TableCreator.createDARNEDTable(DatabaseManager.DARNED_DATABASE_TABLE_NAME);
+        pv.loadDarnedTable(DatabaseManager.DARNED_DATABASE_TABLE_NAME, locationPreferences.getDarnedFile());
 
-        REDApplication.getInstance().progressComplete("database_loaded", null);
+        new DatabaseSelector(REDApplication.getInstance());
     }
 
 }

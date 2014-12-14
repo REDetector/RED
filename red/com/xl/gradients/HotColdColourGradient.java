@@ -1,29 +1,26 @@
-/**
- * Copyright Copyright 2007-13 Simon Andrews
+/*
+ * RED: RNA Editing Detector
+ *     Copyright (C) <2014>  <Xing Li>
  *
- *    This file is part of SeqMonk.
+ *     RED is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU General Public License as published by
+ *     the Free Software Foundation, either version 3 of the License, or
+ *     (at your option) any later version.
  *
- *    SeqMonk is free software; you can redistribute it and/or modify
- *    it under the terms of the GNU General Public License as published by
- *    the Free Software Foundation; either version 3 of the License, or
- *    (at your option) any later version.
+ *     RED is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     GNU General Public License for more details.
  *
- *    SeqMonk is distributed in the hope that it will be useful,
- *    but WITHOUT ANY WARRANTY; without even the implied warranty of
- *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *    GNU General Public License for more details.
- *
- *    You should have received a copy of the GNU General Public License
- *    along with SeqMonk; if not, write to the Free Software
- *    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+ *     You should have received a copy of the GNU General Public License
+ *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 package com.xl.gradients;
 
 import java.awt.*;
 
 /**
- * Provides a range of colours which form a smooth gradient
- * from Blue through Green to Red.
+ * Provides a range of colours which form a smooth gradient from Blue through Green to Red.
  */
 public class HotColdColourGradient extends ColourGradient {
 
@@ -32,10 +29,8 @@ public class HotColdColourGradient extends ColourGradient {
     }
 
     /**
-     * A method initially called to create a palette of 100 pre-cached
-     * colours from which the closest match will be selected to
-     * return for future queries.  Setting the colours this way
-     * saves on the overhead of generating a lot of new objects
+     * A method initially called to create a palette of 100 pre-cached colours from which the closest match will be selected to return for future queries.
+     * Setting the colours this way saves on the overhead of generating a lot of new objects
      *
      * @return An array of colours crossing the full palette.
      */

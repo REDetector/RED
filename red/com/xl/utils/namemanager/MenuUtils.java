@@ -1,3 +1,21 @@
+/*
+ * RED: RNA Editing Detector
+ *     Copyright (C) <2014>  <Xing Li>
+ *
+ *     RED is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU General Public License as published by
+ *     the Free Software Foundation, either version 3 of the License, or
+ *     (at your option) any later version.
+ *
+ *     RED is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     GNU General Public License for more details.
+ *
+ *     You should have received a copy of the GNU General Public License
+ *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package com.xl.utils.namemanager;
 
 public class MenuUtils {
@@ -15,7 +33,6 @@ public class MenuUtils {
     public static final String DNA = "DNA(gDNA)...";
     public static final String FASTA = "Fasta...";
     public static final String ANNOTATION = "Annotation...";
-    public static final String LOAD_GENOME = "Load Genome...";
     public static final String EXPORT_IMAGE = "Export Image";
     public static final String GENOME_VIEW = "Genome Panel...";
     public static final String CHROMOSOME_VIEW = "Chromosome Panel...";
@@ -73,4 +90,25 @@ public class MenuUtils {
     public static final String SHOW_PROBES_ONLY = "Show Sites only";
     public static final String SHOW_READS_AND_PROBES = "Show Reads and Sites";
 
+    /*Main Toolbar*/
+    public static final String SWITCH_SAMPLES_OR_MODE = "Switch Samples or Mode";
+
+
+    public static final String OK_BUTTON = "OK";
+
+    public static final String CANCEL_BUTTON = "Cancel";
+
+    public static final String DELETE_BUTTON = "Delete";
+
+    public static final String IMPORT_BUTTON = "Import";
+
+    public static final String EXPORT_BUTTON = "Export";
+
+    public static final String CONNECT_BUTTON = "Connect";
+
+    public static final String CLOSE_BUTTON = "Close";
+
+    public static final String BROWSE_BUTTON = "Browse";
+
+    public static final String SAVE_BUTTON = "Save";
 }

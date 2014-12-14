@@ -1,3 +1,21 @@
+/*
+ * RED: RNA Editing Detector
+ *     Copyright (C) <2014>  <Xing Li>
+ *
+ *     RED is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU General Public License as published by
+ *     the Free Software Foundation, either version 3 of the License, or
+ *     (at your option) any later version.
+ *
+ *     RED is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     GNU General Public License for more details.
+ *
+ *     You should have received a copy of the GNU General Public License
+ *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package com.xl.parsers.dataparsers;
 
 import com.xl.datatypes.DataCollection;
@@ -6,7 +24,7 @@ import com.xl.datatypes.genome.Genome;
 import com.xl.datatypes.genome.GenomeDescriptor;
 import com.xl.datatypes.sequence.Location;
 import com.xl.interfaces.ProgressListener;
-import com.xl.main.REDApplication;
+import com.xl.main.Global;
 import com.xl.preferences.LocationPreferences;
 import com.xl.utils.ChromosomeUtils;
 import com.xl.utils.FileUtils;
@@ -52,7 +70,7 @@ public class FastaFileParser extends DataParser {
                 if (cacheCompleteFile.exists()) {
                     BufferedReader br = new BufferedReader(new FileReader(cacheCompleteFile));
                     String version = br.readLine();
-                    if (version.equals(REDApplication.VERSION)) {
+                    if (version.equals(Global.VERSION)) {
                         processingComplete(null);
                     } else {
                         br.close();
@@ -147,7 +165,7 @@ public class FastaFileParser extends DataParser {
         }
         br.close();
         FileWriter fw = new FileWriter(fastaCacheDirectory + File.separator + SuffixUtils.CACHE_FASTA_COMPLETE);
-        fw.write(REDApplication.VERSION);
+        fw.write(Global.VERSION);
         fw.close();
         processingComplete(null);
     }

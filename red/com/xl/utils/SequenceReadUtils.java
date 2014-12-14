@@ -1,16 +1,31 @@
+/*
+ * RED: RNA Editing Detector
+ *     Copyright (C) <2014>  <Xing Li>
+ *
+ *     RED is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU General Public License as published by
+ *     the Free Software Foundation, either version 3 of the License, or
+ *     (at your option) any later version.
+ *
+ *     RED is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     GNU General Public License for more details.
+ *
+ *     You should have received a copy of the GNU General Public License
+ *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package com.xl.utils;
 
 import com.xl.datatypes.sequence.Location;
 
 /**
- * This is a collection of methods which allow you to use a primitive long as a
- * genome location (start,end and strand) without the considerable overhead of
+ * This is a collection of methods which allow you to use a primitive long as a genome location (start,end and strand) without the considerable overhead of
  * having to create objects for each of the instances.
  * <p/>
- * Make no mistake this is an UGLY HACK which we've only done reluctantly since
- * there seems to be no other way to reduce the overhead of creating hundreds of
- * millions of objects for sequence reads, which is what we'd otherwise be
- * required to do.
+ * Make no mistake this is an UGLY HACK which we've only done reluctantly since there seems to be no other way to reduce the overhead of creating hundreds of
+ * millions of objects for sequence reads, which is what we'd otherwise be required to do.
  */
 public class SequenceReadUtils {
 
@@ -24,8 +39,7 @@ public class SequenceReadUtils {
     }
 
     /**
-     * Gets the total distance encompassed by two locations on the same
-     * chromosome.
+     * Gets the total distance encompassed by two locations on the same chromosome.
      */
 
     public static int fragmentLength(Location value1, Location value2) {
@@ -34,8 +48,7 @@ public class SequenceReadUtils {
     }
 
     /**
-     * Says whether two reads which must be known to be on the same chromosome
-     * overlap with each other.
+     * Says whether two reads which must be known to be on the same chromosome overlap with each other.
      *
      * @param value1
      * @param value2

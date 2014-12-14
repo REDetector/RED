@@ -1,21 +1,19 @@
-/**
- * Copyright 2009-13 Simon Andrews
+/*
+ * RED: RNA Editing Detector
+ *     Copyright (C) <2014>  <Xing Li>
  *
- *    This file is part of SeqMonk.
+ *     RED is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU General Public License as published by
+ *     the Free Software Foundation, either version 3 of the License, or
+ *     (at your option) any later version.
  *
- *    SeqMonk is free software; you can redistribute it and/or modify
- *    it under the terms of the GNU General Public License as published by
- *    the Free Software Foundation; either version 3 of the License, or
- *    (at your option) any later version.
+ *     RED is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     GNU General Public License for more details.
  *
- *    SeqMonk is distributed in the hope that it will be useful,
- *    but WITHOUT ANY WARRANTY; without even the implied warranty of
- *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *    GNU General Public License for more details.
- *
- *    You should have received a copy of the GNU General Public License
- *    along with SeqMonk; if not, write to the Free Software
- *    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+ *     You should have received a copy of the GNU General Public License
+ *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 package com.xl.parsers.dataparsers;
 
@@ -33,8 +31,7 @@ import java.util.Iterator;
 import java.util.List;
 
 /**
- * Represents a generic data parser for read data.  Actual data parsers for
- * specific formats will be subclasses of this.
+ * Represents a generic data parser for read data.  Actual data parsers for specific formats will be subclasses of this.
  */
 public abstract class DataParser implements Runnable, Cancellable {
 
@@ -50,9 +47,8 @@ public abstract class DataParser implements Runnable, Cancellable {
     }
 
     /**
-     * Sets a flag which tells the data parser that the user wants to
-     * cancel this request.  It's up to the implementing class to notice
-     * that this flag has been set.
+     * Sets a flag which tells the data parser that the user wants to cancel this request.  It's up to the implementing class to notice that this flag has been
+     * set.
      */
     public void cancel() {
         cancel = true;
@@ -114,10 +110,8 @@ public abstract class DataParser implements Runnable, Cancellable {
     }
 
     /**
-     * Gets a file filter which will identify all files which could be
-     * read by this parser.  This is judged solely on the filename so
-     * false positives are OK.  We should ensure that directories are
-     * always allowed when overriding this method.
+     * Gets a file filter which will identify all files which could be read by this parser.  This is judged solely on the filename so false positives are OK. We
+     * should ensure that directories are always allowed when overriding this method.
      *
      * @return A file filter for files which are parsable by this class
      */
@@ -197,8 +191,7 @@ public abstract class DataParser implements Runnable, Cancellable {
     }
 
     /**
-     * Alerts all listeners that an exception was received. The
-     * parser is not expected to continue after issuing this call.
+     * Alerts all listeners that an exception was received. The parser is not expected to continue after issuing this call.
      *
      * @param e The exception
      */
@@ -210,8 +203,7 @@ public abstract class DataParser implements Runnable, Cancellable {
     }
 
     /**
-     * Alerts all listeners that a warning was received.  The parser
-     * is expected to continue after issuing this call.
+     * Alerts all listeners that a warning was received.  The parser is expected to continue after issuing this call.
      *
      * @param e The warning exception received
      */
@@ -233,8 +225,7 @@ public abstract class DataParser implements Runnable, Cancellable {
     }
 
     /**
-     * Tells all listeners that the parser has finished parsing the data
-     * The list of dataSets should be the same length as the original file list.
+     * Tells all listeners that the parser has finished parsing the data The list of dataSets should be the same length as the original file list.
      *
      * @param newData An array of completed dataSets.
      */

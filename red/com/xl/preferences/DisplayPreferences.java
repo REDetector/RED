@@ -1,7 +1,25 @@
+/*
+ * RED: RNA Editing Detector
+ *     Copyright (C) <2014>  <Xing Li>
+ *
+ *     RED is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU General Public License as published by
+ *     the Free Software Foundation, either version 3 of the License, or
+ *     (at your option) any later version.
+ *
+ *     RED is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     GNU General Public License for more details.
+ *
+ *     You should have received a copy of the GNU General Public License
+ *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package com.xl.preferences;
 
 import com.xl.datatypes.genome.Chromosome;
-import com.xl.dialog.gotodialog.GotoDialog;
+import com.xl.display.dialog.gotodialog.GoToDialog;
 import com.xl.gradients.*;
 import com.xl.interfaces.DisplayPreferencesListener;
 import com.xl.main.REDApplication;
@@ -12,22 +30,16 @@ import java.util.Enumeration;
 import java.util.Vector;
 
 /**
- * This class is intended to be a single point at which all of the major display
- * preferences can be stored and from which changes can be passed to any views
+ * This class is intended to be a single point at which all of the major display preferences can be stored and from which changes can be passed to any views
  * which care.
  * <p/>
- * This will cover any visual changes to the display, so colours, types of
- * graph, scales would all fall into this object.
+ * This will cover any visual changes to the display, so colours, types of graph, scales would all fall into this object.
  */
 public class DisplayPreferences {
 
     /**
      * The set of constants for the colour type being used *
      */
-    /*
-     * Some of these values are carried over from an older implementation hence
-	 * the somewhat odd numbering
-	 */
     public static final int COLOUR_TYPE_FIXED = 1001;
     public static final int COLOUR_TYPE_INDEXED = 12;
     public static final int COLOUR_TYPE_GRADIENT = 11;
@@ -172,7 +184,7 @@ public class DisplayPreferences {
     public void setLocation(int start, int end) {
         this.currentStartLocation = start;
         this.currentEndLocation = end;
-        GotoDialog.addRecentLocation(currentChromosome.getName(), start, end);
+        GoToDialog.addRecentLocation(currentChromosome.getName(), start, end);
         optionsChanged();
     }
 

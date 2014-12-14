@@ -18,25 +18,22 @@
 
 package com.xl.parsers.dataparsers;
 
-import com.dw.dbutils.DatabaseManager;
-import com.xl.dialog.ProgressDialog;
-import com.xl.dialog.REDProgressBar;
-import com.xl.exception.REDException;
-import com.xl.preferences.REDPreferences;
+
+import com.xl.database.DatabaseManager;
+import com.xl.preferences.DatabasePreferences;
+import com.xl.utils.Indexer;
+import com.xl.utils.Timer;
 
 import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.sql.SQLException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
 /**
  * Created by Administrator on 2014/9/29.
  * <p/>
- * VCFParser mainly parsers VCF file and insert all data into database.
- * The class will delete old vcf table and create a new one.
+ * VCFParser mainly parsers VCF file and insert all data into database. The class will delete old vcf table and create a new one.
  */
 public class RNAVCFParser {
     public static final String VCF_CHROM = "CHROM";
@@ -61,53 +58,39 @@ public class RNAVCFParser {
 
     private DatabaseManager databaseManager;
 
-    private REDProgressBar progressBar = REDProgressBar.getInstance();
-
-    private SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-
     public RNAVCFParser() {
         databaseManager = DatabaseManager.getInstance();
-        progressBar.addProgressListener(new ProgressDialog("Import rna vcf data"));
     }
 
-    public void parseVCFFile(String vcfTable, String vcfPath) {
-        System.out.println("Start Parsing RNA VCF file..." + " " + df.format(new Date()));
+    public void parseVCFFile(String vcfTable, String vcfPath, int dataColumnIndex) {
+        System.out.println("Start Parsing RNA VCF file..." + " " + Timer.getCurrentTime());
         BufferedReader bufferedReader = null;
         try {
             int formatColumnIndex = 8;
-            int dataColumnIndex = 9;
             bufferedReader = new BufferedReader(new InputStreamReader(new FileInputStream(vcfPath)));
             String line;
             String[] columnStrings = null;
             StringBuilder tableBuilders = new StringBuilder();
             databaseManager.setAutoCommit(false);
             int lineCount = 0;
-            boolean calGTIndex = false;
-            int gtIndex = -1;
+            boolean hasEstablishTable = false;
             while ((line = bufferedReader.readLine()) != null) {
                 if (line.startsWith("##"))
                     continue;
                 if (line.startsWith("#")) {
                     columnStrings = line.substring(1).split("\\t");
-                    if (columnStrings.length < formatColumnIndex) {
-                        throw new REDException("The column information is not complete.");
-                    }
 //                    if (columnStrings.length > dataColumn) {
 //                        throw new REDException("Multiple people in a vcf file has not been supported");
 //                    }
-                    tableBuilders.append(columnStrings[0]).append(" varchar(15),")
-                            .append(columnStrings[1]).append(" int,")
-                            .append(columnStrings[2]).append(" varchar(30),")
-                            .append(columnStrings[3]).append(" varchar(5),")
-                            .append(columnStrings[4]).append(" varchar(5),")
-                            .append(columnStrings[5]).append(" float(8,2),")
-                            .append(columnStrings[6]).append(" text,")
-                            .append(columnStrings[7]).append(" text,");
+                    tableBuilders.append(columnStrings[0]).append(" varchar(30),").append(columnStrings[1]).append(" int,")
+                            .append(columnStrings[2]).append(" varchar(30),").append(columnStrings[3]).append(" varchar(5),")
+                            .append(columnStrings[4]).append(" varchar(5),").append(columnStrings[5]).append(" float(10,2),")
+                            .append(columnStrings[6]).append(" text,").append(columnStrings[7]).append(" text,");
                     continue;
                 }
                 String[] sections = line.split("\\t");
 
-                if (sections[altColumn].equals(".")) {
+                if (sections[altColumn].equals(".") || sections[dataColumnIndex].contains(".")) {
                     continue;
                 }
 
@@ -118,32 +101,28 @@ public class RNAVCFParser {
                 if (formatLength != dataColumnLength) {
                     continue;
                 }
-                if (!calGTIndex) {
-                    for (int i = 0; i < formatLength; i++) {
-                        if (formatColumns[i].equals("GT")) {
-                            gtIndex = i;
-                            calGTIndex = true;
-                        }
-                    }
+
+                if (!hasEstablishTable) {
                     for (String formatColumn : formatColumns) {
                         tableBuilders.append(formatColumn).append(" text,");
                     }
-                    tableBuilders.append("alu varchar(1) default 'F',");
-                    tableBuilders.append("index(" + VCF_CHROM + "," + VCF_POS + ")");
+                    // We need to add ALU info at the first table so the following filters can get the alu info.
+                    tableBuilders.append("alu varchar(1) default 'F'");
+                    DatabasePreferences.getInstance().setDatabaseTableBuilder(tableBuilders.toString());
+                    tableBuilders.append(",");
+                    tableBuilders.append(Indexer.CHROM_POSITION);
                     databaseManager.deleteTable(vcfTable);
                     databaseManager.executeSQL("create table " + vcfTable + "(" + tableBuilders + ")");
                     databaseManager.commit();
-                    REDPreferences.getInstance().setDatabaseTableBuilder(tableBuilders.toString());
+
+                    hasEstablishTable = true;
                 }
                 // data for import '.' stands for undetected, so we discard it
-                if (calGTIndex) {
-                    if (dataColumns[gtIndex].startsWith(".") || dataColumns[gtIndex].endsWith(".")) {
-                        continue;
-                    }
-                }
-                if (columnStrings == null) {
-                    throw new REDException("The columns information in vcf file is missing.");
-                }
+//                if (calGTIndex) {
+//                    if (dataColumns[gtIndex].startsWith(".") || dataColumns[gtIndex].endsWith(".")) {
+//                        continue;
+//                    }
+//                }
 
                 //INSERT INTO table_name (col1, col2,...) VALUES (value1, value2,....)
 
@@ -190,9 +169,7 @@ public class RNAVCFParser {
                 sqlClause.append(")");
 //                System.out.println(lineCount+"\t"+sqlClause.toString());
                 databaseManager.executeSQL(sqlClause.toString());
-                if (lineCount % 1000 == 0) {
-                    progressBar.progressUpdated("Importing " + lineCount + " lines from " + vcfPath + " to " + vcfTable, 0, 0);
-                }
+
                 if (++lineCount % DatabaseManager.COMMIT_COUNTS_PER_ONCE == 0) {
                     databaseManager.commit();
                 }
@@ -201,14 +178,9 @@ public class RNAVCFParser {
             databaseManager.setAutoCommit(true);
         } catch (IOException e) {
             e.printStackTrace();
-            progressBar.progressWarningReceived(e);
         } catch (SQLException e) {
             System.err.println("Error execute sql clause in " + RNAVCFParser.class.getName() + ":run()");
             e.printStackTrace();
-            progressBar.progressWarningReceived(e);
-        } catch (REDException e) {
-            e.printStackTrace();
-            progressBar.progressWarningReceived(e);
         } finally {
             if (bufferedReader != null) {
                 try {
@@ -218,8 +190,7 @@ public class RNAVCFParser {
                 }
             }
         }
-        progressBar.progressComplete("rna_vcf_loaded", null);
-        System.out.println("End Parsing RNA VCF file..." + df.format(new Date()));
+        System.out.println("End Parsing RNA VCF file..." + Timer.getCurrentTime());
     }
 
 }

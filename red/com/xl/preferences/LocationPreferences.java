@@ -1,3 +1,21 @@
+/*
+ * RED: RNA Editing Detector
+ *     Copyright (C) <2014>  <Xing Li>
+ *
+ *     RED is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU General Public License as published by
+ *     the Free Software Foundation, either version 3 of the License, or
+ *     (at your option) any later version.
+ *
+ *     RED is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     GNU General Public License for more details.
+ *
+ *     You should have received a copy of the GNU General Public License
+ *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package com.xl.preferences;
 
 import com.xl.utils.FileUtils;
@@ -7,7 +25,7 @@ import java.io.IOException;
 import java.util.*;
 
 /**
- * Created by Administrator on 2014/6/23.
+ * Created by Xing Li on 2014/6/23.
  */
 public class LocationPreferences {
     public static final String PROJECT_DIRECTORY = "ProjectDirectory";
@@ -32,9 +50,7 @@ public class LocationPreferences {
     public static final String DARNED_FILE = "DARNED File";
     public static final String R_SCRIPT_PATH = "R Script Path";
     public static final String CYTOBAND_FILE = "Cytoband File";
-
     public static LocationPreferences locationPreferences = new LocationPreferences();
-
     /**
      * The project root directory
      */
@@ -142,11 +158,8 @@ public class LocationPreferences {
     }
 
     /**
-     * Gets the default data location. This will initially be the data location
-     * saved in the preferneces file, but will be updated during use with the
-     * last actual location where data was imported. If you definitely want the
-     * location stored in the preferences file then use
-     * getDataLocationPreference()
+     * Gets the default data location. This will initially be the data location saved in the preferneces file, but will be updated during use with the last
+     * actual location where data was imported. If you definitely want the location stored in the preferences file then use getDataLocationPreference()
      *
      * @return The default location to look for new data
      */
@@ -155,8 +168,7 @@ public class LocationPreferences {
     }
 
     /**
-     * Sets the default data location which will be saved in the preferences
-     * file.
+     * Sets the default data location which will be saved in the preferences file.
      *
      * @param projectDataDirectory The new data location
      */
@@ -275,9 +287,7 @@ public class LocationPreferences {
     }
 
     /**
-     * Adds a path to the recently opened files list. We store up to 5 recently
-     * used files on a rotating basis. Adding a new one pushes out the oldest
-     * one.
+     * Adds a path to the recently opened files list. We store up to 5 recently used files on a rotating basis. Adding a new one pushes out the oldest one.
      *
      * @param filePath The new file location to add
      */

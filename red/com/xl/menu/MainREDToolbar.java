@@ -1,18 +1,35 @@
+/*
+ * RED: RNA Editing Detector
+ *     Copyright (C) <2014>  <Xing Li>
+ *
+ *     RED is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU General Public License as published by
+ *     the Free Software Foundation, either version 3 of the License, or
+ *     (at your option) any later version.
+ *
+ *     RED is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     GNU General Public License for more details.
+ *
+ *     You should have received a copy of the GNU General Public License
+ *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package com.xl.menu;
 
-import com.xl.datatypes.DataGroup;
-import com.xl.datatypes.DataSet;
+import com.xl.database.DatabaseListener;
+import com.xl.database.DatabaseManager;
 import com.xl.datatypes.DataStore;
 import com.xl.datatypes.sites.SiteList;
-import com.xl.datatypes.sites.SiteSet;
-import com.xl.dialog.DataZoomSelector;
+import com.xl.display.dialog.DataZoomSelector;
 import com.xl.main.REDApplication;
 import com.xl.utils.namemanager.MenuUtils;
 
 import javax.swing.*;
 import java.awt.*;
 
-public class MainREDToolbar extends REDToolbar {
+public class MainREDToolbar extends REDToolbar implements DatabaseListener {
 
     /**
      * The jump to position button.
@@ -27,6 +44,12 @@ public class MainREDToolbar extends REDToolbar {
     private JButton readsOnlyButton;
     private JButton sitesOnlyButton;
     private JButton sitesAndReadsButton;
+
+    private JButton switchMode;
+
+    private JButton databaseConnection;
+
+    private JButton preferences;
 
     private DataZoomSelector dataZoomSelector;
 
@@ -54,25 +77,45 @@ public class MainREDToolbar extends REDToolbar {
         sitesAndReadsButton.setToolTipText("Show Reads and Sites");
         sitesAndReadsButton.addActionListener(menu);
         add(sitesAndReadsButton);
+
         addSeparator();
 
         findFeatureButton = new JButton(new ImageIcon(ClassLoader.getSystemResource("resources/toolbar/find_feature.png")));
         findFeatureButton.setActionCommand(MenuUtils.FIND);
         findFeatureButton.setToolTipText("Find Feature");
         findFeatureButton.addActionListener(menu);
-
         add(findFeatureButton);
 
         jumpToPositionButton = new JButton(new ImageIcon(ClassLoader.getSystemResource("resources/toolbar/jump_to_position.png")));
         jumpToPositionButton.setActionCommand(MenuUtils.GOTO_POSITION);
         jumpToPositionButton.setToolTipText("Go to Position");
         jumpToPositionButton.addActionListener(menu);
-
         add(jumpToPositionButton);
 
         addSeparator();
 
+        databaseConnection = new JButton(new ImageIcon(ClassLoader.getSystemResource("resources/toolbar/database_connection.png")));
+        databaseConnection.setActionCommand(MenuUtils.CONNECT_TO_MYSQL);
+        databaseConnection.setToolTipText("Connect to database");
+        databaseConnection.addActionListener(menu);
+        add(databaseConnection);
 
+        switchMode = new JButton(new ImageIcon(ClassLoader.getSystemResource("resources/toolbar/switch.png")));
+        switchMode.setActionCommand(MenuUtils.SWITCH_SAMPLES_OR_MODE);
+        switchMode.setToolTipText("Switch samples or mode");
+        switchMode.addActionListener(menu);
+        add(switchMode);
+
+        addSeparator();
+
+        preferences = new JButton(new ImageIcon(ClassLoader.getSystemResource("resources/toolbar/preferences.png")));
+        preferences.setActionCommand(MenuUtils.PREFERENCES);
+        preferences.setToolTipText("Set preferences as you like");
+        preferences.addActionListener(menu);
+        add(preferences);
+
+        addSeparator();
+        DatabaseManager.getInstance().addDatabaseListener(this);
         reset();
     }
 
@@ -88,7 +131,8 @@ public class MainREDToolbar extends REDToolbar {
         jumpToPositionButton.setEnabled(true);
         jumpToPositionButton.setFocusable(false);
         findFeatureButton.setEnabled(true);
-        findFeatureButton.setFocusable(false);
+        databaseConnection.setEnabled(true);
+        preferences.setEnabled(true);
         if (dataZoomSelector == null) {
             dataZoomSelector = new DataZoomSelector(REDApplication.getInstance());
             add(dataZoomSelector.getContentPane());
@@ -126,62 +170,39 @@ public class MainREDToolbar extends REDToolbar {
 
         super.setEnabled(enable);
 
-        Component[] c = getComponents();
-        for (int i = 0; i < c.length; i++) {
-            c[i].setEnabled(enable);
-            c[i].setFocusable(false);
+        Component[] components = getComponents();
+        for (Component component : components) {
+            component.setEnabled(true);
+            component.setFocusable(false);
         }
 
-    }
-
-    public void dataSetAdded(DataSet d) {
-
-        // Now we can enable everything on the toolbar.
-        Component[] c = getComponents();
-        for (int i = 0; i < c.length; i++) {
-            c[i].setEnabled(true);
-            c[i].setFocusable(false);
-        }
-
-    }
-
-    public void dataSetsRemoved(DataSet[] d) {
-
-        // If there are no datasets loaded we need to reset everything and
-        // just go with the genome loaded defaults
-        if (collection().getAllDataSets().length == 0) {
-            reset();
-            genomeLoaded();
-        }
-    }
-
-    public void dataGroupAdded(DataGroup g) {
-    }
-
-    public void dataGroupsRemoved(DataGroup[] g) {
-    }
-
-    public void dataSetRenamed(DataSet d) {
-    }
-
-    public void dataGroupRenamed(DataGroup g) {
-    }
-
-    public void dataGroupSamplesChanged(DataGroup g) {
-    }
-
-    public void siteSetReplaced(SiteSet p) {
-    }
-
-    public void activeDataStoreChanged(DataStore s) {
-
-    }
-
-    public void activeSiteListChanged(SiteList l) {
     }
 
     public String name() {
         return "Main Toolbar";
     }
 
+    @Override
+    public void databaseChanged(String databaseName, String sampleName) {
+    }
+
+    @Override
+    public void databaseConnected() {
+        switchMode.setEnabled(true);
+    }
+
+    @Override
+    public void activeDataChanged(DataStore d, SiteList l) {
+        if (d != null) {
+            // Now we can enable everything on the toolbar.
+            Component[] components = getComponents();
+            for (Component component : components) {
+                component.setEnabled(true);
+                component.setFocusable(false);
+            }
+        } else {
+            reset();
+            genomeLoaded();
+        }
+    }
 }

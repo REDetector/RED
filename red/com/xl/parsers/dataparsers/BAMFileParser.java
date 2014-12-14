@@ -35,8 +35,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Parses data in the program-independent BAM file format. Can cope with simple,
- * paired end and spliced reads. Has mainly been tested with TopHat output but
+ * Parses data in the program-independent BAM file format. Can cope with simple, paired end and spliced reads. Has mainly been tested with TopHat output but
  * reports of success with other programs have been received.
  */
 public class BAMFileParser extends DataParser {
@@ -256,20 +255,10 @@ public class BAMFileParser extends DataParser {
         return "BAM File Parser";
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see uk.ac.babraham.SeqMonk.DataParsers.DataParser#readyToParse()
-     */
     public boolean readyToParse() {
         return true;
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see uk.ac.babraham.SeqMonk.DataParsers.DataParser#getFileFilter()
-     */
     public FileFilter getFileFilter() {
         return new FileFilter() {
 

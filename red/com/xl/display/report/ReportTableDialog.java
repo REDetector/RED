@@ -1,3 +1,21 @@
+/*
+ * RED: RNA Editing Detector
+ *     Copyright (C) <2014>  <Xing Li>
+ *
+ *     RED is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU General Public License as published by
+ *     the Free Software Foundation, either version 3 of the License, or
+ *     (at your option) any later version.
+ *
+ *     RED is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     GNU General Public License for more details.
+ *
+ *     You should have received a copy of the GNU General Public License
+ *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package com.xl.display.report;
 
 import com.sun.java.TableSorter;
@@ -8,6 +26,7 @@ import com.xl.preferences.DisplayPreferences;
 import com.xl.preferences.LocationPreferences;
 import com.xl.utils.filefilters.GFFFileFilter;
 import com.xl.utils.filefilters.TxtFileFilter;
+import com.xl.utils.ui.OptionDialogUtils;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileFilter;
@@ -23,8 +42,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 
 /**
- * The Class ReportTableDialog is the generic container for all of the
- * different types of report.
+ * The Class ReportTableDialog is the generic container for all of the different types of report.
  */
 public class ReportTableDialog extends JDialog implements MouseListener, ActionListener {
 
@@ -183,9 +201,7 @@ public class ReportTableDialog extends JDialog implements MouseListener, ActionL
 
             // Check if we're stepping on anyone's toes...
             if (file.exists()) {
-                int answer = JOptionPane.showOptionDialog(this, file.getName() + " exists.  Do you want to overwrite the existing file?", "Overwrite file?",
-                        JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, new String[]{"Overwrite and Save", "Cancel"}, "Overwrite and Save");
-
+                int answer = OptionDialogUtils.showFileExistDialog(this, file.getName());
                 if (answer > 0) {
                     return;
                 }

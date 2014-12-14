@@ -1,8 +1,26 @@
+/*
+ * RED: RNA Editing Detector
+ *     Copyright (C) <2014>  <Xing Li>
+ *
+ *     RED is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU General Public License as published by
+ *     the Free Software Foundation, either version 3 of the License, or
+ *     (at your option) any later version.
+ *
+ *     RED is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     GNU General Public License for more details.
+ *
+ *     You should have received a copy of the GNU General Public License
+ *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package com.xl.display.report;
 
 import com.xl.datatypes.genome.Genome;
 import com.xl.datatypes.sites.Site;
-import com.xl.dialog.SiteListViewer;
+import com.xl.display.dialog.SiteListViewer;
 import com.xl.main.REDApplication;
 import com.xl.utils.AxisScale;
 import com.xl.utils.ColourScheme;
@@ -18,8 +36,7 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 
 /**
- * The Class HistogramPanel displays an interactive histogram from
- * any linear set of data.
+ * The Class HistogramPanel displays an interactive histogram from any linear set of data.
  */
 public class SitesHistogramPanel extends JPanel implements Runnable {
 
@@ -300,7 +317,7 @@ public class SitesHistogramPanel extends JPanel implements Runnable {
                         siteList.add(site);
                     }
                 }
-                new SiteListViewer(siteList.toArray(new Site[0]), "RNA-editing sites in " + chr, "RNA-editing sites in " + chr,
+                new SiteListViewer(siteList.toArray(new Site[0]), "RNA editing sites in " + chr, "RNA editing sites in " + chr,
                         REDApplication.getInstance());
             }
         }

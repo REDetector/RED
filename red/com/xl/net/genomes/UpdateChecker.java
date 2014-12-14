@@ -1,26 +1,24 @@
-/**
- * Copyright 2009-13 Simon Andrews
+/*
+ * RED: RNA Editing Detector
+ *     Copyright (C) <2014>  <Xing Li>
  *
- *    This file is part of SeqMonk.
+ *     RED is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU General Public License as published by
+ *     the Free Software Foundation, either version 3 of the License, or
+ *     (at your option) any later version.
  *
- *    SeqMonk is free software; you can redistribute it and/or modify
- *    it under the terms of the GNU General Public License as published by
- *    the Free Software Foundation; either version 3 of the License, or
- *    (at your option) any later version.
+ *     RED is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     GNU General Public License for more details.
  *
- *    SeqMonk is distributed in the hope that it will be useful,
- *    but WITHOUT ANY WARRANTY; without even the implied warranty of
- *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *    GNU General Public License for more details.
- *
- *    You should have received a copy of the GNU General Public License
- *    along with SeqMonk; if not, write to the Free Software
- *    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+ *     You should have received a copy of the GNU General Public License
+ *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 package com.xl.net.genomes;
 
 import com.xl.exception.REDException;
-import com.xl.main.REDApplication;
+import com.xl.main.Global;
 
 import java.io.BufferedInputStream;
 import java.io.DataInputStream;
@@ -29,9 +27,8 @@ import java.net.URL;
 import java.net.URLConnection;
 
 /**
- * The UpdateChecker allows the program to check on the main SeqMonk site to
- * determine if a newer version of the program has been released so we can
- * prompt the user to get the update.
+ * The UpdateChecker allows the program to check on the main RED site to determine if a newer version of the program has been released so we can prompt the user
+ * to get the update.
  */
 public class UpdateChecker {
 
@@ -47,12 +44,11 @@ public class UpdateChecker {
         if (latestVersion == null) {
             getLatestVersionNumber();
         }
-        return UpdateChecker.isNewer(REDApplication.VERSION, latestVersion);
+        return UpdateChecker.isNewer(Global.VERSION, latestVersion);
     }
 
     /**
-     * Compares a local and remote version string to see if the remote version
-     * is newer.
+     * Compares a local and remote version string to see if the remote version is newer.
      *
      * @param thisVersion   The version string from the currently running program
      * @param remoteVersion The version string from the latest remote version
@@ -109,7 +105,7 @@ public class UpdateChecker {
     }
 
     /**
-     * Gets the latest version number from the main SeqMonk site
+     * Gets the latest version number from the main RED site
      *
      * @return The version string from the remote site
      * @throws REDException if the remote version couldn't be retrieved

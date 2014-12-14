@@ -1,10 +1,30 @@
+/*
+ * RED: RNA Editing Detector
+ *     Copyright (C) <2014>  <Xing Li>
+ *
+ *     RED is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU General Public License as published by
+ *     the Free Software Foundation, either version 3 of the License, or
+ *     (at your option) any later version.
+ *
+ *     RED is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     GNU General Public License for more details.
+ *
+ *     You should have received a copy of the GNU General Public License
+ *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package com.xl.utils.imagemanager;
 
+import com.xl.main.REDApplication;
 import com.xl.net.crashreport.CrashReporter;
 import com.xl.preferences.LocationPreferences;
 import com.xl.utils.filefilters.EPSFileFilter;
 import com.xl.utils.filefilters.PNGFileFilter;
 import com.xl.utils.filefilters.SVGFileFilter;
+import com.xl.utils.ui.OptionDialogUtils;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -17,15 +37,13 @@ import java.io.IOException;
 import java.io.PrintWriter;
 
 /**
- * A utility class which acts as a wrapper for the SVG or PNG generating
- * code which can be used to save (almost) any component which uses the
- * standard Graphics interface to draw itself.
+ * A utility class which acts as a wrapper for the SVG or PNG generating code which can be used to save (almost) any component which uses the standard Graphics
+ * interface to draw itself.
  */
 public class ImageSaver {
 
     /**
-     * Launches a file selector to select which type of file to create and
-     * then create it.
+     * Launches a file selector to select which type of file to create and then create it.
      *
      * @param c The component to save.
      */
@@ -33,7 +51,6 @@ public class ImageSaver {
         JFileChooser chooser = new JFileChooser(LocationPreferences.getInstance().getProjectSaveLocation());
 
         chooser.setMultiSelectionEnabled(false);
-        chooser.addChoosableFileFilter(new SVGFileFilter());
         chooser.addChoosableFileFilter(new EPSFileFilter());
         chooser.addChoosableFileFilter(new PNGFileFilter());
         chooser.setFileFilter(new SVGFileFilter());
@@ -68,9 +85,7 @@ public class ImageSaver {
         }
 
         if (file.exists()) {
-            int answer = JOptionPane.showOptionDialog(c, file.getName() + " exists.  Do you want to overwrite the existing file?", "Overwrite file?",
-                    JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, new String[]{"Overwrite and Save", "Cancel"}, "Overwrite and Save");
-
+            int answer = OptionDialogUtils.showFileExistDialog(REDApplication.getInstance(), file.getName());
             if (answer > 0) {
                 return;
             }

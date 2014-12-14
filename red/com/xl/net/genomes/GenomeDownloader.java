@@ -1,21 +1,19 @@
-/**
- * Copyright Copyright 2007-13 Simon Andrews
+/*
+ * RED: RNA Editing Detector
+ *     Copyright (C) <2014>  <Xing Li>
  *
- *    This file is part of SeqMonk.
+ *     RED is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU General Public License as published by
+ *     the Free Software Foundation, either version 3 of the License, or
+ *     (at your option) any later version.
  *
- *    SeqMonk is free software; you can redistribute it and/or modify
- *    it under the terms of the GNU General Public License as published by
- *    the Free Software Foundation; either version 3 of the License, or
- *    (at your option) any later version.
+ *     RED is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     GNU General Public License for more details.
  *
- *    SeqMonk is distributed in the hope that it will be useful,
- *    but WITHOUT ANY WARRANTY; without even the implied warranty of
- *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *    GNU General Public License for more details.
- *
- *    You should have received a copy of the GNU General Public License
- *    along with SeqMonk; if not, write to the Free Software
- *    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+ *     You should have received a copy of the GNU General Public License
+ *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 package com.xl.net.genomes;
 
@@ -31,9 +29,8 @@ import java.util.Enumeration;
 import java.util.Vector;
 
 /**
- * The GenomeDownloader actually performs the network interaction required to
- * download a new genome from the main genome database and install it in the
- * local genome cache.
+ * The GenomeDownloader actually performs the network interaction required to download a new genome from the main genome database and install it in the local
+ * genome cache.
  */
 public class GenomeDownloader implements Runnable {
     private Vector<ProgressListener> listeners = new Vector<ProgressListener>();
@@ -42,11 +39,8 @@ public class GenomeDownloader implements Runnable {
     private boolean allowCaching;
 
     /**
-     * Download genome. The values for this should be obtained from the genome
-     * index file or the header of an existing SeqMonk file. The size is used
-     * merely to provide better feedback during the download of the data and
-     * isn't expected to be set correctly from a SeqMonk file where the
-     * compressed size isn't recorded.
+     * Download genome. The values for this should be obtained from the genome index file or the header of an existing RED file. The size is used merely to
+     * provide better feedback during the download of the data and isn't expected to be set correctly from a RED file where the compressed size isn't recorded.
      *
      * @param id           The latin name of the species
      * @param id           The official assembly name
@@ -159,20 +153,6 @@ public class GenomeDownloader implements Runnable {
         }
 
         // Tell everyone we're finished
-
-		/*
-         * Something odd happens here on my linux system. If I notify the
-		 * listeners in the usual order then I'm told that there are two
-		 * listeners, but the loop through these listeners (either via
-		 * Enumeration or array) only notifies one (SeqMonkApplication) and the
-		 * progress dialog is never told.
-		 * 
-		 * If I notify them in reverse order then it works as expected, but I
-		 * can't see why telling the application first should stop further
-		 * processing.
-		 * 
-		 * On my windows system I don't get this problem.
-		 */
         ProgressListener[] en = listeners.toArray(new ProgressListener[0]);
 
         for (int i = en.length - 1; i >= 0; i--) {

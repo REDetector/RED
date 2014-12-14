@@ -1,23 +1,22 @@
-package com.xl.utils;
-/**
- * Copyright 2011-13 Simon Andrews
+/*
+ * RED: RNA Editing Detector
+ *     Copyright (C) <2014>  <Xing Li>
  *
- *    This file is part of SeqMonk.
+ *     RED is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU General Public License as published by
+ *     the Free Software Foundation, either version 3 of the License, or
+ *     (at your option) any later version.
  *
- *    SeqMonk is free software; you can redistribute it and/or modify
- *    it under the terms of the GNU General Public License as published by
- *    the Free Software Foundation; either version 3 of the License, or
- *    (at your option) any later version.
+ *     RED is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     GNU General Public License for more details.
  *
- *    SeqMonk is distributed in the hope that it will be useful,
- *    but WITHOUT ANY WARRANTY; without even the implied warranty of
- *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *    GNU General Public License for more details.
- *
- *    You should have received a copy of the GNU General Public License
- *    along with SeqMonk; if not, write to the Free Software
- *    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+ *     You should have received a copy of the GNU General Public License
+ *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+
+package com.xl.utils;
 
 import com.xl.datatypes.sequence.Location;
 
@@ -67,10 +66,8 @@ public class LocationVector implements Serializable {
     }
 
     /**
-     * This method causes the vector to trim its current storage to the
-     * actual set of values it's storing so that no extraneous storage
-     * is being used.  It's only useful if we want to keep the vector
-     * around after all of the reads have been added.
+     * This method causes the vector to trim its current storage to the actual set of values it's storing so that no extraneous storage is being used.  It's
+     * only useful if we want to keep the vector around after all of the reads have been added.
      */
     public void trim() {
         Location[] trimmedArray = new Location[length];

@@ -1,29 +1,52 @@
 /*
+ * RED: RNA Editing Detector
+ *     Copyright (C) <2014>  <Xing Li>
+ *
+ *     RED is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU General Public License as published by
+ *     the Free Software Foundation, either version 3 of the License, or
+ *     (at your option) any later version.
+ *
+ *     RED is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     GNU General Public License for more details.
+ *
+ *     You should have received a copy of the GNU General Public License
+ *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+/*
  * Created by JFormDesigner on Tue Nov 12 11:20:42 GMT 2013
  */
 
 package com.xl.menu;
 
-import com.xl.dialog.*;
-import com.xl.dialog.gotodialog.GotoDialog;
-import com.xl.dialog.gotodialog.GotoWindowDialog;
+import com.xl.database.DatabaseListener;
+import com.xl.database.DatabaseManager;
+import com.xl.database.DatabaseSelector;
+import com.xl.database.UserPasswordDialog;
+import com.xl.datatypes.DataStore;
 import com.xl.display.chromosomeviewer.ChromosomeViewer;
+import com.xl.display.dialog.*;
+import com.xl.display.dialog.gotodialog.GoToDialog;
+import com.xl.display.dialog.gotodialog.GoToWindowDialog;
+import com.xl.display.panel.ToolbarPanel;
+import com.xl.display.panel.WelcomePanel;
 import com.xl.display.report.FilterReports;
 import com.xl.display.report.ReportOptions;
 import com.xl.display.report.SitesDistributionHistogram;
 import com.xl.display.report.VariantDistributionHistogram;
 import com.xl.exception.REDException;
-import com.xl.filter.*;
+import com.xl.filter.filterpanel.*;
 import com.xl.help.HelpDialog;
+import com.xl.main.Global;
 import com.xl.main.REDApplication;
 import com.xl.net.genomes.UpdateChecker;
-import com.xl.panel.ToolbarPanel;
-import com.xl.panel.WelcomePanel;
 import com.xl.parsers.dataparsers.BAMFileParser;
 import com.xl.parsers.dataparsers.FastaFileParser;
 import com.xl.preferences.DisplayPreferences;
 import com.xl.preferences.LocationPreferences;
-import com.xl.preferences.REDPreferences;
 import com.xl.utils.imagemanager.ImageSaver;
 import com.xl.utils.namemanager.MenuUtils;
 
@@ -39,11 +62,11 @@ import java.util.Vector;
 /**
  * @author Xing Li
  */
-public class REDMenu extends JMenuBar implements ActionListener {
+public class REDMenu extends JMenuBar implements ActionListener, DatabaseListener {
     /**
      *
      */
-    private REDApplication redApplication;
+    private REDApplication application;
     private ToolbarPanel toolbarPanel;
     private REDToolbar redToolbar;
 
@@ -58,7 +81,6 @@ public class REDMenu extends JMenuBar implements ActionListener {
     private JMenuItem rna;
     private JMenuItem dna;
     private JMenuItem fasta;
-    private JMenuItem loadGenome;
     private JMenuItem annotation;
     private JMenu exportImage;
     private JMenuItem genomeView;
@@ -110,7 +132,8 @@ public class REDMenu extends JMenuBar implements ActionListener {
 
 
     public REDMenu(REDApplication redApplication) {
-        this.redApplication = redApplication;
+        this.application = redApplication;
+        DatabaseManager.getInstance().addDatabaseListener(this);
         initComponents();
     }
 
@@ -129,7 +152,6 @@ public class REDMenu extends JMenuBar implements ActionListener {
         rna = new JMenuItem();
         dna = new JMenuItem();
         fasta = new JMenuItem();
-        loadGenome = new JMenuItem();
         annotation = new JMenuItem();
         exportImage = new JMenu();
         genomeView = new JMenuItem();
@@ -183,12 +205,12 @@ public class REDMenu extends JMenuBar implements ActionListener {
             fileMenu.setText(MenuUtils.FILE_MENU);
             fileMenu.setMnemonic('F');
 
-            addJMenuItem(fileMenu, newProject, MenuUtils.NEW_PROJECT, KeyEvent.VK_N, false);
-            addJMenuItem(fileMenu, openProject, MenuUtils.OPEN_PROJECT, KeyEvent.VK_O, false);
+            addJMenuItem(fileMenu, newProject, MenuUtils.NEW_PROJECT, KeyEvent.VK_N, true);
+            addJMenuItem(fileMenu, openProject, MenuUtils.OPEN_PROJECT, KeyEvent.VK_O, true);
             addJMenuItem(fileMenu, saveProject, MenuUtils.SAVE_PROJECT, KeyEvent.VK_S, false);
             addJMenuItem(fileMenu, saveProjectAs, MenuUtils.SAVE_PROJECT_AS, KeyEvent.VK_W, false);
             fileMenu.addSeparator();
-            // ======== importData ========
+            // ======== import data ========
             {
                 addJMenuItem(fileMenu, connectToMySQL, MenuUtils.CONNECT_TO_MYSQL, KeyEvent.VK_C, true);
                 importDataMenu.setText(MenuUtils.IMPORT_DATA);
@@ -196,12 +218,13 @@ public class REDMenu extends JMenuBar implements ActionListener {
                 addJMenuItem(importDataMenu, fasta, MenuUtils.FASTA, -1, true);
                 addJMenuItem(importDataMenu, rna, MenuUtils.RNA, -1, true);
                 addJMenuItem(importDataMenu, dna, MenuUtils.DNA, -1, true);
-                addJMenuItem(importDataMenu, annotation, MenuUtils.ANNOTATION, -1, true);
+                // We don't support annotation import now.
+                addJMenuItem(importDataMenu, annotation, MenuUtils.ANNOTATION, -1, false);
                 fileMenu.add(importDataMenu);
                 importDataMenu.setEnabled(false);
             }
-            addJMenuItem(fileMenu, loadGenome, MenuUtils.LOAD_GENOME, KeyEvent.VK_L, false);
 
+            // ======== export image ========
             {
                 exportImage.setText(MenuUtils.EXPORT_IMAGE);
                 exportImage.setEnabled(false);
@@ -217,7 +240,7 @@ public class REDMenu extends JMenuBar implements ActionListener {
                 File f = new File(recentPath);
                 if (f.exists()) {
                     JMenuItem menuItem2 = new JMenuItem(f.getName());
-                    menuItem2.addActionListener(new FileOpener(redApplication, f));
+                    menuItem2.addActionListener(new FileOpener(application, f));
                     fileMenu.add(menuItem2);
                 }
             }
@@ -291,7 +314,7 @@ public class REDMenu extends JMenuBar implements ActionListener {
             reportsMenu.setText(MenuUtils.REPORTS_MENU);
             addJMenuItem(reportsMenu, variantDistribution, MenuUtils.VARIANT_DISTRIBUTION, -1);
             addJMenuItem(reportsMenu, sitesDistribution, MenuUtils.RNA_EDITING_SITES_DISTRIBUTION, -1);
-            addJMenuItem(reportsMenu, filterReports, MenuUtils.FILTER_REPORTS, -1);
+            addJMenuItem(reportsMenu, filterReports, MenuUtils.FILTER_REPORTS, -1, false);
         }
         add(reportsMenu);
         reportsMenu.setEnabled(false);
@@ -313,20 +336,10 @@ public class REDMenu extends JMenuBar implements ActionListener {
      * @param jMenu     The menu which should add to.
      * @param jMenuItem The menu item to be added to the jMenu.
      * @param text      The menu item name, including the action command name.
-     * @param mnemonic  The keyboard shortcuts. Call Java API when using the shortcut
-     *                  letter.
+     * @param mnemonic  The keyboard shortcuts. Call Java API when using the shortcut letter.
      */
     private void addJMenuItem(JMenu jMenu, JMenuItem jMenuItem, String text, int mnemonic) {
-        if (text != null) {
-            jMenuItem.setText(text);
-            jMenuItem.setActionCommand(text);
-        }
-        if (mnemonic != -1) {
-            jMenuItem.setMnemonic(mnemonic);
-            jMenuItem.setAccelerator(KeyStroke.getKeyStroke(mnemonic, InputEvent.CTRL_MASK));
-        }
-        jMenuItem.addActionListener(REDMenu.this);
-        jMenu.add(jMenuItem);
+        addJMenuItem(jMenu, jMenuItem, text, mnemonic, true);
     }
 
     /**
@@ -335,12 +348,10 @@ public class REDMenu extends JMenuBar implements ActionListener {
      * @param jMenu     The menu which should add to.
      * @param jMenuItem The menu item to be added to the jMenu.
      * @param text      The menu item name, including the action command name.
-     * @param mnemonic  The keyboard shortcuts. Call Java API when using the shortcut
-     *                  letter.
+     * @param mnemonic  The keyboard shortcuts. Call Java API when using the shortcut letter.
      * @param isEnable  Set the item enable or not.
      */
-    private void addJMenuItem(JMenu jMenu, JMenuItem jMenuItem, String text,
-                              int mnemonic, boolean isEnable) {
+    private void addJMenuItem(JMenu jMenu, JMenuItem jMenuItem, String text, int mnemonic, boolean isEnable) {
         if (text != null) {
             jMenuItem.setText(text);
             jMenuItem.setActionCommand(text);
@@ -358,41 +369,39 @@ public class REDMenu extends JMenuBar implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent arg0) {
         String action = arg0.getActionCommand();
-        // --------------------FileMenu--------------------
+        // --------------------File Menu--------------------
         if (action.equals(MenuUtils.NEW_PROJECT)) {
-            redApplication.startNewProject();
+            application.startNewProject();
         } else if (action.equals(MenuUtils.OPEN_PROJECT)) {
-            redApplication.loadProject();
+            application.loadProject();
         } else if (action.equals(MenuUtils.SAVE_PROJECT)) {
-            redApplication.saveProject();
+            application.saveProject();
         } else if (action.equals(MenuUtils.SAVE_PROJECT_AS)) {
-            redApplication.saveProjectAs();
+            application.saveProjectAs();
         } else if (action.equals(MenuUtils.CONNECT_TO_MYSQL)) {
-            new UserPasswordDialog(redApplication);
+            new UserPasswordDialog(application);
         } else if (action.equals(MenuUtils.DATABASE)) {
-            new DataImportDialog(redApplication);
+            new DataImportDialog(application);
         } else if (action.equals(MenuUtils.FASTA)) {
-            redApplication.importData(new FastaFileParser(redApplication.dataCollection()));
+            application.importData(new FastaFileParser(application.dataCollection()));
         } else if (action.equals(MenuUtils.RNA)) {
-            redApplication.importData(new BAMFileParser());
+            application.importData(new BAMFileParser());
         } else if (action.equals(MenuUtils.DNA)) {
-            redApplication.importData(new BAMFileParser());
+            application.importData(new BAMFileParser());
         } else if (action.equals(MenuUtils.ANNOTATION)) {
-//            AnnotationParserRunner.RunAnnotationParser(redApplication, new UCSCRefGeneParser(redApplication.dataCollection().genome()));
+//            AnnotationParserRunner.RunAnnotationParser(application, new UCSCRefGeneParser(application.dataCollection().genome()));
             throw new UnsupportedOperationException("We only support .genome file from IGV server now...");
-        } else if (action.equals(MenuUtils.LOAD_GENOME)) {
-            redApplication.startNewProject();
         } else if (action.equals(MenuUtils.CHROMOSOME_VIEW)) {
-            ChromosomeViewer viewer = redApplication.chromosomeViewer();
+            ChromosomeViewer viewer = application.chromosomeViewer();
             ImageSaver.saveImage(viewer, "chr_view_" + viewer.chromosome().getName() + "_" + viewer.currentStart() + "_" + viewer.currentEnd());
         } else if (action.equals(MenuUtils.GENOME_VIEW)) {
-            redApplication.genomeViewer().setExportImage(true);
-            redApplication.genomeViewer().displayPreferencesUpdated(DisplayPreferences.getInstance());
-            ImageSaver.saveImage(redApplication.genomeViewer(), "genome_view");
-            redApplication.genomeViewer().setExportImage(false);
-            redApplication.genomeViewer().displayPreferencesUpdated(DisplayPreferences.getInstance());
+            application.genomeViewer().setExportImage(true);
+            application.genomeViewer().displayPreferencesUpdated(DisplayPreferences.getInstance());
+            ImageSaver.saveImage(application.genomeViewer(), "genome_view");
+            application.genomeViewer().setExportImage(false);
+            application.genomeViewer().displayPreferencesUpdated(DisplayPreferences.getInstance());
         } else if (action.equals(MenuUtils.EXIT)) {
-            redApplication.dispose();
+            application.dispose();
             System.exit(0);
         }
         // --------------------EditMenu--------------------
@@ -400,72 +409,74 @@ public class REDMenu extends JMenuBar implements ActionListener {
             toolbarPanel.setVisible(showToolbar.isSelected());
         } else if (action.equals(MenuUtils.SHOW_DIRECTORY_PANEL)) {
             if (showDirectoryPanel.isSelected() && showGenomePanel.isSelected()) {
-                redApplication.topPane().setDividerLocation(0.2);
+                application.topPane().setDividerLocation(0.2);
             } else {
-                redApplication.topPane().setDividerLocation(0);
+                application.topPane().setDividerLocation(0);
             }
-            redApplication.dataViewer().setVisible(showDirectoryPanel.isSelected());
+            application.dataViewer().setVisible(showDirectoryPanel.isSelected());
         } else if (action.equals(MenuUtils.SHOW_GENOME_PANEL)) {
             if (showDirectoryPanel.isSelected() && showGenomePanel.isSelected()) {
-                redApplication.topPane().setDividerLocation(0.2);
+                application.topPane().setDividerLocation(0.2);
             } else {
-                redApplication.topPane().setDividerLocation(0);
+                application.topPane().setDividerLocation(0);
             }
-            redApplication.genomeViewer().setVisible(showGenomePanel.isSelected());
+            application.genomeViewer().setVisible(showGenomePanel.isSelected());
         } else if (action.equals(MenuUtils.SHOW_CHROMOSOME_PANEL)) {
-            redApplication.chromosomeViewer().setVisible(showChromosomePanel.isSelected());
+            application.chromosomeViewer().setVisible(showChromosomePanel.isSelected());
         } else if (action.equals(MenuUtils.SHOW_FEATURE_PANEL)) {
-            redApplication.chromosomeViewer().getFeatureTrack().setVisible(showFeaturePanel.isSelected());
+            application.chromosomeViewer().getFeatureTrack().setVisible(showFeaturePanel.isSelected());
         } else if (action.equals(MenuUtils.SHOW_STATUS_PANEL)) {
-            redApplication.statusPanel().setVisible(showStatusPanel.isSelected());
+            application.statusPanel().setVisible(showStatusPanel.isSelected());
         } else if (action.equals(MenuUtils.SET_DATA_TRACKS)) {
-            new DataTrackSelector(redApplication);
+            new DataTrackSelector(application);
         } else if (action.equals(MenuUtils.FIND)) {
-            new FindFeatureDialog(redApplication.dataCollection());
+            new FindFeatureDialog(application.dataCollection());
         } else if (action.equals(MenuUtils.PREFERENCES)) {
             new EditPreferencesDialog();
         }
         // --------------------ViewMenu--------------------
         else if (action.equals(MenuUtils.ZOOM_IN)) {
-            redApplication.chromosomeViewer().zoomIn();
+            application.chromosomeViewer().zoomIn();
         } else if (action.equals(MenuUtils.ZOOM_OUT)) {
-            redApplication.chromosomeViewer().zoomOut();
+            application.chromosomeViewer().zoomOut();
         } else if (action.equals(MenuUtils.SET_ZOOM_LEVEL)) {
-            new DataZoomSelectorDialog(redApplication);
+            new DataZoomSelectorDialog(application);
         } else if (action.equals(MenuUtils.MOVE_LEFT)) {
-            redApplication.chromosomeViewer().moveLeft();
+            application.chromosomeViewer().moveLeft();
         } else if (action.equals(MenuUtils.MOVE_RIGHT)) {
-            redApplication.chromosomeViewer().moveRight();
+            application.chromosomeViewer().moveRight();
         } else if (action.equals(MenuUtils.GOTO_POSITION)) {
-            new GotoDialog(redApplication);
+            new GoToDialog(application);
         } else if (action.equals(MenuUtils.GOTO_WINDOW)) {
-            new GotoWindowDialog(redApplication);
+            new GoToWindowDialog(application);
         }
         // --------------------FilterMenu--------------------
         else if (action.endsWith("Filter...")) {
             try {
+                DataStore activeDataStore = application.dataCollection().getActiveDataStore();
                 if (action.equals(MenuUtils.QC_FILTER)) {
-                    new FilterOptionsDialog(redApplication.dataCollection(), new QualityControlFilterMenu(redApplication.dataCollection()));
+                    new FilterOptionsDialog(activeDataStore, new QualityControlFilterPanel(activeDataStore));
                 } else if (action.equals(MenuUtils.SPECIFIC_FILTER)) {
-                    new FilterOptionsDialog(redApplication.dataCollection(), new EditingTypeFilterMenu(redApplication.dataCollection()));
+                    new FilterOptionsDialog(activeDataStore, new EditingTypeFilterPanel(activeDataStore));
                 } else if (action.equals(MenuUtils.KNOWN_SNVS_FILTER)) {
-                    new FilterOptionsDialog(redApplication.dataCollection(), new KnownSNPFilterMenu(redApplication.dataCollection()));
+                    new FilterOptionsDialog(activeDataStore, new KnownSNPFilterPanel(activeDataStore));
                 } else if (action.equals(MenuUtils.REPEATED_FILTER)) {
-                    new FilterOptionsDialog(redApplication.dataCollection(), new RepeatRegionsFilterMenu(redApplication.dataCollection()));
+                    new FilterOptionsDialog(activeDataStore, new RepeatRegionsFilterPanel(activeDataStore));
                 } else if (action.equals(MenuUtils.DNA_RNA_FILTER)) {
-                    new FilterOptionsDialog(redApplication.dataCollection(), new DNARNAFilterMenu(redApplication.dataCollection()));
+                    new FilterOptionsDialog(activeDataStore, new DNARNAFilterPanel(activeDataStore));
                 } else if (action.equals(MenuUtils.SPLICE_JUNCTION_FILTER)) {
-                    new FilterOptionsDialog(redApplication.dataCollection(), new SpliceJunctionFilterMenu(redApplication.dataCollection()));
+                    new FilterOptionsDialog(activeDataStore, new SpliceJunctionFilterPanel(activeDataStore));
                 }
             } catch (REDException e) {
                 e.printStackTrace();
             }
         } else if (action.contains("test")) {
             try {
+                DataStore activeDataStore = application.dataCollection().getActiveDataStore();
                 if (action.equals(MenuUtils.PVALUE_FILTER)) {
-                    new FilterOptionsDialog(redApplication.dataCollection(), new FisherExactTestFilterMenu(redApplication.dataCollection()));
+                    new FilterOptionsDialog(activeDataStore, new FisherExactTestFilterPanel(activeDataStore));
                 } else if (action.equals(MenuUtils.LLR_FILTER)) {
-                    new FilterOptionsDialog(redApplication.dataCollection(), new LikelihoodRatioFilterMenu(redApplication.dataCollection()));
+                    new FilterOptionsDialog(activeDataStore, new LikelihoodRatioFilterPanel(activeDataStore));
                 }
             } catch (REDException e) {
                 e.printStackTrace();
@@ -473,36 +484,31 @@ public class REDMenu extends JMenuBar implements ActionListener {
         }
         // --------------------ReportsMenu------------------
         else if (action.equals(MenuUtils.VARIANT_DISTRIBUTION)) {
-            if (redApplication.dataCollection().getActiveDataStore() == null) {
-                JOptionPane.showMessageDialog(redApplication, "You need to select a data store in the Data panel before viewing this plot",
+            if (application.dataCollection().getActiveDataStore() == null) {
+                JOptionPane.showMessageDialog(application, "You need to select a data store in the Data panel before viewing this plot",
                         "No data selected...", JOptionPane.INFORMATION_MESSAGE);
-            } else if (redApplication.dataCollection().siteSet() == null) {
-                JOptionPane.showMessageDialog(redApplication, "You need to select a siteset/sitelist in the Data panel before viewing this plot",
+            } else if (application.dataCollection().getActiveSiteList() == null) {
+                JOptionPane.showMessageDialog(application, "You need to select a site set/site list in the Data panel before viewing this plot",
                         "No data selected...", JOptionPane.INFORMATION_MESSAGE);
             } else {
-                new VariantDistributionHistogram(redApplication.dataCollection().getActiveDataStore());
+                new VariantDistributionHistogram(application.dataCollection().getActiveDataStore());
             }
         } else if (action.equals(MenuUtils.RNA_EDITING_SITES_DISTRIBUTION)) {
-            if (redApplication.dataCollection().getActiveDataStore() == null) {
-                JOptionPane.showMessageDialog(redApplication, "You need to select a data store in the Data panel before viewing this plot",
+            if (application.dataCollection().getActiveDataStore() == null) {
+                JOptionPane.showMessageDialog(application, "You need to select a data store in the Data panel before viewing this plot",
                         "No data selected...", JOptionPane.INFORMATION_MESSAGE);
-            } else if (redApplication.dataCollection().siteSet() == null) {
-                JOptionPane.showMessageDialog(redApplication, "You need to select a siteset/sitelist in the Data panel before viewing this plot",
+            } else if (application.dataCollection().getActiveSiteList() == null) {
+                JOptionPane.showMessageDialog(application, "You need to select a site set/site list in the Data panel before viewing this plot",
                         "No data selected...", JOptionPane.INFORMATION_MESSAGE);
             } else {
-                new SitesDistributionHistogram(redApplication.dataCollection().getActiveDataStore());
+                new SitesDistributionHistogram(application.dataCollection().getActiveDataStore());
             }
         } else if (action.equals(MenuUtils.FILTER_REPORTS)) {
-            if (!REDPreferences.getInstance().isDatabaseConnected()) {
-                JOptionPane.showMessageDialog(redApplication, "<html>The reports are based on data from database, which has not been connected<br>Please try again " +
-                        "after connecting to the dabatase.", "Database not connected.", JOptionPane.INFORMATION_MESSAGE);
-            } else {
-                new ReportOptions(redApplication, new FilterReports(redApplication.dataCollection()));
-            }
+            new ReportOptions(application, new FilterReports(application.dataCollection()));
         }
         // --------------------HelpMenu---------------------
         else if (action.equals(MenuUtils.WELCOME)) {
-            new WelcomePanel(redApplication);
+            new WelcomePanel(application);
         } else if (action.equals(MenuUtils.HELP_CONTENTS)) {
             new HelpDialog(new File(ClassLoader.getSystemResource("Help")
                     .getFile().replaceAll("%20", " ")));
@@ -510,11 +516,11 @@ public class REDMenu extends JMenuBar implements ActionListener {
             try {
                 if (UpdateChecker.isUpdateAvailable()) {
                     String latestVersion = UpdateChecker.getLatestVersionNumber();
-                    JOptionPane.showMessageDialog(redApplication, "<html>A newer version of RED (v" + latestVersion + ") is available, " +
-                                    "<br>please go to  <a href=\"https://github.com/REDetector/RED\">https://github.com/REDetector/RED</a> for the latest version",
+                    JOptionPane.showMessageDialog(application, "<html>A newer version of RED (v" + latestVersion + ") is available, " +
+                                    "<br>please go to  <a href=\"" + Global.HOME_PAGE + "\">" + Global.HOME_PAGE + "</a> for the latest version",
                             "Update available", JOptionPane.INFORMATION_MESSAGE);
                 } else {
-                    JOptionPane.showMessageDialog(redApplication, "<html>You are running the latest version of RED.", "Latest version of RED",
+                    JOptionPane.showMessageDialog(application, "<html>You are running the latest version of RED.", "Latest version of RED",
                             JOptionPane.INFORMATION_MESSAGE);
                 }
             } catch (REDException e) {
@@ -530,13 +536,14 @@ public class REDMenu extends JMenuBar implements ActionListener {
             DisplayPreferences.getInstance().setDisplayMode(DisplayPreferences.DISPLAY_MODE_PROBES_ONLY);
         } else if (action.equals(MenuUtils.SHOW_READS_AND_PROBES)) {
             DisplayPreferences.getInstance().setDisplayMode(DisplayPreferences.DISPLAY_MODE_READS_AND_PROBES);
+        } else if (action.equals(MenuUtils.SWITCH_SAMPLES_OR_MODE)) {
+            new DatabaseSelector(application);
         }
     }
 
     public void cacheFolderChecked() {
         newProject.setEnabled(true);
         openProject.setEnabled(true);
-        loadGenome.setEnabled(true);
     }
 
     /**
@@ -548,17 +555,23 @@ public class REDMenu extends JMenuBar implements ActionListener {
         reportsMenu.setEnabled(true);
     }
 
+    @Override
+    public void databaseChanged(String databaseName, String sampleName) {
+        filterMenu.setEnabled(true);
+        filterReports.setEnabled(true);
+        if (databaseName.equals(DatabaseManager.DENOVO_DATABASE_NAME)) {
+            llrFilter.setEnabled(false);
+            rnadnaFilter.setEnabled(false);
+        } else {
+            llrFilter.setEnabled(true);
+            rnadnaFilter.setEnabled(true);
+        }
+    }
+
+    @Override
     public void databaseConnected() {
         toDatabase.setEnabled(true);
-    }
-
-    public void databaseLoaded() {
-        filterMenu.setEnabled(true);
-    }
-
-    public void setDenovo(boolean isDenovo) {
-        llrFilter.setEnabled(!isDenovo);
-        rnadnaFilter.setEnabled(!isDenovo);
+        filterReports.setEnabled(true);
     }
 
     /**
@@ -584,8 +597,7 @@ public class REDMenu extends JMenuBar implements ActionListener {
     }
 
     /**
-     * Resets the menu availability to its default state. Should be called when
-     * a new dataset is loaded.
+     * Resets the menu availability to its default state. Should be called when a new dataset is loaded.
      */
     public void resetMenus() {
         saveProject.setEnabled(false);

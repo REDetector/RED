@@ -1,6 +1,24 @@
+/*
+ * RED: RNA Editing Detector
+ *     Copyright (C) <2014>  <Xing Li>
+ *
+ *     RED is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU General Public License as published by
+ *     the Free Software Foundation, either version 3 of the License, or
+ *     (at your option) any later version.
+ *
+ *     RED is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     GNU General Public License for more details.
+ *
+ *     You should have received a copy of the GNU General Public License
+ *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package com.xl.display.report;
 
-import com.dw.dbutils.Query;
+import com.xl.database.Query;
 import com.xl.datatypes.DataCollection;
 import com.xl.datatypes.sites.SiteBean;
 import com.xl.datatypes.sites.SiteList;
@@ -18,7 +36,7 @@ import java.awt.event.MouseListener;
 import java.util.Vector;
 
 /**
- * Created by Administrator on 2014/10/5.
+ * Created by Xing Li on 2014/10/5.
  */
 public class FilterReports extends Report implements MouseListener, TreeSelectionListener {
     private JPanel optionsPanel = null;
@@ -80,7 +98,7 @@ public class FilterReports extends Report implements MouseListener, TreeSelectio
         con.weighty = 0.01;
         con.fill = GridBagConstraints.HORIZONTAL;
         con.anchor = GridBagConstraints.FIRST_LINE_START;
-        SiteSetTreeModel siteModel = new SiteSetTreeModel(collection);
+        SiteSetTreeModel siteModel = new SiteSetTreeModel(collection.getActiveDataStore());
         siteSetTree = new UnfocusableTree(siteModel);
         siteSetTree.addMouseListener(this);
         siteSetTree.addTreeSelectionListener(this);
@@ -131,17 +149,13 @@ public class FilterReports extends Report implements MouseListener, TreeSelectio
     /**
      * An extension of JTree which is unable to take keyboard focus.
      * <p/>
-     * This class is needed to make sure the arrow key navigation
-     * always works in the chromosome view.  If either of the JTrees
-     * can grab focus they will intercept the arrow key events and
-     * just move the selections on the tree.
+     * This class is needed to make sure the arrow key navigation always works in the chromosome view.  If either of the JTrees can grab focus they will
+     * intercept the arrow key events and just move the selections on the tree.
      */
     private class UnfocusableTree extends JTree {
 
-        // This class is needed to make sure the arrow key navigation
-        // always works in the chromosome view.  If either of the JTrees
-        // can grab focus they will intercept the arrow key events and
-        // just move the selections on the tree.
+        // This class is needed to make sure the arrow key navigation always works in the chromosome view.  If either of the JTrees can grab focus they will
+        // intercept the arrow key events and just move the selections on the tree.
 
         /**
          * Instantiates a new unfocusable tree.
