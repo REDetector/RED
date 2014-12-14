@@ -240,7 +240,7 @@ abstract class AbstractSiteFilter implements Runnable, Cancellable {
     }
 
     /**
-     * Start the generation of the site list.  This will be called from within a new thread so you don't need to implement threading within the filter.
+     * Start the generation of the site list. This will be called from within a new thread so you don't need to implement threading within the filter.
      */
     protected abstract void generateSiteList();
 
