@@ -1,0 +1,15 @@
+#Filter the bugs file.
+bugs.txt
+
+#Filter the project configuration file generated automatically by IDEA.
+*.iml
+/.idea
+
+#Filter the Data directory.
+/Data
+
+#Filter the test directory.
+/test
+
+#Filter the software configuration file generated automatically by RED.
+red_prefs.txt

@@ -18,7 +18,6 @@
 
 package com.xl.filter.filterpanel;
 
-import com.xl.datatypes.DataStore;
 import com.xl.datatypes.sites.SiteList;
 import com.xl.display.dialog.ProgressDialog;
 import com.xl.exception.REDException;
@@ -26,6 +25,8 @@ import com.xl.interfaces.OptionsListener;
 import com.xl.interfaces.ProgressListener;
 import com.xl.main.REDApplication;
 import com.xl.net.crashreport.CrashReporter;
+import com.xl.utils.FontManager;
+import com.xl.utils.namemanager.MenuUtils;
 
 import javax.swing.*;
 import java.awt.*;
@@ -34,13 +35,25 @@ import java.awt.event.ActionListener;
 
 /**
  * Created by Xing Li on 2014/7/25.
+ * <p/>
+ * The Class FilterOptionsDialog is a wrap framework for all filter option dialogs.
  */
-public class FilterOptionsDialog extends JDialog implements OptionsListener, ProgressListener, ActionListener {
-
+public class FilterOptionDialog extends JDialog implements OptionsListener, ProgressListener, ActionListener {
+    /**
+     * The filter which should be wrapped.
+     */
     private AbstractSiteFilter filter;
+    /**
+     * The filter button.
+     */
     private JButton filterButton;
 
-    public FilterOptionsDialog(DataStore dataStore, AbstractSiteFilter filter) {
+    /**
+     * Initiate a new filter option dialog.
+     *
+     * @param filter
+     */
+    public FilterOptionDialog(AbstractSiteFilter filter) {
         super(REDApplication.getInstance(), filter.name());
 
         this.filter = filter;
@@ -50,10 +63,10 @@ public class FilterOptionsDialog extends JDialog implements OptionsListener, Pro
 
         getContentPane().setLayout(new BorderLayout());
 
-        JLabel siteListLabel = new JLabel("Filtering sites in '" + dataStore.siteSet().getActiveList().getFilterName() + "' (" + dataStore.siteSet().getActiveList()
-                .getAllSites().length + " sites)", JLabel.CENTER);
-        siteListLabel.setFont(new Font("Default", Font.BOLD, 12));
-        siteListLabel.setBorder(BorderFactory.createEmptyBorder(3, 0, 3, 0));
+        JLabel siteListLabel = new JLabel("Filtering sites in '" + filter.parentList.getListName() + "' (" + filter.parentList.getAllSites().length + " " +
+                "sites)", JLabel.CENTER);
+        siteListLabel.setFont(FontManager.DEFAULT_FONT);
+        siteListLabel.setBorder(BorderFactory.createEmptyBorder(4, 4, 4, 4));
         getContentPane().add(siteListLabel, BorderLayout.NORTH);
 
         if (filter.hasOptionsPanel()) {
@@ -67,13 +80,13 @@ public class FilterOptionsDialog extends JDialog implements OptionsListener, Pro
 
         JPanel buttonPanel = new JPanel();
 
-        JButton closeButton = new JButton("Close");
-        closeButton.setActionCommand("close");
+        JButton closeButton = new JButton(MenuUtils.CLOSE_BUTTON);
+        closeButton.setActionCommand(MenuUtils.CLOSE_BUTTON);
         closeButton.addActionListener(this);
         buttonPanel.add(closeButton);
 
-        filterButton = new JButton("Run Filter");
-        filterButton.setActionCommand("filter");
+        filterButton = new JButton(MenuUtils.RUN_FILTER_BUTTON);
+        filterButton.setActionCommand(MenuUtils.RUN_FILTER_BUTTON);
         getRootPane().setDefaultButton(filterButton);
         filterButton.addActionListener(this);
         if (!filter.isReady()) {
@@ -86,11 +99,12 @@ public class FilterOptionsDialog extends JDialog implements OptionsListener, Pro
         setVisible(true);
     }
 
+    @Override
     public void actionPerformed(ActionEvent ae) {
-        if (ae.getActionCommand().equals("close")) {
+        if (ae.getActionCommand().equals(MenuUtils.CLOSE_BUTTON)) {
             setVisible(false);
             dispose();
-        } else if (ae.getActionCommand().equals("filter")) {
+        } else if (ae.getActionCommand().equals(MenuUtils.RUN_FILTER_BUTTON)) {
             if (filter.isReady()) {
                 filterButton.setEnabled(false);
                 filter.addProgressListener(new ProgressDialog(this, "Running Filter...", filter));
