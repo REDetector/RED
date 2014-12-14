@@ -340,38 +340,6 @@ public class DatabaseManager {
     }
 
     /**
-     * Get the sample name from a table name.
-     * <p/>
-     * Here is an example: If the table name is 'BJ22_qcfilter_etfilter', then the sample name is 'BJ22'
-     *
-     * @param tableName The table name.
-     * @return The sample name.
-     */
-    public String getSampleName(String tableName) {
-        if (tableName == null) {
-            return null;
-        }
-        String[] sections = tableName.split("_");
-        if (sections.length == 1) {
-            return tableName;
-        } else if (sections.length == 2) {
-            return tableName.substring(0, tableName.indexOf("_"));
-        } else {
-            StringBuilder builder = new StringBuilder();
-            for (String section : sections) {
-                // Because the table name of RNA VCF file is 'sample_rnavcf', the filter table name is 'sample_previousFilter_currentFilter_params',
-                // so if the section meet 'rnavcf' or 'filter', then we stop finding.
-                if (section.contains(DatabaseManager.RNA_VCF_RESULT_TABLE_NAME) || section.contains(FILTER)) {
-                    break;
-                } else {
-                    builder.append(section).append("_");
-                }
-            }
-            return builder.substring(0, builder.length() - 1);
-        }
-    }
-
-    /**
      * Change database.
      *
      * @param databaseName The database to be changed.
