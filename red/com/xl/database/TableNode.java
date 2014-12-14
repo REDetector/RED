@@ -18,6 +18,8 @@
 
 package com.xl.database;
 
+import com.xl.filter.FilterNameRetriever;
+
 /**
  * Created by Xing Li on 2014/11/16.
  * <p/>
@@ -35,7 +37,7 @@ public class TableNode {
 
     public TableNode(String tableName) {
         this.tableName = tableName;
-        sampleName = DatabaseManager.getInstance().getSampleName(tableName);
+        sampleName = FilterNameRetriever.getSampleName(tableName);
     }
 
     public String getTableName() {
