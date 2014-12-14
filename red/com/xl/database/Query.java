@@ -23,7 +23,7 @@ import com.xl.datatypes.sites.SiteBean;
 import com.xl.datatypes.sites.SiteList;
 import com.xl.datatypes.sites.SiteSet;
 import com.xl.exception.REDException;
-import com.xl.filter.FilterNameRetriever;
+import com.xl.utils.NameRetriever;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -205,7 +205,7 @@ public class Query {
             if (previousFilter == null || currentFilter == null) {
                 throw new REDException("Unknown filter table:" + tableName);
             }
-            String listName = FilterNameRetriever.retrieveParams(currentFilter, sections);
+            String listName = NameRetriever.retrieveParams(currentFilter, sections);
 
             for (int j = 0; j < k; j++) {
                 SiteList linkage = linkages[j];

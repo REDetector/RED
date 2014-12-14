@@ -18,7 +18,7 @@
 
 package com.xl.datatypes.sites;
 
-import com.xl.filter.FilterNameRetriever;
+import com.xl.utils.NameRetriever;
 
 import java.util.Collections;
 import java.util.Enumeration;
@@ -87,7 +87,7 @@ public class SiteList {
         this.tableName = tableName;
         this.description = description;
         if (tableName != null) {
-            filterName = FilterNameRetriever.getFilterName(tableName);
+            filterName = NameRetriever.getFilterName(tableName);
         }
         siteListAdded(this);
     }

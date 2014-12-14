@@ -20,7 +20,7 @@ package com.xl.datatypes.sites;
 
 import com.xl.database.DatabaseManager;
 import com.xl.datatypes.DataStore;
-import com.xl.filter.FilterNameRetriever;
+import com.xl.utils.NameRetriever;
 
 import java.util.Enumeration;
 import java.util.Vector;
@@ -158,7 +158,7 @@ public class SiteSet extends SiteList {
      */
     @Override
     public String toWrite() {
-        String sampleName = FilterNameRetriever.getSampleName(tableName);
+        String sampleName = NameRetriever.getSampleName(tableName);
         return sampleName + "\t" + description.replaceAll("[\\t]", " ").replaceAll("[\\r\\n]", "`") + "\t" + comments.replaceAll("[\\t]",
                 " ").replaceAll("[\\r\\n]", "`");
     }

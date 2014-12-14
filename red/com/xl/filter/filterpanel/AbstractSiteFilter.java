@@ -22,10 +22,10 @@ import com.xl.database.DatabaseManager;
 import com.xl.datatypes.DataStore;
 import com.xl.datatypes.sites.SiteList;
 import com.xl.exception.REDException;
-import com.xl.filter.FilterNameRetriever;
 import com.xl.interfaces.Cancellable;
 import com.xl.interfaces.OptionsListener;
 import com.xl.interfaces.ProgressListener;
+import com.xl.utils.NameRetriever;
 
 import javax.swing.*;
 import java.util.ArrayList;
@@ -71,7 +71,7 @@ abstract class AbstractSiteFilter implements Runnable, Cancellable {
     public AbstractSiteFilter(DataStore dataStore) {
         this.dataStore = dataStore;
         databaseManager = DatabaseManager.getInstance();
-        currentSample = FilterNameRetriever.getSampleName(dataStore.siteSet().getFilterName());
+        currentSample = NameRetriever.getSampleName(dataStore.siteSet().getFilterName());
     }
 
     public void cancel() {
