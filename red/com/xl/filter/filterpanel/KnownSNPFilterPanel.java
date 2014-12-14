@@ -1,74 +1,70 @@
-/**
- * Copyright Copyright 2007-13 Simon Andrews
+/*
+ * RED: RNA Editing Detector
+ *     Copyright (C) <2014>  <Xing Li>
  *
- *    This file is part of SeqMonk.
+ *     RED is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU General Public License as published by
+ *     the Free Software Foundation, either version 3 of the License, or
+ *     (at your option) any later version.
  *
- *    SeqMonk is free software; you can redistribute it and/or modify
- *    it under the terms of the GNU General Public License as published by
- *    the Free Software Foundation; either version 3 of the License, or
- *    (at your option) any later version.
+ *     RED is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     GNU General Public License for more details.
  *
- *    SeqMonk is distributed in the hope that it will be useful,
- *    but WITHOUT ANY WARRANTY; without even the implied warranty of
- *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *    GNU General Public License for more details.
- *
- *    You should have received a copy of the GNU General Public License
- *    along with SeqMonk; if not, write to the Free Software
- *    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+ *     You should have received a copy of the GNU General Public License
+ *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.xl.filter;
+package com.xl.filter.filterpanel;
 
-import com.dw.dbutils.DatabaseManager;
-import com.dw.dbutils.Query;
-import com.dw.denovo.KnownSNPFilter;
-import com.xl.datatypes.DataCollection;
+import com.xl.database.DatabaseManager;
+import com.xl.database.Query;
+import com.xl.database.TableCreator;
 import com.xl.datatypes.DataStore;
 import com.xl.datatypes.sites.Site;
 import com.xl.datatypes.sites.SiteList;
 import com.xl.exception.REDException;
+import com.xl.filter.denovo.KnownSNPFilter;
 
 import javax.swing.*;
-import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.TreeSelectionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.util.Vector;
 
 /**
- * The ValuesFilter filters sites based on their associated values
- * from quantiation.  Each site is filtered independently of all
- * other sites.
+ * The ValuesFilter filters sites based on their associated values from quantiation.  Each site is filtered independently of all other sites.
  */
-public class KnownSNPFilterMenu extends AbstractSiteFilter {
+public class KnownSNPFilterPanel extends AbstractSiteFilter {
 
     private DbSNPFilterOptionPanel optionsPanel = new DbSNPFilterOptionPanel();
 
     /**
      * Instantiates a new values filter with default values
      *
-     * @param collection The dataCollection to filter
+     * @param dataStore The dataCollection to filter
      * @throws com.xl.exception.REDException if the dataCollection isn't quantitated.
      */
-    public KnownSNPFilterMenu(DataCollection collection) throws REDException {
-        super(collection);
+    public KnownSNPFilterPanel(DataStore dataStore) throws REDException {
+        super(dataStore);
     }
 
     @Override
     public String description() {
-        return "Filter RNA-editing sites by dbSNP database.";
+        return "Filter RNA editing sites by dbSNP database.";
     }
 
     @Override
     protected void generateSiteList() {
-        progressUpdated("Filtering RNA-editing sites by dbSNP filter, please wait...", 0, 0);
+        progressUpdated("Filtering RNA editing sites by dbSNP filter, please wait...", 0, 0);
+        String linearTableName = currentSample + "_" + parentList.getFilterName() + "_" + DatabaseManager.DBSNP_FILTER_RESULT_TABLE_NAME;
+        TableCreator.createFilterTable(linearTableName);
         KnownSNPFilter dbsnpFilter = new KnownSNPFilter(databaseManager);
-        dbsnpFilter.establishDbSNPResultTable(DatabaseManager.DBSNP_FILTER_RESULT_TABLE_NAME);
-//        new Thread(new ThreadCountRow(this,DatabaseManager.DBSNP_FILTER_RESULT_TABLE_NAME)).start();
-        dbsnpFilter.executeDbSNPFilter(DatabaseManager.DBSNP_FILTER_TABLE_NAME, DatabaseManager.DBSNP_FILTER_RESULT_TABLE_NAME, parentTable);
-        DatabaseManager.getInstance().distinctTable(DatabaseManager.DBSNP_FILTER_RESULT_TABLE_NAME);
-        Vector<Site> sites = Query.queryAllEditingSites(DatabaseManager.DBSNP_FILTER_RESULT_TABLE_NAME);
-        SiteList newList = new SiteList(parentList, DatabaseManager.DBSNP_FILTER_RESULT_TABLE_NAME, description(),
-                DatabaseManager.DBSNP_FILTER_RESULT_TABLE_NAME);
+        dbsnpFilter.executeDbSNPFilter(DatabaseManager.DBSNP_DATABASE_TABLE_NAME, linearTableName, parentList.getTableName());
+        DatabaseManager.getInstance().distinctTable(linearTableName);
+
+        Vector<Site> sites = Query.queryAllEditingSites(linearTableName);
+        SiteList newList = new SiteList(parentList, listName(), DatabaseManager.DBSNP_FILTER_RESULT_TABLE_NAME, linearTableName, description());
         int index = 0;
         int sitesLength = sites.size();
         for (Site site : sites) {
@@ -95,7 +91,7 @@ public class KnownSNPFilterMenu extends AbstractSiteFilter {
 
     @Override
     public boolean isReady() {
-        return stores.length != 0;
+        return parentList != null;
     }
 
     @Override
@@ -118,15 +114,15 @@ public class KnownSNPFilterMenu extends AbstractSiteFilter {
          * Instantiates a new values filter option panel.
          */
         public DbSNPFilterOptionPanel() {
-            super(collection);
+            super(dataStore);
         }
 
-        public void valueChanged(ListSelectionEvent lse) {
-            System.out.println(KnownSNPFilterMenu.class.getName() + ":valueChanged()");
-            Object[] objects = dataList.getSelectedValues();
-            stores = new DataStore[objects.length];
-            for (int i = 0; i < stores.length; i++) {
-                stores[i] = (DataStore) objects[i];
+        @Override
+        public void valueChanged(TreeSelectionEvent tse) {
+            System.out.println(QualityControlFilterPanel.class.getName() + ":valueChanged()");
+            Object selectedItem = siteTree.getSelectionPath().getLastPathComponent();
+            if (selectedItem instanceof SiteList) {
+                parentList = (SiteList) selectedItem;
             }
             optionsChanged();
         }

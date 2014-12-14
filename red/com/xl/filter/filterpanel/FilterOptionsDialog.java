@@ -1,9 +1,27 @@
-package com.xl.dialog;
+/*
+ * RED: RNA Editing Detector
+ *     Copyright (C) <2014>  <Xing Li>
+ *
+ *     RED is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU General Public License as published by
+ *     the Free Software Foundation, either version 3 of the License, or
+ *     (at your option) any later version.
+ *
+ *     RED is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     GNU General Public License for more details.
+ *
+ *     You should have received a copy of the GNU General Public License
+ *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 
-import com.xl.datatypes.DataCollection;
+package com.xl.filter.filterpanel;
+
+import com.xl.datatypes.DataStore;
 import com.xl.datatypes.sites.SiteList;
+import com.xl.display.dialog.ProgressDialog;
 import com.xl.exception.REDException;
-import com.xl.filter.AbstractSiteFilter;
 import com.xl.interfaces.OptionsListener;
 import com.xl.interfaces.ProgressListener;
 import com.xl.main.REDApplication;
@@ -15,14 +33,14 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 /**
- * Created by Administrator on 2014/7/25.
+ * Created by Xing Li on 2014/7/25.
  */
 public class FilterOptionsDialog extends JDialog implements OptionsListener, ProgressListener, ActionListener {
 
     private AbstractSiteFilter filter;
     private JButton filterButton;
 
-    public FilterOptionsDialog(DataCollection collection, AbstractSiteFilter filter) {
+    public FilterOptionsDialog(DataStore dataStore, AbstractSiteFilter filter) {
         super(REDApplication.getInstance(), filter.name());
 
         this.filter = filter;
@@ -32,7 +50,7 @@ public class FilterOptionsDialog extends JDialog implements OptionsListener, Pro
 
         getContentPane().setLayout(new BorderLayout());
 
-        JLabel siteListLabel = new JLabel("Filtering sites in '" + collection.siteSet().getActiveList().name() + "' (" + collection.siteSet().getActiveList()
+        JLabel siteListLabel = new JLabel("Filtering sites in '" + dataStore.siteSet().getActiveList().getFilterName() + "' (" + dataStore.siteSet().getActiveList()
                 .getAllSites().length + " sites)", JLabel.CENTER);
         siteListLabel.setFont(new Font("Default", Font.BOLD, 12));
         siteListLabel.setBorder(BorderFactory.createEmptyBorder(3, 0, 3, 0));
@@ -120,11 +138,9 @@ public class FilterOptionsDialog extends JDialog implements OptionsListener, Pro
         String groupName;
         while (true) {
             groupName = (String) JOptionPane.showInputDialog(this, "Enter list name", "Found " + newList.getAllSites().length + " sites",
-                    JOptionPane.QUESTION_MESSAGE, null, null, newList.name());
+                    JOptionPane.QUESTION_MESSAGE, null, null, newList.getListName());
             if (groupName == null) {
-                // Since the list will automatically have been added to
-                // the SiteList tree we actively need to delete it if
-                // they choose to cancel at this point.
+                // Since the list will automatically have been added to the SiteList tree we actively need to delete it if they choose to cancel at this point.
                 newList.delete();
                 return;  // They cancelled
             }
@@ -134,7 +150,7 @@ public class FilterOptionsDialog extends JDialog implements OptionsListener, Pro
 
             break;
         }
-        newList.setName(groupName);
+        newList.setListName(groupName);
         setVisible(false);
         dispose();
     }

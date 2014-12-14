@@ -1,24 +1,40 @@
-package com.xl.filter;
+/*
+ * RED: RNA Editing Detector
+ *     Copyright (C) <2014>  <Xing Li>
+ *
+ *     RED is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU General Public License as published by
+ *     the Free Software Foundation, either version 3 of the License, or
+ *     (at your option) any later version.
+ *
+ *     RED is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     GNU General Public License for more details.
+ *
+ *     You should have received a copy of the GNU General Public License
+ *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 
-import com.dw.dbutils.DatabaseManager;
-import com.dw.dbutils.Query;
-import com.dw.denovo.EditingTypeFilter;
-import com.xl.datatypes.DataCollection;
+package com.xl.filter.filterpanel;
+
+import com.xl.database.DatabaseManager;
+import com.xl.database.Query;
+import com.xl.database.TableCreator;
 import com.xl.datatypes.DataStore;
 import com.xl.datatypes.sites.Site;
 import com.xl.datatypes.sites.SiteList;
 import com.xl.exception.REDException;
+import com.xl.filter.denovo.EditingTypeFilter;
 
 import javax.swing.*;
-import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.TreeSelectionEvent;
 import java.util.Vector;
 
 /**
- * The ValuesFilter filters sites based on their associated values
- * from quantiation.  Each site is filtered independently of all
- * other sites.
+ * The ValuesFilter filters sites based on their associated values from quantiation.  Each site is filtered independently of all other sites.
  */
-public class EditingTypeFilterMenu extends AbstractSiteFilter {
+public class EditingTypeFilterPanel extends AbstractSiteFilter {
 
     private JComboBox refBase = null;
     private JComboBox altBase = null;
@@ -27,29 +43,33 @@ public class EditingTypeFilterMenu extends AbstractSiteFilter {
     /**
      * Instantiates a new values filter with default values
      *
-     * @param collection The dataCollection to filter
+     * @param dataStore The dataCollection to filter
      * @throws com.xl.exception.REDException if the dataCollection isn't quantitated.
      */
-    public EditingTypeFilterMenu(DataCollection collection) throws REDException {
-        super(collection);
+    public EditingTypeFilterPanel(DataStore dataStore) throws REDException {
+        super(dataStore);
     }
 
     @Override
     public String description() {
-        return "Filter RNA-editing sites by editing type,such as 'A'->'G','C'->'T',etc.";
+        return "Filter RNA editing sites by editing type,such as 'A'->'G','C'->'T',etc.";
     }
 
     @Override
     protected void generateSiteList() {
-        progressUpdated("Filtering RNA-editing sites by editing type, please wait...", 0, 0);
+        progressUpdated("Filtering RNA editing sites by RNA editing type, please wait...", 0, 0);
+
+        String refBaseString = refBase.getSelectedItem().toString();
+        String altBaseString = altBase.getSelectedItem().toString();
+        String linearTableName = currentSample + "_" + parentList.getFilterName() + "_" + DatabaseManager
+                .EDITING_TYPE_FILTER_RESULT_TABLE_NAME + "_" + refBaseString + "_" + altBaseString;
+        TableCreator.createFilterTable(linearTableName);
         EditingTypeFilter editingTypeFilter = new EditingTypeFilter(databaseManager);
-        editingTypeFilter.establishSpecificTable(DatabaseManager.EDITING_TYPE_FILTER_RESULT_TABLE_NAME);
-        editingTypeFilter.executeSpecificFilter(DatabaseManager.EDITING_TYPE_FILTER_RESULT_TABLE_NAME, parentTable,
-                refBase.getSelectedItem().toString(), altBase.getSelectedItem().toString());
-        DatabaseManager.getInstance().distinctTable(DatabaseManager.EDITING_TYPE_FILTER_RESULT_TABLE_NAME);
-        Vector<Site> sites = Query.queryAllEditingSites(DatabaseManager.EDITING_TYPE_FILTER_RESULT_TABLE_NAME);
-        SiteList newList = new SiteList(parentList, DatabaseManager.EDITING_TYPE_FILTER_RESULT_TABLE_NAME, description(),
-                DatabaseManager.EDITING_TYPE_FILTER_RESULT_TABLE_NAME);
+        editingTypeFilter.executeEditingTypeFilter(linearTableName, parentList.getTableName(), refBaseString, altBaseString);
+        DatabaseManager.getInstance().distinctTable(linearTableName);
+
+        Vector<Site> sites = Query.queryAllEditingSites(linearTableName);
+        SiteList newList = new SiteList(parentList, listName(), DatabaseManager.EDITING_TYPE_FILTER_RESULT_TABLE_NAME, linearTableName, description());
         int index = 0;
         int sitesLength = sites.size();
         for (Site site : sites) {
@@ -76,7 +96,7 @@ public class EditingTypeFilterMenu extends AbstractSiteFilter {
 
     @Override
     public boolean isReady() {
-        return stores.length != 0;
+        return parentList != null;
     }
 
     @Override
@@ -98,17 +118,7 @@ public class EditingTypeFilterMenu extends AbstractSiteFilter {
          * Instantiates a new values filter option panel.
          */
         public SpecificFilterOptionPanel() {
-            super(collection);
-        }
-
-        public void valueChanged(ListSelectionEvent lse) {
-            System.out.println(QualityControlFilterMenu.class.getName() + ":valueChanged()");
-            Object[] objects = dataList.getSelectedValues();
-            stores = new DataStore[objects.length];
-            for (int i = 0; i < stores.length; i++) {
-                stores[i] = (DataStore) objects[i];
-            }
-            optionsChanged();
+            super(dataStore);
         }
 
         @Override
@@ -147,6 +157,16 @@ public class EditingTypeFilterMenu extends AbstractSiteFilter {
         protected String getPanelDescription() {
             return "Mostly, we focus on A->G change since over 95% RNA editing sites are of A->G. If 'A' in reference base and 'G' in alternative base are " +
                     "chosen (default option), the sites of non A->G change will be filtered.";
+        }
+
+        @Override
+        public void valueChanged(TreeSelectionEvent tse) {
+            System.out.println(QualityControlFilterPanel.class.getName() + ":valueChanged()");
+            Object selectedItem = siteTree.getSelectionPath().getLastPathComponent();
+            if (selectedItem instanceof SiteList) {
+                parentList = (SiteList) selectedItem;
+            }
+            optionsChanged();
         }
     }
 }

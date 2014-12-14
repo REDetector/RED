@@ -1,46 +1,42 @@
-/**
- * Copyright Copyright 2007-13 Simon Andrews
+/*
+ * RED: RNA Editing Detector
+ *     Copyright (C) <2014>  <Xing Li>
  *
- *    This file is part of SeqMonk.
+ *     RED is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU General Public License as published by
+ *     the Free Software Foundation, either version 3 of the License, or
+ *     (at your option) any later version.
  *
- *    SeqMonk is free software; you can redistribute it and/or modify
- *    it under the terms of the GNU General Public License as published by
- *    the Free Software Foundation; either version 3 of the License, or
- *    (at your option) any later version.
+ *     RED is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     GNU General Public License for more details.
  *
- *    SeqMonk is distributed in the hope that it will be useful,
- *    but WITHOUT ANY WARRANTY; without even the implied warranty of
- *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *    GNU General Public License for more details.
- *
- *    You should have received a copy of the GNU General Public License
- *    along with SeqMonk; if not, write to the Free Software
- *    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+ *     You should have received a copy of the GNU General Public License
+ *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.xl.filter;
+package com.xl.filter.filterpanel;
 
-import com.dw.dbutils.DatabaseManager;
-import com.dw.dbutils.Query;
-import com.dw.denovo.QualityControlFilter;
-import com.xl.datatypes.DataCollection;
+import com.xl.database.DatabaseManager;
+import com.xl.database.Query;
+import com.xl.database.TableCreator;
 import com.xl.datatypes.DataStore;
 import com.xl.datatypes.sites.Site;
 import com.xl.datatypes.sites.SiteList;
 import com.xl.exception.REDException;
+import com.xl.filter.denovo.QualityControlFilter;
 
 import javax.swing.*;
-import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.TreeSelectionEvent;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.util.Vector;
 
 /**
- * The ValuesFilter filters sites based on their associated values
- * from quantiation.  Each site is filtered independently of all
- * other sites.
+ * The ValuesFilter filters sites based on their associated values from quantiation.  Each site is filtered independently of all other sites.
  */
-public class QualityControlFilterMenu extends AbstractSiteFilter {
+public class QualityControlFilterPanel extends AbstractSiteFilter {
 
     private int qualityThres = 20;
     private int depthThres = 6;
@@ -51,29 +47,31 @@ public class QualityControlFilterMenu extends AbstractSiteFilter {
     /**
      * Instantiates a new values filter with default values
      *
-     * @param collection The dataCollection to filter
+     * @param dataStore The dataCollection to filter
      * @throws REDException if the dataCollection isn't quantitated.
      */
-    public QualityControlFilterMenu(DataCollection collection) throws REDException {
-        super(collection);
+    public QualityControlFilterPanel(DataStore dataStore) throws REDException {
+        super(dataStore);
     }
 
     @Override
     public String description() {
-        return "Filter RNA-editing bases by quality and depth.";
+        return "Filter RNA editing bases by quality and depth.";
     }
 
     @Override
     protected void generateSiteList() {
-        progressUpdated("Filtering RNA-editing sites by quality and coverage, please wait...", 0, 0);
+        progressUpdated("Filtering RNA editing sites by quality and coverage, please wait...", 0, 0);
+        String linearTableName = currentSample + "_" + parentList.getFilterName() + "_" + DatabaseManager
+                .QC_FILTER_RESULT_TABLE_NAME + "_" + qualityThres + "_" + depthThres;
+        TableCreator.createFilterTable(linearTableName);
         QualityControlFilter bf = new QualityControlFilter(databaseManager);
-        bf.establishQCTable(DatabaseManager.QC_FILTER_RESULT_TABLE_NAME);
         // The first parameter means quality and the second means depth
-        bf.executeQCFilter(parentTable, DatabaseManager.QC_FILTER_RESULT_TABLE_NAME, qualityThres, depthThres);
-        DatabaseManager.getInstance().distinctTable(DatabaseManager.QC_FILTER_RESULT_TABLE_NAME);
-        Vector<Site> sites = Query.queryAllEditingSites(DatabaseManager.QC_FILTER_RESULT_TABLE_NAME);
-        SiteList newList = new SiteList(parentList, DatabaseManager.QC_FILTER_RESULT_TABLE_NAME, description(),
-                DatabaseManager.QC_FILTER_RESULT_TABLE_NAME);
+        bf.executeQCFilter(parentList.getTableName(), linearTableName, qualityThres, depthThres);
+        DatabaseManager.getInstance().distinctTable(linearTableName);
+
+        Vector<Site> sites = Query.queryAllEditingSites(linearTableName);
+        SiteList newList = new SiteList(parentList, listName(), DatabaseManager.QC_FILTER_RESULT_TABLE_NAME, linearTableName, description());
         int index = 0;
         int sitesLength = sites.size();
         for (Site site : sites) {
@@ -100,7 +98,7 @@ public class QualityControlFilterMenu extends AbstractSiteFilter {
 
     @Override
     public boolean isReady() {
-        return stores.length != 0 && qualityField.getText().length() != 0 && depthField.getText().length() != 0;
+        return parentList != null && qualityField.getText().length() != 0 && depthField.getText().length() != 0;
     }
 
     @Override
@@ -123,18 +121,7 @@ public class QualityControlFilterMenu extends AbstractSiteFilter {
          * Instantiates a new values filter option panel.
          */
         public QCFilterOptionPanel() {
-            super(collection);
-        }
-
-        @Override
-        public void valueChanged(ListSelectionEvent lse) {
-            System.out.println(QualityControlFilterMenu.class.getName() + ":valueChanged()");
-            Object[] objects = dataList.getSelectedValues();
-            stores = new DataStore[objects.length];
-            for (int i = 0; i < stores.length; i++) {
-                stores[i] = (DataStore) objects[i];
-            }
-            optionsChanged();
+            super(dataStore);
         }
 
         @Override
@@ -206,6 +193,16 @@ public class QualityControlFilterMenu extends AbstractSiteFilter {
         protected String getPanelDescription() {
             return "Two measures of base quality (Q, range of 1-255) and depth of coverage (DP, range of 1-255) are used in the QC filter. For example, " +
                     "a given site will be removed if it was of a low quality (Q< 20) or with a low depth of coverage (DP< 6).";
+        }
+
+        @Override
+        public void valueChanged(TreeSelectionEvent tse) {
+            System.out.println(QualityControlFilterPanel.class.getName() + ":valueChanged()");
+            Object selectedItem = siteTree.getSelectionPath().getLastPathComponent();
+            if (selectedItem instanceof SiteList) {
+                parentList = (SiteList) selectedItem;
+            }
+            optionsChanged();
         }
     }
 }
