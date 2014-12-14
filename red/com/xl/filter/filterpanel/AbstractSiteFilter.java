@@ -1,62 +1,86 @@
-package com.xl.filter;
+/*
+ * RED: RNA Editing Detector
+ *     Copyright (C) <2014>  <Xing Li>
+ *
+ *     RED is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU General Public License as published by
+ *     the Free Software Foundation, either version 3 of the License, or
+ *     (at your option) any later version.
+ *
+ *     RED is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     GNU General Public License for more details.
+ *
+ *     You should have received a copy of the GNU General Public License
+ *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 
-import com.dw.dbutils.DatabaseManager;
-import com.xl.datatypes.DataCollection;
+package com.xl.filter.filterpanel;
+
+import com.xl.database.DatabaseManager;
 import com.xl.datatypes.DataStore;
 import com.xl.datatypes.sites.SiteList;
 import com.xl.exception.REDException;
+import com.xl.filter.FilterNameRetriever;
 import com.xl.interfaces.Cancellable;
 import com.xl.interfaces.OptionsListener;
 import com.xl.interfaces.ProgressListener;
-import com.xl.preferences.REDPreferences;
 
 import javax.swing.*;
 import java.util.ArrayList;
 
 /**
- * A class representing a generic filter from which all of the actual filters derive
+ * The Class AbstractSiteFilter represents a generic filter from which all of the actual filters derive
  */
-public abstract class AbstractSiteFilter implements Runnable, Cancellable {
-
-    public final String parentTable;
-    protected final DataCollection collection;
-    protected final SiteList parentList;
+abstract class AbstractSiteFilter implements Runnable, Cancellable {
+    /**
+     * The data store.
+     */
+    protected final DataStore dataStore;
+    /**
+     * The database manager.
+     */
     protected final DatabaseManager databaseManager;
+    /**
+     * The sample name derive from the site set.
+     */
+    protected final String currentSample;
+    /**
+     * The parent list selected from the left option panel by user.
+     */
+    protected SiteList parentList = null;
+    /**
+     * A flag to cancel the progress.
+     */
     protected boolean cancel = false;
-    protected DataStore[] stores = new DataStore[0];
-    private ArrayList<ProgressListener> listeners = new ArrayList<ProgressListener>();
+    /**
+     * The progress listeners.
+     */
+    private ArrayList<ProgressListener> progressListeners = new ArrayList<ProgressListener>();
+    /**
+     * The options listeners.
+     */
     private ArrayList<OptionsListener> optionsListeners = new ArrayList<OptionsListener>();
 
     /**
      * Instantiates a new site filter.
      *
-     * @param collection The dataCollection
-     * @throws REDException if the collection isn't loaded
+     * @param dataStore The dataCollection
      */
-    public AbstractSiteFilter(DataCollection collection) throws REDException {
-        if (!REDPreferences.getInstance().isDataLoadedToDatabase()) {
-            throw new REDException("You must importing your data into database before running filters.");
-        }
-        this.collection = collection;
-        parentList = collection.siteSet().getActiveList();
-        parentTable = parentList.getTableName();
+    public AbstractSiteFilter(DataStore dataStore) {
+        this.dataStore = dataStore;
         databaseManager = DatabaseManager.getInstance();
-        if (REDPreferences.getInstance().isDenovo()) {
-            databaseManager.useDatabase(DatabaseManager.DENOVO_DATABASE_NAME);
-        } else {
-            databaseManager.useDatabase(DatabaseManager.NON_DENOVO_DATABASE_NAME);
-        }
+        currentSample = FilterNameRetriever.getSampleName(dataStore.siteSet().getFilterName());
     }
-
 
     public void cancel() {
         cancel = true;
     }
 
     /**
-     * Starts the filter running.  This will start a new thread implemented
-     * by the filter and return immediately.  Further progress will only be
-     * reported via the listeners.
+     * Starts the filter running.  This will start a new thread implemented by the filter and return immediately.  Further progress will only be reported via
+     * the listeners.
      *
      * @throws REDException if the filter is not ready to run.
      */
@@ -79,8 +103,8 @@ public abstract class AbstractSiteFilter implements Runnable, Cancellable {
             throw new NullPointerException("ProgressListener can't be null");
         }
 
-        if (!listeners.contains(l)) {
-            listeners.add(l);
+        if (!progressListeners.contains(l)) {
+            progressListeners.add(l);
         }
     }
 
@@ -90,8 +114,8 @@ public abstract class AbstractSiteFilter implements Runnable, Cancellable {
      * @param l The progress listener to remove
      */
     public void removeProgressListener(ProgressListener l) {
-        if (l != null && listeners.contains(l)) {
-            listeners.remove(l);
+        if (l != null && progressListeners.contains(l)) {
+            progressListeners.remove(l);
         }
     }
 
@@ -123,9 +147,8 @@ public abstract class AbstractSiteFilter implements Runnable, Cancellable {
 
 
     /**
-     * A shortcut method if you're processing one site at a time.  This allows
-     * you to call this method with every site and it will put up progress at
-     * suitable points and add a suitable message
+     * A shortcut method if you're processing one site at a time.  This allows you to call this method with every site and it will put up progress at suitable
+     * points and add a suitable message
      *
      * @param current The current number of sites processed
      * @param total   The progress value at completion
@@ -144,7 +167,7 @@ public abstract class AbstractSiteFilter implements Runnable, Cancellable {
      * @param total   The progress value at completion
      */
     public void progressUpdated(String message, int current, int total) {
-        for (ProgressListener listener : listeners) {
+        for (ProgressListener listener : progressListeners) {
             listener.progressUpdated(message, current, total);
         }
     }
@@ -163,7 +186,7 @@ public abstract class AbstractSiteFilter implements Runnable, Cancellable {
      * Passes on Progress cancelled message to all listeners
      */
     protected void progressCancelled() {
-        for (ProgressListener listener : listeners) {
+        for (ProgressListener listener : progressListeners) {
             listener.progressCancelled();
         }
     }
@@ -174,7 +197,7 @@ public abstract class AbstractSiteFilter implements Runnable, Cancellable {
      * @param e The exception
      */
     protected void progressExceptionReceived(Exception e) {
-        for (ProgressListener listener : listeners) {
+        for (ProgressListener listener : progressListeners) {
             listener.progressExceptionReceived(e);
         }
     }
@@ -185,9 +208,9 @@ public abstract class AbstractSiteFilter implements Runnable, Cancellable {
      * @param newList The newly created site list
      */
     protected void filterFinished(SiteList newList) {
-        newList.setName(listName());
+        newList.setListName(listName());
         newList.setDescription(listDescription());
-        for (ProgressListener listener : listeners) {
+        for (ProgressListener listener : progressListeners) {
             listener.progressComplete("new_site_list", newList);
         }
     }
@@ -200,39 +223,24 @@ public abstract class AbstractSiteFilter implements Runnable, Cancellable {
     }
 
     /**
-     * List name. This just needs to be a short reasonable name
-     * for the newly created list.
+     * List name. This just needs to be a short reasonable name for the newly created list.
      *
      * @return A suitable name for the newly generated site list.
      */
     protected abstract String listName();
 
     /**
-     * List description.  This should provide a complete but concise summary
-     * of all of the options selected when the filter was run.  This description
-     * doesn't have to be computer parsable but it should be able to be interpreted
-     * by a human.
+     * List description.  This should provide a complete but concise summary of all of the options selected when the filter was run. This description doesn't
+     * have to be parsed by computer but it should be able to be interpreted by a human.
      *
      * @return A suitable description for the newly generated site list
      */
     protected String listDescription() {
-        StringBuilder b = new StringBuilder();
-
-        b.append("Filter on potential RNA editing sites in ");
-        b.append(collection.siteSet().getActiveList().name()).append(" ");
-
-        for (int s = 0; s < stores.length; s++) {
-            b.append(stores[s].name());
-            if (s < stores.length - 1) {
-                b.append(" , ");
-            }
-        }
-        return b.toString();
+        return "Filter on potential RNA editing sites in " + parentList.getListName();
     }
 
     /**
-     * Start the generation of the site list.  This will be called from within
-     * a new thread so you don't need to implemet threading within the filter.
+     * Start the generation of the site list.  This will be called from within a new thread so you don't need to implement threading within the filter.
      */
     protected abstract void generateSiteList();
 
