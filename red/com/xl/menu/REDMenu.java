@@ -455,17 +455,17 @@ public class REDMenu extends JMenuBar implements ActionListener, DatabaseListene
             try {
                 DataStore activeDataStore = application.dataCollection().getActiveDataStore();
                 if (action.equals(MenuUtils.QC_FILTER)) {
-                    new FilterOptionsDialog(activeDataStore, new QualityControlFilterPanel(activeDataStore));
+                    new FilterOptionDialog(new QualityControlFilterPanel(activeDataStore));
                 } else if (action.equals(MenuUtils.SPECIFIC_FILTER)) {
-                    new FilterOptionsDialog(activeDataStore, new EditingTypeFilterPanel(activeDataStore));
+                    new FilterOptionDialog(new EditingTypeFilterPanel(activeDataStore));
                 } else if (action.equals(MenuUtils.KNOWN_SNVS_FILTER)) {
-                    new FilterOptionsDialog(activeDataStore, new KnownSNPFilterPanel(activeDataStore));
+                    new FilterOptionDialog(new KnownSNPFilterPanel(activeDataStore));
                 } else if (action.equals(MenuUtils.REPEATED_FILTER)) {
-                    new FilterOptionsDialog(activeDataStore, new RepeatRegionsFilterPanel(activeDataStore));
+                    new FilterOptionDialog(new RepeatRegionsFilterPanel(activeDataStore));
                 } else if (action.equals(MenuUtils.DNA_RNA_FILTER)) {
-                    new FilterOptionsDialog(activeDataStore, new DNARNAFilterPanel(activeDataStore));
+                    new FilterOptionDialog(new DNARNAFilterPanel(activeDataStore));
                 } else if (action.equals(MenuUtils.SPLICE_JUNCTION_FILTER)) {
-                    new FilterOptionsDialog(activeDataStore, new SpliceJunctionFilterPanel(activeDataStore));
+                    new FilterOptionDialog(new SpliceJunctionFilterPanel(activeDataStore));
                 }
             } catch (REDException e) {
                 e.printStackTrace();
@@ -474,9 +474,9 @@ public class REDMenu extends JMenuBar implements ActionListener, DatabaseListene
             try {
                 DataStore activeDataStore = application.dataCollection().getActiveDataStore();
                 if (action.equals(MenuUtils.PVALUE_FILTER)) {
-                    new FilterOptionsDialog(activeDataStore, new FisherExactTestFilterPanel(activeDataStore));
+                    new FilterOptionDialog(new FisherExactTestFilterPanel(activeDataStore));
                 } else if (action.equals(MenuUtils.LLR_FILTER)) {
-                    new FilterOptionsDialog(activeDataStore, new LikelihoodRatioFilterPanel(activeDataStore));
+                    new FilterOptionDialog(new LikelihoodRatioFilterPanel(activeDataStore));
                 }
             } catch (REDException e) {
                 e.printStackTrace();

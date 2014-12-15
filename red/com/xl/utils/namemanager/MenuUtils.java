@@ -111,4 +111,6 @@ public class MenuUtils {
     public static final String BROWSE_BUTTON = "Browse";
 
     public static final String SAVE_BUTTON = "Save";
+
+    public static final String RUN_FILTER_BUTTON = "Run Filter";
 }
