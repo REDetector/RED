@@ -51,7 +51,7 @@ public class FilterOptionDialog extends JDialog implements OptionsListener, Prog
     /**
      * Initiate a new filter option dialog.
      *
-     * @param filter the filter
+     * @param filter the filter.
      */
     public FilterOptionDialog(AbstractSiteFilter filter) {
         super(REDApplication.getInstance(), filter.name());
