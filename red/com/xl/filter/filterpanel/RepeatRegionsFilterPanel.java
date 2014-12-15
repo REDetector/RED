@@ -42,7 +42,7 @@ public class RepeatRegionsFilterPanel extends AbstractSiteFilter {
     /**
      * Instantiates a new repeat regions filter.
      *
-     * @param dataStore The data store to filter
+     * @param dataStore The data store to filter.
      */
     public RepeatRegionsFilterPanel(DataStore dataStore) throws REDException {
         super(dataStore);
