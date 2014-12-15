@@ -32,17 +32,18 @@ import javax.swing.event.TreeSelectionEvent;
 import java.util.Vector;
 
 /**
- * The ValuesFilter filters sites based on their associated values from quantiation.  Each site is filtered independently of all other sites.
+ * The Class DNARNAFilterPanel is a rule-based filter panel to provide some parameters to be set as user's preference if there is any choice.
  */
 public class DNARNAFilterPanel extends AbstractSiteFilter {
-
+    /**
+     * The DNA-RNA filter option panel.
+     */
     private DNARNAFilterOptionPanel optionsPanel = new DNARNAFilterOptionPanel();
 
     /**
-     * Instantiates a new values filter with default values
+     * Instantiates a new DNA-RNA filter.
      *
-     * @param dataStore The dataCollection to filter
-     * @throws com.xl.exception.REDException if the dataCollection isn't quantitated.
+     * @param dataStore The data store to filter
      */
     public DNARNAFilterPanel(DataStore dataStore) throws REDException {
         super(dataStore);
@@ -104,11 +105,13 @@ public class DNARNAFilterPanel extends AbstractSiteFilter {
         return "DNA-RNA Filter";
     }
 
-
+    /**
+     * The DNA-RNA filter option panel.
+     */
     private class DNARNAFilterOptionPanel extends AbstractOptionPanel {
 
         /**
-         * Instantiates a new values filter option panel.
+         * Instantiates a new DNA-RNA filter option panel.
          */
         public DNARNAFilterOptionPanel() {
             super(dataStore);
@@ -132,7 +135,6 @@ public class DNARNAFilterPanel extends AbstractSiteFilter {
 
         @Override
         public void valueChanged(TreeSelectionEvent tse) {
-            System.out.println(QualityControlFilterPanel.class.getName() + ":valueChanged()");
             Object selectedItem = siteTree.getSelectionPath().getLastPathComponent();
             if (selectedItem instanceof SiteList) {
                 parentList = (SiteList) selectedItem;
