@@ -74,7 +74,7 @@ public class FisherExactTestFilterPanel extends AbstractSiteFilter {
     /**
      * Instantiates a new fisher's exact test filter.
      *
-     * @param dataStore The data store to filter
+     * @param dataStore The data store to filter.
      */
     public FisherExactTestFilterPanel(DataStore dataStore) throws REDException {
         super(dataStore);
