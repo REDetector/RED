@@ -44,7 +44,7 @@ public class KnownSNPFilterPanel extends AbstractSiteFilter {
     /**
      * Instantiates a new known SNP filter.
      *
-     * @param dataStore The data store to filter
+     * @param dataStore The data store to filter.
      */
     public KnownSNPFilterPanel(DataStore dataStore) throws REDException {
         super(dataStore);
