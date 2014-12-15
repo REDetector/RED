@@ -53,7 +53,7 @@ public class SpliceJunctionFilterPanel extends AbstractSiteFilter {
     /**
      * Instantiates a new  splice junction filter.
      *
-     * @param dataStore The data store to filter
+     * @param dataStore The data store to filter.
      */
     public SpliceJunctionFilterPanel(DataStore dataStore) throws REDException {
         super(dataStore);
