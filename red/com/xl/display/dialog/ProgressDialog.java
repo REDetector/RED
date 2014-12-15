@@ -142,7 +142,6 @@ public class ProgressDialog extends JDialog implements Runnable, ProgressListene
 
         this.cancellable = cancellable;
         label = new JLabel("", JLabel.CENTER);
-        setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
         getContentPane().setLayout(new BorderLayout());
         getContentPane().add(label, BorderLayout.CENTER);
 
@@ -150,13 +149,13 @@ public class ProgressDialog extends JDialog implements Runnable, ProgressListene
             JButton cancelButton = new JButton("Cancel");
             cancelButton.addActionListener(this);
             cancelButton.setActionCommand("cancel");
-            getContentPane().add(cancelButton, BorderLayout.SOUTH);
+            getContentPane().add(cancelButton, BorderLayout.EAST);
         }
 
-        getContentPane().add(progressBar, BorderLayout.CENTER);
+        getContentPane().add(progressBar, BorderLayout.SOUTH);
         Thread t = new Thread(this);
         t.start();
-        setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+        setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
         setVisible(true);
 
     }
