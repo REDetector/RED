@@ -145,7 +145,6 @@ abstract class AbstractSiteFilter implements Runnable, Cancellable {
         }
     }
 
-
     /**
      * A shortcut method if you're processing one site at a time.  This allows you to call this method with every site and it will put up progress at suitable
      * points and add a suitable message
@@ -171,7 +170,6 @@ abstract class AbstractSiteFilter implements Runnable, Cancellable {
             listener.progressUpdated(message, current, total);
         }
     }
-
 
     /**
      * Passes on Options changed message to all listeners
@@ -240,7 +238,7 @@ abstract class AbstractSiteFilter implements Runnable, Cancellable {
     }
 
     /**
-     * Start the generation of the site list. This will be called from within a new thread so you don't need to implement threading within the filter.
+     * Start the generation of the site list.  This will be called from within a new thread so you don't need to implement threading within the filter.
      */
     protected abstract void generateSiteList();
 
@@ -278,6 +276,5 @@ abstract class AbstractSiteFilter implements Runnable, Cancellable {
      * @return A longer description describing what this filter does.
      */
     public abstract String description();
-
 
 }
