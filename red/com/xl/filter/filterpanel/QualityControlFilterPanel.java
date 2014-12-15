@@ -61,7 +61,7 @@ public class QualityControlFilterPanel extends AbstractSiteFilter {
     /**
      * Instantiates a new quality control filter.
      *
-     * @param dataStore The data store to filter
+     * @param dataStore The data store to filter.
      */
     public QualityControlFilterPanel(DataStore dataStore) throws REDException {
         super(dataStore);
