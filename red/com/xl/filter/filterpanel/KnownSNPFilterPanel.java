@@ -33,17 +33,18 @@ import java.awt.event.KeyListener;
 import java.util.Vector;
 
 /**
- * The ValuesFilter filters sites based on their associated values from quantiation.  Each site is filtered independently of all other sites.
+ * The Class KnownSNPFilterPanel is a rule-based filter panel to provide some parameters to be set as user's preference if there is any choice.
  */
 public class KnownSNPFilterPanel extends AbstractSiteFilter {
-
-    private DbSNPFilterOptionPanel optionsPanel = new DbSNPFilterOptionPanel();
+    /**
+     * The known SNP filter option panel.
+     */
+    private KnownSNPFilterOptionPanel optionsPanel = new KnownSNPFilterOptionPanel();
 
     /**
-     * Instantiates a new values filter with default values
+     * Instantiates a new known SNP filter.
      *
-     * @param dataStore The dataCollection to filter
-     * @throws com.xl.exception.REDException if the dataCollection isn't quantitated.
+     * @param dataStore The data store to filter
      */
     public KnownSNPFilterPanel(DataStore dataStore) throws REDException {
         super(dataStore);
@@ -106,20 +107,19 @@ public class KnownSNPFilterPanel extends AbstractSiteFilter {
 
 
     /**
-     * The ValuesFilterOptionPanel.
+     * The known SNP filter option panel.
      */
-    private class DbSNPFilterOptionPanel extends AbstractOptionPanel implements KeyListener {
+    private class KnownSNPFilterOptionPanel extends AbstractOptionPanel implements KeyListener {
 
         /**
-         * Instantiates a new values filter option panel.
+         * Instantiates a new known SNP filter option panel.
          */
-        public DbSNPFilterOptionPanel() {
+        public KnownSNPFilterOptionPanel() {
             super(dataStore);
         }
 
         @Override
         public void valueChanged(TreeSelectionEvent tse) {
-            System.out.println(QualityControlFilterPanel.class.getName() + ":valueChanged()");
             Object selectedItem = siteTree.getSelectionPath().getLastPathComponent();
             if (selectedItem instanceof SiteList) {
                 parentList = (SiteList) selectedItem;

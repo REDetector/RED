@@ -34,19 +34,26 @@ import java.awt.event.KeyListener;
 import java.util.Vector;
 
 /**
- * The ValuesFilter filters sites based on their associated values from quantiation.  Each site is filtered independently of all other sites.
+ * The Class SpliceJunctionFilterPanel is a rule-based filter panel to provide some parameters to be set as user's preference if there is any choice.
  */
 public class SpliceJunctionFilterPanel extends AbstractSiteFilter {
-
-    private int sequenceEdge = 2;
+    /**
+     * The threshold of splice junction.
+     */
+    private int sjThreshold = 2;
+    /**
+     * The text field of threshold of splice junction.
+     */
     private JTextField edgeField = null;
+    /**
+     * The splice junction filter option panel.
+     */
     private SpliceJunctionFilterOptionPanel optionsPanel = new SpliceJunctionFilterOptionPanel();
 
     /**
-     * Instantiates a new values filter with default values
+     * Instantiates a new  splice junction filter.
      *
-     * @param dataStore The dataCollection to filter
-     * @throws com.xl.exception.REDException if the dataCollection isn't quantitated.
+     * @param dataStore The data store to filter
      */
     public SpliceJunctionFilterPanel(DataStore dataStore) throws REDException {
         super(dataStore);
@@ -54,16 +61,16 @@ public class SpliceJunctionFilterPanel extends AbstractSiteFilter {
 
     @Override
     public String description() {
-        return "Filter editing bases by splice-junction.";
+        return "Filter RNA editing sites by splice-junction.";
     }
 
     @Override
     protected void generateSiteList() {
         progressUpdated("Filtering RNA editing sites by splice-junction, please wait...", 0, 0);
-        String linearTableName = currentSample + "_" + parentList.getFilterName() + "_" + DatabaseManager.SPLICE_JUNCTION_FILTER_RESULT_TABLE_NAME + "_" + sequenceEdge;
+        String linearTableName = currentSample + "_" + parentList.getFilterName() + "_" + DatabaseManager.SPLICE_JUNCTION_FILTER_RESULT_TABLE_NAME + "_" + sjThreshold;
         TableCreator.createFilterTable(linearTableName);
         SpliceJunctionFilter cf = new SpliceJunctionFilter(databaseManager);
-        cf.executeSpliceJunctionFilter(DatabaseManager.SPLICE_JUNCTION_TABLE_NAME, linearTableName, parentList.getTableName(), sequenceEdge);
+        cf.executeSpliceJunctionFilter(DatabaseManager.SPLICE_JUNCTION_TABLE_NAME, linearTableName, parentList.getTableName(), sjThreshold);
         DatabaseManager.getInstance().distinctTable(linearTableName);
 
         Vector<Site> sites = Query.queryAllEditingSites(linearTableName);
@@ -105,17 +112,17 @@ public class SpliceJunctionFilterPanel extends AbstractSiteFilter {
 
     @Override
     protected String listName() {
-        return "Splice Junction: " + sequenceEdge;
+        return "Splice Junction: " + sjThreshold;
     }
 
     /**
-     * The ValuesFilterOptionPanel.
+     * The splice junction filter option panel.
      */
     private class SpliceJunctionFilterOptionPanel extends AbstractOptionPanel implements KeyListener {
 
 
         /**
-         * Instantiates a new values filter option panel.
+         * Instantiates a new splice junction filter option panel.
          */
         public SpliceJunctionFilterOptionPanel() {
             super(dataStore);
@@ -123,7 +130,6 @@ public class SpliceJunctionFilterPanel extends AbstractSiteFilter {
 
         @Override
         public void valueChanged(TreeSelectionEvent tse) {
-            System.out.println(this.getClass().getName() + ":valueChanged()");
             Object selectedItem = siteTree.getSelectionPath().getLastPathComponent();
             if (selectedItem instanceof SiteList) {
                 parentList = (SiteList) selectedItem;
@@ -151,7 +157,7 @@ public class SpliceJunctionFilterPanel extends AbstractSiteFilter {
             if (f.getText().length() == 0) {
                 edgeField.setText("");
             } else if (f == edgeField) {
-                sequenceEdge = Integer.parseInt(edgeField.getText());
+                sjThreshold = Integer.parseInt(edgeField.getText());
             }
             optionsChanged();
         }
@@ -176,7 +182,7 @@ public class SpliceJunctionFilterPanel extends AbstractSiteFilter {
             c.gridx = 1;
             c.weightx = 0.1;
             edgeField = new JTextField(3);
-            edgeField.setText(sequenceEdge + "");
+            edgeField.setText(sjThreshold + "");
             edgeField.addKeyListener(this);
             choicePanel.add(edgeField, c);
             return choicePanel;

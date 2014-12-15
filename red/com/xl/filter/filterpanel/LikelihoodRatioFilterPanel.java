@@ -35,19 +35,26 @@ import java.awt.event.KeyListener;
 import java.util.Vector;
 
 /**
- * The ValuesFilter filters sites based on their associated values from quantiation.  Each site is filtered independently of all other sites.
+ * The Class LikelihoodRatioFilterPanel is a statistical filter panel to provide some parameters to be set as user's preference if there is any choice.
  */
 public class LikelihoodRatioFilterPanel extends AbstractSiteFilter {
-
-    private double threshold = 4d;
+    /**
+     * The threshold of likelihood ratio.
+     */
+    private double llrThreshold = 4d;
+    /**
+     * The text field of threshold of likelihood ratio.
+     */
     private JTextField thresholdField = null;
-    private LLRFilterMenuOptionPanel optionsPanel = new LLRFilterMenuOptionPanel();
+    /**
+     * The likelihood ratio filter option panel.
+     */
+    private LLRFilterOptionPanel optionsPanel = new LLRFilterOptionPanel();
 
     /**
-     * Instantiates a new values filter with default values
+     * Instantiates a new likelihood ratio filter.
      *
-     * @param dataStore The dataCollection to filter
-     * @throws com.xl.exception.REDException if the dataCollection isn't quantitated.
+     * @param dataStore The data store to filter
      */
     public LikelihoodRatioFilterPanel(DataStore dataStore) throws REDException {
         super(dataStore);
@@ -55,17 +62,17 @@ public class LikelihoodRatioFilterPanel extends AbstractSiteFilter {
 
     @Override
     public String description() {
-        return "Filter editing bases by statistic method (LLR).";
+        return "Filter RNA editing sites by statistic method (LLR).";
     }
 
     @Override
     protected void generateSiteList() {
         progressUpdated("Filtering RNA editing sites by statistic method (LLR), please wait...", 0, 0);
-        String linearTableName = currentSample + "_" + parentList.getFilterName() + "_" + DatabaseManager.LLR_FILTER_RESULT_TABLE_NAME + "_" + threshold;
+        String linearTableName = currentSample + "_" + parentList.getFilterName() + "_" + DatabaseManager.LLR_FILTER_RESULT_TABLE_NAME + "_" + llrThreshold;
         TableCreator.createFilterTable(linearTableName);
         LikelihoodRatioFilter lf = new LikelihoodRatioFilter(databaseManager);
         String sampleName = DatabasePreferences.getInstance().getCurrentSample();
-        lf.executeLLRFilter(linearTableName, sampleName + "_" + DatabaseManager.DNA_VCF_RESULT_TABLE_NAME, parentList.getTableName(), threshold);
+        lf.executeLLRFilter(linearTableName, sampleName + "_" + DatabaseManager.DNA_VCF_RESULT_TABLE_NAME, parentList.getTableName(), llrThreshold);
         DatabaseManager.getInstance().distinctTable(linearTableName);
 
         Vector<Site> sites = Query.queryAllEditingSites(linearTableName);
@@ -114,20 +121,19 @@ public class LikelihoodRatioFilterPanel extends AbstractSiteFilter {
 
 
     /**
-     * The ValuesFilterOptionPanel.
+     * The likelihood ratio filter option panel.
      */
-    private class LLRFilterMenuOptionPanel extends AbstractOptionPanel implements KeyListener {
+    private class LLRFilterOptionPanel extends AbstractOptionPanel implements KeyListener {
 
         /**
-         * Instantiates a new values filter option panel.
+         * Instantiates a new likelihood ratio filter option panel.
          */
-        public LLRFilterMenuOptionPanel() {
+        public LLRFilterOptionPanel() {
             super(dataStore);
         }
 
         @Override
         public void valueChanged(TreeSelectionEvent tse) {
-            System.out.println(QualityControlFilterPanel.class.getName() + ":valueChanged()");
             Object selectedItem = siteTree.getSelectionPath().getLastPathComponent();
             if (selectedItem instanceof SiteList) {
                 parentList = (SiteList) selectedItem;
@@ -159,7 +165,7 @@ public class LikelihoodRatioFilterPanel extends AbstractSiteFilter {
             c.gridx = 1;
             c.weightx = 0.1;
             thresholdField = new JTextField(3);
-            thresholdField.setText(threshold + "");
+            thresholdField.setText(llrThreshold + "");
             thresholdField.addKeyListener(this);
             ratioPanel.add(thresholdField, c);
 
@@ -196,7 +202,7 @@ public class LikelihoodRatioFilterPanel extends AbstractSiteFilter {
             if (f.getText().length() == 0) {
                 thresholdField.setText("");
             } else if (f == thresholdField) {
-                threshold = Double.parseDouble(thresholdField.getText());
+                llrThreshold = Double.parseDouble(thresholdField.getText());
             }
             optionsChanged();
         }

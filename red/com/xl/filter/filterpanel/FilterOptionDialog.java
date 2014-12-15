@@ -51,7 +51,7 @@ public class FilterOptionDialog extends JDialog implements OptionsListener, Prog
     /**
      * Initiate a new filter option dialog.
      *
-     * @param filter
+     * @param filter the filter
      */
     public FilterOptionDialog(AbstractSiteFilter filter) {
         super(REDApplication.getInstance(), filter.name());
@@ -119,7 +119,7 @@ public class FilterOptionDialog extends JDialog implements OptionsListener, Prog
         }
     }
 
-
+    @Override
     public void optionsChanged() {
         if (filter.isReady()) {
             filterButton.setEnabled(true);
@@ -128,12 +128,12 @@ public class FilterOptionDialog extends JDialog implements OptionsListener, Prog
         }
     }
 
-
+    @Override
     public void progressCancelled() {
         filterButton.setEnabled(true);
     }
 
-
+    @Override
     public void progressComplete(String command, Object result) {
 
         SiteList newList = (SiteList) result;
@@ -169,17 +169,17 @@ public class FilterOptionDialog extends JDialog implements OptionsListener, Prog
         dispose();
     }
 
-
+    @Override
     public void progressExceptionReceived(Exception e) {
         new CrashReporter(e);
         filterButton.setEnabled(true);
     }
 
-
+    @Override
     public void progressUpdated(String message, int current, int max) {
     }
 
-
+    @Override
     public void progressWarningReceived(Exception e) {
     }
 }

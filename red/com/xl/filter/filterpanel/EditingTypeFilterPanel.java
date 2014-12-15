@@ -32,19 +32,26 @@ import javax.swing.event.TreeSelectionEvent;
 import java.util.Vector;
 
 /**
- * The ValuesFilter filters sites based on their associated values from quantiation.  Each site is filtered independently of all other sites.
+ * The Class EditingTypeFilterPanel is a rule-based filter panel to provide some parameters to be set as user's preference if there is any choice.
  */
 public class EditingTypeFilterPanel extends AbstractSiteFilter {
-
+    /**
+     * The reference base.
+     */
     private JComboBox refBase = null;
+    /**
+     * The Alternative base.
+     */
     private JComboBox altBase = null;
-    private SpecificFilterOptionPanel optionsPanel = new SpecificFilterOptionPanel();
+    /**
+     * The editing type filter option panel.
+     */
+    private ETFilterOptionPanel optionsPanel = new ETFilterOptionPanel();
 
     /**
-     * Instantiates a new values filter with default values
+     * Instantiates a new editing type filter.
      *
-     * @param dataStore The dataCollection to filter
-     * @throws com.xl.exception.REDException if the dataCollection isn't quantitated.
+     * @param dataStore The data store to filter
      */
     public EditingTypeFilterPanel(DataStore dataStore) throws REDException {
         super(dataStore);
@@ -110,14 +117,14 @@ public class EditingTypeFilterPanel extends AbstractSiteFilter {
     }
 
     /**
-     * The ValuesFilterOptionPanel.
+     * The editing type filter option panel.
      */
-    private class SpecificFilterOptionPanel extends AbstractOptionPanel {
+    private class ETFilterOptionPanel extends AbstractOptionPanel {
 
         /**
-         * Instantiates a new values filter option panel.
+         * Instantiates a new editing type filter option panel.
          */
-        public SpecificFilterOptionPanel() {
+        public ETFilterOptionPanel() {
             super(dataStore);
         }
 
@@ -161,7 +168,6 @@ public class EditingTypeFilterPanel extends AbstractSiteFilter {
 
         @Override
         public void valueChanged(TreeSelectionEvent tse) {
-            System.out.println(QualityControlFilterPanel.class.getName() + ":valueChanged()");
             Object selectedItem = siteTree.getSelectionPath().getLastPathComponent();
             if (selectedItem instanceof SiteList) {
                 parentList = (SiteList) selectedItem;

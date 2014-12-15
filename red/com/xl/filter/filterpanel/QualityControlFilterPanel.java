@@ -34,21 +34,34 @@ import java.awt.event.KeyListener;
 import java.util.Vector;
 
 /**
- * The ValuesFilter filters sites based on their associated values from quantiation.  Each site is filtered independently of all other sites.
+ * The Class QualityControlFilterPanel is a rule-based filter panel to provide some parameters to be set as user's preference if there is any choice.
  */
 public class QualityControlFilterPanel extends AbstractSiteFilter {
-
-    private int qualityThres = 20;
-    private int depthThres = 6;
+    /**
+     * The threshold of quality.
+     */
+    private int qualityThreshold = 20;
+    /**
+     * The threshold of coverage of depth.
+     */
+    private int depthThreshold = 6;
+    /**
+     * The text field of threshold of quality.
+     */
     private JTextField qualityField;
+    /**
+     * The text field of threshold of coverage of depth.
+     */
     private JTextField depthField;
+    /**
+     * The quality control filter option panel.
+     */
     private QCFilterOptionPanel optionsPanel = new QCFilterOptionPanel();
 
     /**
-     * Instantiates a new values filter with default values
+     * Instantiates a new quality control filter.
      *
-     * @param dataStore The dataCollection to filter
-     * @throws REDException if the dataCollection isn't quantitated.
+     * @param dataStore The data store to filter
      */
     public QualityControlFilterPanel(DataStore dataStore) throws REDException {
         super(dataStore);
@@ -63,11 +76,11 @@ public class QualityControlFilterPanel extends AbstractSiteFilter {
     protected void generateSiteList() {
         progressUpdated("Filtering RNA editing sites by quality and coverage, please wait...", 0, 0);
         String linearTableName = currentSample + "_" + parentList.getFilterName() + "_" + DatabaseManager
-                .QC_FILTER_RESULT_TABLE_NAME + "_" + qualityThres + "_" + depthThres;
+                .QC_FILTER_RESULT_TABLE_NAME + "_" + qualityThreshold + "_" + depthThreshold;
         TableCreator.createFilterTable(linearTableName);
         QualityControlFilter bf = new QualityControlFilter(databaseManager);
         // The first parameter means quality and the second means depth
-        bf.executeQCFilter(parentList.getTableName(), linearTableName, qualityThres, depthThres);
+        bf.executeQCFilter(parentList.getTableName(), linearTableName, qualityThreshold, depthThreshold);
         DatabaseManager.getInstance().distinctTable(linearTableName);
 
         Vector<Site> sites = Query.queryAllEditingSites(linearTableName);
@@ -108,17 +121,17 @@ public class QualityControlFilterPanel extends AbstractSiteFilter {
 
     @Override
     protected String listName() {
-        return "Q>=" + qualityThres + " & DP>=" + depthThres;
+        return "Q>=" + qualityThreshold + " & DP>=" + depthThreshold;
     }
 
     /**
-     * The ValuesFilterOptionPanel.
+     * The quality control filter option panel.
      */
     private class QCFilterOptionPanel extends AbstractOptionPanel implements KeyListener {
 
 
         /**
-         * Instantiates a new values filter option panel.
+         * Instantiates a new quality control filter option panel.
          */
         public QCFilterOptionPanel() {
             super(dataStore);
@@ -142,13 +155,13 @@ public class QualityControlFilterPanel extends AbstractSiteFilter {
                 if (f.getText().length() == 0) {
                     qualityField.setText("");
                 } else {
-                    qualityThres = Integer.parseInt(qualityField.getText());
+                    qualityThreshold = Integer.parseInt(qualityField.getText());
                 }
             } else if (f == depthField) {
                 if (f.getText().length() == 0) {
                     depthField.setText("");
                 } else {
-                    depthThres = Integer.parseInt(depthField.getText());
+                    depthThreshold = Integer.parseInt(depthField.getText());
                 }
             }
             optionsChanged();
@@ -197,7 +210,6 @@ public class QualityControlFilterPanel extends AbstractSiteFilter {
 
         @Override
         public void valueChanged(TreeSelectionEvent tse) {
-            System.out.println(QualityControlFilterPanel.class.getName() + ":valueChanged()");
             Object selectedItem = siteTree.getSelectionPath().getLastPathComponent();
             if (selectedItem instanceof SiteList) {
                 parentList = (SiteList) selectedItem;

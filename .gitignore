@@ -9,7 +9,7 @@ bugs.txt
 Data
 
 #Filter the test directory.
-#test
+test
 
 #Filter the software configuration file generated automatically by RED.
 red_prefs.txt

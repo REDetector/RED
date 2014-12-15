@@ -31,17 +31,18 @@ import javax.swing.event.TreeSelectionEvent;
 import java.util.Vector;
 
 /**
- * The ValuesFilter filters sites based on their associated values from quantiation.  Each site is filtered independently of all other sites.
+ * The Class RepeatRegionsFilterPanel is a rule-based filter panel to provide some parameters to be set as user's preference if there is any choice.
  */
 public class RepeatRegionsFilterPanel extends AbstractSiteFilter {
-
+    /**
+     * The repeat regions filter option panel.
+     */
     private RepeatFilterOptionPanel optionsPanel = new RepeatFilterOptionPanel();
 
     /**
-     * Instantiates a new values filter with default values
+     * Instantiates a new repeat regions filter.
      *
-     * @param dataStore The dataCollection to filter
-     * @throws com.xl.exception.REDException if the dataCollection isn't quantitated.
+     * @param dataStore The data store to filter
      */
     public RepeatRegionsFilterPanel(DataStore dataStore) throws REDException {
         super(dataStore);
@@ -49,12 +50,12 @@ public class RepeatRegionsFilterPanel extends AbstractSiteFilter {
 
     @Override
     public String description() {
-        return "Filter editing bases by repeatmasker database.";
+        return "Filter RNA editing sites by RepeatMasker database.";
     }
 
     @Override
     protected void generateSiteList() {
-        progressUpdated("Filtering RNA editing sites by repeatmasker database, please wait...", 0, 0);
+        progressUpdated("Filtering RNA editing sites by RepeatMasker database, please wait...", 0, 0);
         String linearRepeatTableName = currentSample + "_" + parentList.getFilterName() + "_" + DatabaseManager.REPEAT_FILTER_RESULT_TABLE_NAME;
         String linearAluTableName = currentSample + "_" + parentList.getFilterName() + "_" + DatabaseManager.ALU_FILTER_RESULT_TABLE_NAME;
         TableCreator.createFilterTable(linearRepeatTableName);
@@ -106,12 +107,12 @@ public class RepeatRegionsFilterPanel extends AbstractSiteFilter {
 
 
     /**
-     * The ValuesFilterOptionPanel.
+     * The repeat regions filter option panel.
      */
     private class RepeatFilterOptionPanel extends AbstractOptionPanel {
 
         /**
-         * Instantiates a new values filter option panel.
+         * Instantiates a new repeat regions filter option panel.
          */
         public RepeatFilterOptionPanel() {
             super(dataStore);
@@ -119,7 +120,6 @@ public class RepeatRegionsFilterPanel extends AbstractSiteFilter {
 
         @Override
         public void valueChanged(TreeSelectionEvent tse) {
-            System.out.println(QualityControlFilterPanel.class.getName() + ":valueChanged()");
             Object selectedItem = siteTree.getSelectionPath().getLastPathComponent();
             if (selectedItem instanceof SiteList) {
                 parentList = (SiteList) selectedItem;

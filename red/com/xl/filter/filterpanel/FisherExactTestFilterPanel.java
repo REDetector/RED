@@ -39,23 +39,42 @@ import java.io.File;
 import java.util.Vector;
 
 /**
- * The ValuesFilter filters sites based on their associated values from quantiation.  Each site is filtered independently of all other sites.
+ * The Class FisherExactTestFilterPanel is a statistical filter panel to provide some parameters to be set as user's preference if there is any choice.
  */
 public class FisherExactTestFilterPanel extends AbstractSiteFilter {
-
+    /**
+     * The R script or executable path, which is used to calculate FDR value.
+     */
     private String rScriptPath = null;
-    private double pvalueThres = 0.05;
-    private double fdrThres = 0.05;
+    /**
+     * The threshold of p-value.
+     */
+    private double pvalueThreshold = 0.05;
+    /**
+     * The threshold of FDR value.
+     */
+    private double fdrThreshold = 0.05;
+    /**
+     * The text field of R script or executable path.
+     */
     private JTextField rScriptField = null;
+    /**
+     * The text field of threshold of p-value.
+     */
     private JTextField pvalueField;
+    /**
+     * The text field of threshold of FDR value.
+     */
     private JTextField fdrField;
-    private PValueFilterOptionPanel optionsPanel = new PValueFilterOptionPanel();
+    /**
+     * The fisher's exact test filter option panel.
+     */
+    private FETFilterOptionPanel optionsPanel = new FETFilterOptionPanel();
 
     /**
-     * Instantiates a new values filter with default values
+     * Instantiates a new fisher's exact test filter.
      *
-     * @param dataStore The dataCollection to filter
-     * @throws com.xl.exception.REDException if the dataCollection isn't quantitated.
+     * @param dataStore The data store to filter
      */
     public FisherExactTestFilterPanel(DataStore dataStore) throws REDException {
         super(dataStore);
@@ -63,18 +82,18 @@ public class FisherExactTestFilterPanel extends AbstractSiteFilter {
 
     @Override
     public String description() {
-        return "Filter editing bases by statistic method (P-Value).";
+        return "Filter RNA editing sites by statistic method (p-value).";
     }
 
     @Override
     protected void generateSiteList() {
         progressUpdated("Filtering RNA editing sites by statistic method (P-Value), please wait...", 0, 0);
         String linearTableName = currentSample + "_" + parentList.getFilterName() + "_" + DatabaseManager
-                .PVALUE_FILTER_RESULT_TABLE_NAME + "_" + pvalueThres + "_" + fdrThres;
+                .PVALUE_FILTER_RESULT_TABLE_NAME + "_" + pvalueThreshold + "_" + fdrThreshold;
         TableCreator.createFisherExactTestTable(linearTableName);
         FisherExactTestFilter pv = new FisherExactTestFilter(databaseManager);
         pv.executeFDRFilter(DatabaseManager.DARNED_DATABASE_TABLE_NAME, linearTableName, parentList.getTableName(),
-                LocationPreferences.getInstance().getRScriptPath(), pvalueThres, fdrThres);
+                LocationPreferences.getInstance().getRScriptPath(), pvalueThreshold, fdrThreshold);
 
         Vector<Site> sites = Query.queryAllEditingSites(linearTableName);
         SiteList newList = new SiteList(parentList, listName(), DatabaseManager.PVALUE_FILTER_RESULT_TABLE_NAME, linearTableName, description());
@@ -121,22 +140,20 @@ public class FisherExactTestFilterPanel extends AbstractSiteFilter {
         return "FET Filter";
     }
 
-
     /**
-     * The ValuesFilterOptionPanel.
+     * The fisher's exact test filter option panel.
      */
-    private class PValueFilterOptionPanel extends AbstractOptionPanel implements ActionListener, KeyListener {
+    private class FETFilterOptionPanel extends AbstractOptionPanel implements ActionListener, KeyListener {
 
         /**
-         * Instantiates a new values filter option panel.
+         * Instantiates a new fisher's exact test filter option panel.
          */
-        public PValueFilterOptionPanel() {
+        public FETFilterOptionPanel() {
             super(dataStore);
         }
 
         @Override
         public void valueChanged(TreeSelectionEvent tse) {
-            System.out.println(QualityControlFilterPanel.class.getName() + ":valueChanged()");
             Object selectedItem = siteTree.getSelectionPath().getLastPathComponent();
             if (selectedItem instanceof SiteList) {
                 parentList = (SiteList) selectedItem;
@@ -219,7 +236,7 @@ public class FisherExactTestFilterPanel extends AbstractSiteFilter {
             c.gridx = 1;
             c.weightx = 0.1;
             pvalueField = new JTextField(5);
-            pvalueField.setText(pvalueThres + "");
+            pvalueField.setText(pvalueThreshold + "");
             pvalueField.addKeyListener(this);
             choicePanel.add(pvalueField, c);
 
@@ -232,7 +249,7 @@ public class FisherExactTestFilterPanel extends AbstractSiteFilter {
             c.gridx = 1;
             c.weightx = 0.1;
             fdrField = new JTextField(5);
-            fdrField.setText(fdrThres + "");
+            fdrField.setText(fdrThreshold + "");
             fdrField.addKeyListener(this);
             choicePanel.add(fdrField, c);
 
@@ -262,13 +279,13 @@ public class FisherExactTestFilterPanel extends AbstractSiteFilter {
                 if (f.getText().length() == 0) {
                     pvalueField.setText("");
                 } else {
-                    pvalueThres = Double.parseDouble(pvalueField.getText());
+                    pvalueThreshold = Double.parseDouble(pvalueField.getText());
                 }
             } else if (f == fdrField) {
                 if (f.getText().length() == 0) {
                     fdrField.setText("");
                 } else {
-                    fdrThres = Double.parseDouble(fdrField.getText());
+                    fdrThreshold = Double.parseDouble(fdrField.getText());
                 }
             }
             optionsChanged();
