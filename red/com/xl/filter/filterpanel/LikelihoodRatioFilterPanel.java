@@ -54,7 +54,7 @@ public class LikelihoodRatioFilterPanel extends AbstractSiteFilter {
     /**
      * Instantiates a new likelihood ratio filter.
      *
-     * @param dataStore The data store to filter
+     * @param dataStore The data store to filter.
      */
     public LikelihoodRatioFilterPanel(DataStore dataStore) throws REDException {
         super(dataStore);
