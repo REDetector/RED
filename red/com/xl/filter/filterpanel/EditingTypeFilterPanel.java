@@ -51,7 +51,7 @@ public class EditingTypeFilterPanel extends AbstractSiteFilter {
     /**
      * Instantiates a new editing type filter.
      *
-     * @param dataStore The data store to filter
+     * @param dataStore The data store to filter.
      */
     public EditingTypeFilterPanel(DataStore dataStore) throws REDException {
         super(dataStore);
