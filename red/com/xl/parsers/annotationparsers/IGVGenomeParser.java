@@ -35,7 +35,10 @@ import com.xl.main.Global;
 import com.xl.main.REDApplication;
 import com.xl.preferences.DisplayPreferences;
 import com.xl.preferences.LocationPreferences;
-import com.xl.utils.*;
+import com.xl.utils.ChromosomeUtils;
+import com.xl.utils.FileUtils;
+import com.xl.utils.GeneType;
+import com.xl.utils.ParsingUtils;
 import com.xl.utils.filefilters.FileFilterImpl;
 import com.xl.utils.namemanager.GenomeUtils;
 import com.xl.utils.namemanager.SuffixUtils;
@@ -88,58 +91,58 @@ public class IGVGenomeParser implements Runnable {
         // TODO Auto-generated method stub
         File cacheDirectory = new File(LocationPreferences.getInstance().getCacheDirectory());
         Properties properties = null;
-        List<File> genomeCacheCompleteFiles = FileUtils.searchfile(SuffixUtils.CACHE_GENOME_COMPLETE, cacheDirectory);
-        String id = genomeFile.getAbsolutePath();
-        boolean foundCacheFile = false;
-        if (genomeCacheCompleteFiles.size() != 0) {
-            for (File cacheCompleteFile : genomeCacheCompleteFiles) {
-                try {
-                    properties = new Properties();
-                    properties.load(new FileReader(cacheCompleteFile));
-                    String idInCacheFile = properties.getProperty(GenomeUtils.KEY_GENOME_ID);
-                    if (id.contains(idInCacheFile)) {
-                        foundCacheFile = true;
-                        displayNameInCacheFile = properties.getProperty(GenomeUtils.KEY_DISPLAY_NAME);
-                        String version = properties.getProperty(GenomeUtils.KEY_VERSION_NAME);
-                        if (!Global.VERSION.equals(version)) {
-                            System.err.println("Version mismatch between cache version ('" + version + "') " +
-                                    "and current version ('" + Global.VERSION + "') - re-parsing");
-                            cacheFailed = true;
-                            if (!cacheCompleteFile.delete()) {
-                                System.err.println("Can not delete 'cache.complete' file. Please delete it individually...");
-                                return;
-                            }
-                        } else {
-                            cacheFailed = false;
-                            break;
-                        }
-                    }
-                } catch (IOException e) {
-                    cacheFailed = true;
-                    e.printStackTrace();
-                }
-            }
-            if (!foundCacheFile) {
-                cacheFailed = true;
-            }
-        } else {
-            cacheFailed = true;
-        }
+//        List<File> genomeCacheCompleteFiles = FileUtils.searchfile(SuffixUtils.CACHE_GENOME_COMPLETE, cacheDirectory);
+//        String id = genomeFile.getAbsolutePath();
+//        boolean foundCacheFile = false;
+//        if (genomeCacheCompleteFiles.size() != 0) {
+//            for (File cacheCompleteFile : genomeCacheCompleteFiles) {
+//                try {
+//                    properties = new Properties();
+//                    properties.load(new FileReader(cacheCompleteFile));
+//                    String idInCacheFile = properties.getProperty(GenomeUtils.KEY_GENOME_ID);
+//                    if (id.contains(idInCacheFile)) {
+//                        foundCacheFile = true;
+//                        displayNameInCacheFile = properties.getProperty(GenomeUtils.KEY_DISPLAY_NAME);
+//                        String version = properties.getProperty(GenomeUtils.KEY_VERSION_NAME);
+//                        if (!Global.VERSION.equals(version)) {
+//                            System.err.println("Version mismatch between cache version ('" + version + "') " +
+//                                    "and current version ('" + Global.VERSION + "') - re-parsing");
+//                            cacheFailed = true;
+//                            if (!cacheCompleteFile.delete()) {
+//                                System.err.println("Can not delete 'cache.complete' file. Please delete it individually...");
+//                                return;
+//                            }
+//                        } else {
+//                            cacheFailed = false;
+//                            break;
+//                        }
+//                    }
+//                } catch (IOException e) {
+//                    cacheFailed = true;
+//                    e.printStackTrace();
+//                }
+//            }
+//            if (!foundCacheFile) {
+//                cacheFailed = true;
+//            }
+//        } else {
+//            cacheFailed = true;
+//        }
         try {
-            if (cacheFailed) {
-                MessageUtils.showInfo(this.getClass().getName() + ":parseNewGenome();");
-                if (displayNameInCacheFile != null)
-                    FileUtils.deleteAllFilesWithSuffix(LocationPreferences.getInstance().getCacheDirectory() + File.separator
-                            + displayNameInCacheFile, SuffixUtils.CACHE_GENOME);
-                parseNewGenome();
-            } else {
-                if (properties != null) {
-                    setGenomeDescriptor(properties);
-                }
-                MessageUtils.showInfo(this.getClass().getName() + ":reloadCacheGenome();");
-                reloadCacheGenome();
-
-            }
+//            if (cacheFailed) {
+//                MessageUtils.showInfo(this.getClass().getName() + ":parseNewGenome();");
+//                if (displayNameInCacheFile != null)
+//                    FileUtils.deleteAllFilesWithSuffix(LocationPreferences.getInstance().getCacheDirectory() + File.separator
+//                            + displayNameInCacheFile, SuffixUtils.CACHE_GENOME);
+            parseNewGenome();
+//            } else {
+//                if (properties != null) {
+//                    setGenomeDescriptor(properties);
+//                }
+//                MessageUtils.showInfo(this.getClass().getName() + ":reloadCacheGenome();");
+//                reloadCacheGenome();
+//
+//            }
         } catch (IOException e) {
             progressCancelled();
             e.printStackTrace();
