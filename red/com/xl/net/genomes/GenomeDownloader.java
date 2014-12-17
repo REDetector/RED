@@ -17,8 +17,8 @@
  */
 package com.xl.net.genomes;
 
-import com.xl.exception.REDException;
 import com.xl.interfaces.ProgressListener;
+import com.xl.net.crashreport.CrashReporter;
 import com.xl.preferences.LocationPreferences;
 import com.xl.utils.PositionFormat;
 
@@ -33,23 +33,27 @@ import java.util.Vector;
  * genome cache.
  */
 public class GenomeDownloader implements Runnable {
+    /**
+     * Progress listeners.
+     */
     private Vector<ProgressListener> listeners = new Vector<ProgressListener>();
+    /**
+     * Genome id.
+     */
     private String id = null;
-    private String displayName = null;
+    /**
+     * A flag to allow the cache mechanism.
+     */
     private boolean allowCaching;
 
     /**
-     * Download genome. The values for this should be obtained from the genome index file or the header of an existing RED file. The size is used merely to
-     * provide better feedback during the download of the data and isn't expected to be set correctly from a RED file where the compressed size isn't recorded.
+     * Download genome. The values for this should be obtained from the genome index file or the header of an existing RED file.
      *
      * @param id           The latin name of the species
-     * @param id           The official assembly name
      * @param allowCaching sets the cache headers to say if a cached copy is OK
      */
-    public void downloadGenome(String id, String displayName,
-                               boolean allowCaching) {
+    public void downloadGenome(String id, boolean allowCaching) {
         this.id = id;
-        this.displayName = displayName;
         this.allowCaching = allowCaching;
         Thread t = new Thread(this);
         t.start();
@@ -75,17 +79,11 @@ public class GenomeDownloader implements Runnable {
             listeners.remove(pl);
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see java.lang.Runnable#run()
-     */
+    @Override
     public void run() {
 
         // First we need to download the file from the repository
         try {
-
-            // System.out.println("Downloading "+prefs.getGenomeDownloadLocation()+species+"/"+assembly+".zip");
             URL url = new URL(LocationPreferences.getInstance().getGenomeDownloadLists() + id + ".genome");
             URLConnection connection = url.openConnection();
             connection.setUseCaches(allowCaching);
@@ -94,12 +92,9 @@ public class GenomeDownloader implements Runnable {
             if (size == 0) {
                 size = 2500000;
             }
-
-            InputStream is = connection.getInputStream();
-            DataInputStream d = new DataInputStream(new BufferedInputStream(is));
+            DataInputStream d = new DataInputStream(new BufferedInputStream(connection.getInputStream()));
             File outFile = new File(LocationPreferences.getInstance().getGenomeDirectory());
-            File dotGenomeFile = new File(outFile.getAbsolutePath()
-                    + File.separator + id + ".genome");
+            File dotGenomeFile = new File(outFile.getAbsolutePath() + File.separator + id + ".genome");
             if (outFile.exists()) {
                 if (dotGenomeFile.exists() && dotGenomeFile.length() == size) {
                     ProgressListener[] en = listeners.toArray(new ProgressListener[0]);
@@ -107,48 +102,41 @@ public class GenomeDownloader implements Runnable {
                         en[i].progressComplete("load_genome", null);
                     }
                     return;
-                    // throw new
-                    // REDException("The genome file already exists! You can just load it.");
                 } else if (dotGenomeFile.exists() && dotGenomeFile.length() != size) {
-                    dotGenomeFile.delete();
+                    if (!dotGenomeFile.delete()) {
+                        throw new IOException();
+                    }
                 }
             } else {
-                outFile.mkdirs();
+                if (!outFile.mkdirs()) {
+                    throw new IOException();
+                }
             }
-            DataOutputStream o;
-            try {
-                o = new DataOutputStream(new BufferedOutputStream(
-                        new FileOutputStream(dotGenomeFile)));
-            } catch (FileNotFoundException fnfe) {
-                throw new REDException(
-                        "Could't write into your genomes directory.  Please check your file preferences.");
-            }
+            DataOutputStream o = new DataOutputStream(new BufferedOutputStream(new FileOutputStream(dotGenomeFile)));
+
             byte[] b = new byte[8192];
             int totalBytes = 0;
             int i;
             while ((i = d.read(b)) > 0) {
-                // System.out.println("Read "+totalBytes+" bytes");
                 o.write(b, 0, i);
                 totalBytes += i;
                 Enumeration<ProgressListener> en = listeners.elements();
 
                 while (en.hasMoreElements()) {
-                    en.nextElement().progressUpdated(
-                            "Downloaded " + PositionFormat.formatLength(totalBytes, PositionFormat.UNIT_BYTE),
-                            totalBytes, size);
+                    en.nextElement().progressUpdated("Downloaded " + PositionFormat.formatLength(totalBytes, PositionFormat.UNIT_BYTE), totalBytes, size);
                 }
             }
-
             d.close();
             o.close();
-
         } catch (Exception ex) {
+
             Enumeration<ProgressListener> en = listeners.elements();
 
             while (en.hasMoreElements()) {
                 en.nextElement().progressExceptionReceived(ex);
             }
             ex.printStackTrace();
+            new CrashReporter(ex);
             return;
         }
 
