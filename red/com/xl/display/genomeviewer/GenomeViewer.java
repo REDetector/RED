@@ -97,20 +97,20 @@ public class GenomeViewer extends JPanel implements ActiveDataChangedListener, D
         chromosomePanel.add(new ChromosomeScale(genome), gridBagConstraints);
 
         chromosomePanel.addMouseListener(new MouseListener() {
-            public void mouseExited(MouseEvent arg0) {
-                setInfo(null);
-            }
-
-            public void mouseEntered(MouseEvent arg0) {
-            }
-
-            public void mouseReleased(MouseEvent arg0) {
+            public void mouseClicked(MouseEvent arg0) {
             }
 
             public void mousePressed(MouseEvent arg0) {
             }
 
-            public void mouseClicked(MouseEvent arg0) {
+            public void mouseReleased(MouseEvent arg0) {
+            }
+
+            public void mouseEntered(MouseEvent arg0) {
+            }
+
+            public void mouseExited(MouseEvent arg0) {
+                setInfo(null);
             }
         });
 
@@ -183,9 +183,9 @@ public class GenomeViewer extends JPanel implements ActiveDataChangedListener, D
     }
 
     @Override
-    public void activeDataChanged(DataStore d, SiteList l) {
+    public void activeDataChanged(DataStore dataStore, SiteList siteList) {
         for (ChromosomeDisplay display : chromosomeDisplays) {
-            display.activeDataChanged(d, l);
+            display.activeDataChanged(dataStore, siteList);
         }
     }
 }

@@ -247,11 +247,11 @@ public class ChromosomeDisplay extends JPanel implements ActiveDataChangedListen
     }
 
     @Override
-    public void activeDataChanged(DataStore d, SiteList l) {
-        if (l == null) {
+    public void activeDataChanged(DataStore dataStore, SiteList siteList) {
+        if (siteList == null) {
             sites = null;
         } else {
-            sites = l.getSitesForChromosome(chromosome.getName());
+            sites = siteList.getSitesForChromosome(chromosome.getName());
             Arrays.sort(sites);
         }
         repaint();

@@ -237,7 +237,7 @@ public class REDInfoPanel extends JPanel implements Runnable, ActionListener {
         } else {
             // Everything is OK
             genomesLabel.setIcon(IconLoader.ICON_INFO);
-            genomesLabelText.setText(InfoPanelUtils.GENOMES_USE_CUSTUM_FOLDER);
+            genomesLabelText.setText(InfoPanelUtils.GENOMES_USE_CUSTOM_FOLDER);
         }
 
         gridBagConstraints.gridx = 0;
