@@ -22,8 +22,6 @@ import com.xl.datatypes.annotation.AnnotationSet;
 import com.xl.datatypes.genome.Genome;
 import com.xl.interfaces.Cancellable;
 import com.xl.interfaces.ProgressListener;
-import com.xl.utils.GeneType;
-import com.xl.utils.ParsingUtils;
 import com.xl.utils.filefilters.FileFilterExt;
 
 import java.io.File;
@@ -36,7 +34,7 @@ import java.util.Vector;
 public abstract class AnnotationParser implements Cancellable, Runnable {
 
     /**
-     * The cancel.
+     * Cancel flag.
      */
     protected boolean cancel = false;
     /**
@@ -52,10 +50,6 @@ public abstract class AnnotationParser implements Cancellable, Runnable {
      */
     private File file = null;
 
-	/*
-     * These are the methods any implementing class must provide
-	 */
-
     /**
      * Instantiates a new annotation parser.
      *
@@ -70,14 +64,7 @@ public abstract class AnnotationParser implements Cancellable, Runnable {
      *
      * @return the file filter
      */
-    abstract public FileFilterExt fileFilter();
-
-    /**
-     * Requires file.
-     *
-     * @return true, if successful
-     */
-    abstract public boolean requiresFile();
+    public abstract FileFilterExt fileFilter();
 
     /**
      * Parses the annotation.
@@ -86,21 +73,21 @@ public abstract class AnnotationParser implements Cancellable, Runnable {
      * @return the annotation set
      * @throws Exception the exception
      */
-    abstract protected AnnotationSet parseAnnotation(GeneType geneType, File file) throws Exception;
+    protected abstract AnnotationSet parseAnnotation(File file) throws Exception;
 
     /**
      * Name.
      *
      * @return the string
      */
-    abstract public String name();
+    public abstract String name();
 
     /**
      * Genome.
      *
      * @return the genome
      */
-    protected Genome getGenome() {
+    protected Genome genome() {
         return genome;
     }
 
@@ -135,53 +122,34 @@ public abstract class AnnotationParser implements Cancellable, Runnable {
      *
      * @param file the files
      */
-    public void parseFiles(File file) {
-        if (requiresFile() && file == null) {
-            progressExceptionReceived(new NullPointerException("Files to parse cannot be null"));
-            return;
-        }
+    public void parseFile(File file) {
         this.file = file;
         Thread t = new Thread(this);
         t.start();
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see java.lang.Runnable#run()
-     */
+    @Override
     public void run() {
-        System.out.println(this.getClass().getName() + ":run ()");
         try {
-            if (requiresFile()) {
-                GeneType geneType = ParsingUtils.parseGeneType(file.getName());
-                AnnotationSet set = parseAnnotation(geneType, file);
-                if (set == null) {
-                    System.out.println("theseSets == null");
-                    // They cancelled or had an error which will be reported  through the other methods here
-                    return;
-                }
-                // Here we have to add the new sets to the annotation collection before we say that we're finished otherwise this object can get destroyed
-                // before the program gets chance to execute the operation which adds the sets to the annotation collection.
-                genome.getAnnotationCollection().addAnnotationSet(set);
-                progressComplete("annotation_loaded", set);
-            } else {
-                System.err.println("Not require files?");
+            AnnotationSet set = parseAnnotation(file);
+            if (set == null) {
+                // They cancelled or had an error which will be reported through the other methods here
+                return;
             }
+            // Here we have to add the new sets to the annotation collection before we say that we're finished otherwise this object can get destroyed
+            // before the program gets chance to execute the operation which adds the sets to the annotation collection.
+            genome.getAnnotationCollection().addAnnotationSet(set);
+            progressComplete("annotation_loaded", set);
         } catch (Exception e) {
             e.printStackTrace();
             progressExceptionReceived(e);
         }
-
-
     }
 
 	/*
-     * These are the methods we use to communicate with out listeners. Some of
-	 * these can be accessed by the implementing class directly but the big ones
+     * These are the methods we use to communicate with out listeners. Some of these can be accessed by the implementing class directly but the big ones
 	 * need to go back through this class.
 	 */
-
     /**
      * Progress exception received.
      *
@@ -241,7 +209,6 @@ public abstract class AnnotationParser implements Cancellable, Runnable {
         while (en.hasMoreElements()) {
             en.nextElement().progressComplete(command, result);
         }
-
     }
 
 }
