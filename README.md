@@ -16,7 +16,7 @@ The main characteristics of this software are:
   - Basic Filter (contain quality filter and coverage filter);
   - Editing Type Filter
   - Splice Junction Filter;
-  - Known SNPs Filter;
+  - Known SNP Filter;
   - Repeated Regions Filter;
   - DNA-RNA Filter;
   - Fisher's Exact Test Filter;
@@ -56,7 +56,10 @@ You'll see something like this:
 ./
 ├──lib
 ├──red
-
+.gitignore
+LICENSE.txt
+README.md
+RED.jar
 ```
 ## Documentation
 
@@ -114,5 +117,6 @@ RED is a free software, and you can redistribute it and/or modify it under the t
 Foundation; either version 3 of the License, or (at your option) any later version .
 
 SeqMonk & Integrative Genome Viewer (IGV)
+
 We thank SeqMonk(http://www.bioinformatics.babraham.ac.uk/projects/seqmonk/) and IGV(http://www.broadinstitute.org/igv/). The framework of the GUI in RED is based on SeqMonk, whose GUI is very brief and operating efficiency is fairly high. Meantime, the genome annotation data (mainly referred to gene.txt/gene.gtf) in Feature Track is obtained from genome server of IGV when there is no genome file in the local host.
 
