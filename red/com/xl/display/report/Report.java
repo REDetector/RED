@@ -18,11 +18,7 @@
 
 package com.xl.display.report;
 
-/**
- * Created by Xing Li on 2014/9/18.
- */
-
-import com.xl.datatypes.DataCollection;
+import com.xl.datatypes.DataStore;
 import com.xl.interfaces.Cancellable;
 import com.xl.interfaces.OptionsListener;
 import com.xl.interfaces.ProgressListener;
@@ -30,14 +26,17 @@ import com.xl.interfaces.ProgressListener;
 import javax.swing.*;
 import javax.swing.table.TableModel;
 import java.util.ArrayList;
-import java.util.Iterator;
 
 /**
+ * Created by Xing Li on 2014/9/18.
+ * <p/>
  * An abstract class to represent an output report.
  */
 public abstract class Report implements Runnable, Cancellable {
-
-    protected DataCollection collection;
+    /**
+     * The data store.
+     */
+    protected DataStore dataStore;
 
     /**
      * A flag to say if we should cancel the report generation
@@ -45,37 +44,37 @@ public abstract class Report implements Runnable, Cancellable {
     protected boolean cancel = false;
 
     /**
-     * A set of listeners for the progress of the report generation
+     * A list of listeners for the progress of the report generation
      */
     private ArrayList<ProgressListener> listeners = new ArrayList<ProgressListener>();
 
     /**
-     * A set of listeners listening to changes in the report options
+     * A list of listeners listening to changes in the report options
      */
     private ArrayList<OptionsListener> optionsListeners = new ArrayList<OptionsListener>();
 
     /**
      * Instantiates a new report.
      *
-     * @param collection Data Collection to use for the report
+     * @param dataStore Data Collection to use for the report
      */
-    public Report(DataCollection collection) {
-        this.collection = collection;
+    public Report(DataStore dataStore) {
+        this.dataStore = dataStore;
     }
 
     /**
-     * Data collection.
+     * Data Store.
      *
-     * @return The dataCollection
+     * @return The data store.
      */
-    public DataCollection dataCollection() {
-        return collection;
+    public DataStore dataStore() {
+        return dataStore;
     }
 
+    @Override
     public void cancel() {
         /*
-         * Sets the cancel flag so that if the report is being
-		 * generated it can spot this and bail out
+         * Sets the cancel flag so that if the report is being generated it can stop this and bail out
 		 */
         cancel = true;
     }
@@ -158,27 +157,9 @@ public abstract class Report implements Runnable, Cancellable {
         }
     }
 
-
     public boolean canExportGFF() {
         return false;
     }
-
-    public int chromosomeColumn() {
-        return 0;
-    }
-
-    public int startColumn() {
-        return 0;
-    }
-
-    public int endColumn() {
-        return 0;
-    }
-
-    public int strandColumn() {
-        return 0;
-    }
-
 
     /**
      * Passes on an update message to all progress listeners
@@ -188,10 +169,10 @@ public abstract class Report implements Runnable, Cancellable {
      * @param total   The progress value at completion
      */
     protected void progressUpdated(String message, int current, int total) {
-        Iterator<ProgressListener> i = listeners.iterator();
-        while (i.hasNext()) {
-            i.next().progressUpdated(message, current, total);
+        for (ProgressListener listener : listeners) {
+            listener.progressUpdated(message, current, total);
         }
+
         try {
             Thread.sleep(20);
         } catch (InterruptedException e) {
@@ -204,9 +185,8 @@ public abstract class Report implements Runnable, Cancellable {
      * Passes on a message to all options listeners
      */
     protected void optionsChanged() {
-        Iterator<OptionsListener> i = optionsListeners.iterator();
-        while (i.hasNext()) {
-            i.next().optionsChanged();
+        for (OptionsListener listener : optionsListeners) {
+            listener.optionsChanged();
         }
     }
 
@@ -216,9 +196,8 @@ public abstract class Report implements Runnable, Cancellable {
      * @param e The exception to pass on.
      */
     protected void progressExceptionReceived(Exception e) {
-        Iterator<ProgressListener> i = listeners.iterator();
-        while (i.hasNext()) {
-            i.next().progressExceptionReceived(e);
+        for (ProgressListener listener : listeners) {
+            listener.progressExceptionReceived(e);
         }
     }
 
@@ -226,9 +205,8 @@ public abstract class Report implements Runnable, Cancellable {
      * Passes on a cancellation message to all listeners.
      */
     protected void progressCancelled() {
-        Iterator<ProgressListener> i = listeners.iterator();
-        while (i.hasNext()) {
-            i.next().progressCancelled();
+        for (ProgressListener listener : listeners) {
+            listener.progressCancelled();
         }
         cancel = false;
     }
@@ -237,9 +215,8 @@ public abstract class Report implements Runnable, Cancellable {
      * Passes on a report completion message to all listeners
      */
     protected void reportComplete(TableModel report) {
-        Iterator<ProgressListener> i = listeners.iterator();
-        while (i.hasNext()) {
-            i.next().progressComplete("report_generated", report);
+        for (ProgressListener listener : listeners) {
+            listener.progressComplete("report_generated", report);
         }
     }
 
