@@ -25,17 +25,17 @@ import java.awt.*;
  */
 public class ColourScheme {
     /**
-     * The software name in title panel
+     * The software name in title panel.
      */
     public static final Color PROGRAM_NAME = new Color(220, 0, 0);
 
     /**
-     * The software name in title panel
+     * The software name in title panel.
      */
     public static final Color PROGRAM_VERSION = new Color(0, 0, 220);
 
     /**
-     * Any feature or read on the top strand
+     * Any feature or read on the top strand.
      */
     public static final Color FEATURE_TRACK = Color.BLUE;
 
@@ -44,15 +44,6 @@ public class ColourScheme {
      */
     public static final Color TRACK_NAME = Color.GRAY;
 
-    /**
-     * The background to odd numbered feature tracks
-     */
-    public static final Color ODD_TRACK_BACKGROUND = new Color(220, 220, 255);
-
-    /**
-     * The background to even numbered feature tracks
-     */
-    public static final Color EVEN_TRACK_BACKGROUND = new Color(180, 180, 255);
     /**
      * An active feature or read
      */
@@ -63,7 +54,7 @@ public class ColourScheme {
      */
     public static final Color GENOME_SELECTED_CHROMOSOME = new Color(220, 0, 0);
     /**
-     * The list colour for datasets
+     * The list colour for data sets
      */
     public static final Color DATASET_LIST = new Color(220, 0, 0);
     /**
