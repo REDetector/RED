@@ -24,6 +24,7 @@ import com.xl.net.crashreport.CrashReporter;
 import com.xl.preferences.LocationPreferences;
 import com.xl.utils.filefilters.TxtFileFilter;
 import com.xl.utils.imagemanager.ImageSaver;
+import com.xl.utils.namemanager.MenuUtils;
 import com.xl.utils.ui.OptionDialogUtils;
 
 import javax.swing.*;
@@ -34,7 +35,7 @@ import java.io.File;
 import java.io.IOException;
 
 /**
- * The Class EditingSitesDistributionHistogram shows the distribution of read lengths in a data store.
+ * The Class VariantDistributionHistogram shows the distribution of variant types.
  */
 public class VariantDistributionHistogram extends JDialog implements ActionListener {
 
@@ -42,37 +43,39 @@ public class VariantDistributionHistogram extends JDialog implements ActionListe
      * The plot panel.
      */
     private VariantHistogramPanel plotPanel;
-
-    private DataStore d;
+    /**
+     * The data store
+     */
+    private DataStore dataStore;
 
     /**
      * Instantiates a new read length histogram plot.
      *
-     * @param d the data
+     * @param dataStore the data
      */
-    public VariantDistributionHistogram(DataStore d) {
-        super(REDApplication.getInstance(), "Editing Sites Distribution [" + d.name() + "]");
-        this.d = d;
+    public VariantDistributionHistogram(DataStore dataStore) {
+        super(REDApplication.getInstance(), "Variant Type Distribution [" + dataStore.name() + "]");
+        this.dataStore = dataStore;
         setSize(800, 600);
         setLocationRelativeTo(REDApplication.getInstance());
         setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-        plotPanel = new VariantHistogramPanel(d.siteSet().getActiveList().getAllSites());
+        plotPanel = new VariantHistogramPanel(dataStore);
         getContentPane().setLayout(new BorderLayout());
         getContentPane().add(plotPanel, BorderLayout.CENTER);
 
         JPanel buttonPanel = new JPanel();
-        JButton cancelButton = new JButton("Close");
-        cancelButton.setActionCommand("close");
+        JButton cancelButton = new JButton(MenuUtils.CLOSE_BUTTON);
+        cancelButton.setActionCommand(MenuUtils.CLOSE_BUTTON);
         cancelButton.addActionListener(this);
         buttonPanel.add(cancelButton);
 
-        JButton saveButton = new JButton("Save");
-        saveButton.setActionCommand("save");
+        JButton saveButton = new JButton(MenuUtils.SAVE_BUTTON);
+        saveButton.setActionCommand(MenuUtils.SAVE_BUTTON);
         saveButton.addActionListener(this);
         buttonPanel.add(saveButton);
 
-        JButton exportButton = new JButton("Export Data");
-        exportButton.setActionCommand("export");
+        JButton exportButton = new JButton(MenuUtils.EXPORT_BUTTON);
+        exportButton.setActionCommand(MenuUtils.EXPORT_BUTTON);
         exportButton.addActionListener(this);
         buttonPanel.add(exportButton);
 
@@ -85,12 +88,12 @@ public class VariantDistributionHistogram extends JDialog implements ActionListe
      * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
      */
     public void actionPerformed(ActionEvent ae) {
-        if (ae.getActionCommand().equals("close")) {
+        if (ae.getActionCommand().equals(MenuUtils.CLOSE_BUTTON)) {
             setVisible(false);
             dispose();
-        } else if (ae.getActionCommand().equals("save")) {
-            ImageSaver.saveImage(plotPanel.mainHistogramPanel(), "variant_distribution_" + d.name());
-        } else if (ae.getActionCommand().equals("export")) {
+        } else if (ae.getActionCommand().equals(MenuUtils.SAVE_BUTTON)) {
+            ImageSaver.saveImage(plotPanel.mainHistogramPanel(), "variant_distribution_" + dataStore.name());
+        } else if (ae.getActionCommand().equals(MenuUtils.EXPORT_BUTTON)) {
             JFileChooser chooser = new JFileChooser(LocationPreferences.getInstance().getProjectSaveLocation());
             chooser.setMultiSelectionEnabled(false);
             chooser.setFileFilter(new TxtFileFilter());
