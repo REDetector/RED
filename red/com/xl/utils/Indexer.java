@@ -20,6 +20,8 @@ package com.xl.utils;
 
 /**
  * Created by Xing Li on 2014/11/13.
+ * <p/>
+ * This class intends to collect all indexes used in creating table for database.
  */
 public class Indexer {
     public static final String CHROM_POSITION = "index(chrom,pos)";
