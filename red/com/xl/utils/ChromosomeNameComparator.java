@@ -20,6 +20,9 @@ package com.xl.utils;
 
 import java.util.Comparator;
 
+/**
+ * The Class ChromosomeNameComparator is a chromosome comparator with their names.
+ */
 public class ChromosomeNameComparator implements Comparator<String> {
 
     private static ChromosomeNameComparator instance;
@@ -41,24 +44,24 @@ public class ChromosomeNameComparator implements Comparator<String> {
     /**
      * Return start/end (inclusive/exclusive) locations of first range in string which represent a digit.
      *
-     * @param chr
-     * @return
+     * @param chr the chromosome name.
+     * @return        the tow
      */
     private int[] findDigitRange(String chr) {
-        int[] locs = null;
+        int[] locis = null;
         int loc = 0;
         for (char c : chr.toCharArray()) {
             if (Character.isDigit(c)) {
-                if (locs == null) {
-                    locs = new int[]{loc, chr.length()};
+                if (locis == null) {
+                    locis = new int[]{loc, chr.length()};
                 }
-            } else if (locs != null) {
-                locs[1] = loc;
+            } else if (locis != null) {
+                locis[1] = loc;
                 break;
             }
             loc++;
         }
-        return locs;
+        return locis;
     }
 
     @Override
