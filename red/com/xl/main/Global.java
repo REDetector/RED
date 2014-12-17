@@ -20,17 +20,32 @@ package com.xl.main;
 
 /**
  * Created by Xing Li on 2014/11/15.
+ * <p/>
+ * The Class Global provides the constant information for RED.
  */
 public class Global {
     /**
      * The version of RED
      */
     public static final String VERSION = "0.0.1";
-
+    /**
+     * RED data version.
+     * <p/>
+     * The Constant MAX_DATA_VERSION says what is the highest version of the RED file format this parser can understand. If the file to be loaded has a version
+     * higher than this then the parser won't attempt to load it.
+     */
+    public static final int DATA_VERSION = 1;
+    /**
+     * Our home page of RED.
+     */
     public static final String HOME_PAGE = "https://github.com/REDetector/RED";
-
-    public static final String ISSUES_PAGE = "https://github.com/REDetector/RED/issues";
-
-    public static final String NEW_ISSUE_PAGE = "https://github.com/REDetector/RED/issues/new";
+    /**
+     * The issue page.
+     */
+    public static final String ISSUES_PAGE = HOME_PAGE + "/issues";
+    /**
+     * The new issue page.
+     */
+    public static final String NEW_ISSUE_PAGE = ISSUES_PAGE + "/new";
 
 }
