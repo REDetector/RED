@@ -23,47 +23,64 @@ import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreePath;
 import java.util.*;
 
+/**
+ * The Class DownloadableGenomeTreeModel provides a tree model to select to downloadable genome by user.
+ */
 public class DownloadableGenomeTreeModel implements TreeModel {
-
+    /**
+     * The downloadable genome set.
+     */
     private DownloadableGenomeSet genomes;
+    /**
+     * The indexes sorted by characters.
+     */
     private Character[] charIndexes;
-    private GenomeLists[] genomeLists = null;
-    private Map<Character, Vector<GenomeLists>> keepers = null;
+    /**
+     * The genome lists.
+     */
+    private GenomeList[] genomeLists = null;
+    /**
+     * The genome lists for each character index.
+     */
+    private Map<Character, Vector<GenomeList>> keepers = null;
 
+    /**
+     * Initiate a new downloadable tree model.
+     *
+     * @param genomes the downloadable genome set.
+     */
     public DownloadableGenomeTreeModel(DownloadableGenomeSet genomes) {
         this.genomes = genomes;
 
         HashSet<Character> usedChars = new HashSet<Character>();
 
-        genomeLists = DownloadableGenomeSet.getGenomeLists().toArray(new GenomeLists[0]);
-        // for(GenomeLists genome: genomeLists){
-        // System.out.println(genome.getGenomeDisplayName()+" "+genome.getGenomeDownloadLocation()+" "+genome.getGenomeId());
-        // }
-        for (int s = 0; s < genomeLists.length; s++) {
-            usedChars.add(genomeLists[s].getDisplayName().charAt(0));
+        genomeLists = DownloadableGenomeSet.getGenomeLists().toArray(new GenomeList[0]);
+        for (GenomeList genomeList : genomeLists) {
+            usedChars.add(genomeList.getDisplayName().charAt(0));
+
         }
 
         charIndexes = usedChars.toArray(new Character[0]);
-
         Arrays.sort(charIndexes);
-        // for(Character c : charIndexes){
-        // System.out.print(c);
-        // }
-        keepers = new HashMap<Character, Vector<GenomeLists>>(charIndexes.length);
-        for (int i = 0; i < charIndexes.length; i++) {
-            Vector<GenomeLists> vec = new Vector<GenomeLists>();
-            for (int s = 0; s < genomeLists.length; s++) {
-                if (genomeLists[s].getDisplayName().charAt(0) == charIndexes[i]) {
-                    vec.add(genomeLists[s]);
+
+        keepers = new HashMap<Character, Vector<GenomeList>>(charIndexes.length);
+        for (char c : charIndexes) {
+            Vector<GenomeList> vec = new Vector<GenomeList>();
+            for (GenomeList genomeList : genomeLists) {
+                if (genomeList.getDisplayName().charAt(0) == c) {
+                    vec.add(genomeList);
                 }
             }
-            keepers.put(charIndexes[i], vec);
+            keepers.put(c, vec);
         }
     }
 
-    public void addTreeModelListener(TreeModelListener l) {
+    @Override
+    public Object getRoot() {
+        return genomes;
     }
 
+    @Override
     public Object getChild(Object parent, int index) {
 
         if (parent instanceof DownloadableGenomeSet) {
@@ -75,6 +92,7 @@ public class DownloadableGenomeTreeModel implements TreeModel {
         }
     }
 
+    @Override
     public int getChildCount(Object parent) {
         if (parent instanceof DownloadableGenomeSet) {
             return charIndexes.length;
@@ -84,9 +102,19 @@ public class DownloadableGenomeTreeModel implements TreeModel {
         return 0;
     }
 
+    @Override
+    public boolean isLeaf(Object node) {
+        return node instanceof GenomeList;
+    }
+
+    @Override
+    public void valueForPathChanged(TreePath path, Object newValue) {
+    }
+
+    @Override
     public int getIndexOfChild(Object parent, Object child) {
 
-        if (parent instanceof GenomeLists) {
+        if (parent instanceof GenomeList) {
             for (int i = 0; i < genomeLists.length; i++) {
                 if (genomeLists[i] == child) {
                     return i;
@@ -99,28 +127,20 @@ public class DownloadableGenomeTreeModel implements TreeModel {
                 }
             }
         } else if (parent instanceof Character) {
-            Vector<GenomeLists> vec = keepers.get(parent);
-            return vec.indexOf(child);
+            Vector<GenomeList> vec = keepers.get(parent);
+            if (child instanceof GenomeList)
+                return vec.indexOf(child);
         }
 
         return -1;
     }
 
-    public Object getRoot() {
-        return genomes;
+    @Override
+    public void addTreeModelListener(TreeModelListener l) {
     }
 
-    public boolean isLeaf(Object node) {
-        if (node instanceof GenomeLists) {
-            return true;
-        }
-        return false;
-    }
-
+    @Override
     public void removeTreeModelListener(TreeModelListener l) {
-    }
-
-    public void valueForPathChanged(TreePath path, Object newValue) {
     }
 
 }
