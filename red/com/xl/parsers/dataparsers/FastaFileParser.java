@@ -25,9 +25,10 @@ import com.xl.datatypes.genome.GenomeDescriptor;
 import com.xl.datatypes.sequence.Location;
 import com.xl.interfaces.ProgressListener;
 import com.xl.main.Global;
+import com.xl.net.crashreport.CrashReporter;
 import com.xl.preferences.LocationPreferences;
-import com.xl.utils.ChromosomeUtils;
 import com.xl.utils.FileUtils;
+import com.xl.utils.NameRetriever;
 import com.xl.utils.ParsingUtils;
 import com.xl.utils.namemanager.SuffixUtils;
 
@@ -36,26 +37,45 @@ import java.io.*;
 import java.util.Iterator;
 import java.util.List;
 
+/**
+ * The Class FastaFileParser is a parser to parse FASTA format file. We have a cached mechanism to divide the whole fasta file by chromosomes in the fasta file
+ * because the  whole file is too large to be loaded with small memory.
+ */
 public class FastaFileParser extends DataParser {
+    /**
+     * The genome.
+     */
     private Genome genome;
-    private String fastaCacheDirectory;
 
-
+    /**
+     * Initiate a new fasta file parser.
+     *
+     * @param collection the data collection.
+     */
     public FastaFileParser(DataCollection collection) {
         genome = collection.genome();
     }
 
-    private static String skipToNextChr(BufferedReader br, String nextLine) throws IOException {
+    /**
+     * Skip to the next standard chromosome and deprecate the others.
+     *
+     * @param br       the buffered reader.
+     * @param nextLine next line.
+     * @return the next chromosome.
+     * @throws IOException If the reader can't read the next line then throw this exception.
+     */
+    private String skipToNextChr(BufferedReader br, String nextLine) throws IOException {
         nextLine = nextLine.substring(1).split("\\s+")[0];
-        if (ChromosomeUtils.isStandardChromosomeName(nextLine)) {
+        if (NameRetriever.isStandardChromosomeName(nextLine)) {
             return nextLine;
         } else {
-            while ((nextLine = br.readLine()) != null) if (nextLine.startsWith(">")) {
-                nextLine = nextLine.substring(1).split("\\s+")[0];
-                if (ChromosomeUtils.isStandardChromosomeName(nextLine)) {
-                    return nextLine;
+            while ((nextLine = br.readLine()) != null)
+                if (nextLine.startsWith(">")) {
+                    nextLine = nextLine.substring(1).split("\\s+")[0];
+                    if (NameRetriever.isStandardChromosomeName(nextLine)) {
+                        return nextLine;
+                    }
                 }
-            }
         }
         return null;
     }
@@ -63,32 +83,33 @@ public class FastaFileParser extends DataParser {
     @Override
     public void run() {
         try {
-            fastaCacheDirectory = LocationPreferences.getInstance().getCacheDirectory() + File.separator + genome
-                    .getDisplayName();
+            String fastaCacheDirectory = LocationPreferences.getInstance().getCacheDirectory() + File.separator + genome.getDisplayName();
             if (FileUtils.createDirectory(fastaCacheDirectory)) {
                 File cacheCompleteFile = new File(fastaCacheDirectory + File.separator + SuffixUtils.CACHE_FASTA_COMPLETE);
                 if (cacheCompleteFile.exists()) {
-                    BufferedReader br = new BufferedReader(new FileReader(cacheCompleteFile));
+                    BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(cacheCompleteFile)));
                     String version = br.readLine();
                     if (version.equals(Global.VERSION)) {
                         processingComplete(null);
                     } else {
                         br.close();
-                        cacheCompleteFile.delete();
+                        if (cacheCompleteFile.delete()) {
+                            throw new IOException();
+                        }
                         FileUtils.deleteAllFilesWithSuffix(fastaCacheDirectory, SuffixUtils.CACHE_FASTA);
-                        reparseFasta();
+                        reparseFasta(fastaCacheDirectory);
                     }
                 } else {
-                    reparseFasta();
+                    reparseFasta(fastaCacheDirectory);
                 }
             } else {
-                System.err.println("Fasta cache file path " + fastaCacheDirectory + " can not be accessed.");
-                progressCancelled();
+                throw new IOException("Fasta cache file path " + fastaCacheDirectory + " can not be accessed, please have a check for permission.");
             }
             GenomeDescriptor.getInstance().setFasta(true);
             GenomeDescriptor.getInstance().setFastaDirectory(true);
             GenomeDescriptor.getInstance().setSequenceLocation(fastaCacheDirectory);
         } catch (IOException e) {
+            new CrashReporter(e);
             e.printStackTrace();
         }
     }
@@ -115,7 +136,7 @@ public class FastaFileParser extends DataParser {
 
     @Override
     public String getDescription() {
-        return "Import the fasta data including original reference sequence";
+        return "Import the fasta data which includes the original reference sequences";
     }
 
     @Override
@@ -123,10 +144,18 @@ public class FastaFileParser extends DataParser {
         throw new UnsupportedOperationException();
     }
 
+    @Override
+    protected void processingComplete(DataSet[] dataSets) {
+        Iterator<ProgressListener> i = listeners.iterator();
+        for (; i.hasNext(); ) {
+            i.next().progressComplete("fasta_loaded", null);
+        }
+    }
+
     /**
      * Read an entire fasta file, which might be local or remote and might be gzipped.
      */
-    public void reparseFasta() throws IOException {
+    public void reparseFasta(String fastaCacheDirectory) throws IOException {
         BufferedReader br;
         FileOutputStream fos = null;
         String currentChr = null;
@@ -137,12 +166,15 @@ public class FastaFileParser extends DataParser {
         int chr = 0;
         while ((nextLine = br.readLine()) != null) {
             if (nextLine.startsWith(">")) {
+                // A new chromosome starts with '>', so we flush the previous chromosome and find the next.
                 if (fos != null) {
                     fos.flush();
                     fos.close();
                     System.gc();
                 }
+                // Find the next standard chromosome.
                 currentChr = skipToNextChr(br, nextLine);
+                // Open and cache it.
                 if (currentChr != null) {
                     chr++;
                     line = 0;
@@ -150,6 +182,7 @@ public class FastaFileParser extends DataParser {
                     fos = new FileOutputStream(currentChrPath, true);
                 }
             } else {
+                // Copy the data.
                 if (fos != null) {
                     fos.write(nextLine.trim().getBytes());
                     if (++line % 100000 == 0) {
@@ -158,23 +191,17 @@ public class FastaFileParser extends DataParser {
                 }
             }
         }
+        // Flush the last chromosome.
         if (fos != null) {
             fos.flush();
             fos.close();
             System.gc();
         }
         br.close();
+        // Set up a complete flag.
         FileWriter fw = new FileWriter(fastaCacheDirectory + File.separator + SuffixUtils.CACHE_FASTA_COMPLETE);
         fw.write(Global.VERSION);
         fw.close();
         processingComplete(null);
-    }
-
-    @Override
-    protected void processingComplete(DataSet[] dataSets) {
-        Iterator<ProgressListener> i = listeners.iterator();
-        for (; i.hasNext(); ) {
-            i.next().progressComplete("fasta_loaded", null);
-        }
     }
 }
