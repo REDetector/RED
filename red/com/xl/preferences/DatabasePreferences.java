@@ -26,20 +26,57 @@ import java.util.Properties;
 
 /**
  * Created by Xing Li on 2014/11/15.
+ * <p/>
+ * The database preferences stores information relative to database, some preferences will be saved in the red_prefs.txt file.
  */
 public class DatabasePreferences implements DatabaseListener {
+    /**
+     * The key of the host.
+     */
     public static final String DATABASE_HOST = "Host";
+    /**
+     * The key of the port.
+     */
     public static final String DATABASE_PORT = "Port";
+    /**
+     * The key of the user.
+     */
     public static final String DATABASE_USER = "User";
+    /**
+     * A silly design... I'll fix this structure soon.
+     */
     public static final String DATABASE_TABLE_BUILDER = "TableBuilder";
+    /**
+     * Singleton pattern.
+     */
     private static DatabasePreferences databasePreferences = new DatabasePreferences();
+    /**
+     * The value of the host.
+     */
     private String databaseHost = "";
+    /**
+     * The value of the port.
+     */
     private String databasePort = "";
+    /**
+     * The value of the user.
+     */
     private String databaseUser = "";
+    /**
+     * The value of the pwd.
+     */
     private String databasePasswd = "";
-
+    /**
+     * Current using database.
+     */
     private String currentDatabase = "";
+    /**
+     * Current using sample.
+     */
     private String currentSample = "";
+    /**
+     * A silly design... I'll fix this structure soon.
+     */
     private String databaseTableBuilder = "";
 
     private DatabasePreferences() {
@@ -109,7 +146,7 @@ public class DatabasePreferences implements DatabaseListener {
     /**
      * Save preferences.
      *
-     * @throws java.io.IOException
+     * @throws IOException
      */
     public void savePreferences(Properties properties) throws IOException {
         properties.setProperty(DATABASE_HOST, databaseHost);
@@ -118,6 +155,12 @@ public class DatabasePreferences implements DatabaseListener {
         properties.setProperty(DATABASE_TABLE_BUILDER, databaseTableBuilder);
     }
 
+    /**
+     * Load preferences.
+     *
+     * @param properties the properties.
+     * @throws IOException
+     */
     public void loadPreferences(Properties properties) throws IOException {
         setDatabaseHost(properties.getProperty(DATABASE_HOST));
         setDatabasePort(properties.getProperty(DATABASE_PORT));

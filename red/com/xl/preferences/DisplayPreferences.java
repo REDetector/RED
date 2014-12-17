@@ -36,31 +36,25 @@ import java.util.Vector;
  * This will cover any visual changes to the display, so colours, types of graph, scales would all fall into this object.
  */
 public class DisplayPreferences {
-
     /**
-     * The set of constants for the colour type being used *
+     * The set of constants for the colour type being used.
      */
     public static final int COLOUR_TYPE_FIXED = 1001;
     public static final int COLOUR_TYPE_INDEXED = 12;
     public static final int COLOUR_TYPE_GRADIENT = 11;
-    private int currentColourType = COLOUR_TYPE_GRADIENT;
-
     /**
-     * The set of constants for the display mode *
+     * The set of constants for the display mode.
      */
     /*
-     * Some of these values are carried over from an older implementation hence
-	 * the somewhat odd numbering
+     * Some of these values are carried over from an older implementation hence the somewhat odd numbering
 	 */
     public static final int DISPLAY_MODE_READS_AND_PROBES = 1;
     public static final int DISPLAY_MODE_READS_ONLY = 2;
-    private int currentDisplayMode = DISPLAY_MODE_READS_ONLY;
     public static final int DISPLAY_MODE_PROBES_ONLY = 3;
     /**
-     * The options for which gradient to use *
+     * The options for which gradient to use.
      */
     public static final int GRADIENT_HOT_COLD = 2001;
-    private int currentGradientValue = GRADIENT_HOT_COLD;
     public static final int GRADIENT_RED_GREEN = 2002;
     public static final int GRADIENT_GREYSCALE = 2003;
     public static final int GRADIENT_MAGENTA_GREEN = 2004;
@@ -69,27 +63,40 @@ public class DisplayPreferences {
      * The options for the type of graph drawn *
      */
     public static final int GRAPH_TYPE_BAR = 3001;
-    private int currentGraphType = GRAPH_TYPE_BAR;
     public static final int GRAPH_TYPE_LINE = 3002;
     public static final int GRAPH_TYPE_POINT = 3003;
     /**
-     * The single instance of this class *
+     * The single instance of this class.
      */
     private static DisplayPreferences instance = new DisplayPreferences();
+    private int currentColourType = COLOUR_TYPE_GRADIENT;
+    private int currentDisplayMode = DISPLAY_MODE_READS_ONLY;
+    private int currentGradientValue = GRADIENT_HOT_COLD;
+    private int currentGraphType = GRAPH_TYPE_BAR;
+    /**
+     * The listener.
+     */
     private Vector<DisplayPreferencesListener> listeners = new Vector<DisplayPreferencesListener>();
+    /**
+     * The colour gradient.
+     */
     private ColourGradient currentGradient = new HotColdColourGradient();
-
     /**
      * The currently visible chromosome *
      */
     private Chromosome currentChromosome = null;
-
+    /**
+     * Start location in chromosome view.
+     */
     private int currentStartLocation = 0;
+    /**
+     * End location in chromosome view.
+     */
     private int currentEndLocation = 0;
-
-
+    /**
+     * Is fasta file available.
+     */
     private boolean fastaEnable = false;
-
 
     /**
      * We make this a singleton so it's only accessible by a static method *
@@ -111,17 +118,13 @@ public class DisplayPreferences {
     }
 
     /* We allow views to listen for changes */
-    public void addListener(
-            DisplayPreferencesListener displayPreferencesListener) {
-        if (displayPreferencesListener != null
-                && !listeners.contains(displayPreferencesListener))
+    public void addListener(DisplayPreferencesListener displayPreferencesListener) {
+        if (displayPreferencesListener != null && !listeners.contains(displayPreferencesListener))
             listeners.add(displayPreferencesListener);
     }
 
-    public void removeListener(
-            DisplayPreferencesListener displayPreferencesListener) {
-        if (displayPreferencesListener != null
-                && listeners.contains(displayPreferencesListener))
+    public void removeListener(DisplayPreferencesListener displayPreferencesListener) {
+        if (displayPreferencesListener != null && listeners.contains(displayPreferencesListener))
             listeners.remove(displayPreferencesListener);
     }
 
@@ -139,9 +142,7 @@ public class DisplayPreferences {
     }
 
     public void setDisplayMode(int displayMode) {
-        if (equalsAny(new int[]{DISPLAY_MODE_PROBES_ONLY,
-                        DISPLAY_MODE_READS_AND_PROBES, DISPLAY_MODE_READS_ONLY},
-                displayMode)) {
+        if (equalsAny(new int[]{DISPLAY_MODE_PROBES_ONLY, DISPLAY_MODE_READS_AND_PROBES, DISPLAY_MODE_READS_ONLY}, displayMode)) {
             currentDisplayMode = displayMode;
             optionsChanged();
         } else {
@@ -171,13 +172,11 @@ public class DisplayPreferences {
     }
 
     public void setColourType(int colourType) {
-        if (equalsAny(new int[]{COLOUR_TYPE_FIXED, COLOUR_TYPE_GRADIENT,
-                COLOUR_TYPE_INDEXED}, colourType)) {
+        if (equalsAny(new int[]{COLOUR_TYPE_FIXED, COLOUR_TYPE_GRADIENT, COLOUR_TYPE_INDEXED}, colourType)) {
             currentColourType = colourType;
             optionsChanged();
         } else {
-            throw new IllegalArgumentException("Value " + colourType
-                    + " is not a valid colour type");
+            throw new IllegalArgumentException("Value " + colourType + " is not a valid colour type");
         }
     }
 
@@ -189,8 +188,7 @@ public class DisplayPreferences {
     }
 
     public void setLocation(String chr, int start, int end) {
-        currentChromosome = REDApplication.getInstance().dataCollection()
-                .genome().getChromosome(chr);
+        currentChromosome = REDApplication.getInstance().dataCollection().genome().getChromosome(chr);
         setLocation(start, end);
     }
 
@@ -218,10 +216,7 @@ public class DisplayPreferences {
     }
 
     public void setGradient(int gradientType) {
-        if (equalsAny(
-                new int[]{GRADIENT_GREYSCALE, GRADIENT_HOT_COLD,
-                        GRADIENT_RED_GREEN, GRADIENT_MAGENTA_GREEN,
-                        GRADIENT_RED_WHITE}, gradientType)) {
+        if (equalsAny(new int[]{GRADIENT_GREYSCALE, GRADIENT_HOT_COLD, GRADIENT_RED_GREEN, GRADIENT_MAGENTA_GREEN, GRADIENT_RED_WHITE}, gradientType)) {
 
             currentGradientValue = gradientType;
 
@@ -245,8 +240,7 @@ public class DisplayPreferences {
             }
             optionsChanged();
         } else {
-            throw new IllegalArgumentException("Value " + gradientType
-                    + " is not a valid gradient type");
+            throw new IllegalArgumentException("Value " + gradientType + " is not a valid gradient type");
         }
     }
 
@@ -268,13 +262,13 @@ public class DisplayPreferences {
     }
 
     public void setGraphType(int graphType) {
-        if (equalsAny(new int[]{GRAPH_TYPE_BAR, GRAPH_TYPE_LINE,
-                GRAPH_TYPE_POINT}, graphType)) {
+        if (equalsAny(new int[]{
+                GRAPH_TYPE_BAR, GRAPH_TYPE_LINE, GRAPH_TYPE_POINT
+        }, graphType)) {
             currentGraphType = graphType;
             optionsChanged();
         } else {
-            throw new IllegalArgumentException("Value " + graphType
-                    + " is not a valid graph type");
+            throw new IllegalArgumentException("Value " + graphType + " is not a valid graph type");
         }
     }
 
@@ -293,9 +287,9 @@ public class DisplayPreferences {
         p.println("CurrentView\t" + currentChromosome.getName() + "\t" + currentStartLocation + "\t" + currentEndLocation);
     }
 
-    private boolean equalsAny(int[] valid, int test) {
-        for (int vali : valid) {
-            if (test == vali)
+    private boolean equalsAny(int[] valids, int test) {
+        for (int valid : valids) {
+            if (test == valid)
                 return true;
         }
         return false;

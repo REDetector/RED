@@ -25,6 +25,9 @@ import java.util.Properties;
  * REDPreferences file allowing persistence between sessions.
  */
 public class REDPreferences {
+    /**
+     * The keys of the preferences.
+     */
     public static final String PROXY = "Proxy";
     public static final String CHECK_FOR_UPDATE = "CheckForUpdate";
     /**
@@ -34,30 +37,25 @@ public class REDPreferences {
     private LocationPreferences locationPreferences = LocationPreferences.getInstance();
     private DatabasePreferences databasePreferences = DatabasePreferences.getInstance();
     /**
-     * The redPreferences file.
+     * The preferences file.
      */
     private File preferencesFile = null;
-
     /**
      * Whether we're using a network proxy
      */
     private boolean useProxy = false;
-
     /**
      * The proxy host.
      */
     private String proxyHost = "";
-
     /**
      * The proxy port.
      */
     private int proxyPort = 0;
-
     /**
      * Whether we should check for updates every time we're launched.
      */
     private boolean checkForUpdates = true;
-
 
     /**
      * Instantiates a redPreferences object. Only ever called once from inside this class. External access is via the getInstnace() method.
@@ -87,7 +85,7 @@ public class REDPreferences {
     }
 
     /**
-     * Load redPreferences from a saved file
+     * Load preferences from a saved file
      */
     private void loadPreferences() throws IOException {
         Properties properties = new Properties();

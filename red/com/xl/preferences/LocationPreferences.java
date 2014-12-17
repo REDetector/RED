@@ -26,8 +26,13 @@ import java.util.*;
 
 /**
  * Created by Xing Li on 2014/6/23.
+ * <p/>
+ * This class is intended to be a single point at which all of the major location can be stored and from which changes can be passed to any views which care.
  */
 public class LocationPreferences {
+    /**
+     * The keys of the preferences.
+     */
     public static final String PROJECT_DIRECTORY = "ProjectDirectory";
     public static final String PROJECT_DATA_DIRECTORY = "ProjectDataDirectory";
     public static final String FASTA_DIRECTORY = "Fasta";
@@ -38,7 +43,6 @@ public class LocationPreferences {
     public static final String TEMP_DIRECTORY = "Temp";
     public static final String OTHERS_DIRECTORY = "Others";
     public static final String CACHE_DIRECTORY = "Cache";
-    public static final String GENOME_DOWNLOAD_LISTS = "GenomeDownload";
     public static final String RECENTLY_OPENED_FILES = "RecentlyOpenedFiles";
     public static final String RECENTLY_OPENED_FILES_NUMBER = "RecentlyOpenedFilesNumber";
     public static final String DATA_DIRECTORY = "Data";
@@ -50,14 +54,24 @@ public class LocationPreferences {
     public static final String DARNED_FILE = "DARNED File";
     public static final String R_SCRIPT_PATH = "R Script Path";
     public static final String CYTOBAND_FILE = "Cytoband File";
+    /**
+     * Singleton pattern.
+     */
     public static LocationPreferences locationPreferences = new LocationPreferences();
     /**
      * The project root directory
      */
     private final String projectDirectory = new File("").getAbsolutePath();
+    /**
+     * The network address from where we can download new genomes
+     */
+    private final String genomeDownloadLists = "http://igv.broadinstitute.org/genomes/";
+    /**
+     * The project data directory.
+     */
     private String projectDataDirectory = projectDirectory + File.separator + DATA_DIRECTORY;
     /**
-     * The fasta directory, which is associated with the relevent genome.
+     * The fasta directory, which is associated with the relevant genome.
      */
     private String fastaDirectory = projectDataDirectory + File.separator + FASTA_DIRECTORY;
     /**
@@ -93,10 +107,6 @@ public class LocationPreferences {
      */
     private String projectSaveLocation = projectDirectory;
     /**
-     * The network address from where we can download new genomes
-     */
-    private String genomeDownloadLists = "http://igv.broadinstitute.org/genomes/";
-    /**
      * It depends on whether the '.genome' file has the cytoband property.
      */
     private String cytobandFile = "";
@@ -112,13 +122,23 @@ public class LocationPreferences {
      * The recently opened files list
      */
     private LinkedList<String> recentlyOpenedFiles = new LinkedList<String>();
-
+    /**
+     * The directories.
+     */
     private Map<String, String> directories = new HashMap<String, String>();
 
+    /**
+     * Initiate a new location preference, initiate the directories.
+     */
     private LocationPreferences() {
         initialDirectories();
     }
 
+    /**
+     * The instance.
+     *
+     * @return the location preference instance.
+     */
     public static LocationPreferences getInstance() {
         return locationPreferences;
     }
@@ -158,8 +178,8 @@ public class LocationPreferences {
     }
 
     /**
-     * Gets the default data location. This will initially be the data location saved in the preferneces file, but will be updated during use with the last
-     * actual location where data was imported. If you definitely want the location stored in the preferences file then use getDataLocationPreference()
+     * Gets the default data location. This will initially be the data location saved in the preferences file, but will be updated during use with the last
+     * actual location where data was imported. If you definitely want the location stored in the preferences file then use getProjectSaveLocation()
      *
      * @return The default location to look for new data
      */
@@ -319,10 +339,6 @@ public class LocationPreferences {
         return genomeDownloadLists;
     }
 
-    public void setGenomeDownloadLists(String genomeDownloadLists) {
-        this.genomeDownloadLists = genomeDownloadLists;
-    }
-
     public String getDarnedFile() {
         return darnedFile;
     }
@@ -394,7 +410,6 @@ public class LocationPreferences {
         properties.setProperty(ANNOTATION_DIRECTORY, annotationDirectory);
         properties.setProperty(TEMP_DIRECTORY, tempDirectory);
         properties.setProperty(OTHERS_DIRECTORY, othersDirectory);
-        properties.setProperty(GENOME_DOWNLOAD_LISTS, genomeDownloadLists);
         properties.setProperty(CACHE_DIRECTORY, cacheDirectory);
         properties.setProperty(RNA_VCF_FILE, rnaVcfFile);
         properties.setProperty(DNA_VCF_FILE, dnaVcfFile);
@@ -420,7 +435,6 @@ public class LocationPreferences {
         setAnnotationDirectory(properties.getProperty(ANNOTATION_DIRECTORY));
         setTempDirectory(properties.getProperty(TEMP_DIRECTORY));
         setOthersDirectory(properties.getProperty(OTHERS_DIRECTORY));
-        setGenomeDownloadLists(properties.getProperty(GENOME_DOWNLOAD_LISTS));
         setCacheDirectory(properties.getProperty(CACHE_DIRECTORY));
         setRnaVcfFile(properties.getProperty(RNA_VCF_FILE));
         setDnaVcfFile(properties.getProperty(DNA_VCF_FILE));
