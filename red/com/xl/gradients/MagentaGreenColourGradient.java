@@ -19,25 +19,17 @@ package com.xl.gradients;
 
 import java.awt.*;
 
+/**
+ * This gradient is apparently the one which is most informative to people who are colour blind.  It should be distinguishable to anyone who has any variant
+ * of colour blindness except for a total lack of cones.
+ */
 public class MagentaGreenColourGradient extends ColourGradient {
 
-    /**
-     * This gradient is apparently the one which is most informative to people who are colour blind.  It should be distinguishable to anyone who has any variant
-     * of colour blindness except for a total lack of cones.
-     */
-
-    public String name() {
-        return "Magenta Green Colour Gradient";
-    }
-
     protected Color[] makeColors() {
-        /*
-         * We pre-generate a list of 100 colours we're going to
-		 * use for this display.
-		 * 
-		 * Because a linear gradient ends up leaving too much
-		 * green in the spectrum we put this on a log scale
-		 * to emphasise low and high values so the display
+       /*
+         * We pre-generate a list of 100 colours we're going to use for this display.
+		 *
+		 * Because a linear gradient ends up leaving too much green in the spectrum we put this on a log scale to emphasise low and high values so the display
 		 * is clearer.
 		 */
 
@@ -52,5 +44,9 @@ public class MagentaGreenColourGradient extends ColourGradient {
         }
 
         return colors;
+    }
+
+    public String name() {
+        return "Magenta Green Colour Gradient";
     }
 }

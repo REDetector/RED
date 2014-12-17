@@ -24,10 +24,6 @@ import java.awt.*;
  */
 public class HotColdColourGradient extends ColourGradient {
 
-    public String name() {
-        return "Hot Cold Colour Gradient";
-    }
-
     /**
      * A method initially called to create a palette of 100 pre-cached colours from which the closest match will be selected to return for future queries.
      * Setting the colours this way saves on the overhead of generating a lot of new objects
@@ -36,12 +32,9 @@ public class HotColdColourGradient extends ColourGradient {
      */
     protected Color[] makeColors() {
         /*
-         * We pre-generate a list of 100 colours we're going to
-		 * use for this display.
-		 * 
-		 * Because a linear gradient ends up leaving too much
-		 * green in the spectrum we put this on a log scale
-		 * to emphasise low and high values so the display
+         * We pre-generate a list of 100 colours we're going to use for this display.
+		 *
+		 * Because a linear gradient ends up leaving too much green in the spectrum we put this on a log scale to emphasise low and high values so the display
 		 * is clearer.
 		 */
 
@@ -61,6 +54,10 @@ public class HotColdColourGradient extends ColourGradient {
         }
 
         return colors;
+    }
+
+    public String name() {
+        return "Hot Cold Colour Gradient";
     }
 
 

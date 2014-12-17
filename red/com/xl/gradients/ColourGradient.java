@@ -21,9 +21,7 @@ import java.awt.*;
 
 public abstract class ColourGradient {
 
-    // To save generating ridiculous numbers of colours and wasting
-    // memory we're going to make up a pool of 100 colours and pick
-    // the closest one from that set to return.
+    // To save generating ridiculous numbers of colours and wasting memory we're going to make up a pool of 100 colours and pick the closest one from that set to return.
 
     private Color[] colors = null;
 
@@ -71,20 +69,15 @@ public abstract class ColourGradient {
         double diff = max - min;
 
         // Red
-        // Red is 0 for the first 50%, scales from 0-200 over 50-75%
-        // and stays at 200 from 75-100%
+        // Red is 0 for the first 50%, scales from 0-200 over 50-75% and stays at 200 from 75-100%
 
         // Green
-        // Green scales from 0-200 over the first 25%, stays at
-        // 200 from 25-75% and then scales from 200-0 from 75-100%
+        // Green scales from 0-200 over the first 25%, stays at 200 from 25-75% and then scales from 200-0 from 75-100%
 
         // Blue
-        // Blue starts at 200 until 25%, then scales from 200-0
-        // from 25-50%, then stays at 0 until 100%
+        // Blue starts at 200 until 25%, then scales from 200-0 from 25-50%, then stays at 0 until 100%
 
-        // Since all transitions happen in quarters of the spectrum
-        // range it's easiest to deal with colour values in those
-        // ranges
+        // Since all transitions happen in quarters of the spectrum range it's easiest to deal with colour values in those ranges
 
 
         if (value < (min + (diff * 0.25))) {

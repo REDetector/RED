@@ -20,7 +20,9 @@ package com.xl.gradients;
 import java.awt.*;
 
 public class InvertedGradient extends ColourGradient {
-
+    /**
+     * The colour gradient.
+     */
     private ColourGradient gradient;
 
     public InvertedGradient(ColourGradient gradient) {

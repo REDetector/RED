@@ -21,9 +21,17 @@ package com.xl.gradients;
  * A simple class to represent separate values for Red Green and Blue components of a colour.
  */
 public class RGB {
-
+    /**
+     * Red.
+     */
     public int r;
+    /**
+     * Green.
+     */
     public int g;
+    /**
+     * Blue.
+     */
     public int b;
 
     /**

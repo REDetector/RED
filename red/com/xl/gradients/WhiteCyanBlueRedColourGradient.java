@@ -23,6 +23,11 @@ import java.awt.*;
 
 public class WhiteCyanBlueRedColourGradient extends ColourGradient {
 
+    /**
+     * The colors.
+     *
+     * @return the colors.
+     */
     protected Color[] makeColors() {
 
         Color[] colours = new Color[200];

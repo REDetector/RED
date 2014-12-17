@@ -22,18 +22,11 @@ import java.awt.*;
 public class GreyscaleColourGradient extends ColourGradient {
 
 
-    public String name() {
-        return "Greyscale Colour Gradient";
-    }
-
     protected Color[] makeColors() {
         /*
-         * We pre-generate a list of 100 colours we're going to
-		 * use for this display.
-		 * 
-		 * Because a linear gradient ends up leaving too much
-		 * green in the spectrum we put this on a log scale
-		 * to emphasise low and high values so the display
+         * We pre-generate a list of 100 colours we're going to use for this display.
+		 *
+		 * Because a linear gradient ends up leaving too much green in the spectrum we put this on a log scale to emphasise low and high values so the display
 		 * is clearer.
 		 */
 
@@ -46,5 +39,9 @@ public class GreyscaleColourGradient extends ColourGradient {
         }
 
         return colors;
+    }
+
+    public String name() {
+        return "Greyscale Colour Gradient";
     }
 }
