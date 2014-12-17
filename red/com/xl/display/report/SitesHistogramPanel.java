@@ -18,7 +18,7 @@
 
 package com.xl.display.report;
 
-import com.xl.datatypes.genome.Genome;
+import com.xl.datatypes.DataStore;
 import com.xl.datatypes.sites.Site;
 import com.xl.display.dialog.SiteListViewer;
 import com.xl.main.REDApplication;
@@ -36,49 +36,51 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 
 /**
- * The Class HistogramPanel displays an interactive histogram from any linear set of data.
+ * The Class SitesHistogramPanel displays an interactive histogram from any linear set of data.
  */
 public class SitesHistogramPanel extends JPanel implements Runnable {
-
     /**
-     * The data.
+     * The data store.
+     */
+    private DataStore dataStore;
+    /**
+     * The site data.
      */
     private Site[] sites;
-
-    private Genome genome;
     /**
      * The main histogram panel.
      */
     private MainHistogramPanel mainHistogramPanel;
-
+    /**
+     * The histogram categories.
+     */
     private HistogramCategory[] histogramCategories;
-
     /**
      * The status panel.
      */
     private StatusPanel statusPanel;
-
     /**
      * The stop calculating.
      */
     private boolean stopCalculating = false;
-
     /**
      * The max data value.
      */
     private int maxCount;
-
+    /**
+     * The interval.
+     */
     private double interval = 0;
 
     /**
-     * Instantiates a new histogram panel.
+     * Instantiates a new site histogram panel.
      *
-     * @param sites the sites
+     * @param dataStore the data store.
      */
-    public SitesHistogramPanel(Genome genome, Site[] sites) {
+    public SitesHistogramPanel(DataStore dataStore) {
 
-        this.genome = genome;
-        this.sites = sites;
+        this.dataStore = dataStore;
+        sites = dataStore.siteSet().getActiveList().getAllSites();
 
         setLayout(new BorderLayout());
         JPanel textPanel = new JPanel();
@@ -93,7 +95,7 @@ public class SitesHistogramPanel extends JPanel implements Runnable {
         statusPanel = new StatusPanel();
         add(statusPanel, BorderLayout.SOUTH);
 
-        calcuateCategories();
+        calculateCategories();
 
     }
 
@@ -111,21 +113,16 @@ public class SitesHistogramPanel extends JPanel implements Runnable {
     }
 
     /**
-     * Calcuate categories.
+     * Calculate categories.
      */
-    private void calcuateCategories() {
+    private void calculateCategories() {
         Thread t = new Thread(this);
         t.start();
     }
 
-
-    /* (non-Javadoc)
-     * @see java.lang.Runnable#run()
-     */
+    @Override
     public void run() {
-//		System.out.println("Calculating "+currentCategoryCount+" categories");
-
-        String[] chromosomeNames = genome.getAllChromosomeNames();
+        String[] chromosomeNames = dataStore.collection().genome().getAllChromosomeNames();
         histogramCategories = new HistogramCategory[chromosomeNames.length];
         for (int i = 0, len = chromosomeNames.length; i < len; i++) {
             histogramCategories[i] = new HistogramCategory(chromosomeNames[i]);
@@ -149,7 +146,6 @@ public class SitesHistogramPanel extends JPanel implements Runnable {
                 maxCount = histogramCategory.count;
             }
         }
-//		System.out.println("Finished counting");
     }
 
     /**
@@ -157,9 +153,14 @@ public class SitesHistogramPanel extends JPanel implements Runnable {
      */
     private class MainHistogramPanel extends JPanel implements MouseListener, MouseMotionListener {
 
+        /**
+         * Space of x axis.
+         */
         private static final int X_AXIS_SPACE = 50;
+        /**
+         * Space of y axis.
+         */
         private static final int Y_AXIS_SPACE = 30;
-
         /**
          * The selected category.
          */
@@ -185,7 +186,6 @@ public class SitesHistogramPanel extends JPanel implements Runnable {
 
         }
 
-
         /**
          * Sets the data.
          *
@@ -202,9 +202,7 @@ public class SitesHistogramPanel extends JPanel implements Runnable {
             repaint();
         }
 
-        /* (non-Javadoc)
-         * @see javax.swing.JComponent#paintComponent(java.awt.Graphics)
-         */
+        @Override
         public void paintComponent(Graphics g) {
             super.paintComponent(g);
             // We want a white background
@@ -286,9 +284,7 @@ public class SitesHistogramPanel extends JPanel implements Runnable {
 
         }
 
-        /* (non-Javadoc)
-                 * @see java.awt.event.MouseMotionListener#mouseMoved(java.awt.event.MouseEvent)
-                 */
+        @Override
         public void mouseMoved(MouseEvent me) {
 
             // If we're outside the main plot area we don't need to worry about it
@@ -305,9 +301,7 @@ public class SitesHistogramPanel extends JPanel implements Runnable {
             repaint();
         }
 
-        /* (non-Javadoc)
-         * @see java.awt.event.MouseListener#mouseClicked(java.awt.event.MouseEvent)
-         */
+        @Override
         public void mouseClicked(MouseEvent arg0) {
             if (arg0.getClickCount() == 2 && selectedCategory != null) {
                 String chr = selectedCategory.chr;
@@ -327,46 +321,34 @@ public class SitesHistogramPanel extends JPanel implements Runnable {
 
         }
 
-        /* (non-Javadoc)
-         * @see java.awt.event.MouseListener#mouseEntered(java.awt.event.MouseEvent)
-         */
+        @Override
+        public void mouseReleased(MouseEvent me) {
+        }
+
+        @Override
         public void mouseEntered(MouseEvent arg0) {
         }
 
-        /* (non-Javadoc)
-         * @see java.awt.event.MouseListener#mouseExited(java.awt.event.MouseEvent)
-         */
+        @Override
         public void mouseExited(MouseEvent arg0) {
             selectedCategory = null;
             statusPanel.setSelectedCategory(null);
             repaint();
         }
-
-
-        /* (non-Javadoc)
-         * @see java.awt.event.MouseListener#mouseReleased(java.awt.event.MouseEvent)
-         */
-        public void mouseReleased(MouseEvent me) {
-
-        }
-
     }
 
     /**
      * The Class HistogramCategory.
      */
     private class HistogramCategory {
-
         /**
          * The chromosome.
          */
         public String chr;
-
         /**
          * The count.
          */
         public int count;
-
         /**
          * Instantiates a new histogram category.
          */
@@ -385,7 +367,6 @@ public class SitesHistogramPanel extends JPanel implements Runnable {
      * The Class StatusPanel.
      */
     private class StatusPanel extends JPanel {
-
         /**
          * The label.
          */
