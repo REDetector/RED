@@ -23,6 +23,8 @@ import java.io.File;
 
 /**
  * Created by Xing Li on 2014/6/23.
+ * <p/>
+ * A EPS file format filter.
  */
 public class EPSFileFilter extends FileFilter {
     /**
@@ -30,16 +32,9 @@ public class EPSFileFilter extends FileFilter {
      */
     @Override
     public boolean accept(File f) {
-        if (f.isDirectory() || f.getName().toLowerCase().endsWith(".eps")) {
-            return true;
-        } else {
-            return false;
-        }
+        return f.isDirectory() || f.getName().toLowerCase().endsWith(".eps");
     }
 
-    /* (non-Javadoc)
-     * @see javax.swing.filechooser.FileFilter#getDescription()
-     */
     @Override
     public String getDescription() {
         return "EPS Files";

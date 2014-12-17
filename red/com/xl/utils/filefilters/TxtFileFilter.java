@@ -25,21 +25,11 @@ import java.io.File;
  */
 public class TxtFileFilter extends FileFilter {
 
-    /* (non-Javadoc)
-     * @see javax.swing.filechooser.FileFilter#accept(java.io.File)
-     */
     @Override
     public boolean accept(File f) {
-        if (f.isDirectory() || f.getName().toLowerCase().endsWith(".txt")) {
-            return true;
-        } else {
-            return false;
-        }
+        return f.isDirectory() || f.getName().toLowerCase().endsWith(".txt");
     }
 
-    /* (non-Javadoc)
-     * @see javax.swing.filechooser.FileFilter#getDescription()
-     */
     @Override
     public String getDescription() {
         return "Text Files";

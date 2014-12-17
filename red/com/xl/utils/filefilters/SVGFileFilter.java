@@ -25,21 +25,12 @@ import java.io.File;
  */
 public class SVGFileFilter extends FileFilter {
 
-    /* (non-Javadoc)
-     * @see javax.swing.filechooser.FileFilter#accept(java.io.File)
-     */
     @Override
     public boolean accept(File f) {
-        if (f.isDirectory() || f.getName().toLowerCase().endsWith(".svg")) {
-            return true;
-        } else {
-            return false;
-        }
+        return f.isDirectory() || f.getName().toLowerCase().endsWith(".svg");
+
     }
 
-    /* (non-Javadoc)
-     * @see javax.swing.filechooser.FileFilter#getDescription()
-     */
     @Override
     public String getDescription() {
         return "SVG Files";

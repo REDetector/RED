@@ -25,16 +25,10 @@ import java.io.File;
  */
 public class GFFFileFilter extends FileFilter {
 
-    /* (non-Javadoc)
-     * @see javax.swing.filechooser.FileFilter#accept(java.io.File)
-     */
     @Override
     public boolean accept(File f) {
-        if (f.isDirectory() || f.getName().toLowerCase().endsWith(".gff")) {
-            return true;
-        } else {
-            return false;
-        }
+        return f.isDirectory() || f.getName().toLowerCase().endsWith(".gff");
+
     }
 
     /* (non-Javadoc)

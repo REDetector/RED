@@ -21,8 +21,13 @@ package com.xl.utils.filefilters;
 import java.io.File;
 import java.io.FileFilter;
 
+/**
+ * A generic file filter.
+ */
 public class FileFilterImpl implements FileFilter {
-
+    /**
+     * The suffix of the filter.
+     */
     private String suffix = null;
 
     public FileFilterImpl(String suffix) {
@@ -31,12 +36,7 @@ public class FileFilterImpl implements FileFilter {
 
     @Override
     public boolean accept(File f) {
-        // TODO Auto-generated method stub
-        if (f.isDirectory() || f.getName().toLowerCase().endsWith("." + suffix)) {
-            return true;
-        } else {
-            return false;
-        }
+        return f.isDirectory() || f.getName().toLowerCase().endsWith("." + suffix);
     }
 
 }

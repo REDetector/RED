@@ -21,25 +21,16 @@ import javax.swing.filechooser.FileFilter;
 import java.io.File;
 
 /**
- * A File filter representing SVG Files
+ * A File filter representing HTML Files
  */
 public class HTMLFileFilter extends FileFilter {
 
-    /* (non-Javadoc)
-     * @see javax.swing.filechooser.FileFilter#accept(java.io.File)
-     */
     @Override
     public boolean accept(File f) {
-        if (f.isDirectory() || f.getName().toLowerCase().endsWith(".html")) {
-            return true;
-        } else {
-            return false;
-        }
+        return f.isDirectory() || f.getName().toLowerCase().endsWith(".html");
+
     }
 
-    /* (non-Javadoc)
-     * @see javax.swing.filechooser.FileFilter#getDescription()
-     */
     @Override
     public String getDescription() {
         return "HTML Files";
