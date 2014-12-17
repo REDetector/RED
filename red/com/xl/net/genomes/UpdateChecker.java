@@ -25,10 +25,11 @@ import java.io.DataInputStream;
 import java.io.IOException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.Arrays;
 
 /**
- * The UpdateChecker allows the program to check on the main RED site to determine if a newer version of the program has been released so we can prompt the user
- * to get the update.
+ * The UpdateChecker allows the program to check on the homepage of RED to determine if a newer version of the program has been released so we can prompt the
+ * user to get the update.
  */
 public class UpdateChecker {
 
@@ -59,13 +60,7 @@ public class UpdateChecker {
         String[] thisSections = thisVersion.split("[ \\.]");
         String[] remoteSections = remoteVersion.split("[ \\.]");
 
-        for (int i = 0; i < Math
-                .min(thisSections.length, remoteSections.length); i++) {
-
-            if (thisSections[i].toLowerCase().equals("devel")) {
-                // A released version is always newer than a devel version
-                return true;
-            }
+        for (int i = 0; i < Math.min(thisSections.length, remoteSections.length); i++) {
 
             int thisNumber = Integer.parseInt(thisSections[i]);
             int remoteNumber = Integer.parseInt(remoteSections[i]);
@@ -80,28 +75,15 @@ public class UpdateChecker {
             }
         }
 
-        // If we get to here then all of the common sections were the
-        // same. The remote version is therefore newer if it's longer
-        // than the local version
-
-        // If the local version is longer then the remote still wins if
-        // the local is a devel version and the remote is a final
-
+        // If we get to here then all of the common sections were the same. The remote version is therefore newer if it's longer than the local version
         if (remoteSections.length > thisSections.length) {
             return true;
         }
 
-        if (thisSections.length > remoteSections.length
-                && thisSections[remoteSections.length].toLowerCase().equals(
-                "devel")) {
-            return true;
-        } else if (thisSections.length > remoteSections.length) {
-            System.err.println("Local version (" + thisVersion
-                    + ") is higher than the remote (" + remoteVersion + ")");
+        if (thisSections.length > remoteSections.length) {
+            System.err.println("Local version (" + thisVersion + ") is higher than the remote (" + remoteVersion + ")");
         }
-
         return false;
-
     }
 
     /**
@@ -113,7 +95,6 @@ public class UpdateChecker {
     public static String getLatestVersionNumber() throws REDException {
 
         try {
-
             URL updateURL = new URL("http", "redetector.github.io", "/version.txt");
 
             URLConnection connection = updateURL.openConnection();
@@ -124,16 +105,10 @@ public class UpdateChecker {
             byte[] data = new byte[255]; // A version number should never be more than 255 bytes
             int bytesRead = d.read(data);
 
-            byte[] actualData = new byte[bytesRead];
-            for (int i = 0; i < bytesRead; i++) {
-                actualData[i] = data[i];
-            }
+            byte[] actualData = Arrays.copyOfRange(data, 0, bytesRead);
 
             latestVersion = new String(actualData);
-            latestVersion.replaceAll("[\\r\\n]", "");
-            latestVersion = latestVersion.trim();
-
-            return latestVersion;
+            return latestVersion.replaceAll("[\\r\\n]", "").trim();
         } catch (IOException e) {
             e.printStackTrace();
             throw new REDException("Couldn't contact the update server to check for updates");
