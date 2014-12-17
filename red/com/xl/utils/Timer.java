@@ -23,6 +23,8 @@ import java.util.Date;
 
 /**
  * Created by Xing Li on 2014/11/13.
+ * <p/>
+ * The Class Timer provides the method to get current time.
  */
 public class Timer {
     private static SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
