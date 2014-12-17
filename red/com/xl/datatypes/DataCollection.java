@@ -22,7 +22,7 @@ import com.xl.datatypes.genome.Genome;
 import com.xl.datatypes.sites.SiteList;
 import com.xl.exception.REDException;
 import com.xl.interfaces.ActiveDataChangedListener;
-import com.xl.interfaces.DataStoreChangeListener;
+import com.xl.interfaces.DataStoreChangedListener;
 import com.xl.main.REDApplication;
 
 import java.util.*;
@@ -56,7 +56,7 @@ public class DataCollection {
     /**
      * The data change listeners.
      */
-    private Vector<DataStoreChangeListener> dataStoreChangeListeners = new Vector<DataStoreChangeListener>();
+    private Vector<DataStoreChangedListener> dataStoreChangedListeners = new Vector<DataStoreChangedListener>();
 
     /**
      * The active data store change listeners.
@@ -129,7 +129,7 @@ public class DataCollection {
             dataGroups.add((DataGroup) dataStore);
         }
         dataStore.setCollection(this);
-        Enumeration<DataStoreChangeListener> e = dataStoreChangeListeners.elements();
+        Enumeration<DataStoreChangedListener> e = dataStoreChangedListeners.elements();
         while (e.hasMoreElements()) {
             e.nextElement().dataStoreAdded(dataStore);
         }
@@ -155,7 +155,7 @@ public class DataCollection {
         }
         dataStore.setCollection(null);
 
-        Enumeration<DataStoreChangeListener> e = dataStoreChangeListeners.elements();
+        Enumeration<DataStoreChangedListener> e = dataStoreChangedListeners.elements();
         while (e.hasMoreElements()) {
             e.nextElement().dataStoreRemoved(dataStore);
         }
@@ -272,9 +272,9 @@ public class DataCollection {
      *
      * @param l the l
      */
-    public void addDataChangeListener(DataStoreChangeListener l) {
-        if (l != null && !dataStoreChangeListeners.contains(l)) {
-            dataStoreChangeListeners.add(l);
+    public void addDataChangeListener(DataStoreChangedListener l) {
+        if (l != null && !dataStoreChangedListeners.contains(l)) {
+            dataStoreChangedListeners.add(l);
         }
     }
 
@@ -283,9 +283,9 @@ public class DataCollection {
      *
      * @param l the l
      */
-    public void removeDataChangeListener(DataStoreChangeListener l) {
-        if (l != null && dataStoreChangeListeners.contains(l)) {
-            dataStoreChangeListeners.remove(l);
+    public void removeDataChangeListener(DataStoreChangedListener l) {
+        if (l != null && dataStoreChangedListeners.contains(l)) {
+            dataStoreChangedListeners.remove(l);
         }
     }
 
@@ -317,7 +317,7 @@ public class DataCollection {
      * @param d the new active data store name
      */
     public void dataStoreRenamed(DataStore d) {
-        Enumeration<DataStoreChangeListener> e = dataStoreChangeListeners.elements();
+        Enumeration<DataStoreChangedListener> e = dataStoreChangedListeners.elements();
         while (e.hasMoreElements()) {
             e.nextElement().dataStoreRenamed(d);
         }
@@ -329,7 +329,7 @@ public class DataCollection {
      * @param g the g
      */
     public void dataGroupSamplesChanged(DataGroup g) {
-        Enumeration<DataStoreChangeListener> e = dataStoreChangeListeners.elements();
+        Enumeration<DataStoreChangedListener> e = dataStoreChangedListeners.elements();
         while (e.hasMoreElements()) {
             e.nextElement().dataGroupSamplesChanged(g);
         }
