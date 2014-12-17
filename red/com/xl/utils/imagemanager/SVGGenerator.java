@@ -32,7 +32,7 @@ import java.io.PrintWriter;
  */
 public class SVGGenerator {
 
-    public static void writeSVG(PrintWriter pr, Component c) throws IOException {
+    public static void exportSVGImage(PrintWriter pr, Component c) throws IOException {
 
         // Get a DOMImplementation.
         DOMImplementation domImpl = GenericDOMImplementation.getDOMImplementation();

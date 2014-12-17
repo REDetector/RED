@@ -25,14 +25,20 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
+/**
+ * The Class EPSGenerator is used to generate a EPS graph for a given component.
+ */
 public class EPSGenerator {
 
     /**
-     * Instantiates a new generator.  Not used externally - all external calls to this class should go via the static convert to SVG method.
+     * Instantiates a new generator.
+     * <p/>
+     * It has to be said that sometimes the output could not be recognized by the common EPS opener... It is a bug but I have no solutions yet...
      *
-     * @param c The component to convert
+     * @param file the output file
+     * @param c    The component to convert
      */
-    public static boolean exportEpsImage(File file, Component c) throws IOException {
+    public static boolean exportEPSImage(File file, Component c) throws IOException {
         Graphics2D g;
         FileOutputStream fos = null;
         boolean exportSuccess = false;
@@ -43,7 +49,6 @@ public class EPSGenerator {
             // EpsGraphics stores directly in a file
             c.paint(g);
             exportSuccess = true;
-
         } catch (Exception e) {
             e.printStackTrace();
             exportSuccess = false;
@@ -55,6 +60,4 @@ public class EPSGenerator {
         }
         return exportSuccess;
     }
-
-
 }

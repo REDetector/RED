@@ -37,8 +37,8 @@ import java.io.IOException;
 import java.io.PrintWriter;
 
 /**
- * A utility class which acts as a wrapper for the SVG or PNG generating code which can be used to save (almost) any component which uses the standard Graphics
- * interface to draw itself.
+ * A utility class which acts as a wrapper for the EPS, SVG or PNG generating code which can be used to save (almost) any component which uses the standard
+ * Graphics interface to draw itself.
  */
 public class ImageSaver {
 
@@ -99,10 +99,10 @@ public class ImageSaver {
                 ImageIO.write(b, "PNG", file);
             } else if (filter instanceof SVGFileFilter) {
                 PrintWriter pr = new PrintWriter(new FileWriter(file));
-                SVGGenerator.writeSVG(pr, c);
+                SVGGenerator.exportSVGImage(pr, c);
                 pr.close();
             } else if (filter instanceof EPSFileFilter) {
-                EPSGenerator.exportEpsImage(file, c);
+                EPSGenerator.exportEPSImage(file, c);
             } else {
                 System.err.println("Unknown file filter type " + filter + " when saving image");
             }
