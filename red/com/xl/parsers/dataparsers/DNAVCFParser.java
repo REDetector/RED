@@ -28,46 +28,64 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.sql.SQLException;
+import java.util.Arrays;
 
 /**
- * Created by Administrator on 2014/9/29.
+ * Created by Xing Li on 2014/9/29.
  * <p/>
- * VCFParser mainly parsers VCF file and insert all data into database. The class will delete old vcf table and create a new one.
+ * The Class DNAVCFParser can parser DNA VCF file with single or multiple samples in a file, then insert all data into database. Pay attention that the
+ * class will delete old sample tables and create new ones for all samples in this DNA VCF file..
  */
 public class DNAVCFParser {
-    public static final String VCF_CHROM = "CHROM";
-    public static final String VCF_POS = "POS";
-    //    public static final String VCF_ID = "ID";
-//    public static final String VCF_REF = "REF";
-//    public static final String VCF_ALT = "ALT";
-//    public static final String VCF_QUAL = "QUAL";
-//    public static final String VCF_FILTER = "FILTER";
-//    public static final String VCF_INFO = "INFO";
-//    public static final String VCF_FORMAT = "FORMAT";
+
     //    private int chromColumn = 0;
-//    private int posColumn = 1;
-//    private int idColumn = 2;
+    //    private int posColumn = 1;
+    //    private int idColumn = 2;
     private int refColumn = 3;
+    private int altColumn = 4;
     //    private int qualColumn = 5;
     private int filterColumn = 6;
     //    private int infoColumn = 7;
-    private int altColumn = 4;
+    private int formatColumnIndex = 8;
+    /**
+     * The samples in this DNA VCF file.
+     */
+    private String[] sampleNames = null;
+    /**
+     * The database manager.
+     */
     private DatabaseManager databaseManager;
 
+    /**
+     * Initiate a new DNA VCF parser.
+     */
     public DNAVCFParser() {
         databaseManager = DatabaseManager.getInstance();
     }
 
+    /**
+     * Get the sample names in this VCF file.
+     *
+     * @return the samples array.
+     */
+    public String[] getSampleNames() {
+        return sampleNames;
+    }
 
-    public void parseVCFFile(String vcfTable, String vcfPath) {
+    /**
+     * Parse vcf file and import the data into database.
+     *
+     * @param vcfPath the vcf file path.
+     */
+    public void parseVCFFile(String vcfPath) {
         System.out.println("Start Parsing DNA VCF file..." + " " + Timer.getCurrentTime());
         BufferedReader bufferedReader = null;
+        StringBuilder sqlClause = null;
         try {
-            int formatColumnIndex = 8;
-            int dataColumnIndex = 9;
             bufferedReader = new BufferedReader(new InputStreamReader(new FileInputStream(vcfPath)));
             String line;
-            String[] columnStrings = null;
+            int columnLength = 0;
+            String[] columnStrings = new String[0];
             StringBuilder tableBuilders = new StringBuilder();
             databaseManager.setAutoCommit(false);
             int lineCount = 0;
@@ -77,96 +95,108 @@ public class DNAVCFParser {
                     continue;
                 if (line.startsWith("#")) {
                     columnStrings = line.substring(1).split("\\t");
-//                    if (columnStrings.length > dataColumn) {
-//                        throw new REDException("Multiple people in a vcf file has not been supported");
-//                    }
+                    columnLength = columnStrings.length;
+                    sampleNames = Arrays.copyOfRange(columnStrings, formatColumnIndex + 1, columnLength);
                     tableBuilders.append(columnStrings[0]).append(" varchar(30),").append(columnStrings[1]).append(" int,")
                             .append(columnStrings[2]).append(" varchar(30),").append(columnStrings[3]).append(" varchar(5),")
                             .append(columnStrings[4]).append(" varchar(5),").append(columnStrings[5]).append(" float(10,2),")
                             .append(columnStrings[6]).append(" text,").append(columnStrings[7]).append(" text,");
                     continue;
                 }
+                if (sampleNames == null) {
+                    throw new NullPointerException("There are no samples in this vcf file.");
+                }
+
                 String[] sections = line.split("\\t");
 
-                if (!sections[altColumn].equals(".") || sections[dataColumnIndex].contains(".") || !sections[refColumn].toUpperCase().equals("A") ||
-                        !sections[filterColumn].toUpperCase().equals("PASS")) {
-                    continue;
-                }
+                for (int i = formatColumnIndex + 1; i < columnLength; i++) {
 
-                String[] formatColumns = sections[formatColumnIndex].split(":");
-                int formatLength = formatColumns.length;
-                String[] dataColumns = sections[dataColumnIndex].replaceAll(",", "/").split(":");
-                int dataColumnLength = dataColumns.length;
-                if (formatLength != dataColumnLength) {
-                    continue;
-                }
-                if (!hasEstablishTable) {
-                    for (String formatColumn : formatColumns) {
-                        tableBuilders.append(formatColumn).append(" text,");
+                    if (!sections[altColumn].equals(".") || sections[i].contains(".") || !sections[refColumn].toUpperCase().equals("A")
+                            || !sections[filterColumn].toUpperCase().equals("PASS")) {
+                        continue;
                     }
-                    // We need to add ALU info at the first table so the following filters can get the alu info.
-                    tableBuilders.append("alu varchar(1) default 'F'");
-                    tableBuilders.append(",");
-                    tableBuilders.append(Indexer.CHROM_POSITION);
-                    databaseManager.deleteTable(vcfTable);
-                    databaseManager.executeSQL("create table " + vcfTable + "(" + tableBuilders + ")");
-                    databaseManager.commit();
-                    hasEstablishTable = true;
-                }
 
-                //INSERT INTO table_name (col1, col2,...) VALUES (value1, value2,....)
+                    String[] formatColumns = sections[formatColumnIndex].split(":");
+                    int formatLength = formatColumns.length;
+                    String[] dataColumns = sections[i].replaceAll(",", "/").split(":");
+                    int dataColumnLength = dataColumns.length;
+                    if (formatLength != dataColumnLength) {
+                        continue;
+                    }
+                    String[] tableName = new String[sampleNames.length];
+                    if (!hasEstablishTable) {
+                        for (String formatColumn : formatColumns) {
+                            tableBuilders.append(formatColumn).append(" text,");
+                        }
+                        // We need to add ALU info at the first table so the following filters can get the alu info.
+                        tableBuilders.append("alu varchar(1) default 'F'");
+                        tableBuilders.append(",");
+                        tableBuilders.append(Indexer.CHROM_POSITION);
+                        for (int j = 0, len = sampleNames.length; j < len; j++) {
+                            tableName[j] = sampleNames[j] + "_" + DatabaseManager.DNA_VCF_RESULT_TABLE_NAME;
+                            databaseManager.deleteTable(tableName[j]);
+                            databaseManager.executeSQL("create table " + tableName[j] + "(" + tableBuilders + ")");
+                        }
+                        databaseManager.commit();
+                        hasEstablishTable = true;
+                    }
 
-                //insert into
-                StringBuilder sqlClause = new StringBuilder("insert into ");
-                // insert into table_name (
-                sqlClause.append(vcfTable).append("(");
-                // insert into table_name (col1,col2,...,coli,
-                for (int i = 0; i < formatColumnIndex; i++) {
-                    sqlClause.append(columnStrings[i]).append(",");
+                    /*
+                     * INSERT INTO table_name (col1, col2,...) VALUES (value1, value2,....)
+                     */
+
+                    //insert into
+                    sqlClause = new StringBuilder("insert into ");
+                    // insert into table_name (
+                    sqlClause.append(tableName[i - formatColumnIndex - 1]).append("(");
+                    // insert into table_name (col1,col2,...,coli,
+                    for (int j = 0; j < formatColumnIndex; j++) {
+                        sqlClause.append(columnStrings[j]).append(",");
+                    }
+                    // insert into table_name (col1,col2,...,coli,coli+1,coli+2,...,coln,
+                    for (String formatColumn : formatColumns) {
+                        sqlClause.append(formatColumn).append(",");
+                    }
+                    // insert into table_name (col1,col2,...,colK,colK+1,colK+2,...,colK)
+                    sqlClause.deleteCharAt(sqlClause.length() - 1).append(") ");
+                    // insert into table_name (col1,col2,...,colK,colK+1,colK+2,...,colN) values('value1'
+                    sqlClause.append("values('");
+                    // CASE1: ch1,ch2,ch3,...chrY
+                    if (sections[0].startsWith("ch") && !sections[0].startsWith("chr")) {
+                        sqlClause.append(sections[0].replace("ch", "chr")).append("'");
+                    }
+                    // CASE2: 1,2,3,...,Y
+                    else if (sections[0].length() < 3) {
+                        sqlClause.append("chr").append(sections[0]).append("'");
+                    }
+                    // CASE3: chr1,chr2,chr3,...,chrY
+                    else {
+                        sqlClause.append(sections[0]).append("'");
+                    }
+                    // insert into table_name (col1,col2,...,colK,colK+1,colK+2,...,colN) values('value1','value2',..., 'valueK'
+                    for (int j = 1; j < formatColumnIndex; j++) {
+                        sqlClause.append(",'").append(sections[j]).append("'");
+                    }
+                    // insert into table_name (col1,col2,...,colK,colK+1,colK+2,...,colN) values('value1','value2',..., 'valueK','valueK+1','valueK+2',...,
+                    // 'valueN'
+                    for (String dataColumn : dataColumns) {
+                        sqlClause.append(",'").append(dataColumn).append("'");
+                    }
+                    // insert into table_name (col1,col2,...,colK,colK+1,colK+2,...,colN) values('value1','value2',..., 'valueK','valueK+1','valueK+2',...,
+                    // 'valueN')
+                    sqlClause.append(")");
+                    databaseManager.executeSQL(sqlClause.toString());
+                    if (++lineCount % DatabaseManager.COMMIT_COUNTS_PER_ONCE == 0) {
+                        databaseManager.commit();
+                    }
                 }
-                // insert into table_name (col1,col2,...,coli,coli+1,coli+2,...,coln,
-                for (String formatColumn : formatColumns) {
-                    sqlClause.append(formatColumn).append(",");
-                }
-                // insert into table_name (col1,col2,...,colK,colK+1,colK+2,...,colK)
-                sqlClause.deleteCharAt(sqlClause.length() - 1).append(") ");
-                // insert into table_name (col1,col2,...,colK,colK+1,colK+2,...,colN) values('value1'
-                sqlClause.append("values('");
-                // CASE1: ch1,ch2,ch3,...chrY
-                if (sections[0].startsWith("ch") && !sections[0].startsWith("chr")) {
-                    sqlClause.append(sections[0].replace("ch", "chr")).append("'");
-                }
-                // CASE2: 1,2,3,...,Y
-                else if (sections[0].length() < 3) {
-                    sqlClause.append("chr").append(sections[0]).append("'");
-                }
-                // CASE3: chr1,chr2,chr3,...,chrY
-                else {
-                    sqlClause.append(sections[0]).append("'");
-                }
-                // insert into table_name (col1,col2,...,colK,colK+1,colK+2,...,colN) values('value1','value2',...,
-                // 'valueK'
-                for (int i = 1; i < formatColumnIndex; i++) {
-                    sqlClause.append(",'").append(sections[i]).append("'");
-                }
-                // insert into table_name (col1,col2,...,colK,colK+1,colK+2,...,colN) values('value1','value2',...,
-                // 'valueK','valueK+1','valueK+2',...,'valueN'
-                for (String dataColumn : dataColumns) {
-                    sqlClause.append(",'").append(dataColumn).append("'");
-                }
-                // insert into table_name (col1,col2,...,colK,colK+1,colK+2,...,colN) values('value1','value2',...,
-                // 'valueK','valueK+1','valueK+2',...,'valueN')
-                sqlClause.append(")");
-                databaseManager.executeSQL(sqlClause.toString());
-                if (++lineCount % DatabaseManager.COMMIT_COUNTS_PER_ONCE == 0)
-                    databaseManager.commit();
             }
             databaseManager.commit();
             databaseManager.setAutoCommit(true);
         } catch (IOException e) {
             e.printStackTrace();
         } catch (SQLException e) {
-            System.err.println("Error execute sql clause in " + DNAVCFParser.class.getName() + ":run()");
+            System.err.println("Error execute sql clause: " + sqlClause);
             e.printStackTrace();
         } finally {
             if (bufferedReader != null) {
