@@ -26,11 +26,13 @@ import com.xl.filter.denovo.KnownSNPFilter;
 import com.xl.filter.denovo.RepeatRegionsFilter;
 import com.xl.filter.denovo.SpliceJunctionFilter;
 import com.xl.main.REDApplication;
-import com.xl.parsers.dataparsers.RNAVCFMultiParser;
+import com.xl.parsers.dataparsers.RNAVCFParser;
 import com.xl.preferences.LocationPreferences;
 
 /**
  * Created by Xing Li on 2014/7/22.
+ * <p/>
+ * The Class ThreadDenovoInput generates a new thread to input all data with denovo mode.
  */
 public class ThreadDenovoInput implements Runnable {
 
@@ -43,27 +45,24 @@ public class ThreadDenovoInput implements Runnable {
         manager.createDatabase(DatabaseManager.DENOVO_DATABASE_NAME);
         manager.useDatabase(DatabaseManager.DENOVO_DATABASE_NAME);
 
-        RNAVCFMultiParser multiParser = new RNAVCFMultiParser();
-        multiParser.parseMultiVCFFile(locationPreferences.getRnaVcfFile());
+        RNAVCFParser rnaVcfParser = new RNAVCFParser();
+        rnaVcfParser.parseVCFFile(locationPreferences.getRnaVcfFile());
 
-//        RNAVCFParser rnaVCFParser = new RNAVCFParser();
-//        rnaVCFParser.parseVCFFile(sampleName + "_" + DatabaseManager.RNA_VCF_RESULT_TABLE_NAME, locationPreferences.getRnaVcfFile());
-
-        RepeatRegionsFilter rf = new RepeatRegionsFilter(manager);
+        RepeatRegionsFilter repeatRegionsFilter = new RepeatRegionsFilter(manager);
         TableCreator.createRepeatRegionsTable(DatabaseManager.REPEAT_MASKER_TABLE_NAME);
-        rf.loadRepeatTable(DatabaseManager.REPEAT_MASKER_TABLE_NAME, locationPreferences.getRepeatFile());
+        repeatRegionsFilter.loadRepeatTable(DatabaseManager.REPEAT_MASKER_TABLE_NAME, locationPreferences.getRepeatFile());
 
-        SpliceJunctionFilter cf = new SpliceJunctionFilter(manager);
+        SpliceJunctionFilter spliceJunctionFilter = new SpliceJunctionFilter(manager);
         TableCreator.createSpliceJunctionTable(DatabaseManager.SPLICE_JUNCTION_TABLE_NAME);
-        cf.loadSpliceJunctionTable(DatabaseManager.SPLICE_JUNCTION_TABLE_NAME, locationPreferences.getRefSeqFile());
+        spliceJunctionFilter.loadSpliceJunctionTable(DatabaseManager.SPLICE_JUNCTION_TABLE_NAME, locationPreferences.getRefSeqFile());
 
-        KnownSNPFilter sf = new KnownSNPFilter(manager);
+        KnownSNPFilter knownSNPFilter = new KnownSNPFilter(manager);
         TableCreator.createDBSNPTable(DatabaseManager.DBSNP_DATABASE_TABLE_NAME);
-        sf.loadDbSNPTable(DatabaseManager.DBSNP_DATABASE_TABLE_NAME, locationPreferences.getDbSNPFile());
+        knownSNPFilter.loadDbSNPTable(DatabaseManager.DBSNP_DATABASE_TABLE_NAME, locationPreferences.getDbSNPFile());
 
-        FisherExactTestFilter pv = new FisherExactTestFilter(manager);
+        FisherExactTestFilter fisherExactTestFilter = new FisherExactTestFilter(manager);
         TableCreator.createDARNEDTable(DatabaseManager.DARNED_DATABASE_TABLE_NAME);
-        pv.loadDarnedTable(DatabaseManager.DARNED_DATABASE_TABLE_NAME, locationPreferences.getDarnedFile());
+        fisherExactTestFilter.loadDarnedTable(DatabaseManager.DARNED_DATABASE_TABLE_NAME, locationPreferences.getDarnedFile());
 
         new DatabaseSelector(REDApplication.getInstance());
     }
