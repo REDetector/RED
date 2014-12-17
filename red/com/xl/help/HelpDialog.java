@@ -30,22 +30,18 @@ import java.io.File;
  * The Class HelpDialog shows the contents of the help system and allows searching and navigation within it.
  */
 public class HelpDialog extends JDialog implements TreeSelectionListener {
-
     /**
      * The tree.
      */
     private JTree tree;
-
     /**
      * The current page.
      */
     private HelpPageDisplay currentPage = null;
-
     /**
      * The main split.
      */
     private JSplitPane mainSplit;
-
 
     /**
      * Instantiates a new help dialog.
@@ -71,7 +67,6 @@ public class HelpDialog extends JDialog implements TreeSelectionListener {
         mainSplit.setRightComponent(currentPage);
 
         tree.addTreeSelectionListener(this);
-
 
         setSize(800, 600);
         setLocationRelativeTo(REDApplication.getInstance());
@@ -110,9 +105,7 @@ public class HelpDialog extends JDialog implements TreeSelectionListener {
         }
     }
 
-    /* (non-Javadoc)
-     * @see javax.swing.event.TreeSelectionListener#valueChanged(javax.swing.event.TreeSelectionEvent)
-     */
+    @Override
     public void valueChanged(TreeSelectionEvent tse) {
 
         if (tse.getNewLeadSelectionPath() == null) return;

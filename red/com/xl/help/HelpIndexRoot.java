@@ -43,16 +43,16 @@ public class HelpIndexRoot extends DefaultMutableTreeNode {
             throw new IllegalArgumentException("Couldn't find help file directory at '" + startingLocation.getAbsolutePath() + "'");
         }
 
-        addSubfiles(startingLocation, this);
+        addSubFiles(startingLocation, this);
     }
 
     /**
-     * Adds the subfiles.
+     * Adds the sub-files.
      *
      * @param directory the directory
      * @param node      the node
      */
-    private void addSubfiles(File directory, DefaultMutableTreeNode node) {
+    private void addSubFiles(File directory, DefaultMutableTreeNode node) {
         File[] files = directory.listFiles();
         if (files == null || files.length == 0) {
             return;
@@ -63,7 +63,7 @@ public class HelpIndexRoot extends DefaultMutableTreeNode {
             if (file.isDirectory() && !file.getName().equals("img")) {
                 HelpPage h = new HelpPage(file);
                 node.add(h);
-                addSubfiles(file, h);
+                addSubFiles(file, h);
             } else if (file.getName().toLowerCase().endsWith(".html")) {
                 HelpPage h = new HelpPage(file);
                 node.add(h);
@@ -88,19 +88,15 @@ public class HelpIndexRoot extends DefaultMutableTreeNode {
                 ((HelpPage) node).containsString(searchTerm, hits);
             }
         }
-
         return hits.toArray(new HelpPage[0]);
     }
-
 
     /**
      * The Class FileSorter.
      */
     private class FileSorter implements Comparator<File> {
 
-        /* (non-Javadoc)
-         * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
-         */
+        @Override
         public int compare(File f1, File f2) {
 
             // The file names should be proceeded by a series of integers separated by dots (eg 1.2.1).  We therefore split these out to compare the
@@ -108,7 +104,6 @@ public class HelpIndexRoot extends DefaultMutableTreeNode {
 
             int[] numbers1;
             int[] numbers2;
-
 
             try {
                 numbers1 = getNumberArray(f1);
@@ -127,7 +122,6 @@ public class HelpIndexRoot extends DefaultMutableTreeNode {
 
             // If we get here then the shortest number string wins
             return numbers1.length - numbers2.length;
-
         }
 
         /**
@@ -139,12 +133,12 @@ public class HelpIndexRoot extends DefaultMutableTreeNode {
          */
         private int[] getNumberArray(File f) throws NumberFormatException {
             String[] numberStrings = f.getName().split(" ")[0].split("\\.");
-            int[] ints = new int[numberStrings.length];
+            int[] integers = new int[numberStrings.length];
             for (int i = 0; i < numberStrings.length; i++) {
-                ints[i] = Integer.parseInt(numberStrings[i]);
+                integers[i] = Integer.parseInt(numberStrings[i]);
             }
 
-            return ints;
+            return integers;
         }
 
     }

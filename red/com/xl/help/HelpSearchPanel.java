@@ -18,6 +18,7 @@
 package com.xl.help;
 
 import com.xl.net.crashreport.CrashReporter;
+import com.xl.utils.namemanager.MenuUtils;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
@@ -32,37 +33,30 @@ import java.io.IOException;
  * The Class HelpSearchPanel provides a search box and results panel to allow easy searching through help documents.
  */
 public class HelpSearchPanel extends JPanel implements ActionListener, ListSelectionListener, Runnable {
-
     /**
      * The root.
      */
     private HelpIndexRoot root;
-
     /**
      * The query field.
      */
     private JTextField queryField;
-
     /**
      * The result list.
      */
     private JList resultList;
-
     /**
      * The list model.
      */
     private DefaultListModel listModel;
-
     /**
      * The search button.
      */
     private JButton searchButton;
-
     /**
      * The dialog.
      */
     private HelpDialog dialog;
-
     /**
      * The results scroll pane.
      */
@@ -84,11 +78,11 @@ public class HelpSearchPanel extends JPanel implements ActionListener, ListSelec
         queryPanel.setLayout(new BorderLayout());
         queryPanel.setBorder(BorderFactory.createEmptyBorder(2, 2, 2, 2));
         queryField = new JTextField();
-        queryField.setActionCommand("search");
+        queryField.setActionCommand(MenuUtils.SEARCH_BUTTON);
         queryField.addActionListener(this);
         queryPanel.add(queryField, BorderLayout.CENTER);
-        searchButton = new JButton("Search");
-        searchButton.setActionCommand("search");
+        searchButton = new JButton(MenuUtils.SEARCH_BUTTON);
+        searchButton.setActionCommand(MenuUtils.SEARCH_BUTTON);
         searchButton.addActionListener(this);
         queryPanel.add(searchButton, BorderLayout.EAST);
         add(queryPanel, BorderLayout.NORTH);
@@ -103,17 +97,13 @@ public class HelpSearchPanel extends JPanel implements ActionListener, ListSelec
 
     }
 
-    /* (non-Javadoc)
-     * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
-     */
+    @Override
     public void actionPerformed(ActionEvent e) {
         Thread t = new Thread(this);
         t.start();
     }
 
-    /* (non-Javadoc)
-     * @see javax.swing.event.ListSelectionListener#valueChanged(javax.swing.event.ListSelectionEvent)
-     */
+    @Override
     public void valueChanged(ListSelectionEvent lse) {
         Object o = resultList.getSelectedValue();
         if (o != null && o instanceof HelpPage) {
@@ -121,9 +111,7 @@ public class HelpSearchPanel extends JPanel implements ActionListener, ListSelec
         }
     }
 
-    /* (non-Javadoc)
-     * @see java.lang.Runnable#run()
-     */
+    @Override
     public void run() {
         searchButton.setEnabled(false);
         listModel.removeAllElements();

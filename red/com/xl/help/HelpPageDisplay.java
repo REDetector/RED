@@ -29,7 +29,6 @@ import java.net.URISyntaxException;
  * The Class HelpPageDisplay provides a panel which can display a single help page.
  */
 public class HelpPageDisplay extends JPanel implements HyperlinkListener {
-
     /**
      * The html pane.
      */

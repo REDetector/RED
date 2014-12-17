@@ -29,12 +29,10 @@ import java.util.Vector;
  * The Class HelpPage describes a single help page in the help system.
  */
 public class HelpPage extends DefaultMutableTreeNode {
-
     /**
      * The file.
      */
     private File file;
-
     /**
      * The name.
      */
@@ -53,23 +51,19 @@ public class HelpPage extends DefaultMutableTreeNode {
         if (nameSections.length > 1) {
             // We have two sections so check if the first is just integers separated by dots.  If it is then we can lose it.
             String[] numbers = nameSections[0].split("\\.");
-            for (int n = 0; n < numbers.length; n++) {
-                try {
-                    Integer.parseInt(numbers[n]);
-                } catch (NumberFormatException nfe) {
-                    return; // We don't want to chop this off.
+            for (String number : numbers) {
+                if (!number.matches("\\d+")) {
+                    return;
                 }
             }
 
-            // If we get here then we want to chop the first part
-            // of the name off
-            StringBuffer sb = new StringBuffer(nameSections[1]);
+            // If we get here then we want to chop the first part of the name off
+            StringBuilder sb = new StringBuilder(nameSections[1]);
             for (int s = 2; s < nameSections.length; s++) {
                 sb.append(" ");
                 sb.append(nameSections[s]);
             }
             name = sb.toString();
-
         }
 
     }
@@ -104,7 +98,6 @@ public class HelpPage extends DefaultMutableTreeNode {
                 }
             }
         }
-
         // Extend the search to our children
         Enumeration kids = children();
         while (kids.hasMoreElements()) {
@@ -115,18 +108,14 @@ public class HelpPage extends DefaultMutableTreeNode {
         }
     }
 
-    /* (non-Javadoc)
-     * @see javax.swing.tree.DefaultMutableTreeNode#toString()
-     */
-    public String toString() {
-        return name;
-    }
-
-    /* (non-Javadoc)
-     * @see javax.swing.tree.DefaultMutableTreeNode#isLeaf()
-     */
+    @Override
     public boolean isLeaf() {
         return !file.isDirectory();
+    }
+
+    @Override
+    public String toString() {
+        return name;
     }
 
     /**
