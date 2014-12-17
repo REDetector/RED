@@ -43,7 +43,7 @@ public class InfoPanelUtils {
 
     public static final String GENOMES_CHECK_FOLDER_DISABLE = "Couldn't check genomes folder";
 
-    public static final String GENOMES_USE_CUSTUM_FOLDER = "Using custom genomes folder";
+    public static final String GENOMES_USE_CUSTOM_FOLDER = "Using custom genomes folder";
 
     public static final String GENOMES_USE_CUSTUM_FOLDER_READ_FAIL = "Using default genomes folder - but don't have read permission";
 

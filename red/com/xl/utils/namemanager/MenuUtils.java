@@ -18,6 +18,9 @@
 
 package com.xl.utils.namemanager;
 
+/**
+ * The Class MenuUtils provides all menu item names.
+ */
 public class MenuUtils {
 
     /*File menu*/
@@ -26,7 +29,7 @@ public class MenuUtils {
     public static final String OPEN_PROJECT = "Open Project...";
     public static final String SAVE_PROJECT = "Save Project";
     public static final String SAVE_PROJECT_AS = "Save Project As...";
-    public static final String CONNECT_TO_MYSQL = "Conncet to MySQL...";
+    public static final String CONNECT_TO_DATABASE = "Connect to Database...";
     public static final String IMPORT_DATA = "Import Data";
     public static final String DATABASE = "Database...";
     public static final String RNA = "RNA(cDNA)...";
@@ -113,4 +116,12 @@ public class MenuUtils {
     public static final String SAVE_BUTTON = "Save";
 
     public static final String RUN_FILTER_BUTTON = "Run Filter";
+
+    public static final String SEARCH_BUTTON = "Search";
+
+    public static final String IGNORE_BUTTON = "Ignore";
+
+    public static final String FIND_ISSUES_BUTTON = "Find Issues";
+
+    public static final String REPORT_ERROR_BUTTON = "Report Error";
 }

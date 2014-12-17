@@ -20,6 +20,8 @@ package com.xl.utils.namemanager;
 
 /**
  * Created by Xing Li on 2014/6/12.
+ * <p/>
+ * The keys used in GenomeDescriptor.
  */
 public class GenomeUtils {
     public static final String KEY_VERSION_NAME = "Version";

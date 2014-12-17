@@ -20,6 +20,8 @@ package com.xl.utils.namemanager;
 
 /**
  * Created by Xing Li on 2014/7/9.
+ * <p/>
+ * The suffix utilities.
  */
 public class SuffixUtils {
     public static final String CACHE_GENOME = ".genome.cache";
