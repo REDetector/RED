@@ -30,17 +30,14 @@ import java.awt.event.MouseMotionListener;
  * The Class MemoryMonitor provides a display which summarises the current memory usage and cache state.
  */
 public class MemoryMonitor extends JPanel implements Runnable, MouseListener, MouseMotionListener {
-
     /**
      * The Constant DARK_GREEN.
      */
     private static final Color DARK_GREEN = new Color(0, 180, 0);
-
     /**
      * The Constant DARK_ORANGE.
      */
     private static final Color DARK_ORANGE = new Color(255, 130, 0);
-
     /**
      * The Constant DARK_RED.
      */
@@ -57,7 +54,6 @@ public class MemoryMonitor extends JPanel implements Runnable, MouseListener, Mo
      * The monitor tool tip.
      */
     private String monitorToolTip;
-
     /**
      * Horrible hack to work around an initialisation order problem when loading
      */
@@ -96,13 +92,6 @@ public class MemoryMonitor extends JPanel implements Runnable, MouseListener, Mo
         }
     }
 
-    /* (non-Javadoc)
-     * @see javax.swing.JComponent#getPreferredSize()
-     */
-    public Dimension getPreferredSize() {
-        return new Dimension(100, 0);
-    }
-
     /**
      * Show memory warning.
      */
@@ -115,15 +104,18 @@ public class MemoryMonitor extends JPanel implements Runnable, MouseListener, Mo
 
     }
 
-    /* (non-Javadoc)
-     * @see javax.swing.JComponent#paintComponent(java.awt.Graphics)
-     */
+    @Override
     public void paintComponent(Graphics g) {
 
         super.paintComponent(g);
 
         paintMemoryMonitor(g);
 
+    }
+
+    @Override
+    public Dimension getPreferredSize() {
+        return new Dimension(100, 0);
     }
 
     /**
@@ -169,9 +161,7 @@ public class MemoryMonitor extends JPanel implements Runnable, MouseListener, Mo
 
     }
 
-    /* (non-Javadoc)
-     * @see java.awt.event.MouseListener#mouseClicked(java.awt.event.MouseEvent)
-     */
+    @Override
     public void mouseClicked(MouseEvent e) {
         if (e.getClickCount() == 2) {
             if (e.getX() < (getWidth() * 3) / 4) {
@@ -180,39 +170,27 @@ public class MemoryMonitor extends JPanel implements Runnable, MouseListener, Mo
         }
     }
 
-    /* (non-Javadoc)
-     * @see java.awt.event.MouseListener#mouseEntered(java.awt.event.MouseEvent)
-     */
-    public void mouseEntered(MouseEvent e) {
-    }
-
-    /* (non-Javadoc)
-     * @see java.awt.event.MouseListener#mouseExited(java.awt.event.MouseEvent)
-     */
-    public void mouseExited(MouseEvent e) {
-    }
-
-    /* (non-Javadoc)
-     * @see java.awt.event.MouseListener#mousePressed(java.awt.event.MouseEvent)
-     */
+    @Override
     public void mousePressed(MouseEvent e) {
     }
 
-    /* (non-Javadoc)
-     * @see java.awt.event.MouseListener#mouseReleased(java.awt.event.MouseEvent)
-     */
+    @Override
     public void mouseReleased(MouseEvent e) {
     }
 
-    /* (non-Javadoc)
-     * @see java.awt.event.MouseMotionListener#mouseDragged(java.awt.event.MouseEvent)
-     */
+    @Override
+    public void mouseEntered(MouseEvent e) {
+    }
+
+    @Override
+    public void mouseExited(MouseEvent e) {
+    }
+
+    @Override
     public void mouseDragged(MouseEvent e) {
     }
 
-    /* (non-Javadoc)
-     * @see java.awt.event.MouseMotionListener#mouseMoved(java.awt.event.MouseEvent)
-     */
+    @Override
     public void mouseMoved(MouseEvent e) {
         if (e.getX() < (getWidth() * 3) / 4) {
             setToolTipText(monitorToolTip);
