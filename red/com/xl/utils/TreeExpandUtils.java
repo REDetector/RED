@@ -25,6 +25,8 @@ import java.util.Enumeration;
 
 /**
  * Created by Xing Li on 2014/11/18.
+ * <p/>
+ * The Class TreeExpandUtils intends to expand all tree nodes on a tree.
  */
 public class TreeExpandUtils {
     public static void expandTree(JTree tree) {
