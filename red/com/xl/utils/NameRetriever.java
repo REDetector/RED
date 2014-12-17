@@ -20,10 +20,25 @@ package com.xl.utils;
 
 import com.xl.database.DatabaseManager;
 
+import java.util.HashSet;
+import java.util.Set;
+
 /**
  * Created by Xing Li on 2014/11/19.
+ *
+ * The Class NameRetriever provides the name retrieve service.
  */
 public class NameRetriever {
+    private static final Set<String> chrNameSets = new HashSet<String>();
+    static {
+        for (int i = 1; i <= 22; i++) {
+            chrNameSets.add("chr" + i);
+        }
+        chrNameSets.add("chrX");
+        chrNameSets.add("chrY");
+        chrNameSets.add("chrM");
+    }
+
     public static String retrieveParams(String currentTable, String[] sections) {
         int length = sections.length;
         if (currentTable.equals(DatabaseManager.QC_FILTER_RESULT_TABLE_NAME)) {
@@ -64,7 +79,6 @@ public class NameRetriever {
         }
     }
 
-
     public static String getFilterName(String tableName) {
         String[] sections = tableName.split("_");
         if (sections.length == 1) {
@@ -78,7 +92,7 @@ public class NameRetriever {
         }
         return null;
     }
-
+    
     /**
      * Get the sample name from a table name.
      * <p/>
@@ -111,5 +125,39 @@ public class NameRetriever {
             return builder.substring(0, builder.length() - 1);
         }
     }
-
+    
+    public static boolean isStandardChromosomeName(String chr) {
+        return chrNameSets.contains(chr);
+    }
+    
+    public static String formatChromosomeName(String chr) {
+        if (chr.length() == 1 || chr.length() == 2) {
+            return "chr" + chr;
+        } else if (chr.startsWith("ch") && !chr.startsWith("chr")) {
+            return "chr" + chr.substring(2);
+        } else {
+            return chr;
+        }
+    }
+    
+    public static String getAliasChromosomeName(String chr) {
+        if (chr.length() == 1) {
+            return chr;
+        } else {
+            return chr.substring(3);
+        }
+    }
+    
+    public static void main(String[] args) {
+        System.out.println(NameRetriever.formatChromosomeName("8"));
+        System.out.println(NameRetriever.formatChromosomeName("ch8"));
+        System.out.println(NameRetriever.formatChromosomeName("chr8"));
+        System.out.println(NameRetriever.formatChromosomeName("Y"));
+        System.out.println(NameRetriever.formatChromosomeName("chY"));
+        System.out.println(NameRetriever.formatChromosomeName("chrY"));
+        System.out.println(NameRetriever.formatChromosomeName("18"));
+        System.out.println(NameRetriever.formatChromosomeName("ch18"));
+        System.out.println(NameRetriever.formatChromosomeName("chr18"));
+        System.out.println(NameRetriever.getAliasChromosomeName("chrY"));
+    }
 }
