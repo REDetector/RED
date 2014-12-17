@@ -184,6 +184,7 @@ public class UserPasswordDialog extends JDialog implements ActionListener {
             preferences.setDatabaseHost(host);
             preferences.setDatabasePort(port);
             preferences.setDatabaseUser(user);
+            preferences.setDatabasePasswd(pwd);
             try {
                 if (DatabaseManager.getInstance().connectDatabase(host, port, user, pwd)) {
 
