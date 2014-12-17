@@ -19,7 +19,7 @@
 package com.xl.display.report;
 
 import com.xl.database.Query;
-import com.xl.datatypes.DataCollection;
+import com.xl.datatypes.DataStore;
 import com.xl.datatypes.sites.SiteBean;
 import com.xl.datatypes.sites.SiteList;
 import com.xl.display.dataviewer.DataTreeRenderer;
@@ -31,50 +31,34 @@ import javax.swing.event.TreeSelectionListener;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.tree.TreeModel;
 import java.awt.*;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.util.Vector;
 
 /**
  * Created by Xing Li on 2014/10/5.
+ * <p/>
+ * The Class FilterReports provides a table output for all information derived from a table in database.
  */
-public class FilterReports extends Report implements MouseListener, TreeSelectionListener {
+public class FilterReports extends Report implements TreeSelectionListener {
+    /**
+     * The option panel.
+     */
     private JPanel optionsPanel = null;
+    /**
+     * The site set tree.
+     */
     private JTree siteSetTree;
+    /**
+     * The selected site list.
+     */
     private Object currentSiteList;
 
     /**
      * Instantiates a new report.
      *
-     * @param collection Data Collection to use for the report
+     * @param dataStore Data Store to use for the report
      */
-    public FilterReports(DataCollection collection) {
-        super(collection);
-    }
-
-    @Override
-    public void mouseClicked(MouseEvent e) {
-
-    }
-
-    @Override
-    public void mousePressed(MouseEvent e) {
-
-    }
-
-    @Override
-    public void mouseReleased(MouseEvent e) {
-
-    }
-
-    @Override
-    public void mouseEntered(MouseEvent e) {
-
-    }
-
-    @Override
-    public void mouseExited(MouseEvent e) {
-
+    public FilterReports(DataStore dataStore) {
+        super(dataStore);
     }
 
     @Override
@@ -98,9 +82,8 @@ public class FilterReports extends Report implements MouseListener, TreeSelectio
         con.weighty = 0.01;
         con.fill = GridBagConstraints.HORIZONTAL;
         con.anchor = GridBagConstraints.FIRST_LINE_START;
-        SiteSetTreeModel siteModel = new SiteSetTreeModel(collection.getActiveDataStore());
+        SiteSetTreeModel siteModel = new SiteSetTreeModel(dataStore);
         siteSetTree = new UnfocusableTree(siteModel);
-        siteSetTree.addMouseListener(this);
         siteSetTree.addTreeSelectionListener(this);
         siteSetTree.setCellRenderer(new DataTreeRenderer());
         siteViewer.add(siteSetTree, con);
@@ -149,28 +132,24 @@ public class FilterReports extends Report implements MouseListener, TreeSelectio
     /**
      * An extension of JTree which is unable to take keyboard focus.
      * <p/>
-     * This class is needed to make sure the arrow key navigation always works in the chromosome view.  If either of the JTrees can grab focus they will
+     * This class is needed to make sure the arrow key navigation always works in the chromosome view. If either of the JTrees can grab focus they will
      * intercept the arrow key events and just move the selections on the tree.
      */
     private class UnfocusableTree extends JTree {
 
-        // This class is needed to make sure the arrow key navigation always works in the chromosome view.  If either of the JTrees can grab focus they will
-        // intercept the arrow key events and just move the selections on the tree.
-
         /**
          * Instantiates a new unfocusable tree.
          *
-         * @param m
+         * @param m the tree model
          */
         public UnfocusableTree(TreeModel m) {
             super(m);
             this.setFocusable(false);
         }
-
     }
 
     /**
-     * A TableModel representing the results of the AnnotatedListReport..
+     * A TableModel representing the results of the AnnotatedListReport.
      */
     private class SiteBeanTableModel extends AbstractTableModel {
 
@@ -185,80 +164,17 @@ public class FilterReports extends Report implements MouseListener, TreeSelectio
             this.siteBeans = siteBeans;
         }
 
-        /* (non-Javadoc)
-         * @see javax.swing.table.TableModel#getRowCount()
-         */
+        @Override
         public int getRowCount() {
             return siteBeans.length;
         }
 
-        /* (non-Javadoc)
-         * @see javax.swing.table.TableModel#getColumnCount()
-         */
+        @Override
         public int getColumnCount() {
             return 9;
         }
 
-        /* (non-Javadoc)
-         * @see javax.swing.table.AbstractTableModel#getColumnName(int)
-         */
-        public String getColumnName(int c) {
-            switch (c) {
-                case 0:
-                    return "Chromosome";
-                case 1:
-                    return "Position";
-                case 2:
-                    return "ID";
-                case 3:
-                    return "Reference";
-                case 4:
-                    return "Alternative";
-                case 5:
-                    return "Quality";
-                case 6:
-                    return "Level";
-                case 7:
-                    return "P-value";
-                case 8:
-                    return "FDR";
-                default:
-                    return null;
-            }
-        }
-
-        /* (non-Javadoc)
-         * @see javax.swing.table.AbstractTableModel#getColumnClass(int)
-         */
-        public Class getColumnClass(int c) {
-            switch (c) {
-                case 0:
-                    return String.class;
-                case 1:
-                    return Integer.class;
-                case 2:
-                    return String.class;
-                case 3:
-                    return Character.class;
-                case 4:
-                    return Character.class;
-                case 5:
-                    return Double.class;
-                case 6:
-                    return Double.class;
-                case 7:
-                    return Double.class;
-                case 8:
-                    return Double.class;
-                default:
-                    return null;
-            }
-        }
-
-
-        /* (non-Javadoc)
-         * @see javax.swing.table.TableModel#getValueAt(int, int)
-         */
+        @Override
         public Object getValueAt(int r, int c) {
             switch (c) {
                 case 0:
@@ -279,6 +195,58 @@ public class FilterReports extends Report implements MouseListener, TreeSelectio
                     return siteBeans[r].getPvalue();
                 case 8:
                     return siteBeans[r].getFdr();
+                default:
+                    return null;
+            }
+        }
+
+        @Override
+        public String getColumnName(int c) {
+            switch (c) {
+                case 0:
+                    return "Chromosome";
+                case 1:
+                    return "Position";
+                case 2:
+                    return "ID";
+                case 3:
+                    return "Reference Base";
+                case 4:
+                    return "Alternative Base";
+                case 5:
+                    return "Quality";
+                case 6:
+                    return "Editing Level";
+                case 7:
+                    return "p-value";
+                case 8:
+                    return "FDR";
+                default:
+                    return null;
+            }
+        }
+
+        @Override
+        public Class getColumnClass(int c) {
+            switch (c) {
+                case 0:
+                    return String.class;
+                case 1:
+                    return Integer.class;
+                case 2:
+                    return String.class;
+                case 3:
+                    return Character.class;
+                case 4:
+                    return Character.class;
+                case 5:
+                    return Double.class;
+                case 6:
+                    return Double.class;
+                case 7:
+                    return Double.class;
+                case 8:
+                    return Double.class;
                 default:
                     return null;
             }
