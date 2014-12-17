@@ -23,12 +23,15 @@ import java.awt.*;
 
 /**
  * Created by Xing Li on 2014/11/14.
+ * <p/>
+ * Option dialog utils.
  */
 public class OptionDialogUtils {
     public static int showSaveBeforeExitDialog(Component c) {
         return JOptionPane.showOptionDialog(c, "You have made changes which were not saved.  Do you want to save before exiting?",
                 "Save before exit?", JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, new String[]{
-                        "Save and Exit", "Exit without Saving", "Cancel"}, "Save and Exit");
+                        "Save and Exit", "Exit without Saving", "Cancel"
+                }, "Save and Exit");
     }
 
     public static int showTableExistDialog(Component c, String tableName) {
