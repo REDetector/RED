@@ -22,7 +22,7 @@ import com.xl.datatypes.DataSet;
 import com.xl.datatypes.sequence.Location;
 import com.xl.datatypes.sequence.SequenceRead;
 import com.xl.datatypes.sites.Site;
-import com.xl.utils.ChromosomeUtils;
+import com.xl.utils.NameRetriever;
 import net.sf.picard.util.Interval;
 import net.sf.picard.util.IntervalList;
 import net.sf.picard.util.SamLocusIterator;
@@ -35,11 +35,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Parses data in the program-independent BAM file format. Can cope with simple, paired end and spliced reads. Has mainly been tested with TopHat output but
- * reports of success with other programs have been received.
+ * The Class BAMFileParser parses data in the program-independent BAM file format.
  */
 public class BAMFileParser extends DataParser {
-
+    /**
+     * The SAM file reader. Although its name is SAM file reader, but it really parses the BAM file since that the SAM file needs
+     */
     private SAMFileReader reader = null;
     private String bamPath = null;
 
@@ -51,39 +52,28 @@ public class BAMFileParser extends DataParser {
         init(bamFile);
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see java.lang.Runnable#run()
-     */
+    @Override
     public void run() {
-        System.out.println(BAMFileParser.class.getName() + ":run()");
         int lineCount = 0;
         File bamFile = getFile();
         this.bamPath = bamFile.getPath();
-        System.out.println(this.getClass().getName() + ":samFiles:" + bamFile.getName());
         DataSet newData;
-        SAMRecordIterator iter = null;
+        SAMRecordIterator iterator = null;
         String lastChr = null;
         int forwardReadCount = 0;
         int reverseReadCount = 0;
         int totalReadCount = 0;
         long totalReadLength = 0;
         try {
-
             init(bamFile);
-
             newData = new DataSet(bamFile.getName(), bamFile.getCanonicalPath());
             newData.setDataParser(this);
-
             // Now process the file
-
-            iter = reader.iterator();
-
-            if (iter.hasNext()) {
-                SAMRecord samRecord = iter.next();
+            iterator = reader.iterator();
+            if (iterator.hasNext()) {
+                SAMRecord samRecord = iterator.next();
                 String sequenceName = samRecord.getReferenceName();
-                if (!ChromosomeUtils.isStandardChromosomeName(sequenceName)) {
+                if (!NameRetriever.isStandardChromosomeName(sequenceName)) {
                     newData.setStandardChromosomeName(false);
                 }
                 if (samRecord.getReadNegativeStrandFlag()) {
@@ -94,8 +84,8 @@ public class BAMFileParser extends DataParser {
                 totalReadCount++;
             }
 
-            while (iter.hasNext()) {
-                SAMRecord samRecord = iter.next();
+            while (iterator.hasNext()) {
+                SAMRecord samRecord = iterator.next();
 
                 if (cancel) {
                     reader.close();
@@ -133,8 +123,8 @@ public class BAMFileParser extends DataParser {
             progressCancelled();
             return;
         } finally {
-            if (iter != null) {
-                iter.close();
+            if (iterator != null) {
+                iterator.close();
             }
         }
         processingComplete(new DataSet[]{newData});
@@ -152,48 +142,17 @@ public class BAMFileParser extends DataParser {
         }
     }
 
-    private void createBAMIndexFile(File bamFileInput, File bamIndexoutput) {
+    private void createBAMIndexFile(File bamFileInput, File bamIndexOutput) {
         SAMFileReader reader = new SAMFileReader(bamFileInput);
         reader.enableFileSource(true);
         SAMFileHeader header = reader.getFileHeader();
-        BAMIndexer indexer = new BAMIndexer(bamIndexoutput, header);
+        BAMIndexer indexer = new BAMIndexer(bamIndexOutput, header);
         SAMRecordIterator iterator = reader.iterator();
         while (iterator.hasNext()) {
             indexer.processAlignment(iterator.next());
         }
         indexer.finish();
         iterator.close();
-    }
-
-//    public List<SequenceRead> query(String sequence, int start, int end, boolean contained) throws IOException {
-//        if (reader == null) {
-//            throw new IOException("BAM file has not been loaded.");
-//        }
-//        SAMRecordIterator iterator = reader.query(sequence, start, end, contained);
-//        List<SequenceRead> samRecords = new ArrayList<SequenceRead>();
-//        while (iterator.hasNext()) {
-//            samRecords.add(new SequenceRead(iterator.next()));
-//        }
-//        iterator.close();
-//        return samRecords;
-//    }
-
-    public String getDescription() {
-        return "Imports Standard BAM/SAM Format Files";
-    }
-
-    @Override
-    public List<? extends Location> query(String chr, int start, int end) {
-        if (reader == null) {
-            return new ArrayList<Location>();
-        }
-        SAMRecordIterator iterator = reader.query(chr, start, end, false);
-        List<SequenceRead> samRecords = new ArrayList<SequenceRead>();
-        while (iterator.hasNext()) {
-            samRecords.add(new SequenceRead(iterator.next()));
-        }
-        iterator.close();
-        return samRecords;
     }
 
     public List<Site> getDepth(String chr, int startPosition, int endPosition) {
@@ -210,20 +169,6 @@ public class BAMFileParser extends DataParser {
         samFileReader.close();
         return siteList;
     }
-
-//    public int getTotalReadCount() {
-//        if (reader == null) {
-//            return 0;
-//        }
-//        int count = 0;
-//        AbstractBAMFileIndex index = (AbstractBAMFileIndex) reader.getIndex();
-//        int nRefs = index.getNumberOfReferences();
-//        for (int i = 0; i < nRefs; i++) {
-//            BAMIndexMetaData meta = index.getMetaData(i);
-//            count += meta.getAlignedRecordCount();
-//        }
-//        return count;
-//    }
 
     public List<SequenceRead> getReadsForSite(Site site) {
         SAMFileReader samFileReader = new SAMFileReader(new File(bamPath));
@@ -251,31 +196,41 @@ public class BAMFileParser extends DataParser {
         return false;
     }
 
-    public String parserName() {
-        return "BAM File Parser";
-    }
-
     public boolean readyToParse() {
         return true;
     }
 
+    public String parserName() {
+        return "BAM File Parser";
+    }
+
+    public String getDescription() {
+        return "Imports Standard BAM Format Files";
+    }
+
+    @Override
+    public List<? extends Location> query(String chr, int start, int end) {
+        if (reader == null) {
+            return new ArrayList<Location>();
+        }
+        SAMRecordIterator iterator = reader.query(chr, start, end, false);
+        List<SequenceRead> samRecords = new ArrayList<SequenceRead>();
+        while (iterator.hasNext()) {
+            samRecords.add(new SequenceRead(iterator.next()));
+        }
+        iterator.close();
+        return samRecords;
+    }
+
     public FileFilter getFileFilter() {
         return new FileFilter() {
+            public boolean accept(File f) {
+                return f.isDirectory() || f.getName().toLowerCase().endsWith(".bam");
+            }
 
             public String getDescription() {
-                return "BAM/SAM Files";
+                return "BAM Files";
             }
-
-            public boolean accept(File f) {
-                if (f.isDirectory()
-                        || f.getName().toLowerCase().endsWith(".bam")
-                        || f.getName().toLowerCase().endsWith(".sam")) {
-                    return true;
-                } else {
-                    return false;
-                }
-            }
-
         };
     }
 
