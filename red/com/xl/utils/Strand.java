@@ -18,6 +18,9 @@
 
 package com.xl.utils;
 
+/**
+ * The enum Strand show the strand information for a read or a feature.
+ */
 public enum Strand {
     NONE, POSITIVE, NEGATIVE;
 
