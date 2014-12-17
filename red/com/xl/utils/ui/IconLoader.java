@@ -20,29 +20,33 @@ package com.xl.utils.ui;
 
 import javax.swing.*;
 
+/**
+ * The icon loader.
+ */
 public class IconLoader {
+    /**
+     * The information icon.
+     */
     public static Icon ICON_INFO = new ImageIcon(ClassLoader.getSystemResource("resources/information.png"));
-
     /**
      * The error icon.
      */
     public static Icon ICON_ERROR = new ImageIcon(ClassLoader.getSystemResource("resources/error.png"));
-
     /**
      * The warning icon.
      */
     public static Icon ICON_WARNING = new ImageIcon(ClassLoader.getSystemResource("resources/warning.png"));
-
     /**
      * The tick icon.
      */
     public static Icon ICON_TICK = new ImageIcon(ClassLoader.getSystemResource("resources/tick.png"));
-
     /**
      * Logo of BUPT.
      */
     public static ImageIcon LOGO_1 = new ImageIcon(ClassLoader.getSystemResource("resources/logo_bupt.png"));
-
+    /**
+     * Logo of CQMU.
+     */
     public static ImageIcon LOGO_2 = new ImageIcon(ClassLoader.getSystemResource("resources/logo_cqmu.png"));
 
 }
