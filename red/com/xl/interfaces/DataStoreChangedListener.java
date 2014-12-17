@@ -22,11 +22,11 @@ import com.xl.datatypes.DataGroup;
 import com.xl.datatypes.DataStore;
 
 /**
- * The listener interface for receiving dataChange events. The class that is interested in processing a dataChange event implements this interface, and the
- * object created with that class is registered with a component using the component's <code>addDataChangeListener<code> method. When the dataChange event
+ * The listener interface for receiving DataStoreChanged events. The class that is interested in processing a DataStoreChanged event implements this interface, and the
+ * object created with that class is registered with a component using the component's <code>addDataStoreChangedListener<code> method. When the DataStoreChanged event
  * occurs, that object's appropriate method is invoked.
  */
-public interface DataStoreChangeListener {
+public interface DataStoreChangedListener {
 
     /**
      * Data set added.
