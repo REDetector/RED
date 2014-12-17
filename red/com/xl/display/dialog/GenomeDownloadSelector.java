@@ -20,7 +20,7 @@ package com.xl.display.dialog;
 import com.xl.main.REDApplication;
 import com.xl.net.genomes.DownloadableGenomeSet;
 import com.xl.net.genomes.DownloadableGenomeTreeModel;
-import com.xl.net.genomes.GenomeLists;
+import com.xl.net.genomes.GenomeList;
 
 import javax.swing.*;
 import javax.swing.event.TreeSelectionEvent;
@@ -100,7 +100,7 @@ public class GenomeDownloadSelector extends JDialog implements ActionListener, T
     public void actionPerformed(ActionEvent ae) {
         if (ae.getActionCommand().equals("download")) {
             setVisible(false);
-            GenomeLists selectedGenome = (GenomeLists) tree.getSelectionPath().getLastPathComponent();
+            GenomeList selectedGenome = (GenomeList) tree.getSelectionPath().getLastPathComponent();
             application.downloadGenome(selectedGenome.getId(), selectedGenome.getDisplayName());
             dispose();
         } else if (ae.getActionCommand().equals("cancel")) {
@@ -112,7 +112,7 @@ public class GenomeDownloadSelector extends JDialog implements ActionListener, T
 
     @Override
     public void valueChanged(TreeSelectionEvent tse) {
-        if (tree.getSelectionPath() != null && tree.getSelectionPath().getLastPathComponent() instanceof GenomeLists) {
+        if (tree.getSelectionPath() != null && tree.getSelectionPath().getLastPathComponent() instanceof GenomeList) {
             downloadButton.setEnabled(true);
         } else {
             downloadButton.setEnabled(false);

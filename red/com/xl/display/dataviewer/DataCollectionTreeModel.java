@@ -25,7 +25,7 @@ import com.xl.datatypes.DataStore;
 import com.xl.datatypes.annotation.AnnotationSet;
 import com.xl.datatypes.sites.SiteList;
 import com.xl.interfaces.AnnotationCollectionListener;
-import com.xl.interfaces.DataStoreChangeListener;
+import com.xl.interfaces.DataStoreChangedListener;
 
 import javax.swing.event.TreeModelEvent;
 import javax.swing.event.TreeModelListener;
@@ -37,7 +37,7 @@ import java.util.Vector;
 /**
  * The Class DataCollectionTreeModel provides a tree model which describes the data sets, data groups and annotation sets in a data collection
  */
-public class DataCollectionTreeModel implements TreeModel, DataStoreChangeListener, AnnotationCollectionListener {
+public class DataCollectionTreeModel implements TreeModel, DataStoreChangedListener, AnnotationCollectionListener {
 
     /**
      * The collection.
@@ -87,16 +87,9 @@ public class DataCollectionTreeModel implements TreeModel, DataStoreChangeListen
         dataGroupNode = new FolderNode("Data Groups");
     }
 
-    public void addTreeModelListener(TreeModelListener tl) {
-        if (tl != null && !listeners.contains(tl)) {
-            listeners.add(tl);
-        }
-    }
-
-    public void removeTreeModelListener(TreeModelListener tl) {
-        if (tl != null && listeners.contains(tl)) {
-            listeners.remove(tl);
-        }
+    @Override
+    public Object getRoot() {
+        return rootNode;
     }
 
     @Override
@@ -136,6 +129,17 @@ public class DataCollectionTreeModel implements TreeModel, DataStoreChangeListen
     }
 
     @Override
+    public boolean isLeaf(Object node) {
+        return !(node instanceof FolderNode);
+    }
+
+    @Override
+    public void valueForPathChanged(TreePath tp, Object node) {
+        // This only applies to editable trees - which this isn't.
+        System.out.println("Value for path changed called on node " + node);
+    }
+
+    @Override
     public int getIndexOfChild(Object node, Object child) {
         if (node instanceof SiteList) {
             SiteList[] children = ((SiteList) node).children();
@@ -169,20 +173,16 @@ public class DataCollectionTreeModel implements TreeModel, DataStoreChangeListen
 
     }
 
-    @Override
-    public Object getRoot() {
-        return rootNode;
+    public void addTreeModelListener(TreeModelListener tl) {
+        if (tl != null && !listeners.contains(tl)) {
+            listeners.add(tl);
+        }
     }
 
-    @Override
-    public boolean isLeaf(Object node) {
-        return !(node instanceof FolderNode);
-    }
-
-    @Override
-    public void valueForPathChanged(TreePath tp, Object node) {
-        // This only applies to editable trees - which this isn't.
-        System.out.println("Value for path changed called on node " + node);
+    public void removeTreeModelListener(TreeModelListener tl) {
+        if (tl != null && listeners.contains(tl)) {
+            listeners.remove(tl);
+        }
     }
 
     @Override

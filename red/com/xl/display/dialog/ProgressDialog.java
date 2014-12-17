@@ -21,6 +21,7 @@ import com.xl.interfaces.Cancellable;
 import com.xl.interfaces.ProgressListener;
 import com.xl.main.REDApplication;
 import com.xl.net.crashreport.CrashReporter;
+import com.xl.utils.namemanager.MenuUtils;
 
 import javax.swing.*;
 import java.awt.*;
@@ -146,9 +147,9 @@ public class ProgressDialog extends JDialog implements Runnable, ProgressListene
         getContentPane().add(label, BorderLayout.CENTER);
 
         if (cancellable != null) {
-            JButton cancelButton = new JButton("Cancel");
+            JButton cancelButton = new JButton(MenuUtils.CLOSE_BUTTON);
             cancelButton.addActionListener(this);
-            cancelButton.setActionCommand("cancel");
+            cancelButton.setActionCommand(MenuUtils.CLOSE_BUTTON);
             getContentPane().add(cancelButton, BorderLayout.EAST);
         }
 
@@ -168,14 +169,6 @@ public class ProgressDialog extends JDialog implements Runnable, ProgressListene
         }
     }
 
-    public void progressUpdated(String message, int currentPos, int totalPos) {
-        label.setText(message);
-        current = currentPos;
-        total = totalPos;
-        progressBar.repaint();
-
-    }
-
     public void progressExceptionReceived(Exception e) {
 
         if (reportedException != null && reportedException == e) return;
@@ -187,6 +180,21 @@ public class ProgressDialog extends JDialog implements Runnable, ProgressListene
         new CrashReporter(e);
     }
 
+    public void progressWarningReceived(Exception e) {
+        warningCount++;
+        // We just store this warning so we can display all of them at the end.  We only keep the first 5000 so that things don't get too out of hand
+        if (warningCount <= 5000) {
+            warnings.add(e);
+        }
+    }
+
+    public void progressUpdated(String message, int currentPos, int totalPos) {
+        label.setText(message);
+        current = currentPos;
+        total = totalPos;
+        progressBar.repaint();
+
+    }
 
     public void progressCancelled() {
         setVisible(false);
@@ -201,14 +209,6 @@ public class ProgressDialog extends JDialog implements Runnable, ProgressListene
             new WarningDisplayDialog(this, warningCount, warnings.toArray(new Exception[0]));
         }
         dispose();
-    }
-
-    public void progressWarningReceived(Exception e) {
-        warningCount++;
-        // We just store this warning so we can display all of them at the end.  We only keep the first 5000 so that things don't get too out of hand
-        if (warningCount <= 5000) {
-            warnings.add(e);
-        }
     }
 
     public void actionPerformed(ActionEvent e) {

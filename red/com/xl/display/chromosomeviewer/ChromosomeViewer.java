@@ -413,10 +413,10 @@ public class ChromosomeViewer extends JPanel implements ActiveDataChangedListene
     }
 
     @Override
-    public void activeDataChanged(DataStore d, SiteList l) {
+    public void activeDataChanged(DataStore dataStore, SiteList siteList) {
         for (AbstractTrack abstractTrack : tracks) {
             if (abstractTrack instanceof ChromosomeDataTrack)
-                ((ChromosomeDataTrack) abstractTrack).activeDataChanged(d, l);
+                ((ChromosomeDataTrack) abstractTrack).activeDataChanged(dataStore, siteList);
         }
     }
 

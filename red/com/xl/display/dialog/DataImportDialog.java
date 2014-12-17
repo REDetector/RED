@@ -23,7 +23,7 @@ import com.xl.display.panel.DataIntroductionPanel;
 import com.xl.main.REDApplication;
 import com.xl.preferences.LocationPreferences;
 import com.xl.thread.ThreadDenovoInput;
-import com.xl.thread.ThreadNonDenovoInput;
+import com.xl.thread.ThreadDnaRnaInput;
 import com.xl.utils.namemanager.MenuUtils;
 
 import javax.swing.*;
@@ -412,7 +412,7 @@ public class DataImportDialog extends JDialog implements ActionListener {
             switch (currentIndex) {
                 //DNA-RNA index
                 case NON_DENOVO_INDEX:
-                    new Thread(new ThreadNonDenovoInput()).start();
+                    new Thread(new ThreadDnaRnaInput()).start();
                     break;
                 //denovo index
                 case DENOVO_INDEX:

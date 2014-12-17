@@ -28,9 +28,9 @@ import com.xl.interfaces.ActiveDataChangedListener;
 import com.xl.parsers.dataparsers.BAMFileParser;
 import com.xl.preferences.DisplayPreferences;
 import com.xl.utils.AsciiUtils;
-import com.xl.utils.ChromosomeUtils;
 import com.xl.utils.ColourScheme;
 import com.xl.utils.FontManager;
+import com.xl.utils.NameRetriever;
 
 import java.awt.*;
 import java.awt.event.MouseEvent;
@@ -128,83 +128,6 @@ public class ChromosomeDataTrack extends AbstractTrack implements ActiveDataChan
     public ChromosomeDataTrack(ChromosomeViewer viewer, DataStore data) {
         super(viewer, data.name());
         this.data = data;
-    }
-
-    @Override
-    public void paint(Graphics g) {
-        super.paint(g);
-        int viewerLength = getViewerLength();
-
-        // If viewer length is longer than ten million, then show a prompt to zoom in.
-        if (viewerLength > TEN_MB) {
-            g.setColor(ColourScheme.DATA_TRACK);
-            String prompt = "Zoom in to make the mapped reads visible.";
-            int baseWidth = g.getFontMetrics().stringWidth(prompt);
-            g.drawString(prompt, (getWidth() - baseWidth) / 2, readHeight);
-            reads = null;
-            depths = null;
-            enlargeStart = enlargeEnd = 0;
-            return;
-        }
-        // Display mode, show reads, show sites, show reads and sites.
-        switch (DisplayPreferences.getInstance().getDisplayMode()) {
-            case DisplayPreferences.DISPLAY_MODE_PROBES_ONLY:
-                drawReads = false;
-                break;
-            case DisplayPreferences.DISPLAY_MODE_READS_ONLY:
-                drawSites = false;
-                break;
-            default:
-                drawReads = true;
-                drawSites = true;
-        }
-        drawnReads.removeAllElements();
-
-        // Update enlarge start and end if needed.
-        if (currentViewerStart < enlargeStart || currentViewerEnd > enlargeEnd) {
-            if (viewerLength > displayWidth * 2) {
-                updateBlocks();
-            }
-            enlargeStart = currentViewerStart - viewerLength / 2;
-            enlargeEnd = currentViewerEnd + viewerLength / 2;
-            if (enlargeStart < 0) {
-                enlargeStart = 0;
-            }
-            if (enlargeEnd > chromosome.getLength()) {
-                enlargeEnd = chromosome.getLength();
-            }
-        }
-
-        if (drawReads) {
-            // If viewer length is longer than twice display width, we display the reads in block status
-            if (viewerLength > displayWidth * 2) {
-                drawBlocks(g);
-                reads = null;
-            } else {
-                drawReads(g);
-            }
-        }
-        if (drawSites) {
-            drawSites(g);
-        }
-
-        // Draw a line across the bottom of the display
-        g.setColor(Color.LIGHT_GRAY);
-        g.drawLine(0, displayHeight - 1, displayWidth, displayHeight - 1);
-
-        // If we're the active data store then surround us in red. This can fail if the viewer is being destroyed (viewer returns null) so catch this
-        try {
-            if (chromosomeViewer.application().dataCollection().getActiveDataStore() == data) {
-                g.setColor(Color.RED);
-                g.drawLine(0, displayHeight - 2, displayWidth, displayHeight - 2);
-                g.drawLine(0, displayHeight - 1, displayWidth, displayHeight - 1);
-                g.drawLine(0, 0, displayWidth, 0);
-                g.drawLine(0, 1, displayWidth, 1);
-            }
-        } catch (NullPointerException npe) {
-            npe.printStackTrace();
-        }
-
     }
 
     /**
@@ -338,7 +261,7 @@ public class ChromosomeDataTrack extends AbstractTrack implements ActiveDataChan
         }
         String currentChromosome = chromosome.getName();
         if (!data.isStandardChromosomeName()) {
-            currentChromosome = ChromosomeUtils.getAliasChromosomeName(currentChromosome);
+            currentChromosome = NameRetriever.getAliasChromosomeName(currentChromosome);
         }
         if (reads != null) {
             reads.clear();
@@ -364,7 +287,7 @@ public class ChromosomeDataTrack extends AbstractTrack implements ActiveDataChan
         }
         String currentChromosome = chromosome.getName();
         if (!data.isStandardChromosomeName()) {
-            currentChromosome = ChromosomeUtils.getAliasChromosomeName(currentChromosome);
+            currentChromosome = NameRetriever.getAliasChromosomeName(currentChromosome);
         }
         if (depths != null) {
             depths.clear();
@@ -400,6 +323,106 @@ public class ChromosomeDataTrack extends AbstractTrack implements ActiveDataChan
             updateBlocks();
         } else {
             updateReads();
+        }
+    }
+
+    @Override
+    public void paint(Graphics g) {
+        super.paint(g);
+        int viewerLength = getViewerLength();
+
+        // If viewer length is longer than ten million, then show a prompt to zoom in.
+        if (viewerLength > TEN_MB) {
+            g.setColor(ColourScheme.DATA_TRACK);
+            String prompt = "Zoom in to make the mapped reads visible.";
+            int baseWidth = g.getFontMetrics().stringWidth(prompt);
+            g.drawString(prompt, (getWidth() - baseWidth) / 2, readHeight);
+            reads = null;
+            depths = null;
+            enlargeStart = enlargeEnd = 0;
+            return;
+        }
+        // Display mode, show reads, show sites, show reads and sites.
+        switch (DisplayPreferences.getInstance().getDisplayMode()) {
+            case DisplayPreferences.DISPLAY_MODE_PROBES_ONLY:
+                drawReads = false;
+                break;
+            case DisplayPreferences.DISPLAY_MODE_READS_ONLY:
+                drawSites = false;
+                break;
+            default:
+                drawReads = true;
+                drawSites = true;
+        }
+        drawnReads.removeAllElements();
+
+        // Update enlarge start and end if needed.
+        if (currentViewerStart < enlargeStart || currentViewerEnd > enlargeEnd) {
+            if (viewerLength > displayWidth * 2) {
+                updateBlocks();
+            }
+            enlargeStart = currentViewerStart - viewerLength / 2;
+            enlargeEnd = currentViewerEnd + viewerLength / 2;
+            if (enlargeStart < 0) {
+                enlargeStart = 0;
+            }
+            if (enlargeEnd > chromosome.getLength()) {
+                enlargeEnd = chromosome.getLength();
+            }
+        }
+
+        if (drawReads) {
+            // If viewer length is longer than twice display width, we display the reads in block status
+            if (viewerLength > displayWidth * 2) {
+                drawBlocks(g);
+                reads = null;
+            } else {
+                drawReads(g);
+            }
+        }
+        if (drawSites) {
+            drawSites(g);
+        }
+
+        // Draw a line across the bottom of the display
+        g.setColor(Color.LIGHT_GRAY);
+        g.drawLine(0, displayHeight - 1, displayWidth, displayHeight - 1);
+
+        // If we're the active data store then surround us in red. This can fail if the viewer is being destroyed (viewer returns null) so catch this
+        try {
+            if (chromosomeViewer.application().dataCollection().getActiveDataStore() == data) {
+                g.setColor(Color.RED);
+                g.drawLine(0, displayHeight - 2, displayWidth, displayHeight - 2);
+                g.drawLine(0, displayHeight - 1, displayWidth, displayHeight - 1);
+                g.drawLine(0, 0, displayWidth, 0);
+                g.drawLine(0, 1, displayWidth, 1);
+            }
+        } catch (NullPointerException npe) {
+            npe.printStackTrace();
+        }
+
+    }
+
+    @Override
+    public void mouseExited(MouseEvent arg0) {
+        activeRead = null;
+        timing = true;
+        repaint();
+    }
+
+    @Override
+    public void mouseMoved(MouseEvent me) {
+        /*
+         * In many cases we don't need to search through reads and sites, so we can quickly work out what we should be looking for from what we're drawing
+         * and where the mouse is.
+		 */
+        findRead(pixelToBp(me.getX()), me.getY());
+        long lastTime = System.currentTimeMillis();
+        while (timing) {
+            if (System.currentTimeMillis() - lastTime > 1000) {
+                setToolTipText("Single left click to zoom in and single right click to zoom out.");
+                timing = false;
+            }
         }
     }
 
@@ -479,40 +502,17 @@ public class ChromosomeDataTrack extends AbstractTrack implements ActiveDataChan
     }
 
     @Override
-    public void activeDataChanged(DataStore d, SiteList l) {
-        if (data != d) {
+    public void activeDataChanged(DataStore dataStore, SiteList siteList) {
+        if (data != dataStore) {
             return;
         }
-        if (l == null) {
+        if (siteList == null) {
             sites = null;
         } else {
-            sites = l.getSitesForChromosome(DisplayPreferences.getInstance().getCurrentChromosome().getName());
+            sites = siteList.getSitesForChromosome(DisplayPreferences.getInstance().getCurrentChromosome().getName());
             Arrays.sort(sites);
         }
         repaint();
-    }
-
-    @Override
-    public void mouseExited(MouseEvent arg0) {
-        activeRead = null;
-        timing = true;
-        repaint();
-    }
-
-    @Override
-    public void mouseMoved(MouseEvent me) {
-        /*
-         * In many cases we don't need to search through reads and sites, so we can quickly work out what we should be looking for from what we're drawing
-         * and where the mouse is.
-		 */
-        findRead(pixelToBp(me.getX()), me.getY());
-        long lastTime = System.currentTimeMillis();
-        while (timing) {
-            if (System.currentTimeMillis() - lastTime > 1000) {
-                setToolTipText("Single left click to zoom in and single right click to zoom out.");
-                timing = false;
-            }
-        }
     }
 
     /**

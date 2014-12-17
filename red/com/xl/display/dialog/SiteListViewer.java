@@ -27,6 +27,7 @@ import com.xl.preferences.DisplayPreferences;
 import com.xl.preferences.LocationPreferences;
 import com.xl.utils.FontManager;
 import com.xl.utils.filefilters.FileFilterExt;
+import com.xl.utils.namemanager.MenuUtils;
 import com.xl.utils.ui.OptionDialogUtils;
 
 import javax.swing.*;
@@ -64,7 +65,7 @@ public class SiteListViewer extends JDialog implements MouseListener, ActionList
 
         JTextArea description = new JTextArea("Description:\n\n" + list.description() + "\n\nComments:\n\n" + list.comments(), 5, 0);
         description.setEditable(false);
-        description.setFont(Font.getFont("default"));
+        description.setFont(FontManager.DEFAULT_FONT);
         description.setLineWrap(true);
         description.setWrapStyleWord(true);
         getContentPane().add(new JScrollPane(description, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER), BorderLayout.NORTH);
@@ -90,13 +91,13 @@ public class SiteListViewer extends JDialog implements MouseListener, ActionList
         getContentPane().add(new JScrollPane(table), BorderLayout.CENTER);
 
         JPanel buttonPanel = new JPanel();
-        JButton cancelButton = new JButton("Close");
-        cancelButton.setActionCommand("close");
+        JButton cancelButton = new JButton(MenuUtils.CLOSE_BUTTON);
+        cancelButton.setActionCommand(MenuUtils.CLOSE_BUTTON);
         cancelButton.addActionListener(this);
         buttonPanel.add(cancelButton);
 
-        JButton saveButton = new JButton("Save");
-        saveButton.setActionCommand("save");
+        JButton saveButton = new JButton(MenuUtils.SAVE_BUTTON);
+        saveButton.setActionCommand(MenuUtils.SAVE_BUTTON);
         saveButton.addActionListener(this);
         buttonPanel.add(saveButton);
 
@@ -121,7 +122,7 @@ public class SiteListViewer extends JDialog implements MouseListener, ActionList
         description.setWrapStyleWord(true);
         getContentPane().add(new JScrollPane(description, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER), BorderLayout.NORTH);
 
-        String[] headers = new String[]{"Chr", "Position", "Refefence Base", "Alternative Base"};
+        String[] headers = new String[]{"Chr", "Position", "Reference Base", "Alternative Base"};
         Class[] classes = new Class[]{String.class, Integer.class, Character.class, Character.class};
 
         Object[][] rowData = new Object[sites.length][headers.length];
@@ -142,13 +143,13 @@ public class SiteListViewer extends JDialog implements MouseListener, ActionList
         getContentPane().add(new JScrollPane(table), BorderLayout.CENTER);
 
         JPanel buttonPanel = new JPanel();
-        JButton cancelButton = new JButton("Close");
-        cancelButton.setActionCommand("close");
+        JButton cancelButton = new JButton(MenuUtils.CLOSE_BUTTON);
+        cancelButton.setActionCommand(MenuUtils.CLOSE_BUTTON);
         cancelButton.addActionListener(this);
         buttonPanel.add(cancelButton);
 
-        JButton saveButton = new JButton("Save");
-        saveButton.setActionCommand("save");
+        JButton saveButton = new JButton(MenuUtils.SAVE_BUTTON);
+        saveButton.setActionCommand(MenuUtils.SAVE_BUTTON);
         saveButton.addActionListener(this);
         buttonPanel.add(saveButton);
 
@@ -211,10 +212,10 @@ public class SiteListViewer extends JDialog implements MouseListener, ActionList
      */
     public void actionPerformed(ActionEvent ae) {
 
-        if (ae.getActionCommand().equals("close")) {
+        if (ae.getActionCommand().equals(MenuUtils.CLOSE_BUTTON)) {
             setVisible(false);
             dispose();
-        } else if (ae.getActionCommand().equals("save")) {
+        } else if (ae.getActionCommand().equals(MenuUtils.SAVE_BUTTON)) {
             JFileChooser chooser = new JFileChooser(LocationPreferences.getInstance().getProjectSaveLocation());
             chooser.setMultiSelectionEnabled(false);
             chooser.setFileFilter(new FileFilterExt("txt"));
