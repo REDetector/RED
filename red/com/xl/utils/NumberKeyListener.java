@@ -22,16 +22,17 @@ import javax.swing.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
+/**
+ * The Class NumberKeyListener allows user to input only number.
+ */
 public class NumberKeyListener implements KeyListener {
 
     private boolean allowsFractions;
     private boolean allowsNegatives;
 
-    // We looked at allowing min value filtering, but this can't work. It ends
-    // up corrupting the values whilst you're trying to type a larger number,
-    // eg, min value is 20 and you try to type 100 and end up with 200 because
-    // 1 and 10 would both get turned to 20. The current scheme can still break
-    // if the max number is negative, but such is life.
+    // We looked at allowing min value filtering, but this can't work. It ends up corrupting the values whilst you're trying to type a larger number, eg, min
+    // value is 20 and you try to type 100 and end up with 200 because 1 and 10 would both get turned to 20. The current scheme can still break if the max
+    // number is negative, but such is life.
 
     private Double maxDoubleValue = null;
     private Integer maxIntValue = null;
@@ -41,8 +42,7 @@ public class NumberKeyListener implements KeyListener {
         this.allowsNegatives = allowsNegatives;
     }
 
-    public NumberKeyListener(boolean allowsFractions, boolean allowsNegatives,
-                             double maxValue) {
+    public NumberKeyListener(boolean allowsFractions, boolean allowsNegatives, double maxValue) {
         this.allowsFractions = allowsFractions;
         this.allowsNegatives = allowsNegatives;
         if (allowsFractions) {
@@ -52,14 +52,19 @@ public class NumberKeyListener implements KeyListener {
         }
     }
 
+    public void keyTyped(KeyEvent arg0) {
+    }
+
+    public void keyPressed(KeyEvent arg0) {
+    }
+
     public void keyReleased(KeyEvent ke) {
 
         JTextField source;
         if (ke.getSource() instanceof JTextField) {
             source = (JTextField) ke.getSource();
         } else {
-            throw new IllegalArgumentException(
-                    "The NumberKeyListener expects to be attached to a JTextField");
+            throw new IllegalArgumentException("The NumberKeyListener expects to be attached to a JTextField");
         }
 
         String text = source.getText();
@@ -75,7 +80,7 @@ public class NumberKeyListener implements KeyListener {
 
         // Remove any commas if people have copy/pasted numbers formatted that
         // way
-        if (text.indexOf(",") >= 0) {
+        if (text.contains(",")) {
             source.setText(text.replaceAll(",", ""));
         }
 
@@ -109,12 +114,6 @@ public class NumberKeyListener implements KeyListener {
             keyReleased(ke);
         }
 
-    }
-
-    public void keyPressed(KeyEvent arg0) {
-    }
-
-    public void keyTyped(KeyEvent arg0) {
     }
 
 }
