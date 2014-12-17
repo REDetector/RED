@@ -21,6 +21,7 @@ package com.xl.net.crashreport;
 import com.xl.main.Global;
 import com.xl.main.REDApplication;
 import com.xl.utils.FontManager;
+import com.xl.utils.namemanager.MenuUtils;
 
 import javax.swing.*;
 import java.awt.*;
@@ -32,14 +33,9 @@ import java.net.URISyntaxException;
 
 /**
  * The Class CrashReporter is the dialog which appears when an unexpected exception is encountered. It can generate a stack trace and submit it back to the
- * authors to fix.
+ * issue in our home page to fix.
  */
 public class CrashReporter extends JDialog implements ActionListener {
-
-    /**
-     * The e.
-     */
-    private final Throwable e;
 
     /**
      * Instantiates a new crash reporter.
@@ -49,13 +45,12 @@ public class CrashReporter extends JDialog implements ActionListener {
     public CrashReporter(Throwable e) {
         super(REDApplication.getInstance(), "Oops - Crash Reporter");
 
-        this.e = e;
         e.printStackTrace();
 
         if (e instanceof OutOfMemoryError) {
-            // Don't issue a normal crash report but tell them that they ran out of memory
-            JOptionPane.showMessageDialog(REDApplication.getInstance(), "<html>You ran out of memory!<br><br>Please look at Help &gt; Contents &gt; Configuration to see how to fix this",
-                    "Out of memory", JOptionPane.ERROR_MESSAGE);
+            // Don't issue a normal crash report but tell them that they ran out of memory.
+            JOptionPane.showMessageDialog(REDApplication.getInstance(), "<html>You ran out of memory!<br><br>Please look at Help &gt; Help Contents &gt; " +
+                    "Configuration to see how to fix this", "Out of memory", JOptionPane.ERROR_MESSAGE);
             return;
         }
 
@@ -108,18 +103,18 @@ public class CrashReporter extends JDialog implements ActionListener {
 
         JPanel buttonPanel = new JPanel();
 
-        JButton closeButton = new JButton("Ignore");
-        closeButton.setActionCommand("close");
+        JButton closeButton = new JButton(MenuUtils.IGNORE_BUTTON);
+        closeButton.setActionCommand(MenuUtils.IGNORE_BUTTON);
         closeButton.addActionListener(this);
         buttonPanel.add(closeButton);
 
-        JButton findIssues = new JButton("Find Issues");
-        findIssues.setActionCommand("find_issues");
+        JButton findIssues = new JButton(MenuUtils.FIND_ISSUES_BUTTON);
+        findIssues.setActionCommand(MenuUtils.FIND_ISSUES_BUTTON);
         findIssues.addActionListener(this);
         buttonPanel.add(findIssues);
 
-        JButton sendButton = new JButton("Report Error");
-        sendButton.setActionCommand("new_issues");
+        JButton sendButton = new JButton(MenuUtils.REPORT_ERROR_BUTTON);
+        sendButton.setActionCommand(MenuUtils.REPORT_ERROR_BUTTON);
         sendButton.addActionListener(this);
         buttonPanel.add(sendButton);
 
@@ -131,27 +126,22 @@ public class CrashReporter extends JDialog implements ActionListener {
 
     }
 
+    @Override
     public void actionPerformed(ActionEvent ae) {
-
-        if (ae.getActionCommand().equals("close")) {
-            setVisible(false);
-            dispose();
-        } else if (ae.getActionCommand().equals("find_issues")) {
-            try {
+        try {
+            if (ae.getActionCommand().equals(MenuUtils.IGNORE_BUTTON)) {
+                setVisible(false);
+                dispose();
+            } else if (ae.getActionCommand().equals(MenuUtils.FIND_ISSUES_BUTTON)) {
                 Desktop.getDesktop().browse(new URI(Global.ISSUES_PAGE));
-            } catch (IOException e1) {
-                e1.printStackTrace();
-            } catch (URISyntaxException e1) {
-                e1.printStackTrace();
-            }
-        } else if (ae.getActionCommand().equals("new_issues")) {
-            try {
+            } else if (ae.getActionCommand().equals(MenuUtils.REPORT_ERROR_BUTTON)) {
                 Desktop.getDesktop().browse(new URI(Global.NEW_ISSUE_PAGE));
-            } catch (IOException e1) {
-                e1.printStackTrace();
-            } catch (URISyntaxException e1) {
-                e1.printStackTrace();
+
             }
+        } catch (IOException e1) {
+            e1.printStackTrace();
+        } catch (URISyntaxException e1) {
+            e1.printStackTrace();
         }
     }
 }
