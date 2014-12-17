@@ -18,17 +18,14 @@
 
 package com.xl.display.report;
 
-/**
- * Created by Xing Li on 2014/9/18.
- */
 
-import com.xl.datatypes.sites.SiteList;
 import com.xl.display.dialog.ProgressDialog;
 import com.xl.interfaces.OptionsListener;
 import com.xl.interfaces.ProgressListener;
 import com.xl.main.REDApplication;
 import com.xl.net.crashreport.CrashReporter;
 import com.xl.utils.FontManager;
+import com.xl.utils.namemanager.MenuUtils;
 
 import javax.swing.*;
 import javax.swing.table.TableModel;
@@ -37,20 +34,19 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 /**
+ * Created by Xing Li on 2014/9/18.
+ * <p/>
  * The Class ReportOptions displays a dialog containing the options panel for a report.
  */
 public class ReportOptions extends JDialog implements ActionListener, ProgressListener, OptionsListener {
-
     /**
      * The ok button.
      */
     private JButton okButton;
-
     /**
      * The application.
      */
     private REDApplication application;
-
     /**
      * The report.
      */
@@ -79,14 +75,7 @@ public class ReportOptions extends JDialog implements ActionListener, ProgressLi
 
         JPanel topPanel = new JPanel();
 
-        JLabel siteListLabel;
-
-        SiteList l = report.collection.getActiveSiteList();
-        if (l != null) {
-            siteListLabel = new JLabel("Reporting on sites in '" + l.getFilterName() + "' (" + l.getAllSites().length + " sites)", JLabel.CENTER);
-        } else {
-            siteListLabel = new JLabel("Reporting on all data", JLabel.CENTER);
-        }
+        JLabel siteListLabel = new JLabel("Reporting on all data", JLabel.CENTER);
         siteListLabel.setFont(FontManager.DEFAULT_FONT);
         topPanel.add(siteListLabel);
 
@@ -94,13 +83,13 @@ public class ReportOptions extends JDialog implements ActionListener, ProgressLi
 
         JPanel buttonPanel = new JPanel();
 
-        JButton cancelButton = new JButton("Cancel");
-        cancelButton.setActionCommand("cancel");
+        JButton cancelButton = new JButton(MenuUtils.CANCEL_BUTTON);
+        cancelButton.setActionCommand(MenuUtils.CANCEL_BUTTON);
         cancelButton.addActionListener(this);
         buttonPanel.add(cancelButton);
 
-        okButton = new JButton("OK");
-        okButton.setActionCommand("ok");
+        okButton = new JButton(MenuUtils.OK_BUTTON);
+        okButton.setActionCommand(MenuUtils.OK_BUTTON);
         okButton.addActionListener(this);
         buttonPanel.add(okButton);
 
@@ -112,7 +101,7 @@ public class ReportOptions extends JDialog implements ActionListener, ProgressLi
             getContentPane().add(report.getOptionsPanel());
             setVisible(true);
         } else {
-            actionPerformed(new ActionEvent(this, 0, "ok"));
+            actionPerformed(new ActionEvent(this, 0, MenuUtils.OK_BUTTON));
         }
 
         // Some reports need to have set up their options panel
@@ -124,11 +113,12 @@ public class ReportOptions extends JDialog implements ActionListener, ProgressLi
     /* (non-Javadoc)
      * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
      */
+    @Override
     public void actionPerformed(ActionEvent ae) {
-        if (ae.getActionCommand().equals("cancel")) {
+        if (ae.getActionCommand().equals(MenuUtils.CANCEL_BUTTON)) {
             setVisible(false);
             dispose();
-        } else if (ae.getActionCommand().equals("ok")) {
+        } else if (ae.getActionCommand().equals(MenuUtils.OK_BUTTON)) {
             okButton.setEnabled(false);
             report.addProgressListener(this);
             report.addProgressListener(new ProgressDialog(this, "Creating report...", report));
@@ -136,27 +126,33 @@ public class ReportOptions extends JDialog implements ActionListener, ProgressLi
         }
     }
 
+    @Override
+    public void progressExceptionReceived(Exception e) {
+        new CrashReporter(e);
+    }
+
+    @Override
+    public void progressWarningReceived(Exception e) {
+    }
+
+    @Override
+    public void progressUpdated(String message, int current, int max) {
+    }
+
+    @Override
     public void progressCancelled() {
-        // Reenable the OK button as long as they haven't been messing around.
+        // Re-enable the OK button as long as they haven't been messing around.
         optionsChanged();
     }
 
+    @Override
     public void progressComplete(String command, Object result) {
         new ReportTableDialog(application, report, (TableModel) result);
         setVisible(false);
         dispose();
     }
 
-    public void progressExceptionReceived(Exception e) {
-        new CrashReporter(e);
-    }
-
-    public void progressUpdated(String message, int current, int max) {
-    }
-
-    public void progressWarningReceived(Exception e) {
-    }
-
+    @Override
     public void optionsChanged() {
         if (report.isReady()) {
             okButton.setEnabled(true);
