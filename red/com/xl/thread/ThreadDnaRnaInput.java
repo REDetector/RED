@@ -21,19 +21,22 @@ package com.xl.thread;
 import com.xl.database.DatabaseManager;
 import com.xl.database.DatabaseSelector;
 import com.xl.database.TableCreator;
+import com.xl.exception.REDException;
 import com.xl.filter.denovo.FisherExactTestFilter;
 import com.xl.filter.denovo.KnownSNPFilter;
 import com.xl.filter.denovo.RepeatRegionsFilter;
 import com.xl.filter.denovo.SpliceJunctionFilter;
 import com.xl.main.REDApplication;
-import com.xl.parsers.dataparsers.DNAVCFMultiParser;
-import com.xl.parsers.dataparsers.RNAVCFMultiParser;
+import com.xl.parsers.dataparsers.DNAVCFParser;
+import com.xl.parsers.dataparsers.RNAVCFParser;
 import com.xl.preferences.LocationPreferences;
 
 /**
  * Created by Xing Li on 2014/7/22.
+ * <p/>
+ * The Class ThreadDnaRnaInput generates a new thread to input all data with DNA-RNA mode.
  */
-public class ThreadNonDenovoInput implements Runnable {
+public class ThreadDnaRnaInput implements Runnable {
 
     @Override
     public void run() {
@@ -44,17 +47,29 @@ public class ThreadNonDenovoInput implements Runnable {
         manager.createDatabase(DatabaseManager.DNA_RNA_DATABASE_NAME);
         manager.useDatabase(DatabaseManager.DNA_RNA_DATABASE_NAME);
 
-        RNAVCFMultiParser multiParser = new RNAVCFMultiParser();
-        multiParser.parseMultiVCFFile(locationPreferences.getRnaVcfFile());
+        RNAVCFParser rnaVCFParser = new RNAVCFParser();
+        rnaVCFParser.parseVCFFile(locationPreferences.getRnaVcfFile());
+        String[] rnaVcfSamples = rnaVCFParser.getSampleNames();
 
-        DNAVCFMultiParser dnavcfMultiParser = new DNAVCFMultiParser();
-        dnavcfMultiParser.parseMultiVCFFile(locationPreferences.getDnaVcfFile());
-
-//        RNAVCFParser rnaVCFParser = new RNAVCFParser();
-//        rnaVCFParser.parseVCFFile(sampleName + "_" + DatabaseManager.RNA_VCF_RESULT_TABLE_NAME, locationPreferences.getRnaVcfFile());
-//
-//        DNAVCFParser dnaVCFParser = new DNAVCFParser();
-//        dnaVCFParser.parseVCFFile(sampleName + "_" + DatabaseManager.DNA_VCF_RESULT_TABLE_NAME, locationPreferences.getDnaVcfFile());
+        DNAVCFParser dnaVCFParser = new DNAVCFParser();
+        dnaVCFParser.parseVCFFile(locationPreferences.getDnaVcfFile());
+        String[] dnaVCFSamples = dnaVCFParser.getSampleNames();
+        boolean match = false;
+        for (String rnaSample : rnaVcfSamples) {
+            match = false;
+            for (String dnaSample : dnaVCFSamples) {
+                if (rnaSample.equals(dnaSample)) {
+                    match = true;
+                }
+            }
+        }
+        if(!match){
+            try {
+                throw new REDException("Samples in DNA VCF file does not match the RNA VCF, please have a check the sample name.");
+            } catch (REDException e) {
+                e.printStackTrace();
+            }
+        }
 
         RepeatRegionsFilter rf = new RepeatRegionsFilter(manager);
         TableCreator.createRepeatRegionsTable(DatabaseManager.REPEAT_MASKER_TABLE_NAME);
