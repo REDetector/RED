@@ -23,7 +23,17 @@ import com.xl.datatypes.sites.SiteList;
 
 /**
  * Created by Xing Li on 2014/11/17.
+ * <p/>
+ * The listener interface for receiving ActiveDataChanged events. The class that is interested in processing a ActiveDataChanged event implements this
+ * interface, and the object created with that class is registered with a component using the component's <code>addActiveDataChangedListener<code> method.
+ * When the ActiveDataChanged event occurs, that object's appropriate method is invoked.
  */
 public interface ActiveDataChangedListener {
-    public void activeDataChanged(DataStore d, SiteList l);
+    /**
+     * When the active data is changed, then we tell all to make some changes at the same time.
+     *
+     * @param dataStore The data store to be changed to.
+     * @param siteList  The site list to be changed to.
+     */
+    public void activeDataChanged(DataStore dataStore, SiteList siteList);
 }
