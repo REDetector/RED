@@ -18,15 +18,31 @@
 
 package com.xl.net.genomes;
 
-public class GenomeLists {
-
-
-    private String id = null;
-    private String downloadLocation = null;
+/**
+ * The Class GenomeList represents a genome, including id, display name and its download link.
+ */
+public class GenomeList {
+    /**
+     * Display name.
+     */
     private String displayName = null;
+    /**
+     * Download link of this genome.
+     */
+    private String downloadLocation = null;
+    /**
+     * Genome id.
+     */
+    private String id = null;
 
-    public GenomeLists(String displayName, String downloadLocation,
-                       String id) {
+    /**
+     * Initiate a new genome list.
+     *
+     * @param displayName      display name
+     * @param downloadLocation download link
+     * @param id               genome id
+     */
+    public GenomeList(String displayName, String downloadLocation, String id) {
         this.displayName = displayName;
         this.downloadLocation = downloadLocation;
         this.id = id;
