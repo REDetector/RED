@@ -18,6 +18,7 @@
 
 package com.xl.display.report;
 
+import com.xl.datatypes.DataStore;
 import com.xl.datatypes.sites.Site;
 import com.xl.display.dialog.SiteListViewer;
 import com.xl.main.REDApplication;
@@ -38,28 +39,29 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
- * The Class HistogramPanel displays an interactive histogram from any linear set of data.
+ * The Class VariantHistogramPanel displays an interactive histogram of variant types.
  */
 public class VariantHistogramPanel extends JPanel implements Runnable {
-
     /**
      * The data.
      */
     private Site[] sites;
-
     /**
      * The main histogram panel.
      */
     private MainHistogramPanel mainHistogramPanel;
-
+    /**
+     * The histogram categories for all variant types.
+     */
     private Map<String, Integer> histogramCategories = new LinkedHashMap<String, Integer>(12);
     /**
      * The status panel.
      */
     private StatusPanel statusPanel;
-
+    /**
+     * Current histogram category.
+     */
     private Map.Entry<String, Integer> currentHistogram;
-
     /**
      * The max data value.
      */
@@ -68,11 +70,11 @@ public class VariantHistogramPanel extends JPanel implements Runnable {
     /**
      * Instantiates a new histogram panel.
      *
-     * @param sites the sites
+     * @param dataStore the data store.
      */
-    public VariantHistogramPanel(Site[] sites) {
+    public VariantHistogramPanel(DataStore dataStore) {
 
-        this.sites = sites;
+        this.sites = dataStore.siteSet().getActiveList().getAllSites();
 
         setLayout(new BorderLayout());
         JPanel textPanel = new JPanel();
@@ -87,14 +89,13 @@ public class VariantHistogramPanel extends JPanel implements Runnable {
         statusPanel = new StatusPanel();
         add(statusPanel, BorderLayout.SOUTH);
 
-        calcuateCategories();
-
+        calculateCategories();
     }
 
     /**
      * Main histogram panel.
      *
-     * @return the j panel
+     * @return the panel
      */
     public JPanel mainHistogramPanel() {
         return mainHistogramPanel;
@@ -105,25 +106,23 @@ public class VariantHistogramPanel extends JPanel implements Runnable {
     }
 
     /**
-     * Calcuate categories.
+     * Calculate categories.
      */
-    private void calcuateCategories() {
+    private void calculateCategories() {
         Thread t = new Thread(this);
         t.start();
     }
 
 
-    /* (non-Javadoc)
-     * @see java.lang.Runnable#run()
-     */
+    @Override
     public void run() {
 
         for (Site site : sites) {
-            String refalt = String.valueOf(site.getRefBase()).toUpperCase() + " to " + String.valueOf(site.getAltBase()).toUpperCase();
-            if (!histogramCategories.containsKey(refalt)) {
-                histogramCategories.put(refalt, 1);
+            String refToAlt = String.valueOf(site.getRefBase()).toUpperCase() + " to " + String.valueOf(site.getAltBase()).toUpperCase();
+            if (!histogramCategories.containsKey(refToAlt)) {
+                histogramCategories.put(refToAlt, 1);
             } else {
-                histogramCategories.put(refalt, histogramCategories.get(refalt) + 1);
+                histogramCategories.put(refToAlt, histogramCategories.get(refToAlt) + 1);
             }
         }
         Collection<Integer> coll = histogramCategories.values();
@@ -138,8 +137,13 @@ public class VariantHistogramPanel extends JPanel implements Runnable {
      * The Class MainHistogramPanel.
      */
     private class MainHistogramPanel extends JPanel implements MouseListener, MouseMotionListener {
-
+        /**
+         * The space of x axis.
+         */
         private static final int X_AXIS_SPACE = 50;
+        /**
+         * The space of y axis.
+         */
         private static final int Y_AXIS_SPACE = 30;
 
         /**
@@ -150,6 +154,12 @@ public class VariantHistogramPanel extends JPanel implements Runnable {
             addMouseMotionListener(this);
         }
 
+        /**
+         * Export the count of variant type to a single text file.
+         *
+         * @param file the file to export to.
+         * @throws IOException If file does not exist, then throw this exception.
+         */
         public void exportData(File file) throws IOException {
 
             PrintWriter pr = new PrintWriter(file);
@@ -161,9 +171,7 @@ public class VariantHistogramPanel extends JPanel implements Runnable {
             pr.close();
         }
 
-        /* (non-Javadoc)
-         * @see javax.swing.JComponent#paintComponent(java.awt.Graphics)
-         */
+        @Override
         public void paintComponent(Graphics g) {
             super.paintComponent(g);
             // We want a white background
@@ -197,8 +205,7 @@ public class VariantHistogramPanel extends JPanel implements Runnable {
                 // Put a line across the plot
                 if (currentYValue != 0) {
                     g.setColor(Color.LIGHT_GRAY);
-                    g.drawLine(X_AXIS_SPACE, (int) ((getHeight() - Y_AXIS_SPACE) - yHeight), getWidth() - 5,
-                            (int) ((getHeight() - Y_AXIS_SPACE) - yHeight));
+                    g.drawLine(X_AXIS_SPACE, (int) ((getHeight() - Y_AXIS_SPACE) - yHeight), getWidth() - 5, (int) ((getHeight() - Y_AXIS_SPACE) - yHeight));
                     g.setColor(Color.BLACK);
                 }
                 currentYValue += yAxisScale.getInterval();
@@ -224,6 +231,12 @@ public class VariantHistogramPanel extends JPanel implements Runnable {
             }
         }
 
+        /**
+         * Get the y pixel width by a given count relative to the maximum count.
+         *
+         * @param count the count of variant type
+         * @return pixel of y width.
+         */
         private int getYWidth(int count) {
             int y = (int) ((double) (count) / maxCount * (getHeight() - Y_AXIS_SPACE));
             if (y <= 5) {
@@ -233,6 +246,12 @@ public class VariantHistogramPanel extends JPanel implements Runnable {
             }
         }
 
+        /**
+         * Given a x position, we calculate the histogram where the mouse is in.
+         *
+         * @param xPosition the x position.
+         * @return the variant type name.
+         */
         private String getHistogram(int xPosition) {
             String[] variants = histogramCategories.keySet().toArray(new String[0]);
             return variants[(int) ((double) (xPosition - X_AXIS_SPACE) / (getWidth() - X_AXIS_SPACE) * variants.length)];
@@ -241,12 +260,9 @@ public class VariantHistogramPanel extends JPanel implements Runnable {
 
         @Override
         public void mouseDragged(MouseEvent e) {
-
         }
 
-        /* (non-Javadoc)
-                 * @see java.awt.event.MouseMotionListener#mouseMoved(java.awt.event.MouseEvent)
-                 */
+        @Override
         public void mouseMoved(MouseEvent me) {
 
 //            If we're outside the main plot area we don't need to worry about it
@@ -267,14 +283,12 @@ public class VariantHistogramPanel extends JPanel implements Runnable {
             }
         }
 
-        /* (non-Javadoc)
-         * @see java.awt.event.MouseListener#mouseClicked(java.awt.event.MouseEvent)
-         */
+        @Override
         public void mouseClicked(MouseEvent arg0) {
             if (arg0.getClickCount() == 2 && currentHistogram != null) {
-                String refalt = currentHistogram.getKey();
-                char ref = refalt.charAt(0);
-                char alt = refalt.charAt(refalt.length() - 1);
+                String refToAlt = currentHistogram.getKey();
+                char ref = refToAlt.charAt(0);
+                char alt = refToAlt.charAt(refToAlt.length() - 1);
                 java.util.List<Site> siteList = new ArrayList<Site>();
                 for (Site site : sites) {
                     if (site.getAltBase() == alt && site.getRefBase() == ref) {
@@ -290,26 +304,18 @@ public class VariantHistogramPanel extends JPanel implements Runnable {
 
         }
 
-        /* (non-Javadoc)
-         * @see java.awt.event.MouseListener#mouseEntered(java.awt.event.MouseEvent)
-         */
+        @Override
+        public void mouseReleased(MouseEvent me) {
+        }
+
+        @Override
         public void mouseEntered(MouseEvent arg0) {
         }
 
-        /* (non-Javadoc)
-         * @see java.awt.event.MouseListener#mouseExited(java.awt.event.MouseEvent)
-         */
+        @Override
         public void mouseExited(MouseEvent arg0) {
             currentHistogram = null;
             repaint();
-        }
-
-
-        /* (non-Javadoc)
-         * @see java.awt.event.MouseListener#mouseReleased(java.awt.event.MouseEvent)
-         */
-        public void mouseReleased(MouseEvent me) {
-
         }
 
     }
