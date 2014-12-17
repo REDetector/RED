@@ -26,6 +26,7 @@ import java.awt.*;
  * A font manager to initiate all font used in RED.
  */
 public class FontManager {
+
     public static Font DEFAULT_FONT = new Font("Times New Roman", Font.PLAIN, 10);
 
     public static Font REPORT_FONT = new Font("Default", Font.BOLD, 12);
