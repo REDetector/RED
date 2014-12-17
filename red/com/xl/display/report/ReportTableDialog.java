@@ -26,6 +26,7 @@ import com.xl.preferences.DisplayPreferences;
 import com.xl.preferences.LocationPreferences;
 import com.xl.utils.filefilters.GFFFileFilter;
 import com.xl.utils.filefilters.TxtFileFilter;
+import com.xl.utils.namemanager.MenuUtils;
 import com.xl.utils.ui.OptionDialogUtils;
 
 import javax.swing.*;
@@ -45,17 +46,14 @@ import java.io.PrintWriter;
  * The Class ReportTableDialog is the generic container for all of the different types of report.
  */
 public class ReportTableDialog extends JDialog implements MouseListener, ActionListener {
-
     /**
      * The application.
      */
     private REDApplication application;
-
     /**
      * The model.
      */
     private TableSorter model;
-
     /**
      * The report
      */
@@ -72,9 +70,7 @@ public class ReportTableDialog extends JDialog implements MouseListener, ActionL
         super(application, report.name());
 
         this.report = report;
-
         this.application = application;
-
         setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 
         model = new TableSorter(originalModel);
@@ -92,13 +88,13 @@ public class ReportTableDialog extends JDialog implements MouseListener, ActionL
 
         JPanel buttonPanel = new JPanel();
 
-        JButton cancelButton = new JButton("Close");
-        cancelButton.setActionCommand("close");
+        JButton cancelButton = new JButton(MenuUtils.CLOSE_BUTTON);
+        cancelButton.setActionCommand(MenuUtils.CLOSE_BUTTON);
         cancelButton.addActionListener(this);
         buttonPanel.add(cancelButton);
 
-        JButton saveButton = new JButton("Save");
-        saveButton.setActionCommand("save");
+        JButton saveButton = new JButton(MenuUtils.SAVE_BUTTON);
+        saveButton.setActionCommand(MenuUtils.SAVE_BUTTON);
         saveButton.addActionListener(this);
         buttonPanel.add(saveButton);
 
@@ -112,6 +108,7 @@ public class ReportTableDialog extends JDialog implements MouseListener, ActionL
     /* (non-Javadoc)
      * @see java.awt.event.MouseListener#mouseClicked(java.awt.event.MouseEvent)
      */
+    @Override
     public void mouseClicked(MouseEvent me) {
         //We're only interested in double clicks
         if (me.getClickCount() != 2) return;
@@ -126,9 +123,7 @@ public class ReportTableDialog extends JDialog implements MouseListener, ActionL
         for (int i = 0; i < model.getColumnCount(); i++) {
             if (model.getColumnName(i).equals("Chr") || model.getColumnName(i).equals("Chromosome")) {
 
-                // The chromosome field can be a Chromosome or String
-                // object depending on the report.
-
+                // The chromosome field can be a Chromosome or String object depending on the report.
                 if (model.getValueAt(r, i) instanceof Chromosome) {
                     chr = (Chromosome) model.getValueAt(r, i);
                 } else if (model.getValueAt(r, i) instanceof String) {
@@ -149,26 +144,24 @@ public class ReportTableDialog extends JDialog implements MouseListener, ActionL
 
     }
 
-    public void mouseEntered(MouseEvent e) {
-    }
-
-    public void mouseExited(MouseEvent e) {
-    }
-
     public void mousePressed(MouseEvent e) {
     }
 
     public void mouseReleased(MouseEvent e) {
     }
 
+    public void mouseEntered(MouseEvent e) {
+    }
+
+    public void mouseExited(MouseEvent e) {
+    }
+
     public void actionPerformed(ActionEvent ae) {
 
-        if (ae.getActionCommand().equals("close")) {
+        if (ae.getActionCommand().equals(MenuUtils.CLOSE_BUTTON)) {
             setVisible(false);
             dispose();
-        } else if (ae.getActionCommand().equals("save")) {
-
-
+        } else if (ae.getActionCommand().equals(MenuUtils.SAVE_BUTTON)) {
             JFileChooser chooser = new JFileChooser(LocationPreferences.getInstance().getProjectSaveLocation());
             chooser.setMultiSelectionEnabled(false);
 
@@ -208,11 +201,7 @@ public class ReportTableDialog extends JDialog implements MouseListener, ActionL
             }
 
             try {
-                if (filter instanceof TxtFileFilter) {
-                    saveTextReport(file);
-                } else {
-                    System.err.println("Unknown file filter type " + filter + " when saving image");
-                }
+                saveTextReport(file);
             } catch (IOException e) {
                 new CrashReporter(e);
             }
