@@ -34,9 +34,17 @@ import java.util.List;
  * Represents a generic data parser for read data.  Actual data parsers for specific formats will be subclasses of this.
  */
 public abstract class DataParser implements Runnable, Cancellable {
-
+    /**
+     * The progress listener.
+     */
     protected final ArrayList<ProgressListener> listeners;
+    /**
+     * Cancel flag.
+     */
     protected boolean cancel = false;
+    /**
+     * The file to parse.
+     */
     private File file;
 
     /**
@@ -59,36 +67,44 @@ public abstract class DataParser implements Runnable, Cancellable {
      *
      * @return The options panel
      */
-    abstract public JPanel getOptionsPanel();
+    public abstract JPanel getOptionsPanel();
 
     /**
      * Checks whether this parser has an options panel
      *
      * @return true, if there is an options panel
      */
-    abstract public boolean hasOptionsPanel();
+    public abstract boolean hasOptionsPanel();
 
     /**
      * Checks if all options have been set to allow the parser to be run
      *
      * @return true, if the parser is ready to go
      */
-    abstract public boolean readyToParse();
+    public abstract boolean readyToParse();
 
     /**
      * A short name for the parser
      *
      * @return A name for the parser
      */
-    abstract public String parserName();
+    public abstract String parserName();
 
     /**
      * A longer description which details what data this parser can read
      *
      * @return A description
      */
-    abstract public String getDescription();
+    public abstract String getDescription();
 
+    /**
+     * Query the reads in the runtime with an efficient way.
+     *
+     * @param chr   the chromosome
+     * @param start the start position
+     * @param end   the end position
+     * @return a list that contains all reads from the start to the end.
+     */
     public abstract List<? extends Location> query(String chr, int start, int end);
 
     /**
@@ -110,10 +126,10 @@ public abstract class DataParser implements Runnable, Cancellable {
     }
 
     /**
-     * Gets a file filter which will identify all files which could be read by this parser.  This is judged solely on the filename so false positives are OK. We
+     * Gets a file filter which will identify all files which could be read by this parser. This is judged solely on the filename so false positives are OK. We
      * should ensure that directories are always allowed when overriding this method.
      *
-     * @return A file filter for files which are parsable by this class
+     * @return A file filter for files which are able to be parsed by this class
      */
     public FileFilter getFileFilter() {
         return new FileFilter() {
@@ -127,9 +143,7 @@ public abstract class DataParser implements Runnable, Cancellable {
         };
     }
 
-    /* (non-Javadoc)
-     * @see java.lang.Object#toString()
-     */
+    @Override
     public String toString() {
         return parserName();
     }
@@ -156,7 +170,7 @@ public abstract class DataParser implements Runnable, Cancellable {
      */
     public void addProgressListener(ProgressListener l) {
         if (l == null) {
-            throw new NullPointerException("DataParserListener can't be null");
+            throw new NullPointerException("ProgressListener can't be null");
         }
 
         if (!listeners.contains(l)) {
