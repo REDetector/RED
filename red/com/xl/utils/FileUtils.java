@@ -24,34 +24,15 @@
 package com.xl.utils;
 
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 
-
+/**
+ * The Class FileUtils provides some I/O operations
+ */
 public class FileUtils {
 
-    private static List<File> fileList = new ArrayList<File>();
-
-    public static void writeData(String path, String content) {
-        File file = new File(path);
-        if (!file.getParentFile().exists()) {
-            file.getParentFile().mkdirs();
-        }
-        PrintWriter out = null;
-        try {
-            out = new PrintWriter(file);
-            out.println(content);
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            if (out != null) {
-                out.close();
-            }
-        }
-    }
 
     public static boolean createDirectory(String path) {
         File f = new File(path);
@@ -74,30 +55,10 @@ public class FileUtils {
     }
 
     /**
-     * @param path
-     * @param content
-     */
-    public static void appendData(String path, String content) {
-        FileWriter writer = null;
-        try {
-            writer = new FileWriter(path, true);
-            writer.write(content);
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                if (writer != null) {
-                    writer.close();
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-    /**
-     * @param path
-     * @return
+     * Delete the file by a given file path.
+     *
+     * @param path the file to be deleted
+     * @return true if delete successfully.
      */
     public static boolean deleteFile(String path) {
         boolean flag = false;
@@ -111,8 +72,11 @@ public class FileUtils {
     }
 
     /**
-     * @param path
-     * @return
+     * Delete the file by a given file path with specific suffix.
+     *
+     * @param path   the file to be deleted
+     * @param suffix the suffix
+     * @return true if delete successfully.
      */
     public static boolean deleteFileWithSuffix(String path, String suffix) {
         boolean flag = false;
@@ -126,8 +90,10 @@ public class FileUtils {
     }
 
     /**
-     * @param path
-     * @return
+     * Delete the directory by a given file path.
+     *
+     * @param path the directory path to be deleted
+     * @return true if delete successfully.
      */
     public static boolean deleteDirectory(String path) {
         if (!path.endsWith(File.separator)) {
@@ -139,29 +105,29 @@ public class FileUtils {
         }
         boolean flag = true;
         File[] files = dirFile.listFiles();
-        for (int i = 0; i < files.length; i++) {
-            if (files[i].isFile()) {
-                flag = deleteFile(files[i].getAbsolutePath());
-                if (!flag)
-                    break;
-            } else {
-                flag = deleteDirectory(files[i].getAbsolutePath());
-                if (!flag)
-                    break;
+        if (files != null) {
+            for (File file : files) {
+                if (file.isFile()) {
+                    flag = deleteFile(file.getAbsolutePath());
+                    if (!flag)
+                        break;
+                } else {
+                    flag = deleteDirectory(file.getAbsolutePath());
+                    if (!flag)
+                        break;
+                }
             }
         }
-        if (!flag)
-            return false;
-        if (dirFile.delete()) {
-            return true;
-        } else {
-            return false;
-        }
+
+        return flag && dirFile.delete();
     }
 
     /**
-     * @param path
-     * @return
+     * Delete the files by a given file path with specific suffix.
+     *
+     * @param path   the files to be deleted
+     * @param suffix the suffix
+     * @return true if delete successfully.
      */
     public static boolean deleteAllFilesWithSuffix(String path, String suffix) {
         if (!path.endsWith(File.separator)) {
@@ -173,43 +139,53 @@ public class FileUtils {
         }
         boolean flag = true;
         File[] files = dirFile.listFiles();
-        for (int i = 0; i < files.length; i++) {
-            if (files[i].isFile()) {
-                flag = deleteFileWithSuffix(files[i].getAbsolutePath(), suffix);
-                if (!flag)
-                    break;
+        if (files != null) {
+            for (File file : files) {
+                if (file.isFile()) {
+                    flag = deleteFileWithSuffix(file.getAbsolutePath(), suffix);
+                    if (!flag)
+                        break;
+                }
             }
         }
         return flag;
     }
 
-    public static List<File> searchfile(String fileName, File directory) {
+    /**
+     * Search the files which meets the file name in the given directory.
+     *
+     * @param fileName  the name of the searching file
+     * @param directory the directory to be searched
+     * @return a list that contains the required files.
+     */
+    public static List<File> searchFile(String fileName, File directory) {
+        List<File> fileLists = new ArrayList<File>();
         if (directory.isDirectory()) {
-            File[] filearry = directory.listFiles();
-            if (filearry != null) {
-                for (File f : filearry) {
-                    if (f.isDirectory()) {
-                        searchfile(fileName, f);
+            File[] files = directory.listFiles();
+            if (files != null) {
+                for (File file : files) {
+                    if (file.isDirectory()) {
+                        searchFile(fileName, file);
                     } else {
-                        if (f.getAbsolutePath().contains(fileName)) {
-                            fileList.add(f);
+                        if (file.getAbsolutePath().contains(fileName)) {
+                            fileLists.add(file);
                         }
                     }
                 }
             }
         }
-        return fileList;
+        return fileLists;
     }
 
     public static void main(String[] args) throws IOException {
-//        BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream("E:\\Master\\ChongQing\\Data\\BJ22N_DNA_RNA\\BJ22_sites.hard" +
-//                ".filtered.vcf")));
-//        String line;
-//        int count = 0;
-//        while ((line = br.readLine()) != null) {
-//            if (line.startsWith("##")) continue;
-//            if (count++ < 1000) continue;
-//            if (count++ < 2000) System.out.println(line);
-//        }
+        //        BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream("E:\\Master\\ChongQing\\Data\\BJ22N_DNA_RNA\\BJ22_sites.hard" +
+        //                ".filtered.vcf")));
+        //        String line;
+        //        int count = 0;
+        //        while ((line = br.readLine()) != null) {
+        //            if (line.startsWith("##")) continue;
+        //            if (count++ < 1000) continue;
+        //            if (count++ < 2000) System.out.println(line);
+        //        }
     }
 }
