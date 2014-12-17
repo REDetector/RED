@@ -21,7 +21,9 @@ package com.xl.interfaces;
  * An interface to indicate that a class performs a long running task which can be cancelled.
  */
 public interface Cancellable {
-
+    /**
+     * Try to cancel the progress which has implemented this interface.
+     */
     public void cancel();
 
 }
