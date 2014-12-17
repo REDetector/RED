@@ -20,6 +20,11 @@ package com.xl.interfaces;
 
 import com.xl.preferences.DisplayPreferences;
 
+/**
+ * The listener interface for receiving DisplayPreferences events. The class that is interested in processing a DisplayPreferences event implements this
+ * interface, and the object created with that class is registered with a component using the component's <code>addDisplayPreferencesListener<code> method.
+ * When the DisplayPreferences event occurs, that object's appropriate method is invoked.
+ */
 public interface DisplayPreferencesListener {
 
     public void displayPreferencesUpdated(DisplayPreferences prefs);
