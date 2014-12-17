@@ -19,6 +19,9 @@ package com.xl.utils;
 
 import java.text.DecimalFormat;
 
+/**
+ * The Class AxisScale calculates the scale interval by the given minimum and maximum values.
+ */
 public class AxisScale {
 
     private double min;
@@ -48,15 +51,13 @@ public class AxisScale {
 
         OUTER:
         while (true) {
-
-            for (int d = 0; d < divisions.length; d++) {
-                double tester = base * divisions[d];
+            for (double division : divisions) {
+                double tester = base * division;
                 if (((max - min) / tester) <= 10) {
                     interval = tester;
                     break OUTER;
                 }
             }
-
             base *= 10;
 
         }
@@ -77,9 +78,7 @@ public class AxisScale {
     public static void main(String[] args) {
         AxisScale as = new AxisScale(-4.75, 5.52);
 
-        System.out.println("Scale is " + as.getMin() + "-" + as.getMax()
-                + " starts at " + as.getStartingValue() + " with interval "
-                + as.getInterval());
+        System.out.println("Scale is " + as.getMin() + "-" + as.getMax() + " starts at " + as.getStartingValue() + " with interval " + as.getInterval());
     }
 
     public String format(double number) {
@@ -89,9 +88,8 @@ public class AxisScale {
             } else {
                 String stringInterval = "" + interval;
                 // Find the number of decimal places
-                int dp = stringInterval.length()
-                        - (stringInterval.indexOf(".") + 1);
-                StringBuffer formatBuffer = new StringBuffer();
+                int dp = stringInterval.length() - (stringInterval.indexOf(".") + 1);
+                StringBuilder formatBuffer = new StringBuilder();
                 formatBuffer.append("#.");
                 for (int i = 0; i < dp; i++) {
                     formatBuffer.append("#");
