@@ -30,6 +30,9 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.zip.GZIPInputStream;
 
+/**
+ * The Class ParsingUtils is a assistant class for data parsing and retrieving.
+ */
 public class ParsingUtils {
     public static final String RED_DATA_VERSION = "RED Data Version";
     public static final String GENOME_INFORMATION_START = "Genome Information Start";
@@ -59,11 +62,7 @@ public class ParsingUtils {
 
 
     public static boolean isRemote(String path) {
-        if (path == null) {
-            return false;
-        }
-        return path.startsWith("http://") || path.startsWith("https://") ||
-                path.startsWith("ftp://");
+        return path != null && (path.startsWith("http://") || path.startsWith("https://") || path.startsWith("ftp://"));
     }
 
     public static long getContentLength(String path) {
@@ -220,8 +219,7 @@ public class ParsingUtils {
         geneTypeName = geneTypeName.toLowerCase();
         if (geneTypeName.contains("refflat")) {
             return GeneType.REFFLAT;
-        } else if (geneTypeName.contains("genepred")
-                || geneTypeName.contains("ensgene") || geneTypeName.contains("refgene")) {
+        } else if (geneTypeName.contains("genepred") || geneTypeName.contains("ensgene") || geneTypeName.contains("refgene")) {
             return GeneType.GENEPRED;
         } else if (geneTypeName.contains("ucscgene")) {
             return GeneType.UCSCGENE;
