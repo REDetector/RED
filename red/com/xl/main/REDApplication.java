@@ -47,7 +47,7 @@ import com.xl.display.panel.WelcomePanel;
 import com.xl.exception.ErrorCatcher;
 import com.xl.exception.REDException;
 import com.xl.interfaces.AnnotationCollectionListener;
-import com.xl.interfaces.DataStoreChangeListener;
+import com.xl.interfaces.DataStoreChangedListener;
 import com.xl.interfaces.ProgressListener;
 import com.xl.menu.REDMenu;
 import com.xl.net.crashreport.CrashReporter;
@@ -67,45 +67,41 @@ import java.awt.*;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Locale;
 import java.util.Vector;
 
 /**
- * @author Xing Li
+ * The Class REDApplication is the first appeared panel when program starts. It contains and manages all components for the common functions.
  */
-public class REDApplication extends JFrame implements ProgressListener, DataStoreChangeListener, SiteListChangeListener, AnnotationCollectionListener, DatabaseListener {
+public class REDApplication extends JFrame implements ProgressListener, DataStoreChangedListener, SiteListChangeListener, AnnotationCollectionListener, DatabaseListener {
 
-
-    private static final String WELCOME_CONTENT = "<html>Welcome to RED.<br><br> "
-            + "To allow the program to work you need to configure a temporary cache directory.<br><br>"
-            + "Use the button on the welcome screen to set this and you can get started";
-    private static final String WELCOME_TITLE = "Welcome - cache directory needed";
+    /**
+     * The static instance of RED.
+     */
     private static REDApplication application;
+
     /**
      * The root menu of RED
      */
     private REDMenu menu;
 
     /**
-     * The DataViewer is the set of folders shown on the top left *
+     * The DataViewer is the set of folders shown on the top left.
      */
     private DataViewer dataViewer = null;
 
     /**
-     * The genome viewer is the panel on the top right *
+     * The genome viewer is the panel on the top right.
      */
     private GenomeViewer genomeViewer = null;
 
     /**
-     * The chromosome viewer is the interactive view at the bottom *
+     * The chromosome viewer is the interactive view at the bottom.
      */
     private ChromosomeViewer chromosomeViewer;
 
     /**
      * The welcome panel is the status panel shown when the program is first launched
      */
-    // This needs to be able to access the application so we can't initialise it
-    // here.
     private WelcomePanel welcomePanel;
 
     /**
@@ -186,6 +182,11 @@ public class REDApplication extends JFrame implements ProgressListener, DataStor
 
     }
 
+    /**
+     * Get the singleton instance of RED application.
+     *
+     * @return the instance.
+     */
     public static REDApplication getInstance() {
         return application;
     }
@@ -200,12 +201,8 @@ public class REDApplication extends JFrame implements ProgressListener, DataStor
         try {
             Thread.setDefaultUncaughtExceptionHandler(new ErrorCatcher());
             application = new REDApplication();
-            application.setLocale(Locale.US);
             application.setVisible(true);
-            if (!application.welcomePanel.cacheDirectoryValid()) {
-                JOptionPane.showMessageDialog(application, WELCOME_CONTENT,
-                        WELCOME_TITLE, JOptionPane.INFORMATION_MESSAGE);
-            }
+
             if (args.length > 0) {
                 File f = new File(args[0]);
                 application.loadProject(f);
@@ -224,7 +221,6 @@ public class REDApplication extends JFrame implements ProgressListener, DataStor
      * @param dataStores An array of dataStores to add
      */
     public void addToDrawnDataStores(DataStore[] dataStores) {
-        System.out.println(this.getClass().getName() + ":addToDrawnDataStores(DataStore[] dataStore)\t" + dataStores.length);
         changesWereMade();
         for (DataStore dataStore : dataStores) {
             if (dataStore != null && !drawnDataStores.contains(dataStore)) {
@@ -240,8 +236,6 @@ public class REDApplication extends JFrame implements ProgressListener, DataStor
      * @param genome The Genome which has just been loaded.
      */
     private void addNewLoadedGenome(Genome genome) {
-        System.out.println(this.getClass().getName() + ":addNewLoadedGenome(Genome genome)");
-
         // We've had a trace where the imported genome contained no chromosomes. No idea how that happened but we can check that here.
         if (genome.getAllChromosomes() == null || genome.getAllChromosomes().length == 0) {
             JOptionPane.showMessageDialog(this, "No data was present in the imported genome", "Genome import error", JOptionPane.ERROR_MESSAGE);
@@ -296,15 +290,12 @@ public class REDApplication extends JFrame implements ProgressListener, DataStor
         if (newData == null || newData.length == 0) {
             return;
         }
-        System.out.println(this.getClass().getName() + ":addNewDataSets(DataSet[] newData)\t" + newData.length);
-        ArrayList<DataStore> storesToAdd = new ArrayList<DataStore>();
 
+        ArrayList<DataStore> storesToAdd = new ArrayList<DataStore>();
         for (DataSet dataset : newData) {
-//            if (dataset.getTotalReadCount() > 0) {
             // Can we leave this out as this should be handled by the data collection listener?
             dataCollection.addDataStore(dataset);
             storesToAdd.add(dataset);
-//            }
         }
 
         if (dataCollection.getAllDataSets().length > 0)
@@ -331,7 +322,6 @@ public class REDApplication extends JFrame implements ProgressListener, DataStor
      * Sets a flag which causes the UI to prompt the user to save when closing the program.
      */
     private void changesWereMade() {
-        System.out.println(this.getClass().getName() + ":changesWereMade()");
         changesWereMade = true;
         if (!getTitle().endsWith("*")) {
             setTitle(getTitle() + "*");
@@ -361,20 +351,15 @@ public class REDApplication extends JFrame implements ProgressListener, DataStor
         return dataViewer;
     }
 
-    /**
-     * @see java.awt.Window#dispose()
-     */
+    @Override
     public void dispose() {
-        // We're overriding this so we can catch the application being
-        // closed by the X in the corner. We need to offer the opportunity
+        // We're overriding this so we can catch the application being closed by the X in the corner. We need to offer the opportunity
         // to save if they've changed anything.
 
-        // We'll already have been made invisible by this stage, so make
-        // us visible again in case we're hanging around.
+        // We'll already have been made invisible by this stage, so make us visible again in case we're hanging around.
         setVisible(true);
 
-        // Check to see if the user has made any changes they might
-        // want to save
+        // Check to see if the user has made any changes they might want to save
         if (changesWereMade) {
             int answer = OptionDialogUtils.showSaveBeforeExitDialog(this);
             switch (answer) {
@@ -392,13 +377,13 @@ public class REDApplication extends JFrame implements ProgressListener, DataStor
         setVisible(false);
         super.dispose();
         System.exit(0);
-
     }
 
     /**
      * This method is usually called from data gathered by the genome selector which will provide the required values for the assembly name. This does not
      * actually load the specified genome, but just downloads it from the online genome repository.
      *
+     * @param id          Species name
      * @param displayName Assembly name
      */
     public void downloadGenome(String id, String displayName) {
@@ -409,10 +394,9 @@ public class REDApplication extends JFrame implements ProgressListener, DataStor
             genomeDownload.addProgressListener(this);
             progressDialog = new ProgressDialog(this, "Downloading genome: " + displayName);
             genomeDownload.addProgressListener(progressDialog);
-            genomeDownload.downloadGenome(id, displayName, true);
+            genomeDownload.downloadGenome(id, true);
             progressDialog.requestFocus();
-            progressDialog
-                    .setDefaultCloseOperation(ProgressDialog.DISPOSE_ON_CLOSE);
+            progressDialog.setDefaultCloseOperation(ProgressDialog.DISPOSE_ON_CLOSE);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -444,12 +428,10 @@ public class REDApplication extends JFrame implements ProgressListener, DataStor
             int result = chooser.showOpenDialog(this);
 
 			/*
-             * There seems to be a bug in the file chooser which allows the user
-			 * to select no files, but not cancel if the control+double click on
+             * There seems to be a bug in the file chooser which allows the user to select no files, but not cancel if the control+double click on
 			 * a file
 			 */
-            if (result == JFileChooser.CANCEL_OPTION
-                    || chooser.getSelectedFile() == null) {
+            if (result == JFileChooser.CANCEL_OPTION || chooser.getSelectedFile() == null) {
                 return;
             }
 
@@ -459,8 +441,7 @@ public class REDApplication extends JFrame implements ProgressListener, DataStor
 
         // See if we need to display any options
         if (parser.hasOptionsPanel()) {
-            DataParserOptionsDialog optionsDialog = new DataParserOptionsDialog(
-                    parser);
+            DataParserOptionsDialog optionsDialog = new DataParserOptionsDialog(parser);
             optionsDialog.setLocationRelativeTo(this);
             boolean goAhead = optionsDialog.view();
 
@@ -485,17 +466,14 @@ public class REDApplication extends JFrame implements ProgressListener, DataStor
      * @param baseLocation The folder containing the requested genome.
      */
     public void loadGenome(File baseLocation) {
-        System.out.println(this.getClass().getName() + ":loadGenome(File baseLocation)");
         GoToDialog.clearRecentLocations();
         IGVGenomeParser parser = new IGVGenomeParser();
-        ProgressDialog progressDialog = new ProgressDialog(this,
-                "Loading genome...");
+        ProgressDialog progressDialog = new ProgressDialog(this, "Loading genome...");
         parser.addProgressListener(progressDialog);
         parser.addProgressListener(this);
         parser.parseGenome(baseLocation);
         progressDialog.requestFocus();
-        progressDialog
-                .setDefaultCloseOperation(ProgressDialog.DISPOSE_ON_CLOSE);
+        progressDialog.setDefaultCloseOperation(ProgressDialog.DISPOSE_ON_CLOSE);
     }
 
     /**
@@ -525,13 +503,11 @@ public class REDApplication extends JFrame implements ProgressListener, DataStor
      * @param file The file to load
      */
     public void loadProject(File file) {
-        System.out.println(this.getClass().getName() + ":loadProject(File file)");
         if (file == null)
             return;
 
 		/*
-         * Before we wipe all of the data we need to check to see if we need to
-		 * save the existing project.
+         * Before we wipe all of the data we need to check to see if we need to save the existing project.
 		 */
 
         if (changesWereMade) {
@@ -556,15 +532,13 @@ public class REDApplication extends JFrame implements ProgressListener, DataStor
 
         REDParser parser = new REDParser(this);
         parser.addProgressListener(this);
-        ProgressDialog progressDialog = new ProgressDialog(this,
-                "Loading data...");
+        ProgressDialog progressDialog = new ProgressDialog(this, "Loading data...");
         parser.addProgressListener(progressDialog);
         parser.parseFile(file);
         progressDialog.requestFocus();
         setTitle("RED [" + file.getName() + "]");
 
-        LocationPreferences.getInstance().addRecentlyOpenedFile(
-                file.getAbsolutePath());
+        LocationPreferences.getInstance().addRecentlyOpenedFile(file.getAbsolutePath());
 
     }
 
@@ -594,13 +568,12 @@ public class REDApplication extends JFrame implements ProgressListener, DataStor
     }
 
     /**
-     * Unsets the changesWereMade flag so that the user will not be prompted to save even if the data has changed.
+     * Resets the changesWereMade flag so that the user will not be prompted to save even if the data has changed.
      */
     public void resetChangesWereMade() {
         changesWereMade = false;
         if (getTitle().endsWith("*")) {
             setTitle(getTitle().replaceAll("\\*$", ""));
-//            setTitle(getTitle().substring(0, getTitle().length() - 1));
         }
     }
 
@@ -623,15 +596,13 @@ public class REDApplication extends JFrame implements ProgressListener, DataStor
     public void saveProject(File file) {
         REDDataWriter writer = new REDDataWriter();
 
-        writer.addProgressListener(new ProgressDialog(this,
-                "Saving Project...", writer));
+        writer.addProgressListener(new ProgressDialog(this, "Saving Project...", writer));
         writer.addProgressListener(this);
 
         writer.writeData(this, file);
 
         setTitle("RED [" + file.getName() + "]");
-        LocationPreferences.getInstance().addRecentlyOpenedFile(
-                file.getAbsolutePath());
+        LocationPreferences.getInstance().addRecentlyOpenedFile(file.getAbsolutePath());
     }
 
     /**
@@ -672,7 +643,7 @@ public class REDApplication extends JFrame implements ProgressListener, DataStor
     }
 
     /**
-     * Replaces the current set of drawn datastores with a new list
+     * Replaces the current set of drawn data stores with a new list
      *
      * @param d The set of dataStores to display
      */
@@ -735,49 +706,34 @@ public class REDApplication extends JFrame implements ProgressListener, DataStor
 
     @Override
     public void annotationSetAdded(AnnotationSet annotationSets) {
-        // If these annotation sets contains 3 or fewer feature types then add
-        // them immediately to the annotation tracks
         changesWereMade();
     }
 
     @Override
     public void annotationSetRemoved(AnnotationSet annotationSet) {
-        // TODO Auto-generated method stub
-        // Check the list of drawn feature types to see if they're all still
-        // valid
-
-        // This is tricky as the way this works the annotation set hasn't yet
-        // been deleted
-        // from the annotation collection when we get this signal.
-
         changesWereMade();
     }
 
     @Override
     public void annotationSetRenamed(AnnotationSet annotationSet) {
-        // TODO Auto-generated method stub
         chromosomeViewer.repaint();
         changesWereMade();
     }
 
     @Override
     public void progressExceptionReceived(Exception e) {
-
     }
 
     @Override
     public void progressWarningReceived(Exception e) {
-
     }
 
     @Override
     public void progressUpdated(String message, int current, int max) {
-
     }
 
     @Override
     public void progressCancelled() {
-
     }
 
     @Override
@@ -804,22 +760,18 @@ public class REDApplication extends JFrame implements ProgressListener, DataStor
             // Since we've just saved we can reset the changes flag
             resetChangesWereMade();
 
-            // We might have been called by a previous shutdown
-            // operation, in which case we need to send them
-            // back to shut down.
+            // We might have been called by a previous shutdown operation, in which case we need to send them back to shut down.
             if (shuttingDown) {
                 shuttingDown = false;
                 dispose();
             }
 
-            // We might have been called by a previous load operation
-            // in which case we need to resume this load
+            // We might have been called by a previous load operation in which case we need to resume this load
             if (fileToLoad != null) {
                 loadProject(fileToLoad);
                 fileToLoad = null;
             }
         } else if (command.equals("annotation_loaded")) {
-            System.out.println("annotation_loaded");
         } else {
             throw new IllegalArgumentException("Don't know how to handle progress command '" + command + "'");
         }
@@ -827,19 +779,16 @@ public class REDApplication extends JFrame implements ProgressListener, DataStor
 
     @Override
     public void siteListAdded(SiteList l) {
-        // TODO Auto-generated method stub
         changesWereMade();
     }
 
     @Override
     public void siteListRemoved(SiteList l) {
-        // TODO Auto-generated method stub
         changesWereMade();
     }
 
     @Override
     public void siteListRenamed(SiteList l) {
-        // TODO Auto-generated method stub
         changesWereMade();
     }
 
