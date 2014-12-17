@@ -26,22 +26,29 @@ import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.Vector;
 
+/**
+ * The Class DownloadableGenomeSet downloads the gene lists from IGV server.
+ */
 public class DownloadableGenomeSet {
-    private static Vector<GenomeLists> genomeLists = new Vector<GenomeLists>();
-    private int genomeCount = 0;
+    /**
+     * The genome lists.
+     */
+    private static Vector<GenomeList> genomeLists = new Vector<GenomeList>();
+    /**
+     * The genome count. A simple flag to prevent downloading the gene lists every time opening the import genome dialog.
+     */
+    private static int genomeCount = 0;
 
     public DownloadableGenomeSet() throws IOException {
+        // If the size of genome lists is equal to the genome count, then we used the genome lists instead of downloading the same thing again.
         if (genomeLists.size() == genomeCount && genomeCount != 0) {
             return;
         }
         genomeCount = 0;
         genomeLists.clear();
-        //A. baumannii str. ATCC	http://igv.broadinstitute.org/genomes/ABaumannii_ATCC_17978.genome	ABaumannii_ATCC_17978
-        URL genomeIndexURL = new URL(LocationPreferences.getInstance()
-                .getGenomeDownloadLists() + "genomes.txt");
 
-        BufferedReader genomeIndexReader = new BufferedReader(
-                new InputStreamReader(genomeIndexURL.openStream()));
+        URL genomeIndexURL = new URL(LocationPreferences.getInstance().getGenomeDownloadLists() + "genomes.txt");
+        BufferedReader genomeIndexReader = new BufferedReader(new InputStreamReader(genomeIndexURL.openStream()));
 
         String indexLine;
         while ((indexLine = genomeIndexReader.readLine()) != null) {
@@ -49,16 +56,15 @@ public class DownloadableGenomeSet {
             if (sections[0].startsWith("<")) {
                 continue;
             } else if (sections.length < 3) {
-                throw new IOException(
-                        "Genome list file is corrupt.  Expected 3 sections on line '"
-                                + indexLine + "' but got " + sections.length);
+                throw new IOException("Genome list file is corrupt. Expected 3 sections on line '" + indexLine + "' but got " + sections.length);
             }
             genomeCount++;
-            genomeLists.add(new GenomeLists(sections[0], sections[1], sections[2]));
+            //A. baumannii str. ATCC	http://igv.broadinstitute.org/genomes/ABaumannii_ATCC_17978.genome	ABaumannii_ATCC_17978
+            genomeLists.add(new GenomeList(sections[0], sections[1], sections[2]));
         }
     }
 
-    public static Vector<GenomeLists> getGenomeLists() {
+    public static Vector<GenomeList> getGenomeLists() {
         return genomeLists;
     }
 
