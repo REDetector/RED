@@ -25,6 +25,9 @@ import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.List;
 
+/**
+ * Chromosome comparator.
+ */
 public class ChromosomeComparator implements Comparator<Chromosome> {
     private final int minSizeImportant;
 
@@ -39,9 +42,8 @@ public class ChromosomeComparator implements Comparator<Chromosome> {
     public static LinkedHashMap<String, Chromosome> sortChromosomeList(List<Chromosome> tmpChromos, int minBig, LinkedHashMap<String, Chromosome> chromosomeMap) {
         chromosomeMap.clear();
         Collections.sort(tmpChromos, new ChromosomeComparator(minBig));
-        for (int i = 0; i < tmpChromos.size(); i++) {
-            Chromosome chromo = tmpChromos.get(i);
-            chromosomeMap.put(chromo.getName(), chromo);
+        for (Chromosome chromosome : tmpChromos) {
+            chromosomeMap.put(chromosome.getName(), chromosome);
         }
         return chromosomeMap;
     }
@@ -53,8 +55,7 @@ public class ChromosomeComparator implements Comparator<Chromosome> {
         boolean checkNames = (o1import == o2import);
 
         if (checkNames) {
-            return ChromosomeNameComparator.getInstance().compare(o1.getName(),
-                    o2.getName());
+            return ChromosomeNameComparator.getInstance().compare(o1.getName(), o2.getName());
         } else if (o1import) {
             return -1;
         } else {
@@ -62,11 +63,7 @@ public class ChromosomeComparator implements Comparator<Chromosome> {
         }
     }
 
-    private boolean isImportant(Chromosome chromo) {
-        if (chromo.getLength() > minSizeImportant)
-            return true;
-        if (chromo.getName().toLowerCase().startsWith("chr") && chromo.getName().length() <= 6)
-            return true;
-        return false;
+    private boolean isImportant(Chromosome chromosome) {
+        return (chromosome.getLength() > minSizeImportant) || (chromosome.getName().toLowerCase().startsWith("chr") && chromosome.getName().length() <= 6);
     }
 }
