@@ -25,6 +25,8 @@ import javax.swing.*;
 
 /**
  * Created by Xing Li on 2014/7/24.
+ * <p/>
+ * Select the default data store in a JList.
  */
 public class ListDefaultSelector {
 
