@@ -20,13 +20,11 @@ package com.xl.interfaces;
 import com.xl.datatypes.annotation.AnnotationSet;
 
 /**
- * The listener interface for receiving annotationCollection events. The class that is interested in processing a annotationCollection event implements this
+ * The listener interface for receiving AnnotationCollection events. The class that is interested in processing a AnnotationCollection event implements this
  * interface, and the object created with that class is registered with a component using the component's <code>addAnnotationCollectionListener<code> method.
- * When the annotationCollection event occurs, that object's appropriate method is invoked.
+ * When the AnnotationCollection event occurs, that object's appropriate method is invoked.
  */
 public interface AnnotationCollectionListener {
-
-
     /**
      * Annotation sets added.
      *
