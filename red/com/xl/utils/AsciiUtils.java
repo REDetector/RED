@@ -24,8 +24,16 @@ import java.nio.charset.Charset;
 
 /**
  * Created by Xing Li on 2014/6/9.
+ * <p/>
+ * The Class AsciiUtils can convert the char arrays to byte arrays or opposite.
  */
 public class AsciiUtils {
+    /**
+     * Get byte arrays from the char arrays.
+     *
+     * @param chars the char arrays
+     * @return the byte arrays.
+     */
     public static byte[] getBytes(char[] chars) {
         Charset cs = Charset.forName("UTF-8");
         CharBuffer cb = CharBuffer.allocate(chars.length);
@@ -36,6 +44,12 @@ public class AsciiUtils {
         return bb.array();
     }
 
+    /**
+     * Get char arrays from the byte arrays.
+     *
+     * @param bytes the byte arrays
+     * @return the char arrays.
+     */
     public static char[] getChars(byte[] bytes) {
         Charset cs = Charset.forName("UTF-8");
         ByteBuffer bb = ByteBuffer.allocate(bytes.length);
