@@ -22,6 +22,8 @@ import java.util.Random;
 
 /**
  * Created by Xing Li on 2014/11/13.
+ * <p/>
+ * Generate the random string.
  */
 public class RandomStringGenerator {
     private static Random randGen = null;
