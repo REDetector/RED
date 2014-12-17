@@ -24,8 +24,9 @@ import com.xl.datatypes.feature.Feature;
 import com.xl.datatypes.genome.Genome;
 import com.xl.datatypes.sequence.Location;
 import com.xl.exception.REDException;
-import com.xl.utils.ChromosomeUtils;
 import com.xl.utils.GeneType;
+import com.xl.utils.NameRetriever;
+import com.xl.utils.ParsingUtils;
 import com.xl.utils.Strand;
 import com.xl.utils.filefilters.FileFilterExt;
 
@@ -34,6 +35,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.zip.GZIPInputStream;
 
+/**
+ * The Class UCSCRefGeneParser is a parser to parse RefSeq gene annotation file from UCSC.
+ */
 public class UCSCRefGeneParser extends AnnotationParser {
 
     private int nameColumn = 0;
@@ -52,34 +56,7 @@ public class UCSCRefGeneParser extends AnnotationParser {
         super(genome);
     }
 
-    @Override
-    public boolean requiresFile() {
-        // TODO Auto-generated method stub
-        return true;
-    }
-
-    @Override
-    protected AnnotationSet parseAnnotation(GeneType type, File file)
-            throws Exception {
-        // TODO Auto-generated method stub
-        BufferedReader br = null;
-        try {
-            if (file.getName().toLowerCase().endsWith(".gz")) {
-                br = new BufferedReader(new InputStreamReader(
-                        new GZIPInputStream(new FileInputStream(file))));
-            } else {
-                br = new BufferedReader(new InputStreamReader(
-                        new FileInputStream(file)));
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        return parseAnnotation(type, br, genome);
-    }
-
     protected AnnotationSet parseAnnotation(GeneType type, BufferedReader br, Genome genome) throws IOException {
-        System.out.println(this.getClass().getName() + ":parseAnnotation()");
         parseGeneType(type);
         AnnotationSet currentAnnotation = new CoreAnnotationSet(genome);
         int lineCount = 0;
@@ -102,7 +79,7 @@ public class UCSCRefGeneParser extends AnnotationParser {
                 String aliasName = sections[aliasNameColumn];
                 String chr = sections[chromColumn];
                 List<Location> allLocations = new ArrayList<Location>();
-                if (ChromosomeUtils.isStandardChromosomeName(chr)) {
+                if (NameRetriever.isStandardChromosomeName(chr)) {
                     //Get the strand of the feature.
                     Strand strand = Strand.parseStrand(sections[strandColumn]);
 
@@ -128,15 +105,6 @@ public class UCSCRefGeneParser extends AnnotationParser {
                     Feature newFeature = new Feature(name, chr, strand, allLocations, aliasName);
                     currentAnnotation.addFeature(newFeature);
 
-//                        Feature originFeature = currentAnnotation.getFeaturesForName(chr, aliasName);
-//                        if (originFeature != null) {
-//                            if (newFeature.getTotalLength() > originFeature.getTotalLength()) {
-//                                currentAnnotation.deleteFeature(chr, originFeature);
-//                                currentAnnotation.addFeature(newFeature);
-//                            }
-//                        } else {
-//                            currentAnnotation.addFeature(newFeature);
-//                        }
                 }
             } catch (NumberFormatException e) {
                 progressWarningReceived(new REDException("Location " + sections[txStartColumn] + "-" + sections[txEndColumn] + " was not an integer"));
@@ -150,15 +118,31 @@ public class UCSCRefGeneParser extends AnnotationParser {
     }
 
     @Override
-    public String name() {
-        // TODO Auto-generated method stub
-        return "UCSC Gene Parser";
+    public FileFilterExt fileFilter() {
+        return new FileFilterExt(".txt");
     }
 
     @Override
-    public FileFilterExt fileFilter() {
-        // TODO Auto-generated method stub
-        return new FileFilterExt(".txt");
+    protected AnnotationSet parseAnnotation(File file) throws Exception {
+        GeneType geneType = ParsingUtils.parseGeneType(file.getName());
+
+        BufferedReader br = null;
+        try {
+            if (file.getName().toLowerCase().endsWith(".gz")) {
+                br = new BufferedReader(new InputStreamReader(new GZIPInputStream(new FileInputStream(file))));
+            } else {
+                br = new BufferedReader(new InputStreamReader(new FileInputStream(file)));
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return parseAnnotation(geneType, br, genome);
+    }
+
+    @Override
+    public String name() {
+        return "UCSC Gene Parser";
     }
 
     public void parseGeneType(GeneType type) {
