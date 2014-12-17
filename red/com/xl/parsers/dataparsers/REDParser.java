@@ -32,6 +32,7 @@ import com.xl.datatypes.sites.SiteSet;
 import com.xl.display.dialog.ProgressDialog;
 import com.xl.exception.REDException;
 import com.xl.interfaces.ProgressListener;
+import com.xl.main.Global;
 import com.xl.main.REDApplication;
 import com.xl.net.crashreport.CrashReporter;
 import com.xl.net.genomes.GenomeDownloader;
@@ -56,21 +57,30 @@ import java.util.zip.GZIPInputStream;
 public class REDParser implements Runnable, ProgressListener {
 
     /**
-     * The Constant MAX_DATA_VERSION says what is the highest version of the RED file format this parser can understand. If the file to be loaded has a version
-     * higher than this then the parser won't attempt to load it.
+     * The RED application.
      */
-
-    public static final int MAX_DATA_VERSION = 1;
-
     private REDApplication application;
+    /**
+     * The reader.
+     */
     private BufferedReader reader;
+    /**
+     * The listener.
+     */
     private Vector<ProgressListener> listeners = new Vector<ProgressListener>();
+    /**
+     * Whether the genome is loaded.
+     */
     private boolean genomeLoaded = false;
+    /**
+     * The received exception.
+     */
     private Exception exceptionReceived = null;
-    private int thisDataVersion = 1;
+
+    private boolean pauseWhilstLoadingGenome = true;
 
     /**
-     * Instantiates a new red parser.
+     * Instantiates a new RED parser.
      *
      * @param application The application which we're loading this file into
      */
@@ -98,11 +108,7 @@ public class REDParser implements Runnable, ProgressListener {
             listeners.remove(l);
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see java.lang.Runnable#run()
-     */
+    @Override
     public void run() {
 
         genomeLoaded = false;
@@ -136,18 +142,7 @@ public class REDParser implements Runnable, ProgressListener {
                     if (!genomeLoaded) {
                         throw new REDException("No genome definition found before data");
                     }
-                    try {
-                        parseGroups(sections);
-                    } catch (REDException ex) {
-                        if (ex.getMessage().contains("ambiguous")) {
-                            Enumeration<ProgressListener> e = listeners.elements();
-                            while (e.hasMoreElements()) {
-                                e.nextElement().progressWarningReceived(ex);
-                            }
-                        } else {
-                            throw ex;
-                        }
-                    }
+                    parseGroups(sections);
                 } else if (sections[0].equals(ParsingUtils.GENOME_INFORMATION_START)) {
                     parseGenome();
                 } else if (sections[0].equals(ParsingUtils.VISIBLE_STORES)) {
@@ -159,16 +154,10 @@ public class REDParser implements Runnable, ProgressListener {
                     if (!genomeLoaded) {
                         throw new REDException("No genome definition found before data");
                     }
-
                     parseDisplayPreferences(sections);
                 } else {
                     throw new REDException("Didn't recognise section '" + sections[0] + "' in red file");
                 }
-            }
-
-            // We're finished with the file
-            if (reader != null) {
-                reader.close();
             }
 
         } catch (Exception ex) {
@@ -177,18 +166,21 @@ public class REDParser implements Runnable, ProgressListener {
             while (e.hasMoreElements()) {
                 e.nextElement().progressExceptionReceived(ex);
             }
-            try {
-                reader.close();
-            } catch (IOException e1) {
-                new CrashReporter(e1);
-            }
             return;
+        } finally {
+            // We're finished with the file
+            if (reader != null) {
+                try {
+                    reader.close();
+                } catch (IOException e1) {
+                    new CrashReporter(e1);
+                }
+            }
         }
 
         Enumeration<ProgressListener> e = listeners.elements();
         while (e.hasMoreElements()) {
-            // In this case we put out a dummy empty dataset since
-            // we've already entered the data into the collection by now
+            // In this case we put out a dummy empty data set since we've already entered the data into the collection by now
             e.nextElement().progressComplete("project_loaded", null);
         }
 
@@ -202,25 +194,20 @@ public class REDParser implements Runnable, ProgressListener {
     public void parseFile(File file) {
 
 		/*
-         * The attempt to open the file as a GZIP input stream can on some
-		 * systems leave an open filehandle to the red file. We therefore create
-		 * the lowest fileinputstream as a separate object so we can be
-		 * absolutely sure that it's closed before we reopen as a normal input
-		 * stream.
+         * The attempt to open the file as a GZIP input stream can on some systems leave an open file handle to the RED file. We therefore create the lowest
+         * file input stream as a separate object so we can be absolutely sure that it's closed before we reopen as a normal input stream.
 		 */
         FileInputStream fis = null;
 
         try {
             fis = new FileInputStream(file);
-            reader = new BufferedReader(new InputStreamReader(new GZIPInputStream(
-                    fis)));
+            reader = new BufferedReader(new InputStreamReader(new GZIPInputStream(fis)));
         } catch (IOException ioe) {
-
             try {
                 if (fis != null) {
                     fis.close();
                 }
-                reader = new BufferedReader(new FileReader(file));
+                reader = new BufferedReader(new InputStreamReader(new FileInputStream(file)));
             } catch (IOException ex) {
                 Enumeration<ProgressListener> e = listeners.elements();
                 while (e.hasMoreElements()) {
@@ -228,7 +215,6 @@ public class REDParser implements Runnable, ProgressListener {
                 }
                 return;
             }
-
         }
 
         Thread t = new Thread(this);
@@ -243,17 +229,14 @@ public class REDParser implements Runnable, ProgressListener {
      */
     private void parseDataVersion(String[] sections) throws REDException {
         if (sections.length != 2) {
-            throw new REDException(
-                    "Data Version line didn't contain 2 sections");
+            throw new REDException("Data Version line didn't contain 2 sections");
         }
 
-        thisDataVersion = Integer.parseInt(sections[1]);
+        int thisDataVersion = Integer.parseInt(sections[1]);
 
-        if (thisDataVersion > MAX_DATA_VERSION) {
-            throw new REDException(
-                    "This data file needs a newer verison of RED to read it.");
+        if (thisDataVersion > Global.DATA_VERSION) {
+            throw new REDException("This data file needs a newer version of RED to read it.");
         }
-        System.out.println(this.getClass().getName() + ":parseDataVersion()" + "\t" + thisDataVersion);
     }
 
     /**
@@ -261,8 +244,7 @@ public class REDParser implements Runnable, ProgressListener {
      *
      * @throws REDException
      */
-    private void parseGenome() throws Exception {
-        System.out.println(this.getClass().getName() + ":parseGenome()");
+    private synchronized void parseGenome() throws Exception {
         String line;
         String[] sections;
         while ((line = reader.readLine()) != null) {
@@ -274,18 +256,24 @@ public class REDParser implements Runnable, ProgressListener {
                 setProperties(sections[0], sections[1]);
             }
         }
-        File f;
-        f = new File(LocationPreferences.getInstance().getGenomeDirectory()
-                + File.separator + GenomeDescriptor.getInstance().getGenomeId() + ".genome");
-        System.out.println(this.getClass().getName() + ":" + f.getAbsolutePath());
+        File f = new File(LocationPreferences.getInstance().getGenomeDirectory() + File.separator + GenomeDescriptor.getInstance().getGenomeId() + ".genome");
         if (!f.exists()) {
-            // The user doesn't have this genome - yet...
+            // The user doesn't have this genome yet, so we download it automatically...
             GenomeDownloader d = new GenomeDownloader();
             d.addProgressListener(this);
             ProgressDialog progressDialog = new ProgressDialog(application, "Downloading genome...");
             d.addProgressListener(progressDialog);
-            d.downloadGenome(GenomeDescriptor.getInstance().getGenomeId(), GenomeDescriptor.getInstance().getDisplayName(), true);
+            d.downloadGenome(GenomeDescriptor.getInstance().getGenomeId(), true);
             progressDialog.requestFocus();
+            while (true) {
+                // We need to sleep for each detection because the calculation is too fast to modify the loading genome flag...
+                Thread.sleep(50);
+                if (exceptionReceived != null) {
+                    throw exceptionReceived;
+                } else if (!pauseWhilstLoadingGenome) {
+                    break;
+                }
+            }
         }
 
         IGVGenomeParser parser = new IGVGenomeParser();
@@ -304,6 +292,12 @@ public class REDParser implements Runnable, ProgressListener {
 
     }
 
+    /**
+     * Set properties to the genome descriptor.
+     *
+     * @param key   the key
+     * @param value the value
+     */
     private void setProperties(String key, String value) {
         if (value == null) {
             return;
@@ -347,7 +341,6 @@ public class REDParser implements Runnable, ProgressListener {
      * @throws IOException  Signals that an I/O exception has occurred.
      */
     private AnnotationSet parseAnnotation(String[] sections) throws REDException, IOException {
-        System.out.println(this.getClass().getName() + ":parseAnnotation()");
         if (sections.length != 3) {
             throw new REDException("Annotation line didn't contain 3 sections");
         }
@@ -392,7 +385,6 @@ public class REDParser implements Runnable, ProgressListener {
      * @throws IOException  Signals that an I/O exception has occurred.
      */
     private void parseDataSets(String[] sections) throws REDException, IOException {
-        System.out.println(this.getClass().getName() + ":parseDataSets()");
         if (sections.length != 2) {
             throw new REDException("Samples line didn't contain 2 sections");
         }
@@ -419,7 +411,6 @@ public class REDParser implements Runnable, ProgressListener {
                 parseSiteSetTree(reader.readLine().split("\\t"), dataSets[i]);
             }
             application.dataCollection().addDataStore(dataSets[i]);
-            System.out.println(this.getClass().getName() + ":application.dataCollection().addDataStore(dataSets[i]);");
         }
     }
 
@@ -431,8 +422,6 @@ public class REDParser implements Runnable, ProgressListener {
      * @throws IOException  Signals that an I/O exception has occurred.
      */
     private void parseGroups(String[] sections) throws REDException, IOException {
-        System.out.println(REDParser.class.getName() + ":parseGroups(String[] sections)");
-        //TODO
         if (sections.length != 2) {
             throw new REDException("Data Groups line didn't contain 2 sections");
         }
@@ -465,11 +454,10 @@ public class REDParser implements Runnable, ProgressListener {
      * Parses the list of sites.
      *
      * @param sections The tab split initial line from the sites section
-     * @throws REDException
+     * @throws REDException If the line didn't contain the required sections, then throw this exception.
      * @throws IOException  Signals that an I/O exception has occurred.
      */
     private void parseSiteSetTree(String[] sections, DataStore d) throws REDException, IOException {
-        System.out.println(REDParser.class.getName() + ":parseSiteSetTree()");
         if (sections.length < 4) {
             System.err.println("Site line didn't contain at least 3 sections");
         }
@@ -511,12 +499,11 @@ public class REDParser implements Runnable, ProgressListener {
             }
             sections = line.split("\\t");
             if (sections.length != 4) {
-                throw new REDException("Line " + i + "does not contain three sections. We need chr/position/editing " +
-                        "base to create the Site now.");
+                throw new REDException("Line " + i + "does not contain four sections. We need chr/position/ref/alt to create the Site.");
             }
             String chr = sections[0];
             if (chr == null) {
-                throw new REDException("Couldn't find a chromosome called " + sections[0]);
+                throw new NullPointerException("No chromosome is found.");
             }
             // Chr, Position, Reference, Alternative
             Site p = new Site(chr, Integer.parseInt(sections[1]), sections[2].charAt(0), sections[3].charAt(0));
@@ -524,7 +511,6 @@ public class REDParser implements Runnable, ProgressListener {
         }
 
         // Next we parse the site lists from this site set.
-        System.out.println(REDParser.class.getName() + ":parseLists()");
         sections = reader.readLine().split("\\t");
         if (sections.length != 2) {
             throw new REDException("Site Lists line didn't contain 2 sections");
@@ -585,20 +571,18 @@ public class REDParser implements Runnable, ProgressListener {
      * Parses the list of dataStores which should initially be visible
      *
      * @param sections The tab split initial line from the visible stores section
-     * @throws REDException
+     * @throws REDException If the line didn't contain the required sections, then throw this exception.
      * @throws IOException  Signals that an I/O exception has occurred.
      */
     private void parseVisibleStores(String[] sections) throws REDException, IOException {
-        System.out.println(this.getClass().getName() + ":parseVisibleStores(String[] sections)");
         if (sections.length != 2) {
             throw new REDException("Visible stores line didn't contain 2 sections");
         }
         int n = Integer.parseInt(sections[1]);
 
 		/*
-         * Collect the drawn stores in an array. We used to add them as we found
-		 * them but this was inefficient since we had to redo a calculation for
-		 * every one we added. This way we only need to calculate once.
+         * Collect the drawn stores in an array. We used to add them as we found them but this was inefficient since we had to redo a calculation for every
+         * one we added. This way we only need to calculate once.
 		 */
 
         DataStore[] drawnStores = new DataStore[n];
@@ -625,79 +609,40 @@ public class REDParser implements Runnable, ProgressListener {
     }
 
     /**
-     * Parses the set of site lists.
-     *
-     * @param sections The tab split initial line from the site lists section
-     * @throws REDException
-     * @throws IOException  Signals that an I/O exception has occurred.
-     */
-    private void parseLists(String[] sections) throws REDException, IOException {
-
-    }
-
-    /**
      * Parses the display preferences.
      *
      * @param sections The tab split initial display preferences line
-     * @throws REDException
+     * @throws REDException If the line didn't contain the required sections, then throw this exception.
      * @throws IOException  Signals that an I/O exception has occurred.
      */
-    private void parseDisplayPreferences(String[] sections)
-            throws REDException, IOException {
-        System.out.println(this.getClass().getName()
-                + ":parseDisplayPreferences(String[] sections)");
+    private void parseDisplayPreferences(String[] sections) throws REDException, IOException {
         int linesToParse;
         try {
             linesToParse = Integer.parseInt(sections[1]);
         } catch (Exception e) {
-            throw new REDException(
-                    "Couldn't see the number of display preference lines to parse");
+            throw new REDException("Couldn't see the number of display preference lines to parse");
         }
 
         String[] prefs;
         for (int i = 0; i < linesToParse; i++) {
             prefs = reader.readLine().split("\\t");
             if (prefs[0].equals("DisplayMode")) {
-                DisplayPreferences.getInstance().setDisplayMode(
-                        Integer.parseInt(prefs[1]));
+                DisplayPreferences.getInstance().setDisplayMode(Integer.parseInt(prefs[1]));
             } else if (prefs[0].equals("CurrentView")) {
-                DisplayPreferences.getInstance().setLocation(prefs[1],
-                        Integer.parseInt(prefs[2]), Integer.parseInt(prefs[3]));
+                DisplayPreferences.getInstance().setLocation(prefs[1], Integer.parseInt(prefs[2]), Integer.parseInt(prefs[3]));
             } else if (prefs[0].equals("Gradient")) {
-                DisplayPreferences.getInstance().setGradient(
-                        Integer.parseInt(prefs[1]));
+                DisplayPreferences.getInstance().setGradient(Integer.parseInt(prefs[1]));
             } else if (prefs[0].equals("GraphType")) {
-                DisplayPreferences.getInstance().setGraphType(
-                        Integer.parseInt(prefs[1]));
+                DisplayPreferences.getInstance().setGraphType(Integer.parseInt(prefs[1]));
             } else if (prefs[0].equals("Fasta")) {
-                DisplayPreferences.getInstance().setFastaEnable(
-                        Boolean.parseBoolean(prefs[1]));
+                DisplayPreferences.getInstance().setFastaEnable(Boolean.parseBoolean(prefs[1]));
             } else {
-                throw new REDException(
-                        "Didn't know how to process display preference '"
-                                + prefs[0] + "'");
+                throw new REDException("Didn't know how to process display preference '" + prefs[0] + "'");
             }
         }
     }
 
-    public void progressCancelled() {
-        // Shouldn't be relevant here, but should we pass this on to our
-        // listeners?
-    }
-
-    public void progressComplete(String command, Object result) {
-        if (command == null)
-            return;
-        if (command.equals("load_genome")) {
-            application.progressComplete("load_genome", result);
-            genomeLoaded = true;
-        } else {
-            throw new IllegalArgumentException(
-                    "Don't know how to handle command '" + command + "'");
-        }
-
-    }
-
+    @Override
     public void progressExceptionReceived(Exception ex) {
         if (exceptionReceived != null && ex == exceptionReceived)
             return;
@@ -708,6 +653,11 @@ public class REDParser implements Runnable, ProgressListener {
         }
     }
 
+    @Override
+    public void progressWarningReceived(Exception e) {
+    }
+
+    @Override
     public void progressUpdated(String message, int current, int max) {
         Enumeration<ProgressListener> e = listeners.elements();
         while (e.hasMoreElements()) {
@@ -715,7 +665,24 @@ public class REDParser implements Runnable, ProgressListener {
         }
     }
 
-    public void progressWarningReceived(Exception e) {
+    @Override
+    public void progressCancelled() {
+        // Shouldn't be relevant here, but should we pass this on to our listeners?
+    }
+
+    @Override
+    public void progressComplete(String command, Object result) {
+        if (command == null)
+            return;
+        if (command.equals("load_genome")) {
+            application.progressComplete("load_genome", result);
+            genomeLoaded = true;
+        } else if (command.equals("genome_downloaded")) {
+            pauseWhilstLoadingGenome = false;
+        } else {
+            throw new IllegalArgumentException("Don't know how to handle command '" + command + "'");
+        }
+
     }
 
 }
