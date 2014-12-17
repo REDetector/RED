@@ -21,7 +21,7 @@ package com.xl.datatypes.sequence;
 import com.xl.datatypes.annotation.Cytoband;
 import com.xl.datatypes.fasta.FastaIndexedSequence;
 import com.xl.utils.ChromosomeNameComparator;
-import com.xl.utils.ChromosomeUtils;
+import com.xl.utils.NameRetriever;
 import com.xl.utils.ParsingUtils;
 import net.sf.samtools.seekablestream.SeekableStream;
 
@@ -147,7 +147,7 @@ public class IGVSequence implements Sequence {
         chromosomeNames = new ArrayList<String>(chrCytoMap.size());
         for (Map.Entry<String, List<Cytoband>> entry : chrCytoMap.entrySet()) {
             String chr = entry.getKey();
-            if (ChromosomeUtils.isStandardChromosomeName(chr)) {
+            if (NameRetriever.isStandardChromosomeName(chr)) {
                 chromosomeNames.add(chr);
             }
 
