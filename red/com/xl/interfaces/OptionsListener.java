@@ -24,7 +24,6 @@ package com.xl.interfaces;
  * object's appropriate method is invoked.
  */
 public interface OptionsListener {
-
     /**
      * Options changed.
      */
