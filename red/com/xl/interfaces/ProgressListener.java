@@ -25,12 +25,9 @@ package com.xl.interfaces;
 public interface ProgressListener {
 
     /**
-     * This interface is used generically for any operation which is spawned in
-     * a new thread and which needs to be followed and acted upon on completion.
-     * We used to have many different similar classes for different types of
-     * events, but these have been consolidated into this single class to make
-     * maintenance easier - this explains the somewhat generic way of
-     * transferring the data we get at the end of the process
+     * This interface is used generically for any operation which is spawned in a new thread and which needs to be followed and acted upon on completion.
+     * We used to have many different similar classes for different types of events, but these have been consolidated into this single class to make
+     * maintenance easier - this explains the somewhat generic way of transferring the data we get at the end of the process
      *
      */
 
