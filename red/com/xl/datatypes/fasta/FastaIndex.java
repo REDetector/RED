@@ -20,8 +20,8 @@ package com.xl.datatypes.fasta;
 
 import com.xl.datatypes.genome.GenomeDescriptor;
 import com.xl.preferences.LocationPreferences;
-import com.xl.utils.ChromosomeUtils;
 import com.xl.utils.FileUtils;
+import com.xl.utils.NameRetriever;
 import com.xl.utils.ParsingUtils;
 
 import java.io.*;
@@ -136,7 +136,7 @@ public class FastaIndex {
     }
 
     private void add(FastaSequenceIndexEntry indexEntry) {
-        if (ChromosomeUtils.isStandardChromosomeName(indexEntry.getContig())) {
+        if (NameRetriever.isStandardChromosomeName(indexEntry.getContig())) {
             final FastaSequenceIndexEntry ret = sequenceEntries.put(
                     indexEntry.getContig(), indexEntry);
             if (ret != null) {
