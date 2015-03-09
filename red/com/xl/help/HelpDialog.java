@@ -84,7 +84,7 @@ public class HelpDialog extends JDialog implements TreeSelectionListener {
         DefaultMutableTreeNode currentNode = (DefaultMutableTreeNode) tree.getModel().getRoot();
 
         try {
-            DisplayPage((HelpPage) currentNode.getFirstLeaf());
+            displayPage((HelpPage) currentNode.getFirstLeaf());
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -95,7 +95,7 @@ public class HelpDialog extends JDialog implements TreeSelectionListener {
      *
      * @param page the page
      */
-    public void DisplayPage(HelpPage page) {
+    public void displayPage(HelpPage page) {
         if (currentPage != null) {
             int d = mainSplit.getDividerLocation();
             mainSplit.remove(currentPage);
@@ -112,7 +112,7 @@ public class HelpDialog extends JDialog implements TreeSelectionListener {
 
         Object o = tse.getNewLeadSelectionPath().getLastPathComponent();
         if (o instanceof HelpPage && ((HelpPage) o).isLeaf()) {
-            DisplayPage((HelpPage) o);
+            displayPage((HelpPage) o);
         }
     }
 

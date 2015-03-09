@@ -107,7 +107,7 @@ public class HelpSearchPanel extends JPanel implements ActionListener, ListSelec
     public void valueChanged(ListSelectionEvent lse) {
         Object o = resultList.getSelectedValue();
         if (o != null && o instanceof HelpPage) {
-            dialog.DisplayPage((HelpPage) o);
+            dialog.displayPage((HelpPage) o);
         }
     }
 

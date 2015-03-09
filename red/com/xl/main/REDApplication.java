@@ -58,6 +58,7 @@ import com.xl.parsers.dataparsers.REDParser;
 import com.xl.preferences.DisplayPreferences;
 import com.xl.preferences.LocationPreferences;
 import com.xl.preferences.REDPreferences;
+import com.xl.utils.FileUtils;
 import com.xl.utils.filefilters.FileFilterExt;
 import com.xl.utils.ui.OptionDialogUtils;
 
@@ -197,6 +198,8 @@ public class REDApplication extends JFrame implements ProgressListener, DataStor
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+        FileUtils.copyFolder("./red/Help/","./Help/");
 
         try {
             Thread.setDefaultUncaughtExceptionHandler(new ErrorCatcher());

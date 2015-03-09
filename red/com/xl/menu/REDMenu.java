@@ -542,8 +542,7 @@ public class REDMenu extends JMenuBar implements ActionListener, DatabaseListene
         else if (action.equals(MenuUtils.WELCOME)) {
             new WelcomePanel(application);
         } else if (action.equals(MenuUtils.HELP_CONTENTS)) {
-            new HelpDialog(new File(ClassLoader.getSystemResource("Help")
-                    .getFile().replaceAll("%20", " ")));
+            new HelpDialog(new File("./Help"));
         } else if (action.equals(MenuUtils.CHECK_FOR_UPDATES)) {
             try {
                 if (UpdateChecker.isUpdateAvailable()) {
