@@ -24,6 +24,8 @@
 package com.xl.utils;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -175,6 +177,53 @@ public class FileUtils {
             }
         }
         return fileLists;
+    }
+
+    /**
+     * Copy the whole content of a folder from one place to another.
+     *
+     * @param inputPath  The ordinary folder to be copied.
+     * @param outputPath The destination folder to copy to.
+     */
+    public static void copyFolder(String inputPath, String outputPath) {
+
+        try {
+            File output = new File(outputPath);
+            if (!output.exists()) {
+                if (!output.mkdirs()) {
+                    throw new IOException("Could not establish the folder '" + output.getAbsolutePath() + "'");
+                }
+            }
+            File input = new File(inputPath);
+            String[] files = input.list();
+            File tempFile;
+            for(String file:files){
+                if (inputPath.endsWith(File.separator)) {
+                    tempFile = new File(inputPath + file);
+                } else {
+                    tempFile = new File(inputPath + File.separator + file);
+                }
+                if (tempFile.isFile()) {
+                    FileInputStream fis = new FileInputStream(tempFile);
+                    FileOutputStream fos = new FileOutputStream(outputPath + "/" + tempFile.getName());
+                    byte[] b = new byte[1024 * 5];
+                    int len;
+                    while ((len = fis.read(b)) != -1) {
+                        fos.write(b, 0, len);
+                    }
+                    fos.flush();
+                    fos.close();
+                    fis.close();
+                }
+                if (tempFile.isDirectory()) {
+                    copyFolder(inputPath + "/" + file, outputPath + "/" + file);
+                }
+            }
+        } catch (Exception e) {
+            System.out.println("Wrong when copying the folder.");
+            e.printStackTrace();
+        }
+
     }
 
     public static void main(String[] args) throws IOException {
