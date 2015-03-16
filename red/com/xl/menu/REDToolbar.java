@@ -23,6 +23,7 @@ import com.xl.database.DatabaseManager;
 import com.xl.datatypes.DataStore;
 import com.xl.datatypes.sites.SiteList;
 import com.xl.display.dialog.DataZoomSelector;
+import com.xl.display.dialog.SearchCommandDialog;
 import com.xl.main.REDApplication;
 import com.xl.utils.namemanager.MenuUtils;
 
@@ -70,6 +71,8 @@ public class REDToolbar extends AbstractToolbar implements DatabaseListener {
      * The data zoom selector.
      */
     private DataZoomSelector dataZoomSelector;
+
+    private SearchCommandDialog searchCommand;
 
     /**
      * Instantiates a new red toolbar.
@@ -152,7 +155,6 @@ public class REDToolbar extends AbstractToolbar implements DatabaseListener {
      */
     public void genomeLoaded() {
         // Enable the buttons relating only to the genome
-        System.out.println(this.getClass().getName() + ":genomeLoaded()");
         readsOnlyButton.setEnabled(true);
         sitesOnlyButton.setEnabled(true);
         sitesAndReadsButton.setEnabled(true);
@@ -164,6 +166,11 @@ public class REDToolbar extends AbstractToolbar implements DatabaseListener {
         if (dataZoomSelector == null) {
             dataZoomSelector = new DataZoomSelector(REDApplication.getInstance());
             add(dataZoomSelector.getContentPane());
+        }
+        if (searchCommand == null) {
+            addSeparator();
+            searchCommand = new SearchCommandDialog();
+            add(searchCommand.getContentPane());
         }
     }
 
