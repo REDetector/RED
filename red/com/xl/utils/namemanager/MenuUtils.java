@@ -39,6 +39,7 @@ public class MenuUtils {
     public static final String EXPORT_IMAGE = "Export Image";
     public static final String GENOME_VIEW = "Genome Panel...";
     public static final String CHROMOSOME_VIEW = "Chromosome Panel...";
+    public static final String CLEAR_LISTS = "Clear above lists...";
     public static final String EXIT = "Exit";
 
     /*Edit menu*/
@@ -84,7 +85,6 @@ public class MenuUtils {
 
     /*Help menu*/
     public static final String HELP_MENU = "Help";
-    public static final String WELCOME = "Welcome...";
     public static final String HELP_CONTENTS = "Help Contents...";
     public static final String CHECK_FOR_UPDATES = "Check for Updates...";
     public static final String ABOUT_RED = "About RED...";

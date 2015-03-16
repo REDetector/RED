@@ -25,7 +25,7 @@ import com.xl.datatypes.sites.Site;
 import com.xl.datatypes.sites.SiteList;
 import com.xl.exception.REDException;
 import com.xl.interfaces.ActiveDataChangedListener;
-import com.xl.net.crashreport.CrashReporter;
+import com.xl.display.dialog.CrashReporter;
 import com.xl.preferences.DisplayPreferences;
 import com.xl.utils.ColourScheme;
 

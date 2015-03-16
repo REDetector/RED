@@ -55,6 +55,7 @@ public class WelcomePanel extends JPanel {
         gridBagConstraints.gridy++;
         add(new JPanel(), gridBagConstraints);
 
+        setVisible(true);
     }
 
     public boolean cacheDirectoryValid() {

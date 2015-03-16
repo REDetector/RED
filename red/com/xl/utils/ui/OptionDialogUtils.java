@@ -46,4 +46,8 @@ public class OptionDialogUtils {
                 new String[]{"Overwrite and Save", "Cancel"}, "Overwrite and Save");
     }
 
+    public static void showMessageDialog(Component c, String message) {
+        JOptionPane.showMessageDialog(c, message);
+    }
+
 }
