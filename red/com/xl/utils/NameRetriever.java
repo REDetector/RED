@@ -149,15 +149,15 @@ public class NameRetriever {
     }
     
     public static void main(String[] args) {
-        System.out.println(NameRetriever.formatChromosomeName("8"));
-        System.out.println(NameRetriever.formatChromosomeName("ch8"));
-        System.out.println(NameRetriever.formatChromosomeName("chr8"));
-        System.out.println(NameRetriever.formatChromosomeName("Y"));
-        System.out.println(NameRetriever.formatChromosomeName("chY"));
-        System.out.println(NameRetriever.formatChromosomeName("chrY"));
-        System.out.println(NameRetriever.formatChromosomeName("18"));
-        System.out.println(NameRetriever.formatChromosomeName("ch18"));
-        System.out.println(NameRetriever.formatChromosomeName("chr18"));
-        System.out.println(NameRetriever.getAliasChromosomeName("chrY"));
+        //        System.out.println(NameRetriever.formatChromosomeName("8"));
+        //        System.out.println(NameRetriever.formatChromosomeName("ch8"));
+        //        System.out.println(NameRetriever.formatChromosomeName("chr8"));
+        //        System.out.println(NameRetriever.formatChromosomeName("Y"));
+        //        System.out.println(NameRetriever.formatChromosomeName("chY"));
+        //        System.out.println(NameRetriever.formatChromosomeName("chrY"));
+        //        System.out.println(NameRetriever.formatChromosomeName("18"));
+        //        System.out.println(NameRetriever.formatChromosomeName("ch18"));
+        //        System.out.println(NameRetriever.formatChromosomeName("chr18"));
+        //        System.out.println(NameRetriever.getAliasChromosomeName("chrY"));
     }
 }

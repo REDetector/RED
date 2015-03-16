@@ -20,10 +20,12 @@ package com.xl.datatypes.annotation;
 
 import com.xl.datatypes.feature.Feature;
 import com.xl.datatypes.genome.Genome;
-import com.xl.net.crashreport.CrashReporter;
+import com.xl.display.dialog.CrashReporter;
 import com.xl.preferences.LocationPreferences;
 import com.xl.utils.FileUtils;
 import com.xl.utils.namemanager.SuffixUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.*;
 import java.util.*;
@@ -33,6 +35,7 @@ import java.util.*;
  * full set of genome annotations used by the program.
  */
 public class AnnotationSet {
+    private static final Logger logger = LoggerFactory.getLogger(AnnotationSet.class);
     /**
      * The genome.
      */

@@ -23,9 +23,10 @@ import com.xl.datatypes.genome.Chromosome;
 import com.xl.datatypes.genome.Genome;
 import com.xl.exception.REDException;
 import com.xl.interfaces.AnnotationCollectionListener;
-import com.xl.net.crashreport.CrashReporter;
 import com.xl.preferences.LocationPreferences;
 import com.xl.utils.namemanager.SuffixUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -36,7 +37,7 @@ import java.util.*;
  * The Class AnnotationCollection is the main object through which annotation objects can be accessed
  */
 public class AnnotationCollection {
-
+    private static final Logger logger = LoggerFactory.getLogger(AnnotationCollection.class);
     /**
      * The genome.
      */
@@ -101,9 +102,9 @@ public class AnnotationCollection {
      *
      * @param newSet The annotation set to be added
      */
-    public void addAnnotationSet(AnnotationSet newSet) {
+    public void addAnnotationSet(AnnotationSet newSet) throws REDException {
         if (newSet.getGenome() != genome) {
-            throw new IllegalArgumentException("Annotation set genome doesn't match annotation collection");
+            throw new REDException("Annotation set genome doesn't match annotation collection");
         }
         annotationSets.add(newSet);
         newSet.setCollection(this);
@@ -148,22 +149,16 @@ public class AnnotationCollection {
      * @param chromosome The chromosome
      * @return The fasta file
      */
-    public RandomAccessFile getFastaForChr(Chromosome chromosome) {
+    public RandomAccessFile getFastaForChr(Chromosome chromosome) throws FileNotFoundException {
         if (fastaFile.containsKey(chromosome)) {
             return fastaFile.get(chromosome);
         } else {
             RandomAccessFile raf = null;
-            try {
-                File f = new File(LocationPreferences.getInstance().getCacheDirectory() + File.separator +
-                        genome.getDisplayName() + File.separator + chromosome.getName() + SuffixUtils.CACHE_FASTA);
-                if (f.exists()) {
-                    raf = new RandomAccessFile(f, "r");
-                    fastaFile.put(chromosome, raf);
-                }
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-                new CrashReporter(new REDException("The fasta file has not been loaded or this file could not be cache correctly..."));
-                return null;
+            File f = new File(LocationPreferences.getInstance().getCacheDirectory() + File.separator +
+                    genome.getDisplayName() + File.separator + chromosome.getName() + SuffixUtils.CACHE_FASTA);
+            if (f.exists()) {
+                raf = new RandomAccessFile(f, "r");
+                fastaFile.put(chromosome, raf);
             }
             return raf;
         }

@@ -27,6 +27,8 @@ import com.xl.display.panel.DataIntroductionPanel;
 import com.xl.exception.REDException;
 import com.xl.filter.denovo.FisherExactTestFilter;
 import com.xl.preferences.LocationPreferences;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
 import javax.swing.event.TreeSelectionEvent;
@@ -36,12 +38,14 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.io.File;
+import java.sql.SQLException;
 import java.util.Vector;
 
 /**
  * The Class FisherExactTestFilterPanel is a statistical filter panel to provide some parameters to be set as user's preference if there is any choice.
  */
 public class FisherExactTestFilterPanel extends AbstractSiteFilter {
+    private final Logger logger = LoggerFactory.getLogger(FisherExactTestFilterPanel.class);
     /**
      * The R script or executable path, which is used to calculate FDR value.
      */
@@ -81,13 +85,14 @@ public class FisherExactTestFilterPanel extends AbstractSiteFilter {
     }
 
     @Override
-    public String description() {
-        return "Filter RNA editing sites by statistic method (p-value).";
+    protected String listName() {
+        return "FET Filter";
     }
 
     @Override
-    protected void generateSiteList() {
+    protected void generateSiteList() throws SQLException {
         progressUpdated("Filtering RNA editing sites by statistic method (P-Value), please wait...", 0, 0);
+        logger.info("Filtering RNA editing sites by statistic method (P-Value).");
         String linearTableName = currentSample + "_" + parentList.getFilterName() + "_" + DatabaseManager
                 .PVALUE_FILTER_RESULT_TABLE_NAME + "_" + pvalueThreshold + "_" + fdrThreshold;
         TableCreator.createFisherExactTestTable(linearTableName);
@@ -111,24 +116,20 @@ public class FisherExactTestFilterPanel extends AbstractSiteFilter {
         filterFinished(newList);
     }
 
-
     @Override
-    public JPanel getOptionsPanel() {
-        return optionsPanel;
+    public boolean isReady() {
+        return parentList != null && rScriptPath != null && rScriptPath.length() != 0;
     }
-
 
     @Override
     public boolean hasOptionsPanel() {
         return true;
     }
 
-
     @Override
-    public boolean isReady() {
-        return parentList != null && rScriptPath != null && rScriptPath.length() != 0;
+    public JPanel getOptionsPanel() {
+        return optionsPanel;
     }
-
 
     @Override
     public String name() {
@@ -136,8 +137,8 @@ public class FisherExactTestFilterPanel extends AbstractSiteFilter {
     }
 
     @Override
-    protected String listName() {
-        return "FET Filter";
+    public String description() {
+        return "Filter RNA editing sites by statistic method (p-value).";
     }
 
     /**

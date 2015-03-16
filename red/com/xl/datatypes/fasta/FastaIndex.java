@@ -83,7 +83,6 @@ public class FastaIndex {
             boolean isHttpPath = ParsingUtils.isHttpPath(indexFile);
             if (isHttpPath) {
                 String indexName = FileUtils.getFileNameFromURL(indexFile);
-//                System.out.println(this.getClass().getName() + ":indexName:" + indexName);
                 String indexPath = LocationPreferences.getInstance().getFastaDirectory()
                         + File.separator
                         + GenomeDescriptor.getInstance().getDisplayName();
@@ -100,9 +99,7 @@ public class FastaIndex {
                 String[] tokens = nextLine.split("\t|( +)");
                 int nTokens = tokens.length;
                 if (nTokens != 5) {
-                    throw new RuntimeException(
-                            "Error.  Unexpected number of tokens parsing: "
-                                    + indexFile);
+                    throw new RuntimeException("Error. Unexpected number of tokens parsing: " + indexFile);
                 }
                 // Parse the index line.
                 String contig = tokens[0];
@@ -140,8 +137,7 @@ public class FastaIndex {
             final FastaSequenceIndexEntry ret = sequenceEntries.put(
                     indexEntry.getContig(), indexEntry);
             if (ret != null) {
-                throw new RuntimeException("Contig '" + indexEntry.getContig()
-                        + "' already exists in fasta index.");
+                throw new RuntimeException("Contig '" + indexEntry.getContig() + "' already exists in fasta index.");
             }
         }
     }
@@ -213,8 +209,7 @@ public class FastaIndex {
          * @return A string representation of the contig line.
          */
         public String toString() {
-            return String
-                    .format("contig %s; position %d; size %d; basesPerLine %d; bytesPerLine %d",
+            return String.format("contig %s; position %d; size %d; basesPerLine %d; bytesPerLine %d",
                             contig, position, size, basesPerLine, bytesPerLine);
         }
 

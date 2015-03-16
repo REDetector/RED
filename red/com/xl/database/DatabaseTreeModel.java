@@ -18,13 +18,14 @@
 
 package com.xl.database;
 
-import com.xl.exception.REDException;
-import com.xl.net.crashreport.CrashReporter;
+import com.xl.exception.UnknownParameterException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.swing.event.TreeModelListener;
 import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreePath;
-import java.rmi.activation.UnknownObjectException;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,6 +35,7 @@ import java.util.List;
  * The Class DatabaseTreeModel provides a tree model which describes the RNA editing detected mode and samples in database.
  */
 public class DatabaseTreeModel implements TreeModel {
+    private static final Logger logger = LoggerFactory.getLogger(DatabaseTreeModel.class);
     /**
      * The root of tree model.
      */
@@ -54,20 +56,30 @@ public class DatabaseTreeModel implements TreeModel {
     public DatabaseTreeModel() {
         modes = new String[]{DatabaseManager.DENOVO_DATABASE_NAME, DatabaseManager.DNA_RNA_DATABASE_NAME};
         denovoTableNodes = new ArrayList<TableNode>();
-        List<String> denovoTables = DatabaseManager.getInstance().getCurrentTables(DatabaseManager.DENOVO_DATABASE_NAME);
-        for (String denovoTable : denovoTables) {
-            // We only detect RNA VCF file and exclude all filters relative to this sample.
-            if (denovoTable.contains(DatabaseManager.RNA_VCF_RESULT_TABLE_NAME) && !denovoTable.contains(DatabaseManager.FILTER)) {
-                denovoTableNodes.add(new TableNode(denovoTable));
+        List<String> denovoTables;
+        try {
+            denovoTables = DatabaseManager.getInstance().getCurrentTables(DatabaseManager.DENOVO_DATABASE_NAME);
+            for (String denovoTable : denovoTables) {
+                // We only detect RNA VCF file and exclude all filters relative to this sample.
+                if (denovoTable.contains(DatabaseManager.RNA_VCF_RESULT_TABLE_NAME) && !denovoTable.contains(DatabaseManager.FILTER)) {
+                    denovoTableNodes.add(new TableNode(denovoTable));
+                }
             }
+        } catch (SQLException e) {
+            logger.error("Could not get tables from database '" + DatabaseManager.DENOVO_DATABASE_NAME + "'", e);
         }
-        dnarnaTableNodes = new ArrayList<TableNode>();
-        List<String> dnarnaTables = DatabaseManager.getInstance().getCurrentTables(DatabaseManager.DNA_RNA_DATABASE_NAME);
-        for (String dnarnaTable : dnarnaTables) {
-            // We only detect RNA VCF file and exclude all filters relative to this sample.
-            if (dnarnaTable.contains(DatabaseManager.RNA_VCF_RESULT_TABLE_NAME) && !dnarnaTable.contains(DatabaseManager.FILTER)) {
-                dnarnaTableNodes.add(new TableNode(dnarnaTable));
+
+        try {
+            dnarnaTableNodes = new ArrayList<TableNode>();
+            List<String> dnarnaTables = DatabaseManager.getInstance().getCurrentTables(DatabaseManager.DNA_RNA_DATABASE_NAME);
+            for (String dnarnaTable : dnarnaTables) {
+                // We only detect RNA VCF file and exclude all filters relative to this sample.
+                if (dnarnaTable.contains(DatabaseManager.RNA_VCF_RESULT_TABLE_NAME) && !dnarnaTable.contains(DatabaseManager.FILTER)) {
+                    dnarnaTableNodes.add(new TableNode(dnarnaTable));
+                }
             }
+        } catch (SQLException e) {
+            logger.error("Could not get tables from database '" + DatabaseManager.DNA_RNA_DATABASE_NAME + "'", e);
         }
     }
 
@@ -85,8 +97,8 @@ public class DatabaseTreeModel implements TreeModel {
         } else if (parent.equals(modes[1])) {
             return dnarnaTableNodes.get(index);
         } else {
-            new CrashReporter(new UnknownObjectException("Object '" + parent + "' can not be recognized by our program in index " + index));
-            return null;
+            logger.error("Object '" + parent + "' can not be recognized by our program in index " + index, new UnknownParameterException());
+            return modes[index];
         }
     }
 
@@ -99,7 +111,7 @@ public class DatabaseTreeModel implements TreeModel {
         } else if (parent.equals(modes[1])) {
             return dnarnaTableNodes.size();
         } else {
-            new CrashReporter(new REDException("Could not get child count from parent '" + parent + "'"));
+            logger.error("Could not get child count from parent '" + parent + "'", new UnknownParameterException());
             return 0;
         }
     }
@@ -111,7 +123,7 @@ public class DatabaseTreeModel implements TreeModel {
 
     @Override
     public void valueForPathChanged(TreePath path, Object newValue) {
-
+        logger.warn("Value for path changed called on node " + newValue);
     }
 
     @Override
@@ -131,7 +143,7 @@ public class DatabaseTreeModel implements TreeModel {
                 return dnarnaTableNodes.indexOf(child);
             }
         } else {
-            new CrashReporter(new REDException("Could not get the index of child '" + child + "'from parent '" + parent + "'"));
+            logger.error("Could not get the index of child '" + child + "'from parent '" + parent + "'", new UnknownParameterException());
         }
         return 0;
     }

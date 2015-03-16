@@ -18,13 +18,15 @@
 
 package com.xl.database;
 
-import com.xl.exception.REDException;
+import com.xl.exception.DataLoadException;
 import com.xl.main.REDApplication;
-import com.xl.net.crashreport.CrashReporter;
 import com.xl.preferences.DatabasePreferences;
 import com.xl.utils.Indexer;
 import com.xl.utils.ui.OptionDialogUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import java.sql.SQLDataException;
 import java.sql.SQLException;
 
 /**
@@ -33,6 +35,7 @@ import java.sql.SQLException;
  * TableCreator provides a variety of static methods to create different kinds of tables.
  */
 public class TableCreator {
+    private static final Logger logger = LoggerFactory.getLogger(TableCreator.class);
     /**
      * A reference of DatabaseManger.
      */
@@ -43,30 +46,27 @@ public class TableCreator {
      *
      * @param tableName The table name to be created.
      */
-    public static void createFilterTable(String tableName) {
-        String sqlClause = null;
-        try {
-            if (databaseManager.existTable(tableName)) {
-                int answer = OptionDialogUtils.showTableExistDialog(REDApplication.getInstance(), tableName);
-                if (answer <= 0) {
-                    databaseManager.deleteTable(tableName);
-                } else {
-                    return;
-                }
+    public static void createFilterTable(String tableName) throws SQLException {
+        String sqlClause;
+        if (databaseManager.existTable(tableName)) {
+            int answer = OptionDialogUtils.showTableExistDialog(REDApplication.getInstance(), tableName);
+            if (answer <= 0) {
+                databaseManager.deleteTable(tableName);
+            } else {
+                return;
             }
-            String tableBuilder = DatabasePreferences.getInstance().getDatabaseTableBuilder();
-            if (tableBuilder == null) {
-                throw new REDException("RNA/DNA vcf file has not been imported.");
-            }
-            sqlClause = "create table " + tableName + "(" + tableBuilder + "," + Indexer.CHROM_POSITION + ")";
-            databaseManager.executeSQL(sqlClause);
-        } catch (SQLException e) {
-            System.err.println("There is a syntax error for SQL clause: " + sqlClause);
-            e.printStackTrace();
-        } catch (REDException e) {
-            e.printStackTrace();
-            new CrashReporter(e);
         }
+        String tableBuilder = DatabasePreferences.getInstance().getDatabaseTableBuilder();
+        if (tableBuilder == null) {
+            try {
+                throw new DataLoadException("RNA/DNA vcf file has not been imported.");
+            } catch (DataLoadException e) {
+                logger.error("RNA/DNA vcf file has not been imported.", e);
+                return;
+            }
+        }
+        sqlClause = "create table " + tableName + "(" + tableBuilder + "," + Indexer.CHROM_POSITION + ")";
+        databaseManager.executeSQL(sqlClause);
     }
 
     /**
@@ -74,11 +74,12 @@ public class TableCreator {
      *
      * @param tableName Table name of DARNED database.
      */
-    public static void createDARNEDTable(final String tableName) {
+    public static void createDARNEDTable(final String tableName) throws SQLException {
         if (!databaseManager.existTable(tableName)) {
             //"(chrom varchar(30),coordinate int,strand varchar(5),inchr varchar(5), inrna varchar(5) ,index(chrom,coordinate))");
-            createReferenceTable(tableName, new String[]{"chrom", "coordinate", "strand", "inchr", "inrna"}, new String[]{"varchar(30)",
-                    "int", "varchar(5)", "varchar(5)", "varchar(5)"}, Indexer.CHROM_COORDINATE);
+            createReferenceTable(tableName, new String[]{"chrom", "coordinate", "strand", "inchr", "inrna"}, new String[]{
+                    "varchar(30)", "int", "varchar(5)", "varchar(5)", "varchar(5)"
+            }, Indexer.CHROM_COORDINATE);
         }
 
     }
@@ -88,7 +89,7 @@ public class TableCreator {
      *
      * @param tableName Table name of dbSNP database.
      */
-    public static void createDBSNPTable(final String tableName) {
+    public static void createDBSNPTable(final String tableName) throws SQLException {
         if (!databaseManager.existTable(tableName)) {
             //chrom varchar(30),pos int,index(chrom,pos);
             createReferenceTable(tableName, new String[]{"chrom", "pos"}, new String[]{"varchar(30)", "int"}, Indexer.CHROM_POSITION);
@@ -100,7 +101,7 @@ public class TableCreator {
      *
      * @param tableName Table name of repeat regions file.
      */
-    public static void createRepeatRegionsTable(final String tableName) {
+    public static void createRepeatRegionsTable(final String tableName) throws SQLException {
         if (!databaseManager.existTable(tableName)) {
             //chrom varchar(30),begin int,end int,type varchar(40),index(chrom,begin,end);
             createReferenceTable(tableName, new String[]{"chrom", "begin", "end", "type"}, new String[]{"varchar(30)", "int", "int", "varchar(40)"},
@@ -113,7 +114,7 @@ public class TableCreator {
      *
      * @param tableName Table name of gene annotation file.
      */
-    public static void createSpliceJunctionTable(final String tableName) {
+    public static void createSpliceJunctionTable(final String tableName) throws SQLException {
         if (!databaseManager.existTable(tableName)) {
             // "(chrom varchar(30),ref varchar(30),type varchar(9),begin int,end int,unuse1 float(8,6),unuse2 varchar(5),unuse3 varchar(5),
             // info varchar(100),index(chrom,type))");
@@ -128,10 +129,15 @@ public class TableCreator {
      *
      * @param tableName Table name of FETFilter.
      */
-    public static void createFisherExactTestTable(String tableName) {
+    public static void createFisherExactTestTable(String tableName) throws SQLException {
         String tableBuilder = DatabasePreferences.getInstance().getDatabaseTableBuilder();
         if (tableBuilder == null) {
-            new CrashReporter(new REDException("RNA/DNA vcf file has not been imported."));
+            try {
+                throw new DataLoadException("RNA/DNA vcf file has not been imported.");
+            } catch (DataLoadException e) {
+                logger.error("RNA/DNA vcf file has not been imported.", e);
+                return;
+            }
         }
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append("create table ").append(tableName).append("(").append(tableBuilder);
@@ -140,12 +146,7 @@ public class TableCreator {
         stringBuilder.append(",");
         stringBuilder.append(Indexer.CHROM_POSITION);
         stringBuilder.append(")");
-        try {
-            databaseManager.executeSQL(stringBuilder.toString());
-        } catch (SQLException e) {
-            System.err.println("There is a syntax error for SQL clause: " + stringBuilder.toString());
-            e.printStackTrace();
-        }
+        databaseManager.executeSQL(stringBuilder.toString());
     }
 
     /**
@@ -156,9 +157,9 @@ public class TableCreator {
      * @param columnParams The standard column parameters, it must be supported by MySQL database.
      * @param index        Index we use when creating a table, which can be obtained from {@link com.xl.utils.Indexer Indexer} class.
      */
-    private static void createReferenceTable(String tableName, String[] columnNames, String[] columnParams, String index) {
+    private static void createReferenceTable(String tableName, String[] columnNames, String[] columnParams, String index) throws SQLException {
         if (columnNames == null || columnParams == null || columnNames.length == 0 || columnNames.length != columnParams.length) {
-            throw new IllegalArgumentException("Column names and column parameters can't not be null or zero-length.");
+            throw new SQLDataException("Column names and column parameters can't not be null or zero-length.");
         }
         // Create table if not exists TableName(abc int, def varchar(2), hij text);
         StringBuilder stringBuilder = new StringBuilder("create table if not exists " + tableName + "(");
@@ -169,11 +170,6 @@ public class TableCreator {
         stringBuilder.append(",");
         stringBuilder.append(index);
         stringBuilder.append(")");
-        try {
-            databaseManager.executeSQL(stringBuilder.toString());
-        } catch (SQLException e) {
-            System.err.println("There is a syntax error for SQL clause: " + stringBuilder.toString());
-            e.printStackTrace();
-        }
+        databaseManager.executeSQL(stringBuilder.toString());
     }
 }

@@ -26,15 +26,19 @@ import com.xl.datatypes.sites.Site;
 import com.xl.datatypes.sites.SiteList;
 import com.xl.exception.REDException;
 import com.xl.filter.denovo.EditingTypeFilter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
 import javax.swing.event.TreeSelectionEvent;
+import java.sql.SQLException;
 import java.util.Vector;
 
 /**
  * The Class EditingTypeFilterPanel is a rule-based filter panel to provide some parameters to be set as user's preference if there is any choice.
  */
 public class EditingTypeFilterPanel extends AbstractSiteFilter {
+    private final Logger logger = LoggerFactory.getLogger(ETFilterOptionPanel.class);
     /**
      * The reference base.
      */
@@ -58,14 +62,14 @@ public class EditingTypeFilterPanel extends AbstractSiteFilter {
     }
 
     @Override
-    public String description() {
-        return "Filter RNA editing sites by editing type,such as 'A'->'G','C'->'T',etc.";
+    protected String listName() {
+        return "Focus on " + refBase.getSelectedItem() + " to " + altBase.getSelectedItem();
     }
 
     @Override
-    protected void generateSiteList() {
+    protected void generateSiteList() throws SQLException {
         progressUpdated("Filtering RNA editing sites by RNA editing type, please wait...", 0, 0);
-
+        logger.info("Filtering RNA editing sites by RNA editing type.");
         String refBaseString = refBase.getSelectedItem().toString();
         String altBaseString = altBase.getSelectedItem().toString();
         String linearTableName = currentSample + "_" + parentList.getFilterName() + "_" + DatabaseManager
@@ -92,8 +96,8 @@ public class EditingTypeFilterPanel extends AbstractSiteFilter {
     }
 
     @Override
-    public JPanel getOptionsPanel() {
-        return optionsPanel;
+    public boolean isReady() {
+        return parentList != null;
     }
 
     @Override
@@ -102,8 +106,8 @@ public class EditingTypeFilterPanel extends AbstractSiteFilter {
     }
 
     @Override
-    public boolean isReady() {
-        return parentList != null;
+    public JPanel getOptionsPanel() {
+        return optionsPanel;
     }
 
     @Override
@@ -112,8 +116,8 @@ public class EditingTypeFilterPanel extends AbstractSiteFilter {
     }
 
     @Override
-    protected String listName() {
-        return "Focus on " + refBase.getSelectedItem() + " to " + altBase.getSelectedItem();
+    public String description() {
+        return "Filter RNA editing sites by editing type,such as 'A'->'G','C'->'T',etc.";
     }
 
     /**

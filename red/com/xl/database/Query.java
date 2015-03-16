@@ -24,6 +24,8 @@ import com.xl.datatypes.sites.SiteList;
 import com.xl.datatypes.sites.SiteSet;
 import com.xl.exception.REDException;
 import com.xl.utils.NameRetriever;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -34,11 +36,11 @@ import java.util.Vector;
  * Class Query provides a simple way to query data from database. It is an adapter between database and RED.
  */
 public class Query {
+    private static final Logger logger = LoggerFactory.getLogger(Query.class);
     /**
      * A reference of DatabaseManager.
      */
     private static DatabaseManager databaseManager = DatabaseManager.getInstance();
-
 
     /**
      * Query Chromosome, Position, Reference Base and Alternative Base of RNA editing sites from a given table.
@@ -46,16 +48,12 @@ public class Query {
      * @param tableName The table name
      * @return A collection which contains the above information.
      */
-    public static Vector<Site> queryAllEditingSites(String tableName) {
+    public static Vector<Site> queryAllEditingSites(String tableName) throws SQLException {
         Vector<Site> siteVector = new Vector<Site>();
-        try {
-            ResultSet rs = databaseManager.query(tableName, new String[]{"chrom", "pos", "ref", "alt"}, null, null);
-            while (rs.next()) {
-                Site p = new Site(rs.getString(1), rs.getInt(2), rs.getString(3).charAt(0), rs.getString(4).charAt(0));
-                siteVector.add(p);
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
+        ResultSet rs = databaseManager.query(tableName, new String[]{"chrom", "pos", "ref", "alt"}, null, null);
+        while (rs.next()) {
+            Site p = new Site(rs.getString(1), rs.getInt(2), rs.getString(3).charAt(0), rs.getString(4).charAt(0));
+            siteVector.add(p);
         }
         return siteVector;
     }
@@ -66,23 +64,19 @@ public class Query {
      * @param tableName The table name
      * @return A collection which contains all information about a site.
      */
-    public static Vector<SiteBean> queryAllEditingInfo(String tableName) {
+    public static Vector<SiteBean> queryAllEditingInfo(String tableName) throws SQLException {
         Vector<SiteBean> siteBeans = new Vector<SiteBean>();
-        try {
-            ResultSet rs = databaseManager.query(tableName, null, null, null);
-            while (rs.next()) {
-                SiteBean p = new SiteBean(rs.getString(1), rs.getInt(2), rs.getString(3), rs.getString(4).charAt(0), rs.getString(5).charAt(0),
-                        rs.getFloat(6), rs.getString(7), rs.getString(8), rs.getString(9), rs.getString(10), rs.getString(11), rs.getString(12),
-                        rs.getString(13), rs.getString(14));
-                if (tableName.equals(DatabaseManager.PVALUE_FILTER_RESULT_TABLE_NAME)) {
-                    p.setLevel(rs.getDouble(15));
-                    p.setPValue(rs.getDouble(16));
-                    p.setFdr(rs.getDouble(17));
-                }
-                siteBeans.add(p);
+        ResultSet rs = databaseManager.query(tableName, null, null, null);
+        while (rs.next()) {
+            SiteBean p = new SiteBean(rs.getString(1), rs.getInt(2), rs.getString(3), rs.getString(4).charAt(0), rs.getString(5).charAt(0),
+                    rs.getFloat(6), rs.getString(7), rs.getString(8), rs.getString(9), rs.getString(10), rs.getString(11), rs.getString(12),
+                    rs.getString(13), rs.getString(14));
+            if (tableName.equals(DatabaseManager.PVALUE_FILTER_RESULT_TABLE_NAME)) {
+                p.setLevel(rs.getDouble(15));
+                p.setPValue(rs.getDouble(16));
+                p.setFdr(rs.getDouble(17));
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
+            siteBeans.add(p);
         }
         return siteBeans;
     }
@@ -95,16 +89,14 @@ public class Query {
      * @param pos       The given position.
      * @return A Site which contains Chromosome, Position, Reference Base and Alternative Base information.
      */
-    public static Site queryEditingSite(String tableName, String chrom, int pos) {
-        try {
-            ResultSet rs = databaseManager.query(tableName, new String[]{"chrom", "pos", "ref", "alt"}, " chrom=? AND pos=?", new String[]{chrom, pos + ""});
-            if (rs.next())
-                return new Site(rs.getString(1), rs.getInt(2), rs.getString(3).toCharArray()[0], rs.getString(4).toCharArray()[0]);
-        } catch (SQLException e) {
-            e.printStackTrace();
+
+    public static Site queryEditingSite(String tableName, String chrom, int pos) throws SQLException {
+        ResultSet rs = databaseManager.query(tableName, new String[]{"chrom", "pos", "ref", "alt"}, " chrom=? AND pos=?", new String[]{chrom, pos + ""});
+        if (rs.next()) {
+            return new Site(rs.getString(1), rs.getInt(2), rs.getString(3).toCharArray()[0], rs.getString(4).toCharArray()[0]);
+        } else {
             return null;
         }
-        return null;
     }
 
     /**
@@ -114,16 +106,12 @@ public class Query {
      * @param chrom     The given chromosome.
      * @return A Site which contains Chromosome, Position, Reference Base and Alternative Base information.
      */
-    public static Vector<Site> queryEditingSitesForChr(String tableName, String chrom) {
+    public static Vector<Site> queryEditingSitesForChr(String tableName, String chrom) throws SQLException {
         Vector<Site> siteVector = new Vector<Site>();
-        try {
-            ResultSet rs = databaseManager.query(tableName, new String[]{"chrom", "pos", "ref", "alt"}, " chrom=?", new String[]{chrom});
-            while (rs.next()) {
-                Site p = new Site(rs.getString(1), rs.getInt(2), rs.getString(3).toCharArray()[0], rs.getString(4).toCharArray()[0]);
-                siteVector.add(p);
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
+        ResultSet rs = databaseManager.query(tableName, new String[]{"chrom", "pos", "ref", "alt"}, " chrom=?", new String[]{chrom});
+        while (rs.next()) {
+            Site p = new Site(rs.getString(1), rs.getInt(2), rs.getString(3).toCharArray()[0], rs.getString(4).toCharArray()[0]);
+            siteVector.add(p);
         }
         return siteVector;
     }
@@ -150,7 +138,7 @@ public class Query {
      * @return A Site set which can be regarded as a tree model.
      * @throws REDException If table name has been renamed or deleted in database, and the method can not find them, then throw this exception.
      */
-    public synchronized static SiteSet getSiteSetFromDatabase(String sampleName) throws REDException {
+    public synchronized static SiteSet getSiteSetFromDatabase(String sampleName) throws REDException, SQLException {
         List<String> tableNames = DatabaseManager.getInstance().queryTablesForSample(sampleName);
         //First, we get site set from a RNA VCF file.
         String rnaVcf = null;
@@ -203,7 +191,7 @@ public class Query {
                 }
             }
             if (previousFilter == null || currentFilter == null) {
-                throw new REDException("Unknown filter table:" + tableName);
+                throw new REDException("Unknown filter table:" + tableName + ", please don't rename the filter name in the database.");
             }
             String listName = NameRetriever.retrieveParams(currentFilter, sections);
 

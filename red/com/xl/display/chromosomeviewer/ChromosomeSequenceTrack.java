@@ -22,8 +22,11 @@ import com.xl.datatypes.DataCollection;
 import com.xl.datatypes.genome.Chromosome;
 import com.xl.utils.AsciiUtils;
 import com.xl.utils.FontManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.awt.*;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 
@@ -32,7 +35,7 @@ import java.io.RandomAccessFile;
  * a surrounding instance of ChromosomeViewer.
  */
 public class ChromosomeSequenceTrack extends AbstractTrack {
-
+    private final Logger logger = LoggerFactory.getLogger(ChromosomeSequenceTrack.class);
     /**
      * Current fasta file used.
      */
@@ -52,16 +55,6 @@ public class ChromosomeSequenceTrack extends AbstractTrack {
     public ChromosomeSequenceTrack(ChromosomeViewer viewer, DataCollection collection, String sequenceName) {
         super(viewer, sequenceName);
         this.collection = collection;
-    }
-
-    @Override
-    public void paint(Graphics g) {
-        super.paint(g);
-        if (fastaFile != null) {
-            g.drawRoundRect(0, displayHeight - 10, displayWidth, 10, 3, 3);
-            g.setFont(FontManager.DEFAULT_FONT);
-            drawSequence(getSequenceForChr(fastaFile, currentViewerStart, currentViewerEnd), g);
-        }
     }
 
     /**
@@ -113,8 +106,22 @@ public class ChromosomeSequenceTrack extends AbstractTrack {
      */
     @Override
     protected void updateTrack(Chromosome chromosome) {
-        fastaFile = collection.genome().getAnnotationCollection().getFastaForChr(chromosome);
+        try {
+            fastaFile = collection.genome().getAnnotationCollection().getFastaForChr(chromosome);
+        } catch (FileNotFoundException e) {
+            logger.warn("The fasta file is not found.", e);
+        }
         repaint();
+    }
+
+    @Override
+    public void paint(Graphics g) {
+        super.paint(g);
+        if (fastaFile != null) {
+            g.drawRoundRect(0, displayHeight - 10, displayWidth, 10, 3, 3);
+            g.setFont(FontManager.DEFAULT_FONT);
+            drawSequence(getSequenceForChr(fastaFile, currentViewerStart, currentViewerEnd), g);
+        }
     }
 
 }

@@ -21,6 +21,8 @@ package com.xl.filter.dnarna;
 import com.xl.database.DatabaseManager;
 import com.xl.datatypes.sites.SiteBean;
 import com.xl.utils.Timer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -32,6 +34,7 @@ import java.util.List;
  * errors).
  */
 public class LikelihoodRatioFilter {
+    private final Logger logger = LoggerFactory.getLogger(LikelihoodRatioFilter.class);
     /**
      * The database manager.
      */
@@ -57,53 +60,48 @@ public class LikelihoodRatioFilter {
      * @param previousTable  The previous table
      * @param llrThreshold   The likelihood ratio threshold
      */
-    public void executeLLRFilter(String llrResultTable, String dnaVcfTable, String previousTable, double llrThreshold) {
-        try {
-            System.out.println("Start executing Likelihood Ratio Filter..." + Timer.getCurrentTime());
-//            ResultSet rs = databaseManager.query(previousTable + "," + dnaVcfTable, new String[]{previousTable + ".chrom", previousTable + ".pos", previousTable + ".AD",
-//                    dnaVcfTable + ".qual"}, previousTable + ".chrom=? AND " + previousTable + ".pos=?", new String[]{dnaVcfTable + ".chrom", dnaVcfTable + ".pos"});
-            ResultSet rs = databaseManager.query("select " + previousTable + ".chrom," + previousTable + ".pos," + previousTable + ".AD," +
-                    "" + dnaVcfTable + ".qual from " + previousTable + "," + dnaVcfTable + " WHERE " + previousTable + ".chrom=" + dnaVcfTable + ".chrom AND " +
-                    previousTable + ".pos=" + dnaVcfTable + ".pos");
-            List<SiteBean> siteBeans = new ArrayList<SiteBean>();
-            while (rs.next()) {
-                String chr = rs.getString(1);
-                int pos = rs.getInt(2);
-                String ad = rs.getString(3);
-                float qual = rs.getFloat(4);
-                SiteBean pb = new SiteBean(chr, pos);
-                pb.setAd(ad);
-                pb.setQual(qual);
-                siteBeans.add(pb);
-            }
-            databaseManager.setAutoCommit(false);
-            int count = 0;
-            for (SiteBean siteBean : siteBeans) {
-                String[] section = siteBean.getAd().split("/");
-                int ref = Integer.parseInt(section[0]);
-                int alt = Integer.parseInt(section[1]);
-                if (ref + alt > 0) {
-                    double f_ml = 1.0 * ref / (ref + alt);
-                    double y = Math.pow(f_ml, ref) * Math.pow(1 - f_ml, alt);
-                    y = Math.log(y) / Math.log(10.0);
-                    double judge = y + siteBean.getQual() / 10.0;
-                    if (judge >= llrThreshold) {
-                        databaseManager.insert("insert into " + llrResultTable + " select * from " + previousTable + " where chrom='" + siteBean.getChr() +
-                                "' and pos=" + siteBean.getPos());
-                        if (++count % DatabaseManager.COMMIT_COUNTS_PER_ONCE == 0) {
-                            databaseManager.commit();
-                        }
+    public void executeLLRFilter(String llrResultTable, String dnaVcfTable, String previousTable, double llrThreshold) throws SQLException {
+        logger.info("Start executing Likelihood Ratio Filter... {}", Timer.getCurrentTime());
+        // ResultSet rs = databaseManager.query(previousTable + "," + dnaVcfTable, new String[]{previousTable + ".chrom", previousTable + ".pos",
+        // previousTable + ".AD", dnaVcfTable + ".qual"}, previousTable + ".chrom=? AND " + previousTable + ".pos=?", new String[]{dnaVcfTable + ".chrom",
+        // dnaVcfTable + ".pos"});
+        ResultSet rs = databaseManager.query("select " + previousTable + ".chrom," + previousTable + ".pos," + previousTable + ".AD," +
+                "" + dnaVcfTable + ".qual from " + previousTable + "," + dnaVcfTable + " WHERE " + previousTable + ".chrom=" + dnaVcfTable + ".chrom AND " +
+                previousTable + ".pos=" + dnaVcfTable + ".pos");
+        List<SiteBean> siteBeans = new ArrayList<SiteBean>();
+        while (rs.next()) {
+            String chr = rs.getString(1);
+            int pos = rs.getInt(2);
+            String ad = rs.getString(3);
+            float qual = rs.getFloat(4);
+            SiteBean pb = new SiteBean(chr, pos);
+            pb.setAd(ad);
+            pb.setQual(qual);
+            siteBeans.add(pb);
+        }
+        databaseManager.setAutoCommit(false);
+        int count = 0;
+        for (SiteBean siteBean : siteBeans) {
+            String[] section = siteBean.getAd().split("/");
+            int ref = Integer.parseInt(section[0]);
+            int alt = Integer.parseInt(section[1]);
+            if (ref + alt > 0) {
+                double f_ml = 1.0 * ref / (ref + alt);
+                double y = Math.pow(f_ml, ref) * Math.pow(1 - f_ml, alt);
+                y = Math.log(y) / Math.log(10.0);
+                double judge = y + siteBean.getQual() / 10.0;
+                if (judge >= llrThreshold) {
+                    databaseManager.insert("insert into " + llrResultTable + " select * from " + previousTable + " where chrom='" + siteBean.getChr() +
+                            "' and pos=" + siteBean.getPos());
+                    if (++count % DatabaseManager.COMMIT_COUNTS_PER_ONCE == 0) {
+                        databaseManager.commit();
                     }
                 }
             }
-            databaseManager.commit();
-            databaseManager.setAutoCommit(true);
-
-        } catch (SQLException e) {
-            e.printStackTrace();
         }
-        System.out.println("End executing Likelihood Ratio Filter..." + Timer.getCurrentTime());
-
+        databaseManager.commit();
+        databaseManager.setAutoCommit(true);
+        logger.info("End executing Likelihood Ratio Filter... {}", Timer.getCurrentTime());
     }
 
 }

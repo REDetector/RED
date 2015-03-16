@@ -25,15 +25,19 @@ import com.xl.datatypes.sites.Site;
 import com.xl.datatypes.sites.SiteList;
 import com.xl.exception.REDException;
 import com.xl.filter.denovo.RepeatRegionsFilter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
 import javax.swing.event.TreeSelectionEvent;
+import java.sql.SQLException;
 import java.util.Vector;
 
 /**
  * The Class RepeatRegionsFilterPanel is a rule-based filter panel to provide some parameters to be set as user's preference if there is any choice.
  */
 public class RepeatRegionsFilterPanel extends AbstractSiteFilter {
+    private final Logger logger = LoggerFactory.getLogger(RepeatRegionsFilterPanel.class);
     /**
      * The repeat regions filter option panel.
      */
@@ -49,13 +53,14 @@ public class RepeatRegionsFilterPanel extends AbstractSiteFilter {
     }
 
     @Override
-    public String description() {
-        return "Filter RNA editing sites by RepeatMasker database.";
+    protected String listName() {
+        return "Repeat Regions Filter";
     }
 
     @Override
-    protected void generateSiteList() {
+    protected void generateSiteList() throws SQLException {
         progressUpdated("Filtering RNA editing sites by RepeatMasker database, please wait...", 0, 0);
+        logger.info("Filtering RNA editing sites by RepeatMasker database.");
         String linearRepeatTableName = currentSample + "_" + parentList.getFilterName() + "_" + DatabaseManager.REPEAT_FILTER_RESULT_TABLE_NAME;
         String linearAluTableName = currentSample + "_" + parentList.getFilterName() + "_" + DatabaseManager.ALU_FILTER_RESULT_TABLE_NAME;
         TableCreator.createFilterTable(linearRepeatTableName);
@@ -81,8 +86,8 @@ public class RepeatRegionsFilterPanel extends AbstractSiteFilter {
     }
 
     @Override
-    public JPanel getOptionsPanel() {
-        return optionsPanel;
+    public boolean isReady() {
+        return parentList != null;
     }
 
     @Override
@@ -91,8 +96,8 @@ public class RepeatRegionsFilterPanel extends AbstractSiteFilter {
     }
 
     @Override
-    public boolean isReady() {
-        return parentList != null;
+    public JPanel getOptionsPanel() {
+        return optionsPanel;
     }
 
     @Override
@@ -101,10 +106,9 @@ public class RepeatRegionsFilterPanel extends AbstractSiteFilter {
     }
 
     @Override
-    protected String listName() {
-        return "Repeat Regions Filter";
+    public String description() {
+        return "Filter RNA editing sites by RepeatMasker database.";
     }
-
 
     /**
      * The repeat regions filter option panel.

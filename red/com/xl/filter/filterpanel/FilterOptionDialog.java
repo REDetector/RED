@@ -19,12 +19,12 @@
 package com.xl.filter.filterpanel;
 
 import com.xl.datatypes.sites.SiteList;
+import com.xl.display.dialog.CrashReporter;
 import com.xl.display.dialog.ProgressDialog;
 import com.xl.exception.REDException;
 import com.xl.interfaces.OptionsListener;
 import com.xl.interfaces.ProgressListener;
 import com.xl.main.REDApplication;
-import com.xl.net.crashreport.CrashReporter;
 import com.xl.utils.FontManager;
 import com.xl.utils.namemanager.MenuUtils;
 
@@ -129,6 +129,20 @@ public class FilterOptionDialog extends JDialog implements OptionsListener, Prog
     }
 
     @Override
+    public void progressExceptionReceived(Exception e) {
+        new CrashReporter(e);
+        filterButton.setEnabled(true);
+    }
+
+    @Override
+    public void progressWarningReceived(Exception e) {
+    }
+
+    @Override
+    public void progressUpdated(String message, int current, int max) {
+    }
+
+    @Override
     public void progressCancelled() {
         filterButton.setEnabled(true);
     }
@@ -167,19 +181,5 @@ public class FilterOptionDialog extends JDialog implements OptionsListener, Prog
         newList.setListName(groupName);
         setVisible(false);
         dispose();
-    }
-
-    @Override
-    public void progressExceptionReceived(Exception e) {
-        new CrashReporter(e);
-        filterButton.setEnabled(true);
-    }
-
-    @Override
-    public void progressUpdated(String message, int current, int max) {
-    }
-
-    @Override
-    public void progressWarningReceived(Exception e) {
     }
 }

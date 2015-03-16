@@ -19,10 +19,11 @@
 package com.xl.database;
 
 import com.xl.main.REDApplication;
-import com.xl.net.crashreport.CrashReporter;
 import com.xl.preferences.DatabasePreferences;
 import com.xl.utils.FontManager;
 import com.xl.utils.namemanager.MenuUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
 import java.awt.*;
@@ -36,6 +37,7 @@ import java.sql.SQLException;
  *         A database login dialog.
  */
 public class UserPasswordDialog extends JDialog implements ActionListener {
+    private static final Logger logger = LoggerFactory.getLogger(UserPasswordDialog.class);
     /**
      * The host.
      */
@@ -187,7 +189,7 @@ public class UserPasswordDialog extends JDialog implements ActionListener {
             preferences.setDatabasePasswd(pwd);
             try {
                 if (DatabaseManager.getInstance().connectDatabase(host, port, user, pwd)) {
-
+                    dispose();
                     if (application.dataCollection() == null) {
                         JOptionPane.showMessageDialog(application, "<html>Connect Successfully. <br>You may start a new project before you input your data " +
                                 "into database. <br>Click 'OK' to the next step.", "Connect Successfully", JOptionPane.INFORMATION_MESSAGE);
@@ -195,15 +197,14 @@ public class UserPasswordDialog extends JDialog implements ActionListener {
                     }
                     new DatabaseSelector(application);
                     DatabaseManager.getInstance().databaseConnected();
-                    dispose();
                 }
             } catch (ClassNotFoundException e1) {
-                new CrashReporter(e1);
-                e1.printStackTrace();
+                logger.warn("The driver has been integrated into the software and should not be found. If the ClassNotFoundException happens again, " +
+                        "please try to download the latest version of RED to solve the problem.", e1);
             } catch (SQLException e1) {
                 JOptionPane.showMessageDialog(this, "Sorry, fail to connect to database. You may input one of wrong " +
                         "database host, port, user name or password.", "Connected Failed", JOptionPane.ERROR_MESSAGE);
-                e1.printStackTrace();
+                logger.error("Fail to connect to database.", e1);
             }
         } else if (action.equals(MenuUtils.CANCEL_BUTTON)) {
             setVisible(false);

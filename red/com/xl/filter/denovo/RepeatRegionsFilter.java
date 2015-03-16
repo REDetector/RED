@@ -21,7 +21,10 @@ package com.xl.filter.denovo;
 import com.xl.database.DatabaseManager;
 import com.xl.display.dialog.ProgressDialog;
 import com.xl.display.dialog.REDProgressBar;
+import com.xl.exception.DataLoadException;
 import com.xl.utils.Timer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.BufferedReader;
 import java.io.FileInputStream;
@@ -34,6 +37,7 @@ import java.sql.SQLException;
  * remained since A-I RNA editing is pervasive in Alu repeats and it has been implicated in human diseases such as breast cancer and Ewing's sarcoma.
  */
 public class RepeatRegionsFilter {
+    private final Logger logger = LoggerFactory.getLogger(RepeatRegionsFilter.class);
     /**
      * The database manager.
      */
@@ -58,7 +62,7 @@ public class RepeatRegionsFilter {
      * @param repeatTable The repeat file table name, it is constant.
      * @return true if repeat data exists in the database.
      */
-    public boolean hasEstablishedRepeatTable(String repeatTable) {
+    public boolean hasEstablishedRepeatTable(String repeatTable) throws SQLException {
         return databaseManager.getRowCount(repeatTable) > 0;
     }
 
@@ -68,8 +72,8 @@ public class RepeatRegionsFilter {
      * @param repeatTable The repeat file table name, it is constant.
      * @param repeatPath  The repeat file path.
      */
-    public void loadRepeatTable(String repeatTable, String repeatPath) {
-        System.out.println("Start loading RepeatTable..." + Timer.getCurrentTime());
+    public void loadRepeatTable(String repeatTable, String repeatPath) throws SQLException, DataLoadException {
+        logger.info("Start loading RepeatTable... {}", Timer.getCurrentTime());
         progressBar.addProgressListener(new ProgressDialog("Import repeat regions file into database..."));
         progressBar.progressUpdated("Start loading repeated region data from " + repeatPath + " to " + repeatTable, 0, 0);
         BufferedReader rin = null;
@@ -98,24 +102,20 @@ public class RepeatRegionsFilter {
             }
 
         } catch (IOException e) {
-            System.err.println("Error load file from " + repeatPath + " to file stream");
-            e.printStackTrace();
-            progressBar.progressExceptionReceived(e);
-        } catch (SQLException e) {
-            System.err.println("Error execute sql clause in " + RepeatRegionsFilter.class.getName() + ":loadRepeatTable()");
-            e.printStackTrace();
-            progressBar.progressExceptionReceived(e);
+            DataLoadException de = new DataLoadException("Error load file", repeatPath);
+            logger.error("Error load file from " + repeatPath + " to file stream", de);
+            throw de;
         } finally {
             if (rin != null) {
                 try {
                     rin.close();
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    logger.error("", e);
                 }
             }
         }
         progressBar.progressComplete("repeat_loaded", null);
-        System.out.println("End loading RepeatTable..." + Timer.getCurrentTime());
+        logger.info("End loading RepeatTable... {}", Timer.getCurrentTime());
     }
 
     /**
@@ -126,28 +126,24 @@ public class RepeatRegionsFilter {
      * @param aluResultTable    The Alu result table
      * @param previousTable     The previous table
      */
-    public void executeRepeatFilter(String repeatTable, String repeatResultTable, String aluResultTable, String previousTable) {
-        System.out.println("Start executing RepeatRegionsFilter..." + Timer.getCurrentTime());
-        try {
-            databaseManager.executeSQL("insert into " + repeatResultTable + " select * from " + previousTable + " where not exists (select * from " +
-                    repeatTable + " where (" + repeatTable + ".chrom= " + previousTable + ".chrom and  " + repeatTable + ".begin<=" + previousTable + ".pos and " +
-                    repeatTable + ".end>=" + previousTable + ".pos)) ");
+    public void executeRepeatFilter(String repeatTable, String repeatResultTable, String aluResultTable, String previousTable) throws SQLException {
+        logger.info("Start executing RepeatRegionsFilter... {}", Timer.getCurrentTime());
+        databaseManager.executeSQL("insert into " + repeatResultTable + " select * from " + previousTable + " where not exists (select * from " +
+                repeatTable + " where (" + repeatTable + ".chrom= " + previousTable + ".chrom and  " + repeatTable + ".begin<=" + previousTable + ".pos and " +
+                repeatTable + ".end>=" + previousTable + ".pos)) ");
 
-            System.out.println("Start executing AluFilter..." + Timer.getCurrentTime());
+        logger.info("Start executing AluFilter... {}", Timer.getCurrentTime());
 
-            databaseManager.executeSQL("insert into " + aluResultTable + " SELECT * from " + previousTable + " where exists (select chrom from " + repeatTable
-                    + " where " + repeatTable + ".chrom = " + previousTable + ".chrom and " + repeatTable + ".begin<=" + previousTable + ".pos and " + repeatTable
-                    + ".end>=" + previousTable + ".pos and " + repeatTable + ".type='SINE/Alu')");
+        databaseManager.executeSQL("insert into " + aluResultTable + " SELECT * from " + previousTable + " where exists (select chrom from " + repeatTable
+                + " where " + repeatTable + ".chrom = " + previousTable + ".chrom and " + repeatTable + ".begin<=" + previousTable + ".pos and " + repeatTable
+                + ".end>=" + previousTable + ".pos and " + repeatTable + ".type='SINE/Alu')");
 
-            databaseManager.executeSQL("update " + aluResultTable + " set alu = 'T'");
-            databaseManager.executeSQL("insert into " + repeatResultTable + " select * from " + aluResultTable);
-            databaseManager.executeSQL("drop table if exists " + aluResultTable);
+        logger.info("End executing AluFilter... {}", Timer.getCurrentTime());
 
-            System.out.println("End executing AluFilter..." + Timer.getCurrentTime());
+        databaseManager.executeSQL("update " + aluResultTable + " set alu = 'T'");
+        databaseManager.executeSQL("insert into " + repeatResultTable + " select * from " + aluResultTable);
+        databaseManager.executeSQL("drop table if exists " + aluResultTable);
 
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        System.out.println("End executing RepeatRegionsFilter..." + Timer.getCurrentTime());
+        logger.info("End executing RepeatRegionsFilter... {}", Timer.getCurrentTime());
     }
 }

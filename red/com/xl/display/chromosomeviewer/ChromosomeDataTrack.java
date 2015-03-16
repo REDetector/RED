@@ -389,18 +389,13 @@ public class ChromosomeDataTrack extends AbstractTrack implements ActiveDataChan
         g.drawLine(0, displayHeight - 1, displayWidth, displayHeight - 1);
 
         // If we're the active data store then surround us in red. This can fail if the viewer is being destroyed (viewer returns null) so catch this
-        try {
-            if (chromosomeViewer.application().dataCollection().getActiveDataStore() == data) {
-                g.setColor(Color.RED);
-                g.drawLine(0, displayHeight - 2, displayWidth, displayHeight - 2);
-                g.drawLine(0, displayHeight - 1, displayWidth, displayHeight - 1);
-                g.drawLine(0, 0, displayWidth, 0);
-                g.drawLine(0, 1, displayWidth, 1);
-            }
-        } catch (NullPointerException npe) {
-            npe.printStackTrace();
+        if (chromosomeViewer.application().dataCollection().getActiveDataStore() == data) {
+            g.setColor(Color.RED);
+            g.drawLine(0, displayHeight - 2, displayWidth, displayHeight - 2);
+            g.drawLine(0, displayHeight - 1, displayWidth, displayHeight - 1);
+            g.drawLine(0, 0, displayWidth, 0);
+            g.drawLine(0, 1, displayWidth, 1);
         }
-
     }
 
     @Override

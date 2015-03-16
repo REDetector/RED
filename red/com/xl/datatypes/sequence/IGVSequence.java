@@ -117,7 +117,7 @@ public class IGVSequence implements Sequence {
     /**
      * Get a "legal" chromosome file name from the chr name. This method supports "old" style .genome files.
      *
-     * @param chr
+     * @param chr the chr
      * @return
      */
     private String getChrFileName(String chr) {
@@ -136,12 +136,10 @@ public class IGVSequence implements Sequence {
     /**
      * Generate chromosomes from the list of cytobands. This method is provided for backward compatibility for pre V2.1 genomes.
      *
-     * @param chrCytoMap
-     * @param chromosomesAreOrdered
+     * @param chrCytoMap            the map of cytoband.
+     * @param chromosomesAreOrdered tell whether the chromosomes are ordered.
      */
-    public void generateChromosomes(
-            LinkedHashMap<String, List<Cytoband>> chrCytoMap,
-            boolean chromosomesAreOrdered) {
+    public void generateChromosomes(LinkedHashMap<String, List<Cytoband>> chrCytoMap, boolean chromosomesAreOrdered) {
 
         chromosomeLengths = new HashMap<String, Integer>();
         chromosomeNames = new ArrayList<String>(chrCytoMap.size());

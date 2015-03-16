@@ -68,14 +68,6 @@ public class DataGroup extends DataStore {
         }
     }
 
-    public void setName(String name) {
-        super.setName(name);
-        if (collection() != null) {
-            collection().dataStoreRenamed(this);
-        }
-    }
-
-
     /**
      * Contains data set.
      *
@@ -83,9 +75,10 @@ public class DataGroup extends DataStore {
      * @return true, if successful
      */
     public boolean containsDataSet(DataSet s) {
-        for (int i = 0; i < dataSets.length; i++) {
-            if (dataSets[i] == s)
+        for (DataSet dataSet : dataSets) {
+            if (dataSet == s) {
                 return true;
+            }
         }
         return false;
     }
@@ -100,10 +93,11 @@ public class DataGroup extends DataStore {
 
         DataSet[] newSet = new DataSet[dataSets.length - 1];
         int j = 0;
-        for (int i = 0; i < dataSets.length; i++) {
-            if (dataSets[i] == s) continue;
-            newSet[j] = dataSets[i];
-            j++;
+        for (DataSet dataSet : dataSets) {
+            if (dataSet == s) {
+                continue;
+            }
+            newSet[j++] = dataSet;
         }
 
         dataSets = newSet;
@@ -113,12 +107,13 @@ public class DataGroup extends DataStore {
         }
     }
 
-    public int getReadCountForChromosome(String chr) {
-        int count = 0;
-        for (int i = 0; i < dataSets.length; i++) {
-            count += dataSets[i].getReadCountForChromosome(chr);
+    public List<Location> getReadsForSite(Site p) {
+        List<Location> allReads = new ArrayList<Location>();
+        for (DataSet dataSet : dataSets) {
+            allReads.addAll(dataSet.getReadsForSite(p));
         }
-        return count;
+        Collections.sort(allReads);
+        return allReads;
     }
 
     public List<Location> getReadsForChromosome(String chr) {
@@ -130,37 +125,43 @@ public class DataGroup extends DataStore {
         return allReads;
     }
 
+    public int getReadCountForChromosome(String chr) {
+        int count = 0;
+        for (DataSet dataSet : dataSets) {
+            count += dataSet.getReadCountForChromosome(chr);
+        }
+        return count;
+    }
+
     public int getTotalReadCount() {
         int count = 0;
-        for (int i = 0; i < dataSets.length; i++) {
-            count += dataSets[i].getTotalReadCount();
+        for (DataSet dataSet : dataSets) {
+            count += dataSet.getTotalReadCount();
         }
         return count;
     }
 
     public int getReadCountForStrand(Strand strand) {
         int count = 0;
-        for (int i = 0; i < dataSets.length; i++) {
-            count += dataSets[i].getReadCountForStrand(strand);
+        for (DataSet dataSet : dataSets) {
+            count += dataSet.getReadCountForStrand(strand);
         }
         return count;
     }
 
     public long getTotalReadLength() {
         long count = 0;
-        for (int i = 0; i < dataSets.length; i++) {
-            count += dataSets[i].getTotalReadLength();
+        for (DataSet dataSet : dataSets) {
+            count += dataSet.getTotalReadLength();
         }
         return count;
     }
 
-    public List<Location> getReadsForSite(Site p) {
-        List<Location> allReads = new ArrayList<Location>();
-        for (DataSet dataSet : dataSets) {
-            allReads.addAll(dataSet.getReadsForSite(p));
+    public void setName(String name) {
+        super.setName(name);
+        if (collection() != null) {
+            collection().dataStoreRenamed(this);
         }
-        Collections.sort(allReads);
-        return allReads;
     }
 
 }

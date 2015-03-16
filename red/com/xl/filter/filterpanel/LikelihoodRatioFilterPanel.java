@@ -26,18 +26,22 @@ import com.xl.datatypes.sites.SiteList;
 import com.xl.exception.REDException;
 import com.xl.filter.dnarna.LikelihoodRatioFilter;
 import com.xl.preferences.DatabasePreferences;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
 import javax.swing.event.TreeSelectionEvent;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.sql.SQLException;
 import java.util.Vector;
 
 /**
  * The Class LikelihoodRatioFilterPanel is a statistical filter panel to provide some parameters to be set as user's preference if there is any choice.
  */
 public class LikelihoodRatioFilterPanel extends AbstractSiteFilter {
+    private final Logger logger = LoggerFactory.getLogger(LikelihoodRatioFilterPanel.class);
     /**
      * The threshold of likelihood ratio.
      */
@@ -61,13 +65,14 @@ public class LikelihoodRatioFilterPanel extends AbstractSiteFilter {
     }
 
     @Override
-    public String description() {
-        return "Filter RNA editing sites by statistic method (LLR).";
+    protected String listName() {
+        return "LLR Filter";
     }
 
     @Override
-    protected void generateSiteList() {
+    protected void generateSiteList() throws SQLException {
         progressUpdated("Filtering RNA editing sites by statistic method (LLR), please wait...", 0, 0);
+        logger.info("Filtering RNA editing sites by statistic method (LLR).");
         String linearTableName = currentSample + "_" + parentList.getFilterName() + "_" + DatabaseManager.LLR_FILTER_RESULT_TABLE_NAME + "_" + llrThreshold;
         TableCreator.createFilterTable(linearTableName);
         LikelihoodRatioFilter lf = new LikelihoodRatioFilter(databaseManager);
@@ -92,12 +97,10 @@ public class LikelihoodRatioFilterPanel extends AbstractSiteFilter {
         filterFinished(newList);
     }
 
-
     @Override
-    public JPanel getOptionsPanel() {
-        return optionsPanel;
+    public boolean isReady() {
+        return parentList != null && thresholdField.getText().length() != 0;
     }
-
 
     @Override
     public boolean hasOptionsPanel() {
@@ -105,8 +108,8 @@ public class LikelihoodRatioFilterPanel extends AbstractSiteFilter {
     }
 
     @Override
-    public boolean isReady() {
-        return parentList != null && thresholdField.getText().length() != 0;
+    public JPanel getOptionsPanel() {
+        return optionsPanel;
     }
 
     @Override
@@ -115,10 +118,9 @@ public class LikelihoodRatioFilterPanel extends AbstractSiteFilter {
     }
 
     @Override
-    protected String listName() {
-        return "LLR Filter";
+    public String description() {
+        return "Filter RNA editing sites by statistic method (LLR).";
     }
-
 
     /**
      * The likelihood ratio filter option panel.

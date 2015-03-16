@@ -26,15 +26,19 @@ import com.xl.datatypes.sites.SiteList;
 import com.xl.exception.REDException;
 import com.xl.filter.dnarna.DNARNAFilter;
 import com.xl.preferences.DatabasePreferences;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
 import javax.swing.event.TreeSelectionEvent;
+import java.sql.SQLException;
 import java.util.Vector;
 
 /**
  * The Class DNARNAFilterPanel is a rule-based filter panel to provide some parameters to be set as user's preference if there is any choice.
  */
 public class DNARNAFilterPanel extends AbstractSiteFilter {
+    private final Logger logger = LoggerFactory.getLogger(DNARNAFilterPanel.class);
     /**
      * The DNA-RNA filter option panel.
      */
@@ -50,20 +54,20 @@ public class DNARNAFilterPanel extends AbstractSiteFilter {
     }
 
     @Override
-    public String description() {
-        return "Filter RNA editing sites by comparing RNA and DNA.";
+    protected String listName() {
+        return "DNA-RNA Filter";
     }
 
     @Override
-    protected void generateSiteList() {
+    protected void generateSiteList() throws SQLException {
         progressUpdated("Filtering RNA editing sites by DNA-RNA filter, please wait...", 0, 0);
+        logger.info("Filtering RNA editing sites by DNA-RNA filter.");
         String linearTableName = currentSample + "_" + parentList.getFilterName() + "_" + DatabaseManager.DNA_RNA_FILTER_RESULT_TABLE_NAME;
         TableCreator.createFilterTable(linearTableName);
         DNARNAFilter dnaRnaFilter = new DNARNAFilter(databaseManager);
         String sampleName = DatabasePreferences.getInstance().getCurrentSample();
         dnaRnaFilter.executeDnaRnaFilter(linearTableName, sampleName + "_" + DatabaseManager.DNA_VCF_RESULT_TABLE_NAME, parentList.getTableName());
         DatabaseManager.getInstance().distinctTable(linearTableName);
-
         Vector<Site> sites = Query.queryAllEditingSites(linearTableName);
         SiteList newList = new SiteList(parentList, listName(), DatabaseManager.DNA_RNA_FILTER_RESULT_TABLE_NAME, linearTableName, description());
         int index = 0;
@@ -81,8 +85,8 @@ public class DNARNAFilterPanel extends AbstractSiteFilter {
     }
 
     @Override
-    public JPanel getOptionsPanel() {
-        return optionsPanel;
+    public boolean isReady() {
+        return parentList != null;
     }
 
     @Override
@@ -91,8 +95,8 @@ public class DNARNAFilterPanel extends AbstractSiteFilter {
     }
 
     @Override
-    public boolean isReady() {
-        return parentList != null;
+    public JPanel getOptionsPanel() {
+        return optionsPanel;
     }
 
     @Override
@@ -101,8 +105,8 @@ public class DNARNAFilterPanel extends AbstractSiteFilter {
     }
 
     @Override
-    protected String listName() {
-        return "DNA-RNA Filter";
+    public String description() {
+        return "Filter RNA editing sites by comparing RNA and DNA.";
     }
 
     /**

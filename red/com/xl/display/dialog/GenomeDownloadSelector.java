@@ -21,6 +21,8 @@ import com.xl.main.REDApplication;
 import com.xl.net.genomes.DownloadableGenomeSet;
 import com.xl.net.genomes.DownloadableGenomeTreeModel;
 import com.xl.net.genomes.GenomeList;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
 import javax.swing.event.TreeSelectionEvent;
@@ -35,6 +37,7 @@ import java.io.IOException;
  * The Class GenomeDownloadSelector provides a dialog which can be used to select a genome to download.
  */
 public class GenomeDownloadSelector extends JDialog implements ActionListener, TreeSelectionListener {
+    private final Logger logger = LoggerFactory.getLogger(GenomeDownloadSelector.class);
     /**
      * The application.
      */
@@ -102,6 +105,7 @@ public class GenomeDownloadSelector extends JDialog implements ActionListener, T
             setVisible(false);
             GenomeList selectedGenome = (GenomeList) tree.getSelectionPath().getLastPathComponent();
             application.downloadGenome(selectedGenome.getId(), selectedGenome.getDisplayName());
+            logger.info("Downloading the genome file: " + selectedGenome.getDisplayName());
             dispose();
         } else if (ae.getActionCommand().equals("cancel")) {
             setVisible(false);

@@ -26,8 +26,11 @@ import com.xl.interfaces.Cancellable;
 import com.xl.interfaces.OptionsListener;
 import com.xl.interfaces.ProgressListener;
 import com.xl.utils.NameRetriever;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
+import java.sql.SQLException;
 import java.util.ArrayList;
 
 /**
@@ -46,6 +49,7 @@ abstract class AbstractSiteFilter implements Runnable, Cancellable {
      * The sample name derive from the site set.
      */
     protected final String currentSample;
+    private final Logger logger = LoggerFactory.getLogger(AbstractSiteFilter.class);
     /**
      * The parent list selected from the left option panel by user.
      */
@@ -213,11 +217,14 @@ abstract class AbstractSiteFilter implements Runnable, Cancellable {
         }
     }
 
-    /* (non-Javadoc)
-     * @see java.lang.Runnable#run()
-     */
+    @Override
     public void run() {
-        generateSiteList();
+        try {
+            generateSiteList();
+        } catch (SQLException e) {
+            logger.error("Unable to generate the site list.", e);
+            progressExceptionReceived(e);
+        }
     }
 
     /**
@@ -240,7 +247,7 @@ abstract class AbstractSiteFilter implements Runnable, Cancellable {
     /**
      * Start the generation of the site list.  This will be called from within a new thread so you don't need to implement threading within the filter.
      */
-    protected abstract void generateSiteList();
+    protected abstract void generateSiteList() throws SQLException;
 
     /**
      * Checks if the currently set options allow the filter to be run

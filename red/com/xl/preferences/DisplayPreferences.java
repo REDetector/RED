@@ -202,6 +202,14 @@ public class DisplayPreferences {
         return currentChromosome;
     }
 
+    public void setChromosome(String c) {
+        currentChromosome = REDApplication.getInstance().dataCollection().genome().getChromosome(c);
+        // Set the location to be a 1Mbp chunk in the middle if we can
+        if (currentChromosome != null && (currentStartLocation == 0 || currentEndLocation == 0)) {
+            setLocation(currentChromosome.getLength() / 16 * 7, currentChromosome.getLength() / 16 * 9);
+        }
+    }
+
     public void setChromosome(Chromosome c) {
         currentChromosome = c;
         // Set the location to be a 1Mbp chunk in the middle if we can

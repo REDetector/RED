@@ -22,6 +22,9 @@ import com.xl.datatypes.DataStore;
 import com.xl.datatypes.sites.SiteList;
 import com.xl.datatypes.sites.SiteListChangeListener;
 import com.xl.datatypes.sites.SiteSet;
+import com.xl.exception.UnknownParameterException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.swing.event.TreeModelEvent;
 import javax.swing.event.TreeModelListener;
@@ -35,7 +38,7 @@ import java.util.Vector;
  * The Class SiteSetTreeModel provides a tree model which describes the relationships between site sets.
  */
 public class SiteSetTreeModel implements TreeModel, SiteListChangeListener {
-
+    private final Logger logger = LoggerFactory.getLogger(SiteSetTreeModel.class);
     /**
      * The listeners.
      */
@@ -68,16 +71,9 @@ public class SiteSetTreeModel implements TreeModel, SiteListChangeListener {
         }
     }
 
-    public void addTreeModelListener(TreeModelListener tl) {
-        if (tl != null && !listeners.contains(tl)) {
-            listeners.add(tl);
-        }
-    }
-
-    public void removeTreeModelListener(TreeModelListener tl) {
-        if (tl != null && listeners.contains(tl)) {
-            listeners.remove(tl);
-        }
+    @Override
+    public Object getRoot() {
+        return rootNode;
     }
 
     @Override
@@ -85,10 +81,11 @@ public class SiteSetTreeModel implements TreeModel, SiteListChangeListener {
         if (node instanceof SiteList) {
             return ((SiteList) node).children()[index];
         } else if (node.equals(rootNode)) {
-            if (index == 0) return siteSet;
+            return siteSet;
+        } else {
+            logger.error("Object '" + node + "' can not be recognized by our program in index " + index, new UnknownParameterException());
+            return siteSet;
         }
-
-        throw new NullPointerException("Null child from " + node + " at index " + index);
     }
 
     @Override
@@ -104,30 +101,6 @@ public class SiteSetTreeModel implements TreeModel, SiteListChangeListener {
     }
 
     @Override
-    public int getIndexOfChild(Object node, Object child) {
-        if (node instanceof SiteList) {
-            SiteList[] children = ((SiteList) node).children();
-            for (int i = 0; i < children.length; i++) {
-                if (children[i].equals(child)) {
-                    return i;
-                }
-            }
-        } else if (node.equals(rootNode)) {
-            if (child == siteSet) {
-                return 0;
-            }
-        }
-        System.err.println("Couldn't find valid index for " + node + " and " + child);
-        return 0;
-
-    }
-
-    @Override
-    public Object getRoot() {
-        return rootNode;
-    }
-
-    @Override
     public boolean isLeaf(Object node) {
         if (node instanceof SiteList) {
             return ((SiteList) node).children().length == 0;
@@ -140,7 +113,39 @@ public class SiteSetTreeModel implements TreeModel, SiteListChangeListener {
     @Override
     public void valueForPathChanged(TreePath tp, Object node) {
         // This only applies to editable trees - which this isn't.
-        System.out.println("Value for path changed called on node " + node);
+        logger.warn("Value for path changed called on node " + node);
+    }
+
+    @Override
+    public int getIndexOfChild(Object node, Object child) {
+        if (node instanceof SiteList) {
+            SiteList[] children = ((SiteList) node).children();
+            for (int i = 0; i < children.length; i++) {
+                if (children[i].equals(child)) {
+                    return i;
+                }
+            }
+        } else if (node.equals(rootNode)) {
+            if (child == siteSet) {
+                return 0;
+            }
+        } else {
+            logger.error("Could not get the index of child '" + child + "'from parent '" + node + "'", new UnknownParameterException());
+        }
+        return 0;
+
+    }
+
+    public void addTreeModelListener(TreeModelListener tl) {
+        if (tl != null && !listeners.contains(tl)) {
+            listeners.add(tl);
+        }
+    }
+
+    public void removeTreeModelListener(TreeModelListener tl) {
+        if (tl != null && listeners.contains(tl)) {
+            listeners.remove(tl);
+        }
     }
 
     @Override

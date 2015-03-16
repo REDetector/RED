@@ -23,8 +23,11 @@ import com.xl.datatypes.annotation.AnnotationCollection;
 import com.xl.datatypes.annotation.AnnotationSet;
 import com.xl.datatypes.feature.Feature;
 import com.xl.display.featureviewer.FeatureListViewer;
+import com.xl.exception.REDException;
 import com.xl.interfaces.Cancellable;
 import com.xl.main.REDApplication;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
 import java.awt.*;
@@ -36,7 +39,7 @@ import java.util.Vector;
  * The Class FindFeatureDialog shows a dialog which the user can use to search for any kind of annotation.
  */
 public class FindFeatureDialog extends JDialog implements ActionListener, Runnable, Cancellable {
-
+    private final Logger logger = LoggerFactory.getLogger(FindFeatureDialog.class);
     /**
      * The data collection containing the annotation we want to search.
      */
@@ -229,7 +232,11 @@ public class FindFeatureDialog extends JDialog implements ActionListener, Runnab
             for (Feature f : lastHits) {
                 searchAnnotations.addFeature(f);
             }
-            dataCollection.genome().getAnnotationCollection().addAnnotationSet(searchAnnotations);
+            try {
+                dataCollection.genome().getAnnotationCollection().addAnnotationSet(searchAnnotations);
+            } catch (REDException e) {
+                logger.warn("Unable to add annotation set.", e);
+            }
 
         } else if (ae.getActionCommand().equals("save_annotation_selected")) {
             Feature[] selectedHits = viewer.getSelectedFeatures();
@@ -251,7 +258,11 @@ public class FindFeatureDialog extends JDialog implements ActionListener, Runnab
             for (Feature f : selectedHits) {
                 searchAnnotations.addFeature(f);
             }
-            dataCollection.genome().getAnnotationCollection().addAnnotationSet(searchAnnotations);
+            try {
+                dataCollection.genome().getAnnotationCollection().addAnnotationSet(searchAnnotations);
+            } catch (REDException e) {
+                logger.warn("Unable to add annotation set.", e);
+            }
         }
     }
 }

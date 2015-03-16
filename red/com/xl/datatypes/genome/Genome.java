@@ -56,8 +56,7 @@ public class Genome {
         this(genomeId, displayName, sequence, false);
     }
 
-    public Genome(String genomeId, String displayName, Sequence sequence,
-                  boolean chromosOrdered) {
+    public Genome(String genomeId, String displayName, Sequence sequence, boolean chromosOrdered) {
         this.genomeId = genomeId;
         this.displayName = displayName;
         setSequence(sequence, chromosOrdered);
@@ -165,7 +164,7 @@ public class Genome {
     /**
      * Method description
      *
-     * @return
+     * @return genome ID
      */
     public String getGenomeId() {
         return genomeId;
@@ -181,7 +180,7 @@ public class Genome {
     /**
      * Return the nucleotide sequence on the + strand for the genomic interval. This method can return null if sequence is not available.
      *
-     * @param chr
+     * @param chr   the chromosome
      * @param start start position in "zero-based" coordinates
      * @param end   end position
      * @return sequence, or null if not available
@@ -263,7 +262,7 @@ public class Genome {
         int longest = 0;
         Collection<Chromosome> collection = chromosomeMap.values();
         Iterator<Chromosome> chromosomeIterator = collection.iterator();
-        while (chromosomeIterator.hasNext()) {
+        for (; chromosomeIterator.hasNext(); ) {
             int chr = chromosomeIterator.next().getLength();
             if (chr > longest) {
                 longest = chr;
@@ -271,5 +270,4 @@ public class Genome {
         }
         return longest;
     }
-
 }

@@ -19,12 +19,13 @@
 package com.xl.display.dialog;
 
 import com.xl.main.REDApplication;
-import com.xl.net.crashreport.CrashReporter;
 import com.xl.preferences.LocationPreferences;
 import com.xl.utils.ChromosomeNameComparator;
 import com.xl.utils.FileUtils;
 import com.xl.utils.namemanager.MenuUtils;
 import com.xl.utils.namemanager.SuffixUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
 import javax.swing.event.TreeSelectionEvent;
@@ -44,6 +45,7 @@ import java.util.TreeSet;
  * The Class GenomeSelector shows a tree of the currently available genomes
  */
 public class GenomeSelector extends JDialog implements ActionListener, TreeSelectionListener {
+    private final Logger logger = LoggerFactory.getLogger(GenomeSelector.class);
     /**
      * The application.
      */
@@ -156,8 +158,9 @@ public class GenomeSelector extends JDialog implements ActionListener, TreeSelec
             application.wipeAllData();
 
             // Now load the new genome.
-            application.loadGenome(((GenomeNode) tree.getSelectionPath().getLastPathComponent()).file());
-
+            File genomeFie = ((GenomeNode) tree.getSelectionPath().getLastPathComponent()).file();
+            application.loadGenome(genomeFie);
+            logger.info("Loading genome: " + genomeFie.getName());
             dispose();
         } else if (ae.getActionCommand().equals(MenuUtils.IMPORT_BUTTON)) {
             try {

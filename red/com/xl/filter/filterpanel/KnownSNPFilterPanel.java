@@ -25,17 +25,21 @@ import com.xl.datatypes.sites.Site;
 import com.xl.datatypes.sites.SiteList;
 import com.xl.exception.REDException;
 import com.xl.filter.denovo.KnownSNPFilter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
 import javax.swing.event.TreeSelectionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.sql.SQLException;
 import java.util.Vector;
 
 /**
  * The Class KnownSNPFilterPanel is a rule-based filter panel to provide some parameters to be set as user's preference if there is any choice.
  */
 public class KnownSNPFilterPanel extends AbstractSiteFilter {
+    private final Logger logger = LoggerFactory.getLogger(KnownSNPFilterPanel.class);
     /**
      * The known SNP filter option panel.
      */
@@ -51,13 +55,14 @@ public class KnownSNPFilterPanel extends AbstractSiteFilter {
     }
 
     @Override
-    public String description() {
-        return "Filter RNA editing sites by dbSNP database.";
+    protected String listName() {
+        return "Known SNP Filter";
     }
 
     @Override
-    protected void generateSiteList() {
+    protected void generateSiteList() throws SQLException {
         progressUpdated("Filtering RNA editing sites by dbSNP filter, please wait...", 0, 0);
+        logger.info("Filtering RNA editing sites by dbSNP filter");
         String linearTableName = currentSample + "_" + parentList.getFilterName() + "_" + DatabaseManager.DBSNP_FILTER_RESULT_TABLE_NAME;
         TableCreator.createFilterTable(linearTableName);
         KnownSNPFilter dbsnpFilter = new KnownSNPFilter(databaseManager);
@@ -81,8 +86,8 @@ public class KnownSNPFilterPanel extends AbstractSiteFilter {
     }
 
     @Override
-    public JPanel getOptionsPanel() {
-        return optionsPanel;
+    public boolean isReady() {
+        return parentList != null;
     }
 
     @Override
@@ -91,8 +96,8 @@ public class KnownSNPFilterPanel extends AbstractSiteFilter {
     }
 
     @Override
-    public boolean isReady() {
-        return parentList != null;
+    public JPanel getOptionsPanel() {
+        return optionsPanel;
     }
 
     @Override
@@ -101,10 +106,9 @@ public class KnownSNPFilterPanel extends AbstractSiteFilter {
     }
 
     @Override
-    protected String listName() {
-        return "Known SNP Filter";
+    public String description() {
+        return "Filter RNA editing sites by dbSNP database.";
     }
-
 
     /**
      * The known SNP filter option panel.

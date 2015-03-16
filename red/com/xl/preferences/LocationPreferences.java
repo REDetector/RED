@@ -19,6 +19,8 @@
 package com.xl.preferences;
 
 import com.xl.utils.FileUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
@@ -58,6 +60,7 @@ public class LocationPreferences {
      * Singleton pattern.
      */
     public static LocationPreferences locationPreferences = new LocationPreferences();
+    private final Logger logger = LoggerFactory.getLogger(LocationPreferences.class);
     /**
      * The project root directory
      */
@@ -326,7 +329,16 @@ public class LocationPreferences {
         try {
             REDPreferences.getInstance().savePreferences();
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.error("I/O exception.", e);
+        }
+    }
+
+    public void clearRecentlyOpenedFiles() {
+        recentlyOpenedFiles.clear();
+        try {
+            REDPreferences.getInstance().savePreferences();
+        } catch (IOException e) {
+            logger.error("I/O exception.", e);
         }
     }
 

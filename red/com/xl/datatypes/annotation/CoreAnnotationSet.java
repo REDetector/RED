@@ -21,8 +21,8 @@ package com.xl.datatypes.annotation;
 import com.xl.datatypes.genome.Chromosome;
 import com.xl.datatypes.genome.Genome;
 import com.xl.datatypes.genome.GenomeDescriptor;
+import com.xl.display.dialog.CrashReporter;
 import com.xl.main.Global;
-import com.xl.net.crashreport.CrashReporter;
 import com.xl.preferences.LocationPreferences;
 import com.xl.utils.FileUtils;
 import com.xl.utils.namemanager.GenomeUtils;
@@ -69,7 +69,6 @@ public class CoreAnnotationSet extends AnnotationSet {
         File cacheCompleteCheckFile;
         cacheCompleteCheckFile = new File(currentCacheDirectory + File.separator + SuffixUtils.CACHE_GENOME_COMPLETE);
         if (cacheCompleteCheckFile.exists()) {
-            // System.out.println("Skipping finalisation for core annotation set");
             return;
         }
 

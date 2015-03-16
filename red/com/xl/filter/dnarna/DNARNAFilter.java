@@ -20,6 +20,8 @@ package com.xl.filter.dnarna;
 
 import com.xl.database.DatabaseManager;
 import com.xl.utils.Timer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.sql.SQLException;
 
@@ -28,6 +30,7 @@ import java.sql.SQLException;
  * excluded if DNA sequencing data is available.
  */
 public class DNARNAFilter {
+    private final Logger logger = LoggerFactory.getLogger(DNARNAFilter.class);
     /**
      * The database manager.
      */
@@ -50,18 +53,12 @@ public class DNARNAFilter {
      * @param dnaVcfTable       The DNA VCF table
      * @param previousTable     The previous table
      */
-    public void executeDnaRnaFilter(String dnaRnaResultTable, String dnaVcfTable, String previousTable) {
-        System.out.println("Start executing DNARNAFilter..." + Timer.getCurrentTime());
-
-        try {
-            databaseManager.executeSQL("insert into " + dnaRnaResultTable + " select * from " + previousTable + " where " +
-                    "exists (select chrom from " + dnaVcfTable + " where (" + dnaVcfTable + ".chrom=" + previousTable +
-                    ".chrom and " + dnaVcfTable + ".pos=" + previousTable + ".pos))");
-        } catch (SQLException e) {
-            System.err.println("Error execute sql clause in " + DNARNAFilter.class.getName() + ":executeDnaRnaFilter()");
-            e.printStackTrace();
-        }
-        System.out.println("End executing DNARNAFilter..." + Timer.getCurrentTime());
+    public void executeDnaRnaFilter(String dnaRnaResultTable, String dnaVcfTable, String previousTable) throws SQLException {
+        logger.info("Start executing DNARNAFilter... {}", Timer.getCurrentTime());
+        databaseManager.executeSQL("insert into " + dnaRnaResultTable + " select * from " + previousTable + " where " +
+                "exists (select chrom from " + dnaVcfTable + " where (" + dnaVcfTable + ".chrom=" + previousTable +
+                ".chrom and " + dnaVcfTable + ".pos=" + previousTable + ".pos))");
+        logger.info("End executing DNARNAFilter... {}", Timer.getCurrentTime());
     }
 
 }

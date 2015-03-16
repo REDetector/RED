@@ -23,8 +23,11 @@ import com.xl.database.DatabaseManager;
 import com.xl.datatypes.sites.SiteBean;
 import com.xl.display.dialog.ProgressDialog;
 import com.xl.display.dialog.REDProgressBar;
+import com.xl.exception.DataLoadException;
 import com.xl.utils.Timer;
 import net.sf.snver.pileup.util.math.FisherExact;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import rcaller.RCaller;
 import rcaller.RCode;
 
@@ -43,6 +46,7 @@ import java.util.List;
  * errors).
  */
 public class FisherExactTestFilter {
+    private final Logger logger = LoggerFactory.getLogger(FisherExactTestFilter.class);
     /**
      * The database manager.
      */
@@ -67,7 +71,7 @@ public class FisherExactTestFilter {
      * @param darnedTable The DARNED database table name, it is constant.
      * @return true if DARNED data exists in the database.
      */
-    public boolean hasEstablishedDarnedTable(String darnedTable) {
+    public boolean hasEstablishedDarnedTable(String darnedTable) throws SQLException {
         return databaseManager.getRowCount(darnedTable) > 0;
     }
 
@@ -77,8 +81,8 @@ public class FisherExactTestFilter {
      * @param darnedTable The DARNED database table name, it is constant.
      * @param darnedPath  The DARNED file path.
      */
-    public void loadDarnedTable(String darnedTable, String darnedPath) {
-        System.out.println("Start loading DarnedTable..." + Timer.getCurrentTime());
+    public void loadDarnedTable(String darnedTable, String darnedPath) throws SQLException, DataLoadException {
+        logger.info("Start loading DarnedTable... {}", Timer.getCurrentTime());
         progressBar.addProgressListener(new ProgressDialog("Import DARNED file into database..."));
         progressBar.progressUpdated("Start loading DARNED data from " + darnedPath + " to " + darnedTable + " table", 0, 0);
         if (!hasEstablishedDarnedTable(darnedTable)) {
@@ -120,25 +124,21 @@ public class FisherExactTestFilter {
                 databaseManager.commit();
                 databaseManager.setAutoCommit(true);
             } catch (IOException e) {
-                System.err.println("Error load file from " + darnedPath + " to file stream");
-                e.printStackTrace();
-                progressBar.progressExceptionReceived(e);
-            } catch (SQLException e) {
-                System.err.println("Error execute sql clause in " + FisherExactTestFilter.class.getName() + ":loadDarnedTable()");
-                e.printStackTrace();
-                progressBar.progressExceptionReceived(e);
+                DataLoadException de = new DataLoadException("Error load file", darnedPath);
+                logger.error("Error load file from " + darnedPath + " to file stream", de);
+                throw de;
             } finally {
                 if (rin != null) {
                     try {
                         rin.close();
                     } catch (IOException e) {
-                        e.printStackTrace();
+                        logger.error("", e);
                     }
                 }
             }
         }
         progressBar.progressComplete("darned_loaded", null);
-        System.out.println("End loading DarnedTable..." + Timer.getCurrentTime());
+        logger.info("End loading DarnedTable... {}", Timer.getCurrentTime());
     }
 
     /**
@@ -148,42 +148,36 @@ public class FisherExactTestFilter {
      * @param previousTable Previous table name
      * @return a list that contains all information from a given table.
      */
-    private List<PValueInfo> getExpectedInfo(String darnedTable, String previousTable) {
+    private List<PValueInfo> getExpectedInfo(String darnedTable, String previousTable) throws SQLException {
         List<PValueInfo> values = new ArrayList<PValueInfo>();
-        try {
-            // First, we put all sites with all site information into a list, no matter whether the site is in DARNED database or not.
-            ResultSet rs = databaseManager.query(previousTable, null, null, null);
-            while (rs.next()) {
-                //1.CHROM varchar(30),2.POS int,3.ID varchar(30),4.REF varchar(3),5.ALT varchar(5),6.QUAL float(8,2),7.FILTER text,8.INFO text,9.GT text,
-                // 10.AD text,11.DP text,12.GQ text,13.PL text,14.ALU varchar(1)
-                PValueInfo info = new PValueInfo(rs.getString(1), rs.getInt(2), rs.getString(3), rs.getString(4).charAt(0), rs.getString(5).charAt(0),
-                        rs.getFloat(6), rs.getString(7), rs.getString(8), rs.getString(9), rs.getString(10), rs.getString(11), rs.getString(12),
-                        rs.getString(13), rs.getString(14));
-                // Parse 'AD' column because we need them to calculate the expected number.
-                String[] sections = info.getAd().split("/");
-                info.refCount = Integer.parseInt(sections[0]);
-                info.altCount = Integer.parseInt(sections[1]);
-                values.add(info);
-            }
-//            select previousTable.* from previousTable INNER JOIN darnedTable ON previousTable.chrom=darnedTable.chrom and previousTable.pos=darnedTable.coordinate
-            // Next, we find the sites existed commonly in the previous table and DARNED table,
-            rs = databaseManager.query("select " + previousTable + ".* from " + previousTable + " INNER JOIN " + darnedTable + " ON " + previousTable + "" +
-                    ".chrom=" + darnedTable + ".chrom and " + previousTable + ".pos=" + darnedTable + ".coordinate and " + darnedTable + ".inchr='A' and ("
-                    + darnedTable + ".inrna='I' or " + darnedTable + ".inrna='G')");
-            while (rs.next()) {
-                for (PValueInfo value : values) {
-                    if (value.getChr().equals(rs.getString(1)) && value.getPos() == rs.getInt(2)) {
-                        value.inDarnedDB(true);
-                        break;
-                    }
+        // First, we put all sites with all site information into a list, no matter whether the site is in DARNED database or not.
+        ResultSet rs = databaseManager.query(previousTable, null, null, null);
+        while (rs.next()) {
+            //1.CHROM varchar(30),2.POS int,3.ID varchar(30),4.REF varchar(3),5.ALT varchar(5),6.QUAL float(8,2),7.FILTER text,8.INFO text,9.GT text,
+            // 10.AD text,11.DP text,12.GQ text,13.PL text,14.ALU varchar(1)
+            PValueInfo info = new PValueInfo(rs.getString(1), rs.getInt(2), rs.getString(3), rs.getString(4).charAt(0), rs.getString(5).charAt(0),
+                    rs.getFloat(6), rs.getString(7), rs.getString(8), rs.getString(9), rs.getString(10), rs.getString(11), rs.getString(12),
+                    rs.getString(13), rs.getString(14));
+            // Parse 'AD' column because we need them to calculate the expected number.
+            String[] sections = info.getAd().split("/");
+            info.refCount = Integer.parseInt(sections[0]);
+            info.altCount = Integer.parseInt(sections[1]);
+            values.add(info);
+        }
+        // select previousTable.* from previousTable INNER JOIN darnedTable ON previousTable.chrom=darnedTable.chrom and previousTable.pos=darnedTable.coordinate
+        // Next, we find the sites existed commonly in the previous table and DARNED table,
+        rs = databaseManager.query("select " + previousTable + ".* from " + previousTable + " INNER JOIN " + darnedTable + " ON " + previousTable + "" +
+                ".chrom=" + darnedTable + ".chrom and " + previousTable + ".pos=" + darnedTable + ".coordinate and " + darnedTable + ".inchr='A' and ("
+                + darnedTable + ".inrna='I' or " + darnedTable + ".inrna='G')");
+        while (rs.next()) {
+            for (PValueInfo value : values) {
+                if (value.getChr().equals(rs.getString(1)) && value.getPos() == rs.getInt(2)) {
+                    value.inDarnedDB(true);
+                    break;
                 }
             }
-            return values;
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return null;
         }
+        return values;
     }
 
     /**
@@ -194,8 +188,8 @@ public class FisherExactTestFilter {
      * @param previousTable  Previous table name
      * @return the list which have added level and p-value information from the last list (expected list).
      */
-    private List<PValueInfo> executePValueFilter(String darnedTable, String fetResultTable, String previousTable) {
-        System.out.println("Start executing Fisher Exact Test Filter..." + Timer.getCurrentTime());
+    private List<PValueInfo> executePValueFilter(String darnedTable, String fetResultTable, String previousTable) throws SQLException {
+        logger.info("Start executing Fisher Exact Test Filter... {}", Timer.getCurrentTime());
         List<PValueInfo> values = getExpectedInfo(darnedTable, previousTable);
         int knownAlt = 0;
         int knownRef = 0;
@@ -218,15 +212,10 @@ public class FisherExactTestFilter {
             double level = (double) alt / (alt + ref);
             pValueInfo.setPValue(pValue);
             pValueInfo.setLevel(level);
-            try {
-                databaseManager.executeSQL("insert into " + fetResultTable + "(chrom,pos,id,ref,alt,qual,filter,info,gt,ad,dp,gq,pl,alu,level," +
-                        "pvalue) values( " + pValueInfo.toString() + "," + dF.format(level) + "," + pValue + ")");
-            } catch (SQLException e) {
-                System.err.println("Error execute sql clause in " + FisherExactTestFilter.class.getName() + ":executePValueFilter()");
-                e.printStackTrace();
-            }
+            databaseManager.executeSQL("insert into " + fetResultTable + "(chrom,pos,id,ref,alt,qual,filter,info,gt,ad,dp,gq,pl,alu,level," +
+                    "pvalue) values( " + pValueInfo.toString() + "," + dF.format(level) + "," + pValue + ")");
         }
-        System.out.println("End executing Fisher Exact Test Filter..." + Timer.getCurrentTime());
+        logger.info("End executing Fisher Exact Test Filter... {}", Timer.getCurrentTime());
         return values;
     }
 
@@ -240,43 +229,39 @@ public class FisherExactTestFilter {
      * @param pvalueThreshold The threshold of p-value
      * @param fdrThreshold    The threshold of FDR
      */
-    public void executeFDRFilter(String darnedTable, String fetResultTable, String previousTable, String rScript, double pvalueThreshold, double fdrThreshold) {
-        System.out.println("Start executing FDRFilter..." + Timer.getCurrentTime());
-        try {
-            RCaller caller = new RCaller();
-            if (rScript.trim().toLowerCase().contains("script")) {
-                caller.setRscriptExecutable(rScript);
-            } else {
-                caller.setRExecutable(rScript);
-            }
-            RCode code = new RCode();
-            List<PValueInfo> pValueList = executePValueFilter(darnedTable, fetResultTable, previousTable);
-            double[] pValueArray = new double[pValueList.size()];
-            for (int i = 0, len = pValueList.size(); i < len; i++) {
-                pValueArray[i] = pValueList.get(i).getPvalue();
-            }
-            code.addDoubleArray("parray", pValueArray);
-            code.addRCode("result<-p.adjust(parray,method='fdr',length(parray))");
-            caller.setRCode(code);
-            if (rScript.trim().toLowerCase().contains("script")) {
-                caller.runAndReturnResult("result");
-            } else {
-                caller.runAndReturnResultOnline("result");
-            }
-            double[] results = caller.getParser().getAsDoubleArray("result");
-            databaseManager.setAutoCommit(false);
-            for (int i = 0, len = results.length; i < len; i++) {
-                databaseManager.executeSQL("update " + fetResultTable + " set fdr=" + results[i] + " where chrom='" + pValueList.get(i).getChr() + "' " +
-                        "and pos=" + pValueList.get(i).getPos());
-            }
-            databaseManager.commit();
-            databaseManager.setAutoCommit(true);
-            // Filter the sites.
-            databaseManager.executeSQL("delete from " + fetResultTable + " where pvalue > " + pvalueThreshold + " || fdr > " + fdrThreshold);
-        } catch (Exception e) {
-            e.printStackTrace();
+    public void executeFDRFilter(String darnedTable, String fetResultTable, String previousTable, String rScript, double pvalueThreshold, double fdrThreshold) throws SQLException {
+        logger.info("Start executing FDRFilter... {}", Timer.getCurrentTime());
+        RCaller caller = new RCaller();
+        if (rScript.trim().toLowerCase().contains("script")) {
+            caller.setRscriptExecutable(rScript);
+        } else {
+            caller.setRExecutable(rScript);
         }
-        System.out.println("End executing FDRFilter..." + Timer.getCurrentTime());
+        RCode code = new RCode();
+        List<PValueInfo> pValueList = executePValueFilter(darnedTable, fetResultTable, previousTable);
+        double[] pValueArray = new double[pValueList.size()];
+        for (int i = 0, len = pValueList.size(); i < len; i++) {
+            pValueArray[i] = pValueList.get(i).getPvalue();
+        }
+        code.addDoubleArray("parray", pValueArray);
+        code.addRCode("result<-p.adjust(parray,method='fdr',length(parray))");
+        caller.setRCode(code);
+        if (rScript.trim().toLowerCase().contains("script")) {
+            caller.runAndReturnResult("result");
+        } else {
+            caller.runAndReturnResultOnline("result");
+        }
+        double[] results = caller.getParser().getAsDoubleArray("result");
+        databaseManager.setAutoCommit(false);
+        for (int i = 0, len = results.length; i < len; i++) {
+            databaseManager.executeSQL("update " + fetResultTable + " set fdr=" + results[i] + " where chrom='" + pValueList.get(i).getChr() + "' " +
+                    "and pos=" + pValueList.get(i).getPos());
+        }
+        databaseManager.commit();
+        databaseManager.setAutoCommit(true);
+        // Filter the sites.
+        databaseManager.executeSQL("delete from " + fetResultTable + " where pvalue > " + pvalueThreshold + " || fdr > " + fdrThreshold);
+        logger.info("End executing FDRFilter... {}", Timer.getCurrentTime());
     }
 
     /**

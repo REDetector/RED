@@ -80,17 +80,17 @@ public class FastaDirectorySequence implements Sequence {
     }
 
     @Override
-    public List<String> getChromosomeNames() {
-        return chromosomeNames;
-    }
-
-    @Override
     public byte getBase(String chr, int position) {
         throw new RuntimeException("getBase() is not implemented for class " + FastaDirectorySequence.class.getName());
     }
 
     @Override
-    public int getChromosomeLength(String chrname) {
-        return chrLengths.get(chrname);
+    public List<String> getChromosomeNames() {
+        return chromosomeNames;
+    }
+
+    @Override
+    public int getChromosomeLength(String chromosomeName) {
+        return chrLengths.get(chromosomeName);
     }
 }

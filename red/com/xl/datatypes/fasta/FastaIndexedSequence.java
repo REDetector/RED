@@ -53,11 +53,7 @@ public class FastaIndexedSequence implements Sequence {
         } else {
             indexPath = path + ".fai";
         }
-
-        System.out.println(this.getClass().getName() + ":indexPath:" + indexPath);
-
         index = new FastaIndex(indexPath);
-
         chromoNamesList = new ArrayList<String>(index.getSequenceNames());
     }
 
@@ -70,9 +66,9 @@ public class FastaIndexedSequence implements Sequence {
      * <p/>
      * query 9 - 13 start line = 1 base0 = 1*5 = 5 offset = (9 - 5) = 4 start byte = (1*6) + 3 = 10 end line = 2
      *
-     * @param chr
-     * @param qstart
-     * @param qend
+     * @param chr the chr
+     * @param qstart the start
+     * @param qend the end
      * @return
      */
 
@@ -151,6 +147,16 @@ public class FastaIndexedSequence implements Sequence {
                 + FastaIndexedSequence.class.getName());
     }
 
+    @Override
+    public List<String> getChromosomeNames() {
+        return chromoNamesList;
+    }
+
+    @Override
+    public int getChromosomeLength(String chrname) {
+        return index.getSequenceSize(chrname);
+    }
+
     /**
      * Read the bytes between file position posStart and posEnd
      *
@@ -171,15 +177,5 @@ public class FastaIndexedSequence implements Sequence {
                 ss.close();
             }
         }
-    }
-
-    @Override
-    public List<String> getChromosomeNames() {
-        return chromoNamesList;
-    }
-
-    @Override
-    public int getChromosomeLength(String chrname) {
-        return index.getSequenceSize(chrname);
     }
 }

@@ -133,8 +133,6 @@ public class ChromosomeViewer extends JPanel implements ActiveDataChangedListene
      * chromosome viewer which will update existing information (name changes, selection changes etc). Only use this when the actual data has been changed.
      */
     public synchronized void tracksUpdated() {
-        System.out.println(this.getClass().getName() + "\ttracksUpdated()");
-
         if (featurePanel == null)
             return;
         // Clear all tracks in chromosome view.

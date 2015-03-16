@@ -24,6 +24,8 @@ import com.xl.exception.REDException;
 import com.xl.interfaces.ActiveDataChangedListener;
 import com.xl.interfaces.DataStoreChangedListener;
 import com.xl.main.REDApplication;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.*;
 
@@ -31,7 +33,7 @@ import java.util.*;
  * The Class DataCollection is the main data storage object through which all of the data in a project can be accessed.
  */
 public class DataCollection {
-
+    private static final Logger logger = LoggerFactory.getLogger(DataCollection.class);
 
     /**
      * The data sets.
@@ -75,7 +77,7 @@ public class DataCollection {
      */
     public DataCollection(Genome g) {
         if (g == null) {
-            throw new NullPointerException("Genome can't be null when creating a data collection");
+            logger.error("Genome can't be null when creating a data collection", new NullPointerException());
         }
         this.genome = g;
     }

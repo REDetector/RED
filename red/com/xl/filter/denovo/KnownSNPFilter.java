@@ -21,7 +21,10 @@ package com.xl.filter.denovo;
 import com.xl.database.DatabaseManager;
 import com.xl.display.dialog.ProgressDialog;
 import com.xl.display.dialog.REDProgressBar;
+import com.xl.exception.DataLoadException;
 import com.xl.utils.Timer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.BufferedReader;
 import java.io.FileInputStream;
@@ -33,6 +36,7 @@ import java.sql.SQLException;
  * The Class KnownSNPFilter is a rule-based filter that will filter out the site which was known SNP in DNA level for eliminating germline variants.
  */
 public class KnownSNPFilter {
+    private final Logger logger = LoggerFactory.getLogger(KnownSNPFilter.class);
     /**
      * The database manager.
      */
@@ -57,7 +61,7 @@ public class KnownSNPFilter {
      * @param dbSnpTable The dbSNP database table name, it is constant.
      * @return true if dbSNP data exists in the database.
      */
-    public boolean hasEstablishDbSNPTable(String dbSnpTable) {
+    public boolean hasEstablishDbSNPTable(String dbSnpTable) throws SQLException {
         return databaseManager.getRowCount(dbSnpTable) > 0;
     }
 
@@ -68,8 +72,8 @@ public class KnownSNPFilter {
      * @param dbSNPTable The dbSNP database table name, it is constant.
      * @param dbSNPPath  The dbSNP file path.
      */
-    public void loadDbSNPTable(String dbSNPTable, String dbSNPPath) {
-        System.out.println("Start loading dbSNPTable" + " " + Timer.getCurrentTime());
+    public void loadDbSNPTable(String dbSNPTable, String dbSNPPath) throws SQLException, DataLoadException {
+        logger.info("Start loading dbSNPTable... {}", Timer.getCurrentTime());
         progressBar.addProgressListener(new ProgressDialog("Import dbSNP file into database..."));
         int count = 0;
         BufferedReader rin = null;
@@ -85,31 +89,26 @@ public class KnownSNPFilter {
                         break;
                     }
                 }
-                rin.close();
                 progressBar.progressUpdated("Importing dbSNP data from " + dbSNPPath + " to " + dbSNPTable + " table", 0, 0);
                 databaseManager.executeSQL("load data local infile '" + dbSNPPath + "' into table " + dbSNPTable + " fields terminated by '\t' lines " +
                         "terminated by '\n' IGNORE " + count + " LINES");
             }
 
         } catch (IOException e) {
-            System.err.println("Error load file from " + dbSNPPath + " to file stream");
-            e.printStackTrace();
-            progressBar.progressWarningReceived(e);
-        } catch (SQLException e) {
-            System.err.println("Error execute sql clause in " + KnownSNPFilter.class.getName() + ":loadDbSNPTable()");
-            e.printStackTrace();
-            progressBar.progressWarningReceived(e);
+            DataLoadException de = new DataLoadException("Error load file", dbSNPPath);
+            logger.error("Error load file from " + dbSNPPath + " to file stream", de);
+            throw de;
         } finally {
             if (rin != null) {
                 try {
                     rin.close();
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    logger.error("", e);
                 }
             }
         }
         progressBar.progressComplete("dbsnp_loaded", null);
-        System.out.println("End loading dbSNPTable" + " " + Timer.getCurrentTime());
+        logger.info("End loading dbSNPTable... {}", Timer.getCurrentTime());
     }
 
     /**
@@ -119,16 +118,11 @@ public class KnownSNPFilter {
      * @param dbSnpResultTable The result table
      * @param previousTable    The previous table
      */
-    public void executeDbSNPFilter(String dbSnpTable, String dbSnpResultTable, String previousTable) {
-        System.out.println("Start executing KnownSNPFilter..." + Timer.getCurrentTime());
-        try {
-            databaseManager.executeSQL("insert into " + dbSnpResultTable + " select * from " + previousTable + " where not exists (select chrom from " +
-                    dbSnpTable + " where (" + dbSnpTable + ".chrom=" + previousTable + ".chrom and " + dbSnpTable + ".pos=" + previousTable + ".pos))");
-        } catch (SQLException e) {
-            System.err.println("Error execute sql clause in" + KnownSNPFilter.class.getName() + ":executeDbSNPFilter()");
-            e.printStackTrace();
-        }
-        System.out.println("End executing KnownSNPFilter..." + Timer.getCurrentTime());
+    public void executeDbSNPFilter(String dbSnpTable, String dbSnpResultTable, String previousTable) throws SQLException {
+        logger.info("Start executing KnownSNPFilter...... {}", Timer.getCurrentTime());
+        databaseManager.executeSQL("insert into " + dbSnpResultTable + " select * from " + previousTable + " where not exists (select chrom from " +
+                dbSnpTable + " where (" + dbSnpTable + ".chrom=" + previousTable + ".chrom and " + dbSnpTable + ".pos=" + previousTable + ".pos))");
+        logger.info("End executing KnownSNPFilter...... {}", Timer.getCurrentTime());
     }
 
 }

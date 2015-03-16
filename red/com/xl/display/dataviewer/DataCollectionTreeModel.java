@@ -24,8 +24,11 @@ import com.xl.datatypes.DataSet;
 import com.xl.datatypes.DataStore;
 import com.xl.datatypes.annotation.AnnotationSet;
 import com.xl.datatypes.sites.SiteList;
+import com.xl.exception.UnknownParameterException;
 import com.xl.interfaces.AnnotationCollectionListener;
 import com.xl.interfaces.DataStoreChangedListener;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.swing.event.TreeModelEvent;
 import javax.swing.event.TreeModelListener;
@@ -38,7 +41,7 @@ import java.util.Vector;
  * The Class DataCollectionTreeModel provides a tree model which describes the data sets, data groups and annotation sets in a data collection
  */
 public class DataCollectionTreeModel implements TreeModel, DataStoreChangedListener, AnnotationCollectionListener {
-
+    private final Logger logger = LoggerFactory.getLogger(DataCollectionTreeModel.class);
     /**
      * The collection.
      */
@@ -76,7 +79,8 @@ public class DataCollectionTreeModel implements TreeModel, DataStoreChangedListe
      */
     public DataCollectionTreeModel(DataCollection collection) {
         if (collection == null) {
-            throw new NullPointerException("Data collection can not be null.");
+            logger.error("Data collection can not be null.", new NullPointerException());
+            return;
         }
         this.collection = collection;
         collection.addDataChangeListener(this);
@@ -102,6 +106,8 @@ public class DataCollectionTreeModel implements TreeModel, DataStoreChangedListe
                     return dataSetNode;
                 case 2:
                     return dataGroupNode;
+                default:
+                    return dataSetNode;
             }
         } else if (node.equals(annotationNode)) {
             return collection.genome().getAnnotationCollection().annotationSets()[index];
@@ -109,8 +115,10 @@ public class DataCollectionTreeModel implements TreeModel, DataStoreChangedListe
             return collection.getAllDataSets()[index];
         } else if (node.equals(dataGroupNode)) {
             return collection.getAllDataGroups()[index];
+        } else {
+            logger.error("Object '" + node + "' can not be recognized by our program in index " + index, new UnknownParameterException());
+            return dataSetNode;
         }
-        throw new NullPointerException("Null child from " + node + " at index " + index);
     }
 
     @Override
@@ -124,6 +132,7 @@ public class DataCollectionTreeModel implements TreeModel, DataStoreChangedListe
         } else if (node.equals(dataGroupNode)) {
             return collection.getAllDataGroups().length;
         } else {
+            logger.error("Could not get child count from parent '" + node + "'", new UnknownParameterException());
             return 0;
         }
     }
@@ -136,7 +145,7 @@ public class DataCollectionTreeModel implements TreeModel, DataStoreChangedListe
     @Override
     public void valueForPathChanged(TreePath tp, Object node) {
         // This only applies to editable trees - which this isn't.
-        System.out.println("Value for path changed called on node " + node);
+        logger.warn("Value for path changed called on node " + node);
     }
 
     @Override
@@ -168,7 +177,7 @@ public class DataCollectionTreeModel implements TreeModel, DataStoreChangedListe
                 if (groups[i] == child) return i;
             }
         }
-        System.err.println("Couldn't find valid index for " + node + " and " + child);
+        logger.error("Could not get the index of child '" + child + "'from parent '" + node + "'", new UnknownParameterException());
         return 0;
 
     }
@@ -255,7 +264,9 @@ public class DataCollectionTreeModel implements TreeModel, DataStoreChangedListe
 
     @Override
     public void annotationSetRemoved(AnnotationSet annotationSet) {
-        TreeModelEvent me = new TreeModelEvent(annotationSet, getPathToRoot(annotationNode), new int[]{getIndexOfChild(annotationNode, annotationSet)}, new AnnotationSet[]{annotationSet});
+        TreeModelEvent me = new TreeModelEvent(annotationSet, getPathToRoot(annotationNode), new int[]{
+                getIndexOfChild(annotationNode, annotationSet)
+        }, new AnnotationSet[]{annotationSet});
 
         Enumeration<TreeModelListener> e = listeners.elements();
         while (e.hasMoreElements()) {
@@ -289,8 +300,8 @@ public class DataCollectionTreeModel implements TreeModel, DataStoreChangedListe
             if (o == rootNode) return new Object[]{o};
             else return new Object[]{rootNode, o};
         } else {
-            System.err.println(this.getClass().getName() + ":Error path");
-            return null;
+            logger.error("Could not get path from root '" + o + "'", new UnknownParameterException());
+            return new Object[]{rootNode, dataSetNode, o};
         }
     }
 

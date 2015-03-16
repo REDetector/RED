@@ -21,6 +21,8 @@ package com.xl.filter.denovo;
 import com.xl.database.DatabaseManager;
 import com.xl.datatypes.sites.SiteBean;
 import com.xl.utils.Timer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -31,6 +33,7 @@ import java.util.List;
  * The Class QualityControlFilter is a rule-based filter to filter RNA editing sites by their quality and coverage of depth.
  */
 public class QualityControlFilter {
+    private final Logger logger = LoggerFactory.getLogger(QualityControlFilter.class);
     /**
      * The database manager.
      */
@@ -54,35 +57,31 @@ public class QualityControlFilter {
      * @param quality       The threshold of quality
      * @param depth         The threshold of coverage of depth
      */
-    public void executeQCFilter(String previousTable, String qcResultTable, double quality, int depth) {
-        try {
-            System.out.println("Start executing QC filter..." + Timer.getCurrentTime());
-            int count = 0;
-            ResultSet rs = databaseManager.query(previousTable, new String[]{"chrom", "pos", "AD"}, null, null);
-            List<SiteBean> siteBeans = new ArrayList<SiteBean>();
-            while (rs.next()) {
-                SiteBean siteBean = new SiteBean(rs.getString(1), rs.getInt(2));
-                siteBean.setAd(rs.getString(3));
-                siteBeans.add(siteBean);
-            }
-            databaseManager.setAutoCommit(false);
-            for (SiteBean siteBean : siteBeans) {
-                String[] sections = siteBean.getAd().split("/");
-                int ref_n = Integer.parseInt(sections[0]);
-                int alt_n = Integer.parseInt(sections[1]);
-                if (ref_n + alt_n >= depth) {
-                    databaseManager.executeSQL("insert into " + qcResultTable + " (select * from " + previousTable + " where filter='PASS' and pos=" + siteBean
-                            .getPos() + " and qual >=" + quality + " and chrom='" + siteBean.getChr() + "')");
-                    if (++count % DatabaseManager.COMMIT_COUNTS_PER_ONCE == 0)
-                        databaseManager.commit();
-                }
-            }
-            databaseManager.commit();
-            databaseManager.setAutoCommit(true);
-            System.out.println("End executing QC filter..." + Timer.getCurrentTime());
-        } catch (SQLException e) {
-            e.printStackTrace();
+    public void executeQCFilter(String previousTable, String qcResultTable, double quality, int depth) throws SQLException {
+        logger.info("Start executing QC filter... {}", Timer.getCurrentTime());
+        int count = 0;
+        ResultSet rs = databaseManager.query(previousTable, new String[]{"chrom", "pos", "AD"}, null, null);
+        List<SiteBean> siteBeans = new ArrayList<SiteBean>();
+        while (rs.next()) {
+            SiteBean siteBean = new SiteBean(rs.getString(1), rs.getInt(2));
+            siteBean.setAd(rs.getString(3));
+            siteBeans.add(siteBean);
         }
+        databaseManager.setAutoCommit(false);
+        for (SiteBean siteBean : siteBeans) {
+            String[] sections = siteBean.getAd().split("/");
+            int ref_n = Integer.parseInt(sections[0]);
+            int alt_n = Integer.parseInt(sections[1]);
+            if (ref_n + alt_n >= depth) {
+                databaseManager.executeSQL("insert into " + qcResultTable + " (select * from " + previousTable + " where filter='PASS' and pos=" + siteBean
+                        .getPos() + " and qual >=" + quality + " and chrom='" + siteBean.getChr() + "')");
+                if (++count % DatabaseManager.COMMIT_COUNTS_PER_ONCE == 0)
+                    databaseManager.commit();
+            }
+        }
+        databaseManager.commit();
+        databaseManager.setAutoCommit(true);
+        logger.info("End executing QC filter... {}", Timer.getCurrentTime());
     }
 
 }

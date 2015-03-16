@@ -29,15 +29,17 @@ import com.xl.datatypes.sequence.Location;
 import com.xl.datatypes.sites.Site;
 import com.xl.datatypes.sites.SiteList;
 import com.xl.datatypes.sites.SiteSet;
-import com.xl.exception.REDException;
 import com.xl.interfaces.Cancellable;
 import com.xl.interfaces.ProgressListener;
 import com.xl.main.REDApplication;
 import com.xl.preferences.DisplayPreferences;
 import com.xl.utils.ParsingUtils;
 import com.xl.utils.Strand;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.*;
+import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Vector;
@@ -46,13 +48,11 @@ import java.util.Vector;
  * The Class REDDataWriter serialises a RED project to a single file. It contains only configurations but not the real data.
  */
 public class REDDataWriter implements Runnable, Cancellable {
-
-
     /**
      * The constant data version for RED project.
      */
     public static final int DATA_VERSION = 1;
-
+    private static final Logger logger = LoggerFactory.getLogger(REDDataWriter.class);
     /**
      * The listeners.
      */
@@ -120,6 +120,7 @@ public class REDDataWriter implements Runnable, Cancellable {
         this.file = file;
         visibleStores = application.drawnDataStores();
         Thread t = new Thread(this);
+        logger.info("Start writing data into the file '" + file.getAbsolutePath() + "'");
         t.start();
     }
 
@@ -140,7 +141,7 @@ public class REDDataWriter implements Runnable, Cancellable {
         p.close();
 
         if (!tempFile.delete()) {
-            throw new IOException("Couldn't delete temp file");
+            logger.error("Couldn't delete temp file", new IOException());
         }
         Enumeration<ProgressListener> e = listeners.elements();
         while (e.hasMoreElements()) {
@@ -199,7 +200,7 @@ public class REDDataWriter implements Runnable, Cancellable {
             while (e.hasMoreElements()) {
                 e.nextElement().progressComplete("data_written", null);
             }
-        } catch (Exception ex) {
+        } catch (IOException ex) {
             Enumeration<ProgressListener> e = listeners.elements();
             while (e.hasMoreElements()) {
                 e.nextElement().progressExceptionReceived(ex);
@@ -215,6 +216,7 @@ public class REDDataWriter implements Runnable, Cancellable {
      * @param p the p
      */
     private void printDataVersion(PrintStream p) {
+        logger.info("Print data version: {}", DATA_VERSION);
         p.println(ParsingUtils.RED_DATA_VERSION + "\t" + DATA_VERSION);
     }
 
@@ -224,6 +226,7 @@ public class REDDataWriter implements Runnable, Cancellable {
      * @param p the p
      */
     private void printGenome(PrintStream p) {
+        logger.info("Print genome information.");
         p.println(ParsingUtils.GENOME_INFORMATION_START);
         p.println(GenomeDescriptor.getInstance().toString());
         p.println(ParsingUtils.GENOME_INFORMATION_END);
@@ -236,7 +239,8 @@ public class REDDataWriter implements Runnable, Cancellable {
      * @param dataSets the data sets
      * @param p        the p
      */
-    private void printDataSets(DataSet[] dataSets, PrintStream p) throws IOException, REDException {
+    private void printDataSets(DataSet[] dataSets, PrintStream p) throws IOException {
+        logger.info("Print data sets: {}", Arrays.asList(dataSets));
         p.println(ParsingUtils.SAMPLES + "\t" + dataSets.length);
         for (DataSet dataSet : dataSets) {
             p.println(dataSet.name() + "\t" + dataSet.fileName() + "\t" + dataSet.isStandardChromosomeName() + "\t" + dataSet.getTotalReadCount() + "\t" + dataSet
@@ -255,7 +259,7 @@ public class REDDataWriter implements Runnable, Cancellable {
      * @param p          the p
      */
     private void printDataGroups(DataSet[] dataSets, DataGroup[] dataGroups, PrintStream p) {
-
+        logger.info("Print data groups: {}", Arrays.asList(dataGroups));
         p.println(ParsingUtils.DATA_GROUPS + "\t" + dataGroups.length);
         for (DataGroup dataGroup : dataGroups) {
             DataSet[] groupSets = dataGroup.dataSets();
@@ -285,6 +289,7 @@ public class REDDataWriter implements Runnable, Cancellable {
      * @return false if cancelled, else true;
      */
     private boolean printAnnotationSet(AnnotationSet a, PrintStream p) throws IOException {
+        logger.info("Print annotation set: {}", a.name());
         List<Feature> features = a.getAllFeatures();
         p.println(ParsingUtils.ANNOTATION + "\t" + a.name() + "\t" + features.size());
 
@@ -316,7 +321,7 @@ public class REDDataWriter implements Runnable, Cancellable {
      * @param siteSet the site set
      */
     private void printSiteSetTree(PrintStream p, SiteSet siteSet) throws IOException {
-
+        logger.info("Print the site set tree for a sample: {}" + siteSet.getListName());
         // We need the saved string to be linear so we replace the line breaks with ` (which we've replaced with ' in the comment. We put back the line
         // breaks when we load the comments back.
 
@@ -384,6 +389,7 @@ public class REDDataWriter implements Runnable, Cancellable {
      * @param p          the p
      */
     private void printVisibleDataStores(DataSet[] dataSets, DataGroup[] dataGroups, PrintStream p) {
+        logger.info("Print the visible data stores");
         // Now we can put out the list of visible stores We have to refer to these by position rather than name since names are not guaranteed to be unique.
         p.println(ParsingUtils.VISIBLE_STORES + "\t" + visibleStores.length);
         for (DataStore visibleStore : visibleStores) {
@@ -409,6 +415,7 @@ public class REDDataWriter implements Runnable, Cancellable {
      * @param p the print stream to write the preferences to
      */
     private void printDisplayPreferences(PrintStream p) {
+        logger.info("Print the display preferences");
         DisplayPreferences.getInstance().writeConfiguration(p);
     }
 

@@ -24,6 +24,8 @@ import com.xl.datatypes.sites.SiteBean;
 import com.xl.datatypes.sites.SiteList;
 import com.xl.display.dataviewer.DataTreeRenderer;
 import com.xl.display.dataviewer.SiteSetTreeModel;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
 import javax.swing.event.TreeSelectionEvent;
@@ -31,6 +33,7 @@ import javax.swing.event.TreeSelectionListener;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.tree.TreeModel;
 import java.awt.*;
+import java.sql.SQLException;
 import java.util.Vector;
 
 /**
@@ -39,6 +42,7 @@ import java.util.Vector;
  * The Class FilterReports provides a table output for all information derived from a table in database.
  */
 public class FilterReports extends Report implements TreeSelectionListener {
+    private final Logger logger = LoggerFactory.getLogger(FilterReports.class);
     /**
      * The option panel.
      */
@@ -112,7 +116,13 @@ public class FilterReports extends Report implements TreeSelectionListener {
     @Override
     public void run() {
         SiteList selectedSiteList = (SiteList) currentSiteList;
-        Vector<SiteBean> sites = Query.queryAllEditingInfo(selectedSiteList.getTableName());
+        Vector<SiteBean> sites;
+        try {
+            sites = Query.queryAllEditingInfo(selectedSiteList.getTableName());
+        } catch (SQLException e) {
+            logger.error("Unable to query the sites information, please check your database.", e);
+            return;
+        }
         SiteBeanTableModel model = new SiteBeanTableModel(sites.toArray(new SiteBean[0]));
         reportComplete(model);
     }

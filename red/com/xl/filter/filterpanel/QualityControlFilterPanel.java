@@ -25,18 +25,22 @@ import com.xl.datatypes.sites.Site;
 import com.xl.datatypes.sites.SiteList;
 import com.xl.exception.REDException;
 import com.xl.filter.denovo.QualityControlFilter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
 import javax.swing.event.TreeSelectionEvent;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.sql.SQLException;
 import java.util.Vector;
 
 /**
  * The Class QualityControlFilterPanel is a rule-based filter panel to provide some parameters to be set as user's preference if there is any choice.
  */
 public class QualityControlFilterPanel extends AbstractSiteFilter {
+    private final Logger logger = LoggerFactory.getLogger(QualityControlFilterPanel.class);
     /**
      * The threshold of quality.
      */
@@ -68,13 +72,14 @@ public class QualityControlFilterPanel extends AbstractSiteFilter {
     }
 
     @Override
-    public String description() {
-        return "Filter RNA editing bases by quality and depth.";
+    protected String listName() {
+        return "Q>=" + qualityThreshold + " & DP>=" + depthThreshold;
     }
 
     @Override
-    protected void generateSiteList() {
+    protected void generateSiteList() throws SQLException {
         progressUpdated("Filtering RNA editing sites by quality and coverage, please wait...", 0, 0);
+        logger.info("Filtering RNA editing sites by quality and coverage.");
         String linearTableName = currentSample + "_" + parentList.getFilterName() + "_" + DatabaseManager
                 .QC_FILTER_RESULT_TABLE_NAME + "_" + qualityThreshold + "_" + depthThreshold;
         TableCreator.createFilterTable(linearTableName);
@@ -100,8 +105,8 @@ public class QualityControlFilterPanel extends AbstractSiteFilter {
     }
 
     @Override
-    public JPanel getOptionsPanel() {
-        return optionsPanel;
+    public boolean isReady() {
+        return parentList != null && qualityField.getText().length() != 0 && depthField.getText().length() != 0;
     }
 
     @Override
@@ -110,8 +115,8 @@ public class QualityControlFilterPanel extends AbstractSiteFilter {
     }
 
     @Override
-    public boolean isReady() {
-        return parentList != null && qualityField.getText().length() != 0 && depthField.getText().length() != 0;
+    public JPanel getOptionsPanel() {
+        return optionsPanel;
     }
 
     @Override
@@ -120,8 +125,8 @@ public class QualityControlFilterPanel extends AbstractSiteFilter {
     }
 
     @Override
-    protected String listName() {
-        return "Q>=" + qualityThreshold + " & DP>=" + depthThreshold;
+    public String description() {
+        return "Filter RNA editing bases by quality and depth.";
     }
 
     /**

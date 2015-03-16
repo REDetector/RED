@@ -20,6 +20,10 @@ package com.xl.filter.denovo;
 
 import com.xl.database.DatabaseManager;
 import com.xl.utils.Timer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.sql.SQLException;
 
 /**
  * Created by Xing Li on 2014/9/29.
@@ -27,6 +31,7 @@ import com.xl.utils.Timer;
  * The Class EditingTypeFilter is a rule-based filter that user enables to select the type of RNA editing as his preference.
  */
 public class EditingTypeFilter {
+    private final Logger logger = LoggerFactory.getLogger(EditingTypeFilter.class);
     /**
      * The database manager.
      */
@@ -49,11 +54,11 @@ public class EditingTypeFilter {
      * @param ref              The reference base
      * @param alt              The alternative base
      */
-    public void executeEditingTypeFilter(String editingTypeTable, String previousTable, String ref, String alt) {
-        System.out.println("Start executing EditingTypeFilter..." + Timer.getCurrentTime());
+    public void executeEditingTypeFilter(String editingTypeTable, String previousTable, String ref, String alt) throws SQLException {
+        logger.info("Start executing EditingTypeFilter... {}", Timer.getCurrentTime());
         String sqlClause = "insert into " + editingTypeTable + " select * from " + previousTable + " WHERE REF='" + ref + "' AND ALT='" + alt + "' AND GT!='0/0'";
         databaseManager.insert(sqlClause);
-        System.out.println("End executing EditingTypeFilter..." + Timer.getCurrentTime());
+        logger.info("End executing EditingTypeFilter... {}", Timer.getCurrentTime());
     }
 
 }

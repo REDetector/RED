@@ -20,6 +20,7 @@ package com.xl.database;
 
 import com.xl.datatypes.DataSet;
 import com.xl.datatypes.sites.SiteSet;
+import com.xl.display.dialog.CrashReporter;
 import com.xl.display.dialog.DataImportDialog;
 import com.xl.display.dialog.TypeColourRenderer;
 import com.xl.exception.REDException;
@@ -27,6 +28,8 @@ import com.xl.main.REDApplication;
 import com.xl.utils.FontManager;
 import com.xl.utils.ListDefaultSelector;
 import com.xl.utils.namemanager.MenuUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
@@ -37,6 +40,7 @@ import javax.swing.tree.TreeSelectionModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.SQLException;
 
 /**
  * Created by Xing Li on 2014/11/15.
@@ -45,6 +49,7 @@ import java.awt.event.ActionListener;
  * they should select with a given data set.
  */
 public class DatabaseSelector extends JDialog implements ListSelectionListener, TreeSelectionListener, ActionListener {
+    private static final Logger logger = LoggerFactory.getLogger(DatabaseSelector.class);
 
     /**
      * The application.
@@ -161,8 +166,8 @@ public class DatabaseSelector extends JDialog implements ListSelectionListener, 
     public void actionPerformed(ActionEvent ae) {
         if (ae.getActionCommand().equals(MenuUtils.OK_BUTTON)) {
             setVisible(false);
+            TableNode node = (TableNode) databaseTree.getSelectionPath().getLastPathComponent();
             try {
-                TableNode node = (TableNode) databaseTree.getSelectionPath().getLastPathComponent();
                 String parentNode = databaseTree.getSelectionPath().getParentPath().getLastPathComponent().toString();
                 DatabaseManager.getInstance().databaseChanged(parentNode, node.getSampleName());
                 SiteSet siteSet = Query.getSiteSetFromDatabase(node.getSampleName());
@@ -170,7 +175,10 @@ public class DatabaseSelector extends JDialog implements ListSelectionListener, 
                 selectedDataSet.setSiteSet(siteSet);
                 dispose();
             } catch (REDException e) {
-                e.printStackTrace();
+                new CrashReporter(e);
+                logger.error("", e);
+            } catch (SQLException e) {
+                logger.error("Database could not be changed to '" + node.getSampleName() + "'", e);
             }
         } else if (ae.getActionCommand().equals(MenuUtils.IMPORT_BUTTON)) {
             setVisible(false);
@@ -179,7 +187,11 @@ public class DatabaseSelector extends JDialog implements ListSelectionListener, 
         } else if (ae.getActionCommand().equals(MenuUtils.DELETE_BUTTON)) {
             TableNode lastComponent = (TableNode) databaseTree.getSelectionPath().getLastPathComponent();
             String parentNode = databaseTree.getSelectionPath().getParentPath().getLastPathComponent().toString();
-            DatabaseManager.getInstance().deleteTableAndFilters(parentNode, lastComponent.getSampleName());
+            try {
+                DatabaseManager.getInstance().deleteTableAndFilters(parentNode, lastComponent.getSampleName());
+            } catch (SQLException e) {
+                logger.error("Something wrong when deleting the table and all relative filters at '" + lastComponent.getSampleName() + "'", e);
+            }
             dispose();
             new DatabaseSelector(application);
         } else if (ae.getActionCommand().equals(MenuUtils.CANCEL_BUTTON)) {
