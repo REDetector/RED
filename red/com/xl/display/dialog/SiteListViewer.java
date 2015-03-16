@@ -22,7 +22,6 @@ import com.sun.java.TableSorter;
 import com.xl.datatypes.sites.Site;
 import com.xl.datatypes.sites.SiteList;
 import com.xl.main.REDApplication;
-import com.xl.net.crashreport.CrashReporter;
 import com.xl.preferences.DisplayPreferences;
 import com.xl.preferences.LocationPreferences;
 import com.xl.utils.FontManager;

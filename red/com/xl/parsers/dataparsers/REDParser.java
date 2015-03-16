@@ -34,7 +34,7 @@ import com.xl.exception.REDException;
 import com.xl.interfaces.ProgressListener;
 import com.xl.main.Global;
 import com.xl.main.REDApplication;
-import com.xl.net.crashreport.CrashReporter;
+import com.xl.display.dialog.CrashReporter;
 import com.xl.net.genomes.GenomeDownloader;
 import com.xl.parsers.annotationparsers.IGVGenomeParser;
 import com.xl.preferences.DisplayPreferences;

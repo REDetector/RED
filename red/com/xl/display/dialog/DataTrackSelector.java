@@ -21,7 +21,6 @@ import com.xl.datatypes.DataGroup;
 import com.xl.datatypes.DataSet;
 import com.xl.datatypes.DataStore;
 import com.xl.main.REDApplication;
-import com.xl.net.crashreport.CrashReporter;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;

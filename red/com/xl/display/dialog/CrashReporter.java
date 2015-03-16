@@ -16,7 +16,7 @@
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.xl.net.crashreport;
+package com.xl.display.dialog;
 
 import com.xl.main.Global;
 import com.xl.main.REDApplication;

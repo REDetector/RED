@@ -23,7 +23,7 @@ import com.xl.display.dialog.ProgressDialog;
 import com.xl.interfaces.OptionsListener;
 import com.xl.interfaces.ProgressListener;
 import com.xl.main.REDApplication;
-import com.xl.net.crashreport.CrashReporter;
+import com.xl.display.dialog.CrashReporter;
 import com.xl.utils.FontManager;
 import com.xl.utils.namemanager.MenuUtils;
 

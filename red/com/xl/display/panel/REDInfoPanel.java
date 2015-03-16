@@ -19,7 +19,7 @@ package com.xl.display.panel;
 
 import com.xl.main.Global;
 import com.xl.main.REDApplication;
-import com.xl.net.crashreport.CrashReporter;
+import com.xl.display.dialog.CrashReporter;
 import com.xl.net.genomes.UpdateChecker;
 import com.xl.preferences.LocationPreferences;
 import com.xl.preferences.REDPreferences;

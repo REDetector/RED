@@ -17,7 +17,7 @@
  */
 package com.xl.gradients;
 
-import com.xl.net.crashreport.CrashReporter;
+import com.xl.display.dialog.CrashReporter;
 
 import java.awt.*;
 

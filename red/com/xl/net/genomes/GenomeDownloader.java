@@ -18,7 +18,7 @@
 package com.xl.net.genomes;
 
 import com.xl.interfaces.ProgressListener;
-import com.xl.net.crashreport.CrashReporter;
+import com.xl.display.dialog.CrashReporter;
 import com.xl.preferences.LocationPreferences;
 import com.xl.utils.PositionFormat;
 

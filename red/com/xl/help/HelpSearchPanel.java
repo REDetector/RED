@@ -17,7 +17,7 @@
  */
 package com.xl.help;
 
-import com.xl.net.crashreport.CrashReporter;
+import com.xl.display.dialog.CrashReporter;
 import com.xl.utils.namemanager.MenuUtils;
 
 import javax.swing.*;

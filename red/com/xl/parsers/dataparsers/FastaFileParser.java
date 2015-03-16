@@ -25,7 +25,7 @@ import com.xl.datatypes.genome.GenomeDescriptor;
 import com.xl.datatypes.sequence.Location;
 import com.xl.interfaces.ProgressListener;
 import com.xl.main.Global;
-import com.xl.net.crashreport.CrashReporter;
+import com.xl.display.dialog.CrashReporter;
 import com.xl.preferences.LocationPreferences;
 import com.xl.utils.FileUtils;
 import com.xl.utils.NameRetriever;

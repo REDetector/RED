@@ -20,7 +20,6 @@ package com.xl.display.dialog;
 import com.xl.interfaces.Cancellable;
 import com.xl.interfaces.ProgressListener;
 import com.xl.main.REDApplication;
-import com.xl.net.crashreport.CrashReporter;
 import com.xl.utils.namemanager.MenuUtils;
 
 import javax.swing.*;

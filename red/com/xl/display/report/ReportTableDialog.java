@@ -21,7 +21,7 @@ package com.xl.display.report;
 import com.sun.java.TableSorter;
 import com.xl.datatypes.genome.Chromosome;
 import com.xl.main.REDApplication;
-import com.xl.net.crashreport.CrashReporter;
+import com.xl.display.dialog.CrashReporter;
 import com.xl.preferences.DisplayPreferences;
 import com.xl.preferences.LocationPreferences;
 import com.xl.utils.filefilters.GFFFileFilter;
