@@ -16,12 +16,11 @@
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/*
- * Created by JFormDesigner on Fri Nov 15 01:10:53 GMT 2013
- */
-
 package com.xl.main;
 
+import ch.qos.logback.classic.LoggerContext;
+import ch.qos.logback.classic.joran.JoranConfigurator;
+import ch.qos.logback.core.joran.spi.JoranException;
 import com.xl.database.DatabaseListener;
 import com.xl.database.DatabaseManager;
 import com.xl.datatypes.DataCollection;
@@ -50,7 +49,7 @@ import com.xl.interfaces.AnnotationCollectionListener;
 import com.xl.interfaces.DataStoreChangedListener;
 import com.xl.interfaces.ProgressListener;
 import com.xl.menu.REDMenu;
-import com.xl.net.crashreport.CrashReporter;
+import com.xl.display.dialog.CrashReporter;
 import com.xl.net.genomes.GenomeDownloader;
 import com.xl.parsers.annotationparsers.IGVGenomeParser;
 import com.xl.parsers.dataparsers.DataParser;
@@ -61,6 +60,8 @@ import com.xl.preferences.REDPreferences;
 import com.xl.utils.FileUtils;
 import com.xl.utils.filefilters.FileFilterExt;
 import com.xl.utils.ui.OptionDialogUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileFilter;
@@ -74,7 +75,7 @@ import java.util.Vector;
  * The Class REDApplication is the first appeared panel when program starts. It contains and manages all components for the common functions.
  */
 public class REDApplication extends JFrame implements ProgressListener, DataStoreChangedListener, SiteListChangeListener, AnnotationCollectionListener, DatabaseListener {
-
+    private static final Logger logger = LoggerFactory.getLogger(REDApplication.class);
     /**
      * The static instance of RED.
      */
@@ -150,6 +151,18 @@ public class REDApplication extends JFrame implements ProgressListener, DataStor
      */
     private File fileToLoad = null;
 
+    static {
+        LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
+        JoranConfigurator configurator = new JoranConfigurator();
+        configurator.setContext(lc);
+        lc.reset();
+        try {
+            configurator.doConfigure(ClassLoader.getSystemResource("com/xl/preferences/logbackConfig.xml"));
+        } catch (JoranException e) {
+            e.printStackTrace();
+        }
+    }
+
     private REDApplication() {
         setTitle("RED");
         setSize(Toolkit.getDefaultToolkit().getScreenSize().width / 3 * 2,
@@ -199,9 +212,10 @@ public class REDApplication extends JFrame implements ProgressListener, DataStor
             e.printStackTrace();
         }
 
-        FileUtils.copyFolder("./red/Help/","./Help/");
-
         try {
+
+            FileUtils.copyFolder("./red/Help/", "./Help/");
+
             Thread.setDefaultUncaughtExceptionHandler(new ErrorCatcher());
             application = new REDApplication();
             application.setVisible(true);
@@ -392,17 +406,13 @@ public class REDApplication extends JFrame implements ProgressListener, DataStor
     public void downloadGenome(String id, String displayName) {
         GenomeDownloader genomeDownload;
         ProgressDialog progressDialog;
-        try {
-            genomeDownload = new GenomeDownloader();
-            genomeDownload.addProgressListener(this);
-            progressDialog = new ProgressDialog(this, "Downloading genome: " + displayName);
-            genomeDownload.addProgressListener(progressDialog);
-            genomeDownload.downloadGenome(id, true);
-            progressDialog.requestFocus();
-            progressDialog.setDefaultCloseOperation(ProgressDialog.DISPOSE_ON_CLOSE);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        genomeDownload = new GenomeDownloader();
+        genomeDownload.addProgressListener(this);
+        progressDialog = new ProgressDialog(this, "Downloading genome: " + displayName);
+        genomeDownload.addProgressListener(progressDialog);
+        genomeDownload.downloadGenome(id, true);
+        progressDialog.requestFocus();
+        progressDialog.setDefaultCloseOperation(ProgressDialog.DISPOSE_ON_CLOSE);
     }
 
     public DataStore[] drawnDataStores() {
@@ -419,6 +429,7 @@ public class REDApplication extends JFrame implements ProgressListener, DataStor
      * @param parser A DataParser which will actually do the importing.
      */
     public void importData(DataParser parser) {
+        logger.info("Loading data...");
         parser.addProgressListener(this);
 
         JFileChooser chooser = new JFileChooser(LocationPreferences.getInstance().getProjectDataDirectory());
@@ -449,6 +460,7 @@ public class REDApplication extends JFrame implements ProgressListener, DataStor
             boolean goAhead = optionsDialog.view();
 
             if (!goAhead) {
+                logger.warn("Not ready to go ahead.");
                 return;
             }
         }
@@ -460,6 +472,7 @@ public class REDApplication extends JFrame implements ProgressListener, DataStor
             parser.parseData();
         } catch (REDException ex) {
             new CrashReporter(ex);
+            logger.error("", ex);
         }
     }
 
