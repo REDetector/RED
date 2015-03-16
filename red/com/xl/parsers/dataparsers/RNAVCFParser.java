@@ -20,9 +20,12 @@ package com.xl.parsers.dataparsers;
 
 
 import com.xl.database.DatabaseManager;
+import com.xl.exception.DataLoadException;
 import com.xl.preferences.DatabasePreferences;
 import com.xl.utils.Indexer;
 import com.xl.utils.Timer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.BufferedReader;
 import java.io.FileInputStream;
@@ -38,6 +41,7 @@ import java.util.Arrays;
  * class will delete old sample tables and create new ones for all samples in this RNA VCF file..
  */
 public class RNAVCFParser {
+    private final Logger logger = LoggerFactory.getLogger(RNAVCFParser.class);
 
     //    private int chromColumn = 0;
     //    private int posColumn = 1;
@@ -78,10 +82,13 @@ public class RNAVCFParser {
      *
      * @param vcfPath the vcf file path.
      */
-    public void parseVCFFile(String vcfPath) {
-        System.out.println("Start Parsing RNA VCF file..." + " " + Timer.getCurrentTime());
+    public void parseVCFFile(String vcfPath) throws SQLException, DataLoadException {
+        logger.info("Start Parsing RNA VCF file... {}", Timer.getCurrentTime());
         BufferedReader bufferedReader = null;
         try {
+            if(vcfPath==null||vcfPath.length()==0){
+                throw new DataLoadException("RNA VCF file has not been found, please have a check.");
+            }
             bufferedReader = new BufferedReader(new InputStreamReader(new FileInputStream(vcfPath)));
             int columnLength = 0;
             String line;
@@ -195,20 +202,17 @@ public class RNAVCFParser {
             databaseManager.commit();
             databaseManager.setAutoCommit(true);
         } catch (IOException e) {
-            e.printStackTrace();
-        } catch (SQLException e) {
-            System.err.println("Error execute sql clause in " + RNAVCFParser.class.getName() + ":run()");
-            e.printStackTrace();
+            logger.error("Error load file from " + vcfPath + " to file stream", new DataLoadException("Error load file", vcfPath));
         } finally {
             if (bufferedReader != null) {
                 try {
                     bufferedReader.close();
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    logger.error("", e);
                 }
             }
         }
-        System.out.println("End Parsing RNA VCF file..." + Timer.getCurrentTime());
+        logger.info("End Parsing RNA VCF file... {}", Timer.getCurrentTime());
     }
 
 }
