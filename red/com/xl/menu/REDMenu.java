@@ -32,7 +32,6 @@ import com.xl.display.dialog.*;
 import com.xl.display.dialog.gotodialog.GoToDialog;
 import com.xl.display.dialog.gotodialog.GoToWindowDialog;
 import com.xl.display.panel.ToolbarPanel;
-import com.xl.display.panel.WelcomePanel;
 import com.xl.display.report.FilterReports;
 import com.xl.display.report.ReportOptions;
 import com.xl.display.report.SitesDistributionHistogram;
@@ -51,6 +50,8 @@ import com.xl.preferences.DisplayPreferences;
 import com.xl.preferences.LocationPreferences;
 import com.xl.utils.imagemanager.ImageSaver;
 import com.xl.utils.namemanager.MenuUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -65,6 +66,7 @@ import java.util.Vector;
  * The Class REDMenu is the main menu in RED.
  */
 public class REDMenu extends JMenuBar implements ActionListener, DatabaseListener {
+    private final Logger logger = LoggerFactory.getLogger(REDMenu.class);
     /**
      * The application.
      */
@@ -95,6 +97,7 @@ public class REDMenu extends JMenuBar implements ActionListener, DatabaseListene
     private JMenu exportImage;
     private JMenuItem genomeView;
     private JMenuItem chromosomeView;
+    private JMenuItem clearAboveLists;
     private JMenuItem exit;
 
     /**
@@ -150,7 +153,6 @@ public class REDMenu extends JMenuBar implements ActionListener, DatabaseListene
      * Help menu.
      */
     private JMenu helpMenu;
-    private JMenuItem welcome;
     private JMenuItem helpContents;
     private JMenuItem checkForUpdates;
     private JMenuItem aboutRED;
@@ -188,6 +190,7 @@ public class REDMenu extends JMenuBar implements ActionListener, DatabaseListene
         exportImage = new JMenu();
         genomeView = new JMenuItem();
         chromosomeView = new JMenuItem();
+        clearAboveLists = new JMenuItem();
         exit = new JMenuItem();
 
         editMenu = new JMenu();
@@ -227,7 +230,6 @@ public class REDMenu extends JMenuBar implements ActionListener, DatabaseListene
         sitesDistribution = new JMenuItem();
         filterReports = new JMenuItem();
         helpMenu = new JMenu();
-        welcome = new JMenuItem();
         helpContents = new JMenuItem();
         checkForUpdates = new JMenuItem();
         aboutRED = new JMenuItem();
@@ -275,6 +277,9 @@ public class REDMenu extends JMenuBar implements ActionListener, DatabaseListene
                     menuItem2.addActionListener(new FileOpener(application, f));
                     fileMenu.add(menuItem2);
                 }
+            }
+            if (recentPaths.size() != 0) {
+                addJMenuItem(fileMenu, clearAboveLists, MenuUtils.CLEAR_LISTS, -1, true);
             }
             addJMenuItem(fileMenu, exit, MenuUtils.EXIT, KeyEvent.VK_Q, true);
         }
@@ -354,7 +359,6 @@ public class REDMenu extends JMenuBar implements ActionListener, DatabaseListene
         // ======== helpMenu ========
         {
             helpMenu.setText(MenuUtils.HELP_MENU);
-            addJMenuItem(helpMenu, welcome, MenuUtils.WELCOME, -1);
             addJMenuItem(helpMenu, helpContents, MenuUtils.HELP_CONTENTS, -1);
             addJMenuItem(helpMenu, checkForUpdates, MenuUtils.CHECK_FOR_UPDATES, -1);
             addJMenuItem(helpMenu, aboutRED, MenuUtils.ABOUT_RED, -1);
@@ -422,7 +426,7 @@ public class REDMenu extends JMenuBar implements ActionListener, DatabaseListene
             application.importData(new BAMFileParser());
         } else if (action.equals(MenuUtils.ANNOTATION)) {
             AnnotationParserRunner.RunAnnotationParser(application, new UCSCRefGeneParser(application.dataCollection().genome()));
-//            throw new UnsupportedOperationException("We only support .genome file from IGV server now...");
+            //            throw new UnsupportedOperationException("We only support .genome file from IGV server now...");
         } else if (action.equals(MenuUtils.CHROMOSOME_VIEW)) {
             ChromosomeViewer viewer = application.chromosomeViewer();
             ImageSaver.saveImage(viewer, "chr_view_" + viewer.chromosome().getName() + "_" + viewer.currentStart() + "_" + viewer.currentEnd());
@@ -432,6 +436,10 @@ public class REDMenu extends JMenuBar implements ActionListener, DatabaseListene
             ImageSaver.saveImage(application.genomeViewer(), "genome_view");
             application.genomeViewer().setExportImage(false);
             application.genomeViewer().displayPreferencesUpdated(DisplayPreferences.getInstance());
+        } else if (action.equals(MenuUtils.CLEAR_LISTS)) {
+            LocationPreferences.getInstance().clearRecentlyOpenedFiles();
+            JOptionPane.showMessageDialog(application, "The recently opened file lists will be cleared before RED is restarted.",
+                    "Clear Recently Opened Files.", JOptionPane.INFORMATION_MESSAGE);
         } else if (action.equals(MenuUtils.EXIT)) {
             application.dispose();
             System.exit(0);
@@ -539,9 +547,7 @@ public class REDMenu extends JMenuBar implements ActionListener, DatabaseListene
             new ReportOptions(application, new FilterReports(application.dataCollection().getActiveDataStore()));
         }
         // --------------------HelpMenu---------------------
-        else if (action.equals(MenuUtils.WELCOME)) {
-            new WelcomePanel(application);
-        } else if (action.equals(MenuUtils.HELP_CONTENTS)) {
+        else if (action.equals(MenuUtils.HELP_CONTENTS)) {
             new HelpDialog(new File("./Help"));
         } else if (action.equals(MenuUtils.CHECK_FOR_UPDATES)) {
             try {
