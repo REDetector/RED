@@ -68,7 +68,7 @@ public class HelpDialog extends JDialog implements TreeSelectionListener {
 
         tree.addTreeSelectionListener(this);
 
-        setSize(800, 600);
+        setSize(1000, 600);
         setLocationRelativeTo(REDApplication.getInstance());
         setVisible(true);
 
