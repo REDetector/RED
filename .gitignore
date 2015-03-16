@@ -22,3 +22,6 @@ Help/
 
 #We never provide the jar package again since that it takes up a lot of space when downloading the git.
 *.jar
+
+#Filter the log file.
+logs/
