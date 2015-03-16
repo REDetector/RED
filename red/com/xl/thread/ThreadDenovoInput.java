@@ -21,6 +21,8 @@ package com.xl.thread;
 import com.xl.database.DatabaseManager;
 import com.xl.database.DatabaseSelector;
 import com.xl.database.TableCreator;
+import com.xl.display.dialog.DataImportDialog;
+import com.xl.exception.DataLoadException;
 import com.xl.filter.denovo.FisherExactTestFilter;
 import com.xl.filter.denovo.KnownSNPFilter;
 import com.xl.filter.denovo.RepeatRegionsFilter;
@@ -28,6 +30,11 @@ import com.xl.filter.denovo.SpliceJunctionFilter;
 import com.xl.main.REDApplication;
 import com.xl.parsers.dataparsers.RNAVCFParser;
 import com.xl.preferences.LocationPreferences;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.swing.*;
+import java.sql.SQLException;
 
 /**
  * Created by Xing Li on 2014/7/22.
@@ -35,35 +42,45 @@ import com.xl.preferences.LocationPreferences;
  * The Class ThreadDenovoInput generates a new thread to input all data with denovo mode.
  */
 public class ThreadDenovoInput implements Runnable {
+    private final Logger logger = LoggerFactory.getLogger(ThreadDenovoInput.class);
 
     @Override
     public void run() {
         DatabaseManager manager = DatabaseManager.getInstance();
         LocationPreferences locationPreferences = LocationPreferences.getInstance();
         manager.setAutoCommit(true);
+        try {
+            manager.createDatabase(DatabaseManager.DENOVO_DATABASE_NAME);
+            manager.useDatabase(DatabaseManager.DENOVO_DATABASE_NAME);
 
-        manager.createDatabase(DatabaseManager.DENOVO_DATABASE_NAME);
-        manager.useDatabase(DatabaseManager.DENOVO_DATABASE_NAME);
+            RNAVCFParser rnaVcfParser = new RNAVCFParser();
+            rnaVcfParser.parseVCFFile(locationPreferences.getRnaVcfFile());
 
-        RNAVCFParser rnaVcfParser = new RNAVCFParser();
-        rnaVcfParser.parseVCFFile(locationPreferences.getRnaVcfFile());
+            RepeatRegionsFilter repeatRegionsFilter = new RepeatRegionsFilter(manager);
+            TableCreator.createRepeatRegionsTable(DatabaseManager.REPEAT_MASKER_TABLE_NAME);
+            repeatRegionsFilter.loadRepeatTable(DatabaseManager.REPEAT_MASKER_TABLE_NAME, locationPreferences.getRepeatFile());
 
-        RepeatRegionsFilter repeatRegionsFilter = new RepeatRegionsFilter(manager);
-        TableCreator.createRepeatRegionsTable(DatabaseManager.REPEAT_MASKER_TABLE_NAME);
-        repeatRegionsFilter.loadRepeatTable(DatabaseManager.REPEAT_MASKER_TABLE_NAME, locationPreferences.getRepeatFile());
+            SpliceJunctionFilter spliceJunctionFilter = new SpliceJunctionFilter(manager);
+            TableCreator.createSpliceJunctionTable(DatabaseManager.SPLICE_JUNCTION_TABLE_NAME);
+            spliceJunctionFilter.loadSpliceJunctionTable(DatabaseManager.SPLICE_JUNCTION_TABLE_NAME, locationPreferences.getRefSeqFile());
 
-        SpliceJunctionFilter spliceJunctionFilter = new SpliceJunctionFilter(manager);
-        TableCreator.createSpliceJunctionTable(DatabaseManager.SPLICE_JUNCTION_TABLE_NAME);
-        spliceJunctionFilter.loadSpliceJunctionTable(DatabaseManager.SPLICE_JUNCTION_TABLE_NAME, locationPreferences.getRefSeqFile());
+            KnownSNPFilter knownSNPFilter = new KnownSNPFilter(manager);
+            TableCreator.createDBSNPTable(DatabaseManager.DBSNP_DATABASE_TABLE_NAME);
+            knownSNPFilter.loadDbSNPTable(DatabaseManager.DBSNP_DATABASE_TABLE_NAME, locationPreferences.getDbSNPFile());
 
-        KnownSNPFilter knownSNPFilter = new KnownSNPFilter(manager);
-        TableCreator.createDBSNPTable(DatabaseManager.DBSNP_DATABASE_TABLE_NAME);
-        knownSNPFilter.loadDbSNPTable(DatabaseManager.DBSNP_DATABASE_TABLE_NAME, locationPreferences.getDbSNPFile());
-
-        FisherExactTestFilter fisherExactTestFilter = new FisherExactTestFilter(manager);
-        TableCreator.createDARNEDTable(DatabaseManager.DARNED_DATABASE_TABLE_NAME);
-        fisherExactTestFilter.loadDarnedTable(DatabaseManager.DARNED_DATABASE_TABLE_NAME, locationPreferences.getDarnedFile());
-
+            FisherExactTestFilter fisherExactTestFilter = new FisherExactTestFilter(manager);
+            TableCreator.createDARNEDTable(DatabaseManager.DARNED_DATABASE_TABLE_NAME);
+            fisherExactTestFilter.loadDarnedTable(DatabaseManager.DARNED_DATABASE_TABLE_NAME, locationPreferences.getDarnedFile());
+        } catch (SQLException e) {
+            logger.error("Unable to input all data for denovo mode.", e);
+            return;
+        } catch (DataLoadException e) {
+            JOptionPane.showMessageDialog(REDApplication.getInstance(), "Sorry, fail to import the data to database. You may select one of wrong " +
+                    "path for the relative data.", "Imported Failed", JOptionPane.ERROR_MESSAGE);
+            logger.error("", e);
+            new DataImportDialog(REDApplication.getInstance());
+            return;
+        }
         new DatabaseSelector(REDApplication.getInstance());
     }
 
