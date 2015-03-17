@@ -40,7 +40,7 @@ public class AnnotationParserRunner {
      */
     public static void RunAnnotationParser(REDApplication application, AnnotationParser parser) {
         File file;
-        JFileChooser chooser = new JFileChooserExt(LocationPreferences.getInstance().getGenomeDirectory());
+        JFileChooser chooser = new JFileChooserExt(LocationPreferences.getInstance().getGenomeDirectory(), null);
         chooser.setMultiSelectionEnabled(false);
         chooser.setFileFilter(parser.fileFilter());
 

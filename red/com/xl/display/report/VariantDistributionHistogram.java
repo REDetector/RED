@@ -23,7 +23,6 @@ import com.xl.display.dialog.CrashReporter;
 import com.xl.display.dialog.JFileChooserExt;
 import com.xl.main.REDApplication;
 import com.xl.preferences.LocationPreferences;
-import com.xl.utils.filefilters.TxtFileFilter;
 import com.xl.utils.imagemanager.ImageSaver;
 import com.xl.utils.namemanager.MenuUtils;
 import com.xl.utils.ui.OptionDialogUtils;
@@ -95,9 +94,8 @@ public class VariantDistributionHistogram extends JDialog implements ActionListe
         } else if (ae.getActionCommand().equals(MenuUtils.SAVE_BUTTON)) {
             ImageSaver.saveImage(plotPanel.mainHistogramPanel(), "variant_distribution_" + dataStore.name());
         } else if (ae.getActionCommand().equals(MenuUtils.EXPORT_BUTTON)) {
-            JFileChooser chooser = new JFileChooserExt(LocationPreferences.getInstance().getProjectSaveLocation());
+            JFileChooser chooser = new JFileChooserExt(LocationPreferences.getInstance().getProjectSaveLocation(), "txt");
             chooser.setMultiSelectionEnabled(false);
-            chooser.setFileFilter(new TxtFileFilter());
 
             int result = chooser.showSaveDialog(this);
             if (result == JFileChooser.CANCEL_OPTION) return;

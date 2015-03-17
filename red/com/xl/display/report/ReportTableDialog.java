@@ -21,7 +21,6 @@ package com.xl.display.report;
 import com.sun.java.TableSorter;
 import com.xl.datatypes.genome.Chromosome;
 import com.xl.display.dialog.CrashReporter;
-import com.xl.display.dialog.JFileChooserExt;
 import com.xl.main.REDApplication;
 import com.xl.preferences.DisplayPreferences;
 import com.xl.preferences.LocationPreferences;
@@ -29,6 +28,8 @@ import com.xl.utils.filefilters.GFFFileFilter;
 import com.xl.utils.filefilters.TxtFileFilter;
 import com.xl.utils.namemanager.MenuUtils;
 import com.xl.utils.ui.OptionDialogUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileFilter;
@@ -47,6 +48,7 @@ import java.io.PrintWriter;
  * The Class ReportTableDialog is the generic container for all of the different types of report.
  */
 public class ReportTableDialog extends JDialog implements MouseListener, ActionListener {
+    private final Logger logger = LoggerFactory.getLogger(ReportTableDialog.class);
     /**
      * The application.
      */
@@ -140,7 +142,7 @@ public class ReportTableDialog extends JDialog implements MouseListener, ActionL
         if (chr != null && start > 0 && end > 0) {
             DisplayPreferences.getInstance().setLocation(chr, start, end);
         } else {
-            System.err.println("Couldn't find a position to jump to.  Closest thing was " + chr + " " + start + "-" + end);
+            logger.error("Couldn't find a position to jump to. Closest thing was {} {}-{}", chr, start, end);
         }
 
     }
@@ -163,7 +165,7 @@ public class ReportTableDialog extends JDialog implements MouseListener, ActionL
             setVisible(false);
             dispose();
         } else if (ae.getActionCommand().equals(MenuUtils.SAVE_BUTTON)) {
-            JFileChooser chooser = new JFileChooserExt(LocationPreferences.getInstance().getProjectSaveLocation());
+            JFileChooser chooser = new JFileChooser(LocationPreferences.getInstance().getProjectSaveLocation());
             chooser.setMultiSelectionEnabled(false);
 
             if (report.canExportGFF()) {
@@ -204,6 +206,7 @@ public class ReportTableDialog extends JDialog implements MouseListener, ActionL
             try {
                 saveTextReport(file);
             } catch (IOException e) {
+                logger.error("", e);
                 new CrashReporter(e);
             }
         }

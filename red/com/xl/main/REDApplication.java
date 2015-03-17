@@ -55,7 +55,6 @@ import com.xl.preferences.DisplayPreferences;
 import com.xl.preferences.LocationPreferences;
 import com.xl.preferences.REDPreferences;
 import com.xl.utils.FileUtils;
-import com.xl.utils.filefilters.FileFilterExt;
 import com.xl.utils.ui.OptionDialogUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -428,7 +427,7 @@ public class REDApplication extends JFrame implements ProgressListener, DataStor
         logger.info("Loading data...");
         parser.addProgressListener(this);
 
-        JFileChooserExt chooser = new JFileChooserExt(LocationPreferences.getInstance().getProjectDataDirectory());
+        JFileChooserExt chooser = new JFileChooserExt(LocationPreferences.getInstance().getProjectDataDirectory(), null);
         chooser.setMultiSelectionEnabled(false);
 
         int result = chooser.showOpenDialog(this);
@@ -483,12 +482,11 @@ public class REDApplication extends JFrame implements ProgressListener, DataStor
      * Launches a FileChooser to select a project file to open
      */
     public void loadProject() {
-        JFileChooser chooser = new JFileChooserExt(LocationPreferences.getInstance().getProjectSaveLocation());
+        JFileChooser chooser = new JFileChooserExt(LocationPreferences.getInstance().getProjectSaveLocation(), "red");
         chooser.setMultiSelectionEnabled(false);
         REDPreviewPanel previewPanel = new REDPreviewPanel();
         chooser.setAccessory(previewPanel);
         chooser.addPropertyChangeListener(previewPanel);
-        chooser.setFileFilter(new FileFilterExt("red"));
 
         int result = chooser.showOpenDialog(this);
         if (result == JFileChooser.CANCEL_OPTION)
@@ -612,9 +610,8 @@ public class REDApplication extends JFrame implements ProgressListener, DataStor
      * Launches a FileChooser to allow the user to select a new file name under which to save
      */
     public void saveProjectAs() {
-        JFileChooser chooser = new JFileChooserExt(LocationPreferences.getInstance().getProjectSaveLocation());
+        JFileChooser chooser = new JFileChooserExt(LocationPreferences.getInstance().getProjectSaveLocation(), "red");
         chooser.setMultiSelectionEnabled(false);
-        chooser.setFileFilter(new FileFilterExt("red"));
         int result = chooser.showSaveDialog(this);
         if (result == JFileChooser.CANCEL_OPTION)
             return;

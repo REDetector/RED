@@ -25,7 +25,6 @@ import com.xl.main.REDApplication;
 import com.xl.preferences.DisplayPreferences;
 import com.xl.preferences.LocationPreferences;
 import com.xl.utils.FontManager;
-import com.xl.utils.filefilters.FileFilterExt;
 import com.xl.utils.namemanager.MenuUtils;
 import com.xl.utils.ui.OptionDialogUtils;
 
@@ -215,9 +214,8 @@ public class SiteListViewer extends JDialog implements MouseListener, ActionList
             setVisible(false);
             dispose();
         } else if (ae.getActionCommand().equals(MenuUtils.SAVE_BUTTON)) {
-            JFileChooser chooser = new JFileChooserExt(LocationPreferences.getInstance().getProjectSaveLocation());
+            JFileChooser chooser = new JFileChooserExt(LocationPreferences.getInstance().getProjectSaveLocation(), "txt");
             chooser.setMultiSelectionEnabled(false);
-            chooser.setFileFilter(new FileFilterExt("txt"));
 
             int result = chooser.showSaveDialog(this);
             if (result == JFileChooser.CANCEL_OPTION) return;

@@ -181,7 +181,7 @@ public class FisherExactTestFilterPanel extends AbstractSiteFilter {
          * @param f        the TextFild from which to take the starting directory
          */
         private void getFile(String dataType, JTextField f) {
-            JFileChooser chooser = new JFileChooserExt(LocationPreferences.getInstance().getProjectSaveLocation());
+            JFileChooser chooser = new JFileChooserExt(LocationPreferences.getInstance().getProjectSaveLocation(), null);
             chooser.setCurrentDirectory(new File(f.getText()));
             chooser.setAccessory(new DataIntroductionPanel(dataType));
             chooser.setDialogTitle("Select Directory");

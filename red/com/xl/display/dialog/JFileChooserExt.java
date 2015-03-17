@@ -18,13 +18,13 @@
 
 package com.xl.display.dialog;
 
-import com.xl.main.Global;
-
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.filechooser.FileFilter;
+import java.awt.*;
 import java.io.File;
+import java.util.LinkedList;
 
 /**
  * Created by Xing Li on 2015/3/16.
@@ -36,12 +36,6 @@ public class JFileChooserExt extends JFileChooser {
     private JTextField tf = null;
     private String regex;
 
-    public JFileChooserExt(String regex) {
-        super();
-        this.regex = regex;
-        init();
-    }
-
     public JFileChooserExt(String currentDirectoryPath, String regex) {
         super(currentDirectoryPath);
         this.regex = regex;
@@ -49,21 +43,7 @@ public class JFileChooserExt extends JFileChooser {
     }
 
     private void init() {
-        if (Global.SYSTEM_NAME.contains(Global.WINDOWS_SYSTEM)) {
-            tf = (JTextField) ((JPanel) ((JPanel) ((JPanel) getComponent(2)).getComponent(2)).getComponent(2)).getComponent(1);
-        } else if (Global.SYSTEM_NAME.contains(Global.LINUX_SYSTEM)) {
-            if (Global.JAVA_VM_NAME.toLowerCase().contains(Global.OPENJDK)) {
-                tf = (JTextField) (((JPanel) getComponent(1)).getComponent(4));
-            } else {
-                tf = (JTextField) ((JPanel) ((JPanel) getComponent(3)).getComponent(0)).getComponent(1);
-            }
-        } else {
-            if (Global.JAVA_VM_NAME.toLowerCase().contains(Global.OPENJDK)) {
-                tf = (JTextField) (((JPanel) getComponent(1)).getComponent(4));
-            } else {
-                tf = (JTextField) ((JPanel) ((JPanel) getComponent(3)).getComponent(0)).getComponent(1);
-            }
-        }
+        tf = getTextField(this);
 
         tf.getDocument().addDocumentListener(new DocumentListener() {
             public void insertUpdate(DocumentEvent e) {
@@ -79,6 +59,22 @@ public class JFileChooserExt extends JFileChooser {
             }
         });
     }
+
+    private JTextField getTextField(JFileChooser jf) {
+        LinkedList<Component> queue = new LinkedList<Component>();
+        queue.add(jf);
+        while (queue.size() != 0) {
+            Component[] c = ((Container) queue.removeFirst()).getComponents();
+            for (int i = 0; i < c.length; i++) {
+                queue.add(c[i]);
+                if (c[i] instanceof JTextField) {
+                    return (JTextField) c[i];
+                }
+            }
+        }
+        return new JTextField();
+    }
+
 
     private void modifyFilter() {
         final String text = tf.getText();

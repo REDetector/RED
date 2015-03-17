@@ -334,7 +334,7 @@ public class DataImportDialog extends JDialog implements ActionListener {
      * @param f        the TextField from which to take the starting directory
      */
     private void getFile(String dataType, JTextField f) {
-        JFileChooser chooser = new JFileChooserExt(preferences.getProjectSaveLocation());
+        JFileChooser chooser = new JFileChooserExt(preferences.getProjectSaveLocation(), null);
         chooser.setCurrentDirectory(new File(f.getText()));
         chooser.setAccessory(new DataIntroductionPanel(dataType));
         chooser.setDialogTitle("Select Directory");
