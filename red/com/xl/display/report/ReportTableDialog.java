@@ -20,8 +20,9 @@ package com.xl.display.report;
 
 import com.sun.java.TableSorter;
 import com.xl.datatypes.genome.Chromosome;
-import com.xl.main.REDApplication;
 import com.xl.display.dialog.CrashReporter;
+import com.xl.display.dialog.JFileChooserExt;
+import com.xl.main.REDApplication;
 import com.xl.preferences.DisplayPreferences;
 import com.xl.preferences.LocationPreferences;
 import com.xl.utils.filefilters.GFFFileFilter;
@@ -162,7 +163,7 @@ public class ReportTableDialog extends JDialog implements MouseListener, ActionL
             setVisible(false);
             dispose();
         } else if (ae.getActionCommand().equals(MenuUtils.SAVE_BUTTON)) {
-            JFileChooser chooser = new JFileChooser(LocationPreferences.getInstance().getProjectSaveLocation());
+            JFileChooser chooser = new JFileChooserExt(LocationPreferences.getInstance().getProjectSaveLocation());
             chooser.setMultiSelectionEnabled(false);
 
             if (report.canExportGFF()) {

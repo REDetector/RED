@@ -23,6 +23,7 @@ import com.xl.database.TableCreator;
 import com.xl.datatypes.DataStore;
 import com.xl.datatypes.sites.Site;
 import com.xl.datatypes.sites.SiteList;
+import com.xl.display.dialog.JFileChooserExt;
 import com.xl.display.panel.DataIntroductionPanel;
 import com.xl.exception.REDException;
 import com.xl.filter.denovo.FisherExactTestFilter;
@@ -180,7 +181,7 @@ public class FisherExactTestFilterPanel extends AbstractSiteFilter {
          * @param f        the TextFild from which to take the starting directory
          */
         private void getFile(String dataType, JTextField f) {
-            JFileChooser chooser = new JFileChooser(LocationPreferences.getInstance().getProjectSaveLocation());
+            JFileChooser chooser = new JFileChooserExt(LocationPreferences.getInstance().getProjectSaveLocation());
             chooser.setCurrentDirectory(new File(f.getText()));
             chooser.setAccessory(new DataIntroductionPanel(dataType));
             chooser.setDialogTitle("Select Directory");

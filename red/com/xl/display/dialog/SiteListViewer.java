@@ -215,7 +215,7 @@ public class SiteListViewer extends JDialog implements MouseListener, ActionList
             setVisible(false);
             dispose();
         } else if (ae.getActionCommand().equals(MenuUtils.SAVE_BUTTON)) {
-            JFileChooser chooser = new JFileChooser(LocationPreferences.getInstance().getProjectSaveLocation());
+            JFileChooser chooser = new JFileChooserExt(LocationPreferences.getInstance().getProjectSaveLocation());
             chooser.setMultiSelectionEnabled(false);
             chooser.setFileFilter(new FileFilterExt("txt"));
 

@@ -18,8 +18,9 @@
 
 package com.xl.utils.imagemanager;
 
-import com.xl.main.REDApplication;
 import com.xl.display.dialog.CrashReporter;
+import com.xl.display.dialog.JFileChooserExt;
+import com.xl.main.REDApplication;
 import com.xl.preferences.LocationPreferences;
 import com.xl.utils.filefilters.EPSFileFilter;
 import com.xl.utils.filefilters.PNGFileFilter;
@@ -48,7 +49,7 @@ public class ImageSaver {
      * @param c The component to save.
      */
     public static void saveImage(Component c, String defaultName) {
-        JFileChooser chooser = new JFileChooser(LocationPreferences.getInstance().getProjectSaveLocation());
+        JFileChooser chooser = new JFileChooserExt(LocationPreferences.getInstance().getProjectSaveLocation());
 
         chooser.setMultiSelectionEnabled(false);
         chooser.addChoosableFileFilter(new EPSFileFilter());

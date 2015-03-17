@@ -276,7 +276,7 @@ public class EditPreferencesDialog extends JDialog implements ActionListener {
      * @param f      the TextFild from which to take the starting directory
      */
     private void getDir(String action, JTextField f) {
-        JFileChooser chooser = new JFileChooser(locationPreferences.getProjectSaveLocation());
+        JFileChooser chooser = new JFileChooserExt(locationPreferences.getProjectSaveLocation());
         chooser.setCurrentDirectory(new File(f.getText()));
         chooser.setDialogTitle("Select Directory");
         chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);

@@ -35,9 +35,7 @@ import com.xl.datawriters.REDDataWriter;
 import com.xl.display.chromosomeviewer.ChromosomePositionScrollBar;
 import com.xl.display.chromosomeviewer.ChromosomeViewer;
 import com.xl.display.dataviewer.DataViewer;
-import com.xl.display.dialog.DataParserOptionsDialog;
-import com.xl.display.dialog.GenomeSelector;
-import com.xl.display.dialog.ProgressDialog;
+import com.xl.display.dialog.*;
 import com.xl.display.dialog.gotodialog.GoToDialog;
 import com.xl.display.genomeviewer.GenomeViewer;
 import com.xl.display.panel.REDPreviewPanel;
@@ -49,7 +47,6 @@ import com.xl.interfaces.AnnotationCollectionListener;
 import com.xl.interfaces.DataStoreChangedListener;
 import com.xl.interfaces.ProgressListener;
 import com.xl.menu.REDMenu;
-import com.xl.display.dialog.CrashReporter;
 import com.xl.net.genomes.GenomeDownloader;
 import com.xl.parsers.annotationparsers.IGVGenomeParser;
 import com.xl.parsers.dataparsers.DataParser;
@@ -64,7 +61,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
-import javax.swing.filechooser.FileFilter;
 import java.awt.*;
 import java.io.File;
 import java.util.ArrayList;
@@ -432,26 +428,17 @@ public class REDApplication extends JFrame implements ProgressListener, DataStor
         logger.info("Loading data...");
         parser.addProgressListener(this);
 
-        JFileChooser chooser = new JFileChooser(LocationPreferences.getInstance().getProjectDataDirectory());
-        chooser.setMultiSelectionEnabled(true);
-        FileFilter filter = parser.getFileFilter();
+        JFileChooserExt chooser = new JFileChooserExt(LocationPreferences.getInstance().getProjectDataDirectory());
+        chooser.setMultiSelectionEnabled(false);
 
-        if (filter != null) {
-            chooser.setFileFilter(parser.getFileFilter());
+        int result = chooser.showOpenDialog(this);
 
-            int result = chooser.showOpenDialog(this);
-
-			/*
-             * There seems to be a bug in the file chooser which allows the user to select no files, but not cancel if the control+double click on
-			 * a file
-			 */
-            if (result == JFileChooser.CANCEL_OPTION || chooser.getSelectedFile() == null) {
-                return;
-            }
-
-            LocationPreferences.getInstance().setProjectSaveLocation(chooser.getSelectedFile().getParent());
-            parser.setFile(chooser.getSelectedFile());
+        if (result == JFileChooser.CANCEL_OPTION || chooser.getSelectedFile() == null) {
+            return;
         }
+
+        LocationPreferences.getInstance().setProjectSaveLocation(chooser.getSelectedFile().getParent());
+        parser.setFile(chooser.getSelectedFile());
 
         // See if we need to display any options
         if (parser.hasOptionsPanel()) {
@@ -496,7 +483,7 @@ public class REDApplication extends JFrame implements ProgressListener, DataStor
      * Launches a FileChooser to select a project file to open
      */
     public void loadProject() {
-        JFileChooser chooser = new JFileChooser(LocationPreferences.getInstance().getProjectSaveLocation());
+        JFileChooser chooser = new JFileChooserExt(LocationPreferences.getInstance().getProjectSaveLocation());
         chooser.setMultiSelectionEnabled(false);
         REDPreviewPanel previewPanel = new REDPreviewPanel();
         chooser.setAccessory(previewPanel);
@@ -625,7 +612,7 @@ public class REDApplication extends JFrame implements ProgressListener, DataStor
      * Launches a FileChooser to allow the user to select a new file name under which to save
      */
     public void saveProjectAs() {
-        JFileChooser chooser = new JFileChooser(LocationPreferences.getInstance().getProjectSaveLocation());
+        JFileChooser chooser = new JFileChooserExt(LocationPreferences.getInstance().getProjectSaveLocation());
         chooser.setMultiSelectionEnabled(false);
         chooser.setFileFilter(new FileFilterExt("red"));
         int result = chooser.showSaveDialog(this);
