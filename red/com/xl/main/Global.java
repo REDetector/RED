@@ -48,4 +48,11 @@ public class Global {
      */
     public static final String NEW_ISSUE_PAGE = ISSUES_PAGE + "/new";
 
+    public static final String SYSTEM_NAME = System.getProperty("os.name");
+
+    public static final String WINDOWS_SYSTEM = "Windows";
+
+    public static final String LINUX_SYSTEM = "Linux";
+
+    public static final String MACOSX = "Mac OS X";
 }

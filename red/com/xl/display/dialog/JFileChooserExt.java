@@ -18,6 +18,8 @@
 
 package com.xl.display.dialog;
 
+import com.xl.main.Global;
+
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
@@ -47,7 +49,14 @@ public class JFileChooserExt extends JFileChooser {
     }
 
     private void init() {
-        tf = (JTextField) ((JPanel) ((JPanel) ((JPanel) getComponent(2)).getComponent(2)).getComponent(2)).getComponent(1);
+        if (Global.SYSTEM_NAME.contains(Global.WINDOWS_SYSTEM)) {
+            tf = (JTextField) ((JPanel) ((JPanel) ((JPanel) getComponent(2)).getComponent(2)).getComponent(2)).getComponent(1);
+        } else if (Global.SYSTEM_NAME.contains(Global.LINUX_SYSTEM)) {
+            tf = (JTextField) ((JPanel) ((JPanel) getComponent(3)).getComponent(0)).getComponent(1);
+        } else {
+            tf = (JTextField) ((JPanel) ((JPanel) getComponent(3)).getComponent(0)).getComponent(1);
+        }
+
         tf.getDocument().addDocumentListener(new DocumentListener() {
             public void insertUpdate(DocumentEvent e) {
                 modifyFilter();
