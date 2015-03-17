@@ -27,7 +27,7 @@ public class Global {
     /**
      * The version of RED
      */
-    public static final String VERSION = "0.0.1";
+    public static final String VERSION = "0.0.2";
     /**
      * RED data version.
      * <p/>
