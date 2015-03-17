@@ -50,9 +50,14 @@ public class Global {
 
     public static final String SYSTEM_NAME = System.getProperty("os.name");
 
+    public static final String JAVA_VM_NAME = System.getProperty("java.vm.name");
+
     public static final String WINDOWS_SYSTEM = "Windows";
 
     public static final String LINUX_SYSTEM = "Linux";
 
     public static final String MACOSX = "Mac OS X";
+
+    public static final String OPENJDK = "openjdk";
+
 }

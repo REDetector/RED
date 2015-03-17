@@ -52,9 +52,17 @@ public class JFileChooserExt extends JFileChooser {
         if (Global.SYSTEM_NAME.contains(Global.WINDOWS_SYSTEM)) {
             tf = (JTextField) ((JPanel) ((JPanel) ((JPanel) getComponent(2)).getComponent(2)).getComponent(2)).getComponent(1);
         } else if (Global.SYSTEM_NAME.contains(Global.LINUX_SYSTEM)) {
-            tf = (JTextField) ((JPanel) ((JPanel) getComponent(3)).getComponent(0)).getComponent(1);
+            if (Global.JAVA_VM_NAME.toLowerCase().contains(Global.OPENJDK)) {
+                tf = (JTextField) (((JPanel) getComponent(1)).getComponent(4));
+            } else {
+                tf = (JTextField) ((JPanel) ((JPanel) getComponent(3)).getComponent(0)).getComponent(1);
+            }
         } else {
-            tf = (JTextField) ((JPanel) ((JPanel) getComponent(3)).getComponent(0)).getComponent(1);
+            if (Global.JAVA_VM_NAME.toLowerCase().contains(Global.OPENJDK)) {
+                tf = (JTextField) (((JPanel) getComponent(1)).getComponent(4));
+            } else {
+                tf = (JTextField) ((JPanel) ((JPanel) getComponent(3)).getComponent(0)).getComponent(1);
+            }
         }
 
         tf.getDocument().addDocumentListener(new DocumentListener() {
