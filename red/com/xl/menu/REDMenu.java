@@ -54,11 +54,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.io.File;
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Vector;
 
@@ -154,6 +158,7 @@ public class REDMenu extends JMenuBar implements ActionListener, DatabaseListene
      */
     private JMenu helpMenu;
     private JMenuItem helpContents;
+    private JMenuItem helpOnline;
     private JMenuItem checkForUpdates;
     private JMenuItem aboutRED;
 
@@ -231,6 +236,7 @@ public class REDMenu extends JMenuBar implements ActionListener, DatabaseListene
         filterReports = new JMenuItem();
         helpMenu = new JMenu();
         helpContents = new JMenuItem();
+        helpOnline = new JMenuItem();
         checkForUpdates = new JMenuItem();
         aboutRED = new JMenuItem();
 
@@ -360,6 +366,7 @@ public class REDMenu extends JMenuBar implements ActionListener, DatabaseListene
         {
             helpMenu.setText(MenuUtils.HELP_MENU);
             addJMenuItem(helpMenu, helpContents, MenuUtils.HELP_CONTENTS, -1);
+            addJMenuItem(helpMenu, helpOnline, MenuUtils.HELP_ONLINE, -1);
             addJMenuItem(helpMenu, checkForUpdates, MenuUtils.CHECK_FOR_UPDATES, -1);
             addJMenuItem(helpMenu, aboutRED, MenuUtils.ABOUT_RED, -1);
         }
@@ -548,7 +555,15 @@ public class REDMenu extends JMenuBar implements ActionListener, DatabaseListene
         }
         // --------------------HelpMenu---------------------
         else if (action.equals(MenuUtils.HELP_CONTENTS)) {
-            new HelpDialog(new File("./Help"));
+            new HelpDialog(new File(ClassLoader.getSystemResource("Help").getFile().replaceAll("%20", " ")));
+        } else if (action.equals(MenuUtils.HELP_ONLINE)) {
+            try {
+                Desktop.getDesktop().browse(new URI(Global.HELP_ONLINE));
+            } catch (IOException e) {
+                logger.error("I/O exception.", e);
+            } catch (URISyntaxException e) {
+                logger.error("Syntax exception.", e);
+            }
         } else if (action.equals(MenuUtils.CHECK_FOR_UPDATES)) {
             try {
                 if (UpdateChecker.isUpdateAvailable()) {

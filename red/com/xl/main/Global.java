@@ -39,6 +39,8 @@ public class Global {
      * Our home page of RED.
      */
     public static final String HOME_PAGE = "https://github.com/REDetector/RED";
+
+    public static final String HELP_ONLINE = "http://redetector.github.io";
     /**
      * The issue page.
      */
@@ -47,17 +49,5 @@ public class Global {
      * The new issue page.
      */
     public static final String NEW_ISSUE_PAGE = ISSUES_PAGE + "/new";
-
-    public static final String SYSTEM_NAME = System.getProperty("os.name");
-
-    public static final String JAVA_VM_NAME = System.getProperty("java.vm.name");
-
-    public static final String WINDOWS_SYSTEM = "Windows";
-
-    public static final String LINUX_SYSTEM = "Linux";
-
-    public static final String MACOSX = "Mac OS X";
-
-    public static final String OPENJDK = "openjdk";
 
 }

@@ -86,6 +86,7 @@ public class MenuUtils {
     /*Help menu*/
     public static final String HELP_MENU = "Help";
     public static final String HELP_CONTENTS = "Help Contents...";
+    public static final String HELP_ONLINE = "Help Online...";
     public static final String CHECK_FOR_UPDATES = "Check for Updates...";
     public static final String ABOUT_RED = "About RED...";
 
