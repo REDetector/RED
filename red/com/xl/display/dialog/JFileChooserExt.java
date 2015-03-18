@@ -45,39 +45,46 @@ public class JFileChooserExt extends JFileChooser {
     private void init() {
         tf = getTextField(this);
 
-        tf.getDocument().addDocumentListener(new DocumentListener() {
-            public void insertUpdate(DocumentEvent e) {
-                modifyFilter();
-            }
+        if (tf != null) {
+            tf.getDocument().addDocumentListener(new DocumentListener() {
+                public void insertUpdate(DocumentEvent e) {
+                    modifyFilter();
+                }
 
-            public void removeUpdate(DocumentEvent e) {
-                modifyFilter();
-            }
+                public void removeUpdate(DocumentEvent e) {
+                    modifyFilter();
+                }
 
-            public void changedUpdate(DocumentEvent e) {
-                modifyFilter();
-            }
-        });
+                public void changedUpdate(DocumentEvent e) {
+                    modifyFilter();
+                }
+            });
+        }
     }
 
     private JTextField getTextField(JFileChooser jf) {
         LinkedList<Component> queue = new LinkedList<Component>();
         queue.add(jf);
         while (queue.size() != 0) {
-            Component[] c = ((Container) queue.removeFirst()).getComponents();
-            for (int i = 0; i < c.length; i++) {
-                queue.add(c[i]);
-                if (c[i] instanceof JTextField) {
-                    return (JTextField) c[i];
+            Component[] components = ((Container) queue.removeFirst()).getComponents();
+            for (Component component : components) {
+                queue.add(component);
+                if (component instanceof JTextField) {
+                    return (JTextField) component;
                 }
             }
         }
-        return new JTextField();
+        return null;
     }
 
 
     private void modifyFilter() {
-        final String text = tf.getText();
+        final String text;
+        if (tf != null) {
+            text = tf.getText();
+        } else {
+            text = "";
+        }
         setFileFilter(new FileFilter() {
             @Override
             public boolean accept(File f) {
