@@ -25,6 +25,8 @@ import com.xl.preferences.LocationPreferences;
 import com.xl.thread.ThreadDenovoInput;
 import com.xl.thread.ThreadDnaRnaInput;
 import com.xl.utils.namemanager.MenuUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
 import java.awt.*;
@@ -38,6 +40,7 @@ import java.io.File;
  * A Dialog for importing data to MySQL database.
  */
 public class DataImportDialog extends JDialog implements ActionListener {
+    private final Logger logger = LoggerFactory.getLogger(DataImportDialog.class);
     /**
      * Location preferences.
      */
@@ -409,13 +412,22 @@ public class DataImportDialog extends JDialog implements ActionListener {
             setVisible(false);
             dispose();
         } else if (action.equals("import")) {
+            logger.info("R Script path: {}",rScriptPath.getText());
+            logger.info("DNA VCF path: {}",dnaVcfFileField.getText());
+            logger.info("RNA VCF path: {}",rnaVcfFileField.getText());
+            logger.info("Repeat file path: {}",repeatFileField.getText());
+            logger.info("DARNED file path: {}",darnedFileField.getText());
+            logger.info("RefSeq file path: {}",refSeqFileField.getText());
+            logger.info("dbSNP file path: {}",dbSNPFileField.getText());
             switch (currentIndex) {
                 //DNA-RNA index
                 case NON_DENOVO_INDEX:
+                    logger.info("Start importing data, DNA-RNA mode.");
                     new Thread(new ThreadDnaRnaInput()).start();
                     break;
                 //denovo index
                 case DENOVO_INDEX:
+                    logger.info("Start importing data, denovo mode.");
                     new Thread(new ThreadDenovoInput()).start();
                     break;
             }
