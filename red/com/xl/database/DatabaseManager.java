@@ -226,8 +226,9 @@ public class DatabaseManager {
      * @return True if the table exists.
      */
     public boolean existTable(String tableName) {
+
         List<String> tableLists = getCurrentTables(DatabasePreferences.getInstance().getCurrentDatabase());
-        return tableLists.contains(tableName);
+        return tableLists.contains(tableName.toLowerCase());
     }
 
     /**
