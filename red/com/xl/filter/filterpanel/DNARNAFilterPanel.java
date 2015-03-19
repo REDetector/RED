@@ -63,7 +63,10 @@ public class DNARNAFilterPanel extends AbstractSiteFilter {
         progressUpdated("Filtering RNA editing sites by DNA-RNA filter, please wait...", 0, 0);
         logger.info("Filtering RNA editing sites by DNA-RNA filter.");
         String linearTableName = currentSample + "_" + parentList.getFilterName() + "_" + DatabaseManager.DNA_RNA_FILTER_RESULT_TABLE_NAME;
-        TableCreator.createFilterTable(linearTableName);
+        if (!TableCreator.createFilterTable(parentList.getTableName(), linearTableName)) {
+            progressCancelled();
+            return;
+        }
         DNARNAFilter dnaRnaFilter = new DNARNAFilter(databaseManager);
         String sampleName = DatabasePreferences.getInstance().getCurrentSample();
         dnaRnaFilter.executeDnaRnaFilter(linearTableName, sampleName + "_" + DatabaseManager.DNA_VCF_RESULT_TABLE_NAME, parentList.getTableName());

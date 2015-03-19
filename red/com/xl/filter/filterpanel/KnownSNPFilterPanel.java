@@ -64,7 +64,10 @@ public class KnownSNPFilterPanel extends AbstractSiteFilter {
         progressUpdated("Filtering RNA editing sites by dbSNP filter, please wait...", 0, 0);
         logger.info("Filtering RNA editing sites by dbSNP filter");
         String linearTableName = currentSample + "_" + parentList.getFilterName() + "_" + DatabaseManager.DBSNP_FILTER_RESULT_TABLE_NAME;
-        TableCreator.createFilterTable(linearTableName);
+        if (!TableCreator.createFilterTable(parentList.getTableName(), linearTableName)) {
+            progressCancelled();
+            return;
+        }
         KnownSNPFilter dbsnpFilter = new KnownSNPFilter(databaseManager);
         dbsnpFilter.executeDbSNPFilter(DatabaseManager.DBSNP_DATABASE_TABLE_NAME, linearTableName, parentList.getTableName());
         DatabaseManager.getInstance().distinctTable(linearTableName);

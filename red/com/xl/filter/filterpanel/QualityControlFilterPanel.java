@@ -82,7 +82,10 @@ public class QualityControlFilterPanel extends AbstractSiteFilter {
         logger.info("Filtering RNA editing sites by quality and coverage.");
         String linearTableName = currentSample + "_" + parentList.getFilterName() + "_" + DatabaseManager
                 .QC_FILTER_RESULT_TABLE_NAME + "_" + qualityThreshold + "_" + depthThreshold;
-        TableCreator.createFilterTable(linearTableName);
+        if (!TableCreator.createFilterTable(parentList.getTableName(), linearTableName)) {
+            progressCancelled();
+            return;
+        }
         QualityControlFilter bf = new QualityControlFilter(databaseManager);
         // The first parameter means quality and the second means depth
         bf.executeQCFilter(parentList.getTableName(), linearTableName, qualityThreshold, depthThreshold);

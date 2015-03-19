@@ -18,9 +18,7 @@
 
 package com.xl.database;
 
-import com.xl.exception.DataLoadException;
 import com.xl.main.REDApplication;
-import com.xl.preferences.DatabasePreferences;
 import com.xl.utils.Indexer;
 import com.xl.utils.ui.OptionDialogUtils;
 import org.slf4j.Logger;
@@ -45,27 +43,20 @@ public class TableCreator {
      *
      * @param tableName The table name to be created.
      */
-    public static void createFilterTable(String tableName) {
+    public static boolean createFilterTable(String refTable, String tableName) {
         String sqlClause;
         if (databaseManager.existTable(tableName)) {
+            logger.info("Table has been existed!");
             int answer = OptionDialogUtils.showTableExistDialog(REDApplication.getInstance(), tableName);
             if (answer <= 0) {
                 databaseManager.deleteTable(tableName);
             } else {
-                return;
+                return false;
             }
         }
-        String tableBuilder = DatabasePreferences.getInstance().getDatabaseTableBuilder();
-        if (tableBuilder == null) {
-            try {
-                throw new DataLoadException("RNA/DNA vcf file has not been imported.");
-            } catch (DataLoadException e) {
-                logger.error("RNA/DNA vcf file has not been imported.", e);
-                return;
-            }
-        }
-        sqlClause = "create table " + tableName + "(" + tableBuilder + "," + Indexer.CHROM_POSITION + ")";
+        sqlClause = "create table " + tableName + " like " + refTable;
         databaseManager.executeSQL(sqlClause);
+        return true;
     }
 
     /**
@@ -128,24 +119,13 @@ public class TableCreator {
      *
      * @param tableName Table name of FETFilter.
      */
-    public static void createFisherExactTestTable(String tableName) {
-        String tableBuilder = DatabasePreferences.getInstance().getDatabaseTableBuilder();
-        if (tableBuilder == null) {
-            try {
-                throw new DataLoadException("RNA/DNA vcf file has not been imported.");
-            } catch (DataLoadException e) {
-                logger.error("RNA/DNA vcf file has not been imported.", e);
-                return;
-            }
+    public static boolean createFisherExactTestTable(String refTable, String tableName) {
+        if (createFilterTable(refTable, tableName)) {
+            databaseManager.executeSQL("alter table " + tableName + " add level float,add pvalue float,add fdr float;");
+            return true;
+        } else {
+            return false;
         }
-        StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append("create table ").append(tableName).append("(").append(tableBuilder);
-        stringBuilder.append(",");
-        stringBuilder.append("level float, pvalue float, fdr float");
-        stringBuilder.append(",");
-        stringBuilder.append(Indexer.CHROM_POSITION);
-        stringBuilder.append(")");
-        databaseManager.executeSQL(stringBuilder.toString());
     }
 
     /**

@@ -73,7 +73,10 @@ public class SpliceJunctionFilterPanel extends AbstractSiteFilter {
         progressUpdated("Filtering RNA editing sites by splice-junction, please wait...", 0, 0);
         logger.info("Filtering RNA editing sites by splice-junction.");
         String linearTableName = currentSample + "_" + parentList.getFilterName() + "_" + DatabaseManager.SPLICE_JUNCTION_FILTER_RESULT_TABLE_NAME + "_" + sjThreshold;
-        TableCreator.createFilterTable(linearTableName);
+        if (!TableCreator.createFilterTable(parentList.getTableName(), linearTableName)) {
+            progressCancelled();
+            return;
+        }
         SpliceJunctionFilter cf = new SpliceJunctionFilter(databaseManager);
         cf.executeSpliceJunctionFilter(DatabaseManager.SPLICE_JUNCTION_TABLE_NAME, linearTableName, parentList.getTableName(), sjThreshold);
         DatabaseManager.getInstance().distinctTable(linearTableName);

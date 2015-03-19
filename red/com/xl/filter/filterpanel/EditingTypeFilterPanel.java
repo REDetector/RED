@@ -74,7 +74,10 @@ public class EditingTypeFilterPanel extends AbstractSiteFilter {
         String altBaseString = altBase.getSelectedItem().toString();
         String linearTableName = currentSample + "_" + parentList.getFilterName() + "_" + DatabaseManager
                 .EDITING_TYPE_FILTER_RESULT_TABLE_NAME + "_" + refBaseString + "_" + altBaseString;
-        TableCreator.createFilterTable(linearTableName);
+        if (!TableCreator.createFilterTable(parentList.getTableName(), linearTableName)) {
+            progressCancelled();
+            return;
+        }
         EditingTypeFilter editingTypeFilter = new EditingTypeFilter(databaseManager);
         editingTypeFilter.executeEditingTypeFilter(linearTableName, parentList.getTableName(), refBaseString, altBaseString);
         DatabaseManager.getInstance().distinctTable(linearTableName);

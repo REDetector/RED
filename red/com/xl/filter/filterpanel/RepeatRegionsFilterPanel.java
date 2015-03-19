@@ -63,8 +63,14 @@ public class RepeatRegionsFilterPanel extends AbstractSiteFilter {
         logger.info("Filtering RNA editing sites by RepeatMasker database.");
         String linearRepeatTableName = currentSample + "_" + parentList.getFilterName() + "_" + DatabaseManager.REPEAT_FILTER_RESULT_TABLE_NAME;
         String linearAluTableName = currentSample + "_" + parentList.getFilterName() + "_" + DatabaseManager.ALU_FILTER_RESULT_TABLE_NAME;
-        TableCreator.createFilterTable(linearRepeatTableName);
-        TableCreator.createFilterTable(linearAluTableName);
+        if (!TableCreator.createFilterTable(parentList.getTableName(), linearRepeatTableName)) {
+            progressCancelled();
+            return;
+        }
+        if (!TableCreator.createFilterTable(parentList.getTableName(), linearAluTableName)) {
+            progressCancelled();
+            return;
+        }
         RepeatRegionsFilter rf = new RepeatRegionsFilter(databaseManager);
         rf.executeRepeatFilter(DatabaseManager.REPEAT_MASKER_TABLE_NAME, linearRepeatTableName, linearAluTableName, parentList.getTableName());
         DatabaseManager.getInstance().distinctTable(linearRepeatTableName);
