@@ -23,7 +23,6 @@ import com.xl.database.DatabaseManager;
 import com.xl.display.dialog.ProgressDialog;
 import com.xl.display.dialog.REDProgressBar;
 import com.xl.exception.DataLoadException;
-import com.xl.preferences.DatabasePreferences;
 import com.xl.utils.Indexer;
 import com.xl.utils.Timer;
 import org.slf4j.Logger;
@@ -146,7 +145,6 @@ public class RNAVCFParser {
                         }
                         // We need to add ALU info at the first table so the following filters can get the alu info.
                         tableBuilders.append("alu varchar(1) default 'F'");
-                        DatabasePreferences.getInstance().setDatabaseTableBuilder(tableBuilders.toString());
                         tableBuilders.append(",");
                         tableBuilders.append(Indexer.CHROM_POSITION);
                         for (int j = 0, len = sampleNames.length; j < len; j++) {
