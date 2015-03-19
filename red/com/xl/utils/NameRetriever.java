@@ -19,17 +19,21 @@
 package com.xl.utils;
 
 import com.xl.database.DatabaseManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.HashSet;
 import java.util.Set;
 
 /**
  * Created by Xing Li on 2014/11/19.
- *
+ * <p/>
  * The Class NameRetriever provides the name retrieve service.
  */
 public class NameRetriever {
+    private static final Logger logger = LoggerFactory.getLogger(NameRetriever.class);
     private static final Set<String> chrNameSets = new HashSet<String>();
+
     static {
         for (int i = 1; i <= 22; i++) {
             chrNameSets.add("chr" + i);
@@ -102,6 +106,7 @@ public class NameRetriever {
      * @return The sample name.
      */
     public static String getSampleName(String tableName) {
+        logger.info("Table Name: {}", tableName);
         if (tableName == null) {
             return null;
         }
