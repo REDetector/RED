@@ -71,7 +71,7 @@ public class FisherExactTestFilter {
      * @param darnedTable The DARNED database table name, it is constant.
      * @return true if DARNED data exists in the database.
      */
-    public boolean hasEstablishedDarnedTable(String darnedTable) throws SQLException {
+    public boolean hasEstablishedDarnedTable(String darnedTable) {
         return databaseManager.getRowCount(darnedTable) > 0;
     }
 
@@ -81,7 +81,7 @@ public class FisherExactTestFilter {
      * @param darnedTable The DARNED database table name, it is constant.
      * @param darnedPath  The DARNED file path.
      */
-    public void loadDarnedTable(String darnedTable, String darnedPath) throws SQLException, DataLoadException {
+    public void loadDarnedTable(String darnedTable, String darnedPath) throws DataLoadException {
         logger.info("Start loading DarnedTable... {}", Timer.getCurrentTime());
         progressBar.addProgressListener(new ProgressDialog("Import DARNED file into database..."));
         progressBar.progressUpdated("Start loading DARNED data from " + darnedPath + " to " + darnedTable + " table", 0, 0);
@@ -115,7 +115,7 @@ public class FisherExactTestFilter {
                     // insert into darned_database(chrom,coordinate,strand,inchr,inrna) values(value1,value2,value3,value4,value5)
                     stringBuilder.deleteCharAt(stringBuilder.length() - 1).append(")");
                     if (count % 1000 == 0) {
-                        progressBar.progressUpdated("Importing " + count + " lines from " + darnedPath + " to " + darnedTable, 0, 0);
+                        progressBar.progressUpdated("Importing " + count + " lines from " + darnedPath + " to " + darnedTable + " table", 0, 0);
                     }
                     databaseManager.executeSQL(stringBuilder.toString());
                     if (++count % DatabaseManager.COMMIT_COUNTS_PER_ONCE == 0)

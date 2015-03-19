@@ -23,11 +23,14 @@ package com.xl.database;
  * which will influence the efficiency, but in order to synchronize, we would like to make it.
  */
 
+import com.xl.main.REDApplication;
 import com.xl.preferences.DatabasePreferences;
 import com.xl.utils.RandomStringGenerator;
+import com.xl.utils.ui.IconLoader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.swing.*;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.Enumeration;
@@ -126,7 +129,8 @@ public class DatabaseManager {
      * @param database   The changed database.
      * @param sampleName The changed sample.
      */
-    public void databaseChanged(String database, String sampleName) throws SQLException {
+    public void databaseChanged(String database, String sampleName) {
+        logger.info("Database has been changed to {}", database);
         useDatabase(database);
         Enumeration<DatabaseListener> e = listeners.elements();
         while (e.hasMoreElements()) {
@@ -142,10 +146,8 @@ public class DatabaseManager {
      * @param user     The user.
      * @param password The password.
      * @return Whether database has been connected, true if it is successful.
-     * @throws ClassNotFoundException If the JDBC driver had not been found before connecting, ClassNotFoundException will be thrown.
-     * @throws SQLException           If there are any wrong inputs among host, port, user and password, the SQLException will be thrown.
      */
-    public boolean connectDatabase(String host, String port, String user, String password) throws ClassNotFoundException, SQLException {
+    public boolean connectDatabase(String host, String port, String user, String password) throws SQLException, ClassNotFoundException {
         Class.forName("com.mysql.jdbc.Driver");
         String connectionURL = "jdbc:mysql://" + host + ":" + port;
         logger.info("Connecting to MySQL database...");
@@ -169,8 +171,12 @@ public class DatabaseManager {
     /**
      * If database has not been set commit automatically, we should commit the transaction individually.
      */
-    public void commit() throws SQLException {
-        con.commit();
+    public void commit() {
+        try {
+            con.commit();
+        } catch (SQLException e) {
+            logger.warn("Unable to commit to the database, roll back to the previous status.", e);
+        }
     }
 
     /**
@@ -180,13 +186,19 @@ public class DatabaseManager {
      * @param tableName The table name to be counted its row line.
      * @return The row count of a given table name.
      */
-    public int getRowCount(String tableName) throws SQLException {
-        Statement stmt = con.createStatement();
-        ResultSet rs;
-        rs = stmt.executeQuery("select count(1) from " + tableName);
-        if (rs != null && rs.next()) {
-            return rs.getInt(1);
-        } else {
+    public int getRowCount(String tableName) {
+        Statement stmt;
+        try {
+            stmt = con.createStatement();
+            ResultSet rs;
+            rs = stmt.executeQuery("select count(1) from " + tableName);
+            if (rs != null && rs.next()) {
+                return rs.getInt(1);
+            } else {
+                return 0;
+            }
+        } catch (SQLException e) {
+            logger.error("Unable to get the row count.", e);
             return 0;
         }
     }
@@ -197,8 +209,14 @@ public class DatabaseManager {
      *
      * @param databaseName The database to be created.
      */
-    public void createDatabase(String databaseName) throws SQLException {
-        con.createStatement().executeUpdate("create database if not exists " + databaseName);
+    public void createDatabase(String databaseName) {
+        try {
+            Statement stmt = con.createStatement();
+            stmt.executeUpdate("create database if not exists " + databaseName);
+            stmt.close();
+        } catch (SQLException e) {
+            logger.error("Unable to create database: create database if not exists {}", databaseName);
+        }
     }
 
     /**
@@ -207,7 +225,7 @@ public class DatabaseManager {
      * @param tableName The table name.
      * @return True if the table exists.
      */
-    public boolean existTable(String tableName) throws SQLException {
+    public boolean existTable(String tableName) {
         List<String> tableLists = getCurrentTables(DatabasePreferences.getInstance().getCurrentDatabase());
         return tableLists.contains(tableName);
     }
@@ -218,18 +236,32 @@ public class DatabaseManager {
      * @param database The database name.
      * @return A list which contains all table names in the database.
      */
-    public List<String> getCurrentTables(String database) throws SQLException {
+    public List<String> getCurrentTables(String database) {
         List<String> tableLists = new ArrayList<String>();
         useDatabase(database);
         DatabaseMetaData databaseMetaData;
-        databaseMetaData = con.getMetaData();
-        ResultSet rs;
-        rs = databaseMetaData.getTables(database, null, null, new String[]{"TABLE"});
-        while (rs.next()) {
-            // get table name
-            tableLists.add(rs.getString(3));
+        try {
+            databaseMetaData = con.getMetaData();
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(REDApplication.getInstance(), "Statement has not been created. Could not get meta data from database.", "Oops, " +
+                    "something wrong...", JOptionPane.ERROR_MESSAGE, IconLoader.ICON_ERROR);
+            logger.error("Statement has not been created. Could not get meta data from database.", e);
+            return new ArrayList<String>();
         }
-        return tableLists;
+        ResultSet rs;
+        try {
+            rs = databaseMetaData.getTables(database, null, null, new String[]{"TABLE"});
+            while (rs.next()) {
+                // get table name
+                tableLists.add(rs.getString(3));
+            }
+            return tableLists;
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(REDApplication.getInstance(), "Database " + database + " does not exist. Please have a check in your database.", "Oops, " +
+                    "something wrong...", JOptionPane.ERROR_MESSAGE, IconLoader.ICON_ERROR);
+            logger.error("Database " + database + " does not exist. Please have a check in your database.", e);
+            return new ArrayList<String>();
+        }
     }
 
     /**
@@ -237,10 +269,14 @@ public class DatabaseManager {
      *
      * @param tableName Table name to be deleted.
      */
-    public void deleteTable(String tableName) throws SQLException {
-        Statement stmt = con.createStatement();
-        stmt.executeUpdate("drop table if exists " + tableName);
-        stmt.close();
+    public void deleteTable(String tableName) {
+        try {
+            Statement stmt = con.createStatement();
+            stmt.executeUpdate("drop table if exists " + tableName);
+            stmt.close();
+        } catch (SQLException e) {
+            logger.error("Error drop table: " + tableName, e);
+        }
     }
 
     /**
@@ -252,16 +288,23 @@ public class DatabaseManager {
      * @param database   Database which is currently used.
      * @param sampleName The sample to be deleted.
      */
-    public void deleteTableAndFilters(String database, String sampleName) throws SQLException {
-        List<String> tableLists = getCurrentTables(database);
-        // Prevent from deleting BJ22N sample, but actually we want to delete BJ22 sample.
-        Statement stmt = con.createStatement();
-        for (String table : tableLists) {
-            if (table.startsWith(sampleName + "_")) {
-                stmt.executeUpdate("drop table if exists " + table);
+    public void deleteTableAndFilters(String database, String sampleName) {
+        logger.info("Delete table and filters: {}, {}", database, sampleName);
+        try {
+            List<String> tableLists = getCurrentTables(database);
+            // Prevent from deleting BJ22N sample, but actually we want to delete BJ22 sample.
+            Statement stmt = con.createStatement();
+            logger.info(tableLists.toString());
+            for (String table : tableLists) {
+                if (table.startsWith(sampleName + "_")) {
+                    logger.info("drop table if exists " + table);
+                    stmt.executeUpdate("drop table if exists " + table);
+                }
             }
+            stmt.close();
+        } catch (SQLException e) {
+            logger.error("Unable to drop tables and filters for sample " + sampleName, e);
         }
-        stmt.close();
     }
 
     /**
@@ -273,7 +316,7 @@ public class DatabaseManager {
      * @param sampleName The sample which should be queried.
      * @return A list contains all tables relative to this sample.
      */
-    public List<String> queryTablesForSample(String sampleName) throws SQLException {
+    public List<String> queryTablesForSample(String sampleName) {
         List<String> tableLists = getCurrentTables(DatabasePreferences.getInstance().getCurrentDatabase());
         List<String> neededTables = new ArrayList<String>();
         for (String table : tableLists) {
@@ -289,10 +332,14 @@ public class DatabaseManager {
      *
      * @param databaseName The database to be changed.
      */
-    public void useDatabase(String databaseName) throws SQLException {
-        Statement stmt = con.createStatement();
-        stmt.executeUpdate("use " + databaseName);
-        stmt.close();
+    public void useDatabase(String databaseName) {
+        try {
+            Statement stmt = con.createStatement();
+            stmt.executeUpdate("use " + databaseName);
+            stmt.close();
+        } catch (SQLException e) {
+            logger.error("Unable to use database " + databaseName, e);
+        }
     }
 
     /**
@@ -311,12 +358,15 @@ public class DatabaseManager {
      * Provide a common method to execute SQL clause. Some SQL clauses can't use specific methods provided by DatabaseManager table creation.
      *
      * @param sql The SQL clause.
-     * @throws SQLException If the SQL clause is wrong then throw this exception.
      */
-    public void executeSQL(String sql) throws SQLException {
-        Statement stmt = con.createStatement();
-        stmt.executeUpdate(sql);
-        stmt.close();
+    public void executeSQL(String sql) {
+        try {
+            Statement stmt = con.createStatement();
+            stmt.executeUpdate(sql);
+            stmt.close();
+        } catch (SQLException e) {
+            logger.error("Error execute the SQL clause: " + sql, e);
+        }
     }
 
     /**
@@ -325,12 +375,16 @@ public class DatabaseManager {
      *
      * @param queryClause The query clause.
      * @return A result set contains all query result.
-     * @throws SQLException If there is any SQL syntax error, then throw this exception.
      */
-    public ResultSet query(String queryClause) throws SQLException {
-        ResultSet rs;
-        Statement stmt = con.createStatement();
-        rs = stmt.executeQuery(queryClause);
+    public ResultSet query(String queryClause) {
+        ResultSet rs = null;
+        try {
+            Statement stmt = con.createStatement();
+            rs = stmt.executeQuery(queryClause);
+            stmt.close();
+        } catch (SQLException e) {
+            logger.error("Error execute the SQL clause: " + queryClause, e);
+        }
         return rs;
     }
 
@@ -346,8 +400,8 @@ public class DatabaseManager {
      *                      selection. The values will be bound as Strings.
      * @return A ResultSet object, which is positioned before the first entry.
      */
-    public ResultSet query(String table, String[] columns, String selection, String[] selectionArgs) throws SQLException {
-        ResultSet rs;
+    public ResultSet query(String table, String[] columns, String selection, String[] selectionArgs) {
+        ResultSet rs = null;
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append("select ");
         if (columns == null || columns.length == 0 || columns[0].equals("*")) {
@@ -359,16 +413,20 @@ public class DatabaseManager {
             }
         }
         stringBuilder.append(" from ").append(table);
-        if (selection == null || selectionArgs == null || selectionArgs.length == 0) {
-            Statement stmt = con.createStatement();
-            rs = stmt.executeQuery(stringBuilder.toString());
-        } else {
-            stringBuilder.append(" WHERE ").append(selection);
-            PreparedStatement statement = con.prepareStatement(stringBuilder.toString());
-            for (int i = 1, len = selectionArgs.length; i <= len; i++) {
-                statement.setString(i, selectionArgs[i - 1]);
+        try {
+            if (selection == null || selectionArgs == null || selectionArgs.length == 0) {
+                Statement stmt = con.createStatement();
+                rs = stmt.executeQuery(stringBuilder.toString());
+            } else {
+                stringBuilder.append(" WHERE ").append(selection);
+                PreparedStatement statement = con.prepareStatement(stringBuilder.toString());
+                for (int i = 1, len = selectionArgs.length; i <= len; i++) {
+                    statement.setString(i, selectionArgs[i - 1]);
+                }
+                rs = statement.executeQuery(stringBuilder.toString());
             }
-            rs = statement.executeQuery(stringBuilder.toString());
+        } catch (SQLException e) {
+            logger.error("Error execute SQL clause: " + stringBuilder.toString(), e);
         }
         return rs;
     }
@@ -376,14 +434,13 @@ public class DatabaseManager {
     /**
      * Close database.
      */
-    public void closeDatabase() throws SQLException {
+    public void closeDatabase() {
         try {
             if (con != null && !con.isClosed()) {
                 con.close();
             }
         } catch (SQLException e) {
             logger.error("Unable to close the connection, please have a check.", e);
-            throw new SQLException(e);
         }
     }
 
@@ -392,7 +449,7 @@ public class DatabaseManager {
      *
      * @param resultTable The table to distinct.
      */
-    public void distinctTable(String resultTable) throws SQLException {
+    public void distinctTable(String resultTable) {
         String tempTable = RandomStringGenerator.createRandomString(10);
         executeSQL("create temporary table " + tempTable + " select distinct * from " + resultTable);
         executeSQL("truncate table " + resultTable);

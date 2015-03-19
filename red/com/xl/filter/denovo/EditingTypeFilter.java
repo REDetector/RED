@@ -54,10 +54,14 @@ public class EditingTypeFilter {
      * @param ref              The reference base
      * @param alt              The alternative base
      */
-    public void executeEditingTypeFilter(String editingTypeTable, String previousTable, String ref, String alt) throws SQLException {
+    public void executeEditingTypeFilter(String editingTypeTable, String previousTable, String ref, String alt) {
         logger.info("Start executing EditingTypeFilter... {}", Timer.getCurrentTime());
         String sqlClause = "insert into " + editingTypeTable + " select * from " + previousTable + " WHERE REF='" + ref + "' AND ALT='" + alt + "' AND GT!='0/0'";
-        databaseManager.insert(sqlClause);
+        try {
+            databaseManager.insert(sqlClause);
+        } catch (SQLException e) {
+            logger.error("Error execute SQL clause: " + sqlClause);
+        }
         logger.info("End executing EditingTypeFilter... {}", Timer.getCurrentTime());
     }
 

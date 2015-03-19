@@ -23,8 +23,6 @@ import com.xl.utils.Timer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.sql.SQLException;
-
 /**
  * The Class DNARNAFilter is a rule-based filter. RNA-seq variants where its counterparts in genomic DNA is not reference homozygote (e.g., AA) would be
  * excluded if DNA sequencing data is available.
@@ -53,7 +51,7 @@ public class DNARNAFilter {
      * @param dnaVcfTable       The DNA VCF table
      * @param previousTable     The previous table
      */
-    public void executeDnaRnaFilter(String dnaRnaResultTable, String dnaVcfTable, String previousTable) throws SQLException {
+    public void executeDnaRnaFilter(String dnaRnaResultTable, String dnaVcfTable, String previousTable) {
         logger.info("Start executing DNARNAFilter... {}", Timer.getCurrentTime());
         databaseManager.executeSQL("insert into " + dnaRnaResultTable + " select * from " + previousTable + " where " +
                 "exists (select chrom from " + dnaVcfTable + " where (" + dnaVcfTable + ".chrom=" + previousTable +

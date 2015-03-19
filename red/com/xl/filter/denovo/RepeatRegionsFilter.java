@@ -30,7 +30,6 @@ import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.sql.SQLException;
 
 /**
  * The Class RepeatRegionsFilter is a rule-based filter. Variants that were within repeat regions were excluded. However, sites in SINE/Alu regions were
@@ -62,7 +61,7 @@ public class RepeatRegionsFilter {
      * @param repeatTable The repeat file table name, it is constant.
      * @return true if repeat data exists in the database.
      */
-    public boolean hasEstablishedRepeatTable(String repeatTable) throws SQLException {
+    public boolean hasEstablishedRepeatTable(String repeatTable) {
         return databaseManager.getRowCount(repeatTable) > 0;
     }
 
@@ -72,10 +71,10 @@ public class RepeatRegionsFilter {
      * @param repeatTable The repeat file table name, it is constant.
      * @param repeatPath  The repeat file path.
      */
-    public void loadRepeatTable(String repeatTable, String repeatPath) throws SQLException, DataLoadException {
+    public void loadRepeatTable(String repeatTable, String repeatPath) throws DataLoadException {
         logger.info("Start loading RepeatTable... {}", Timer.getCurrentTime());
         progressBar.addProgressListener(new ProgressDialog("Import repeat regions file into database..."));
-        progressBar.progressUpdated("Start loading repeated region data from " + repeatPath + " to " + repeatTable, 0, 0);
+        progressBar.progressUpdated("Start loading repeated region data from " + repeatPath + " to " + repeatTable + " table", 0, 0);
         BufferedReader rin = null;
         try {
             if (!hasEstablishedRepeatTable(repeatTable)) {
@@ -126,7 +125,7 @@ public class RepeatRegionsFilter {
      * @param aluResultTable    The Alu result table
      * @param previousTable     The previous table
      */
-    public void executeRepeatFilter(String repeatTable, String repeatResultTable, String aluResultTable, String previousTable) throws SQLException {
+    public void executeRepeatFilter(String repeatTable, String repeatResultTable, String aluResultTable, String previousTable) {
         logger.info("Start executing RepeatRegionsFilter... {}", Timer.getCurrentTime());
         databaseManager.executeSQL("insert into " + repeatResultTable + " select * from " + previousTable + " where not exists (select * from " +
                 repeatTable + " where (" + repeatTable + ".chrom= " + previousTable + ".chrom and  " + repeatTable + ".begin<=" + previousTable + ".pos and " +

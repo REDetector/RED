@@ -25,7 +25,6 @@ import org.slf4j.LoggerFactory;
 import javax.swing.event.TreeModelListener;
 import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreePath;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -57,29 +56,21 @@ public class DatabaseTreeModel implements TreeModel {
         modes = new String[]{DatabaseManager.DENOVO_DATABASE_NAME, DatabaseManager.DNA_RNA_DATABASE_NAME};
         denovoTableNodes = new ArrayList<TableNode>();
         List<String> denovoTables;
-        try {
-            denovoTables = DatabaseManager.getInstance().getCurrentTables(DatabaseManager.DENOVO_DATABASE_NAME);
-            for (String denovoTable : denovoTables) {
-                // We only detect RNA VCF file and exclude all filters relative to this sample.
-                if (denovoTable.contains(DatabaseManager.RNA_VCF_RESULT_TABLE_NAME) && !denovoTable.contains(DatabaseManager.FILTER)) {
-                    denovoTableNodes.add(new TableNode(denovoTable));
-                }
+        denovoTables = DatabaseManager.getInstance().getCurrentTables(DatabaseManager.DENOVO_DATABASE_NAME);
+        for (String denovoTable : denovoTables) {
+            // We only detect RNA VCF file and exclude all filters relative to this sample.
+            if (denovoTable.contains(DatabaseManager.RNA_VCF_RESULT_TABLE_NAME) && !denovoTable.contains(DatabaseManager.FILTER)) {
+                denovoTableNodes.add(new TableNode(denovoTable));
             }
-        } catch (SQLException e) {
-            logger.error("Could not get tables from database '" + DatabaseManager.DENOVO_DATABASE_NAME + "'", e);
         }
 
-        try {
-            dnarnaTableNodes = new ArrayList<TableNode>();
-            List<String> dnarnaTables = DatabaseManager.getInstance().getCurrentTables(DatabaseManager.DNA_RNA_DATABASE_NAME);
-            for (String dnarnaTable : dnarnaTables) {
-                // We only detect RNA VCF file and exclude all filters relative to this sample.
-                if (dnarnaTable.contains(DatabaseManager.RNA_VCF_RESULT_TABLE_NAME) && !dnarnaTable.contains(DatabaseManager.FILTER)) {
-                    dnarnaTableNodes.add(new TableNode(dnarnaTable));
-                }
+        dnarnaTableNodes = new ArrayList<TableNode>();
+        List<String> dnarnaTables = DatabaseManager.getInstance().getCurrentTables(DatabaseManager.DNA_RNA_DATABASE_NAME);
+        for (String dnarnaTable : dnarnaTables) {
+            // We only detect RNA VCF file and exclude all filters relative to this sample.
+            if (dnarnaTable.contains(DatabaseManager.RNA_VCF_RESULT_TABLE_NAME) && !dnarnaTable.contains(DatabaseManager.FILTER)) {
+                dnarnaTableNodes.add(new TableNode(dnarnaTable));
             }
-        } catch (SQLException e) {
-            logger.error("Could not get tables from database '" + DatabaseManager.DNA_RNA_DATABASE_NAME + "'", e);
         }
     }
 

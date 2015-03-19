@@ -26,8 +26,6 @@ import com.xl.utils.Timer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.sql.SQLException;
-
 /**
  * The Class SpliceJunctionFilter is a rule-based filter. Variants that were within+/-k bp (e.g., k = 2) of the splice junction, which were supposed to be
  * unreliable, were excluded based on the gene annotation file.
@@ -58,7 +56,7 @@ public class SpliceJunctionFilter {
      * @param spliceJunctionTable The gene annotation file table name, it is constant.
      * @return true if gene annotation data exists in the database.
      */
-    public boolean hasEstablishedSpliceJunctionTable(String spliceJunctionTable) throws SQLException {
+    public boolean hasEstablishedSpliceJunctionTable(String spliceJunctionTable) {
         return databaseManager.getRowCount(spliceJunctionTable) > 0;
     }
 
@@ -68,13 +66,13 @@ public class SpliceJunctionFilter {
      * @param spliceJunctionTable The gene annotation file table name, it is constant.
      * @param spliceJunctionPath  The gene annotation file path.
      */
-    public void loadSpliceJunctionTable(String spliceJunctionTable, String spliceJunctionPath) throws SQLException, DataLoadException {
+    public void loadSpliceJunctionTable(String spliceJunctionTable, String spliceJunctionPath) throws DataLoadException {
         if (spliceJunctionPath == null || spliceJunctionPath.length() == 0) {
             throw new DataLoadException("Error load file.");
         }
         logger.info("Start loading SpliceJunctionTable... {}", Timer.getCurrentTime());
         progressBar.addProgressListener(new ProgressDialog("Import gene annotation file into database..."));
-        progressBar.progressUpdated("Start loading gene annotation file from " + spliceJunctionPath + " to " + spliceJunctionTable, 0, 0);
+        progressBar.progressUpdated("Start loading gene annotation file from " + spliceJunctionPath + " to " + spliceJunctionTable + " table", 0, 0);
         if (!hasEstablishedSpliceJunctionTable(spliceJunctionTable)) {
             progressBar.progressUpdated("Importing gene annotation file from " + spliceJunctionPath + " to " + spliceJunctionTable + " table", 0, 0);
             databaseManager.executeSQL("load data local infile '" + spliceJunctionPath + "' into table " + spliceJunctionTable + " fields terminated" +
@@ -94,7 +92,7 @@ public class SpliceJunctionFilter {
      * @param previousTable             The previous table
      * @param splicejunction            The threshold of splice junction
      */
-    public void executeSpliceJunctionFilter(String spliceJunctionTable, String spliceJunctionResultTable, String previousTable, int splicejunction) throws SQLException {
+    public void executeSpliceJunctionFilter(String spliceJunctionTable, String spliceJunctionResultTable, String previousTable, int splicejunction) {
         logger.info("Start executing SpliceJunctionFilter... {}", Timer.getCurrentTime());
         databaseManager.executeSQL("insert into " + spliceJunctionResultTable + " select * from " + previousTable + " where not exists (select chrom from "
                 + spliceJunctionTable + " where (" + spliceJunctionTable + ".type='CDS' and " + spliceJunctionTable + ".chrom=" + previousTable + ".chrom" +

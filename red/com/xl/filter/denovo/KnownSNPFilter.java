@@ -30,7 +30,6 @@ import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.sql.SQLException;
 
 /**
  * The Class KnownSNPFilter is a rule-based filter that will filter out the site which was known SNP in DNA level for eliminating germline variants.
@@ -61,7 +60,7 @@ public class KnownSNPFilter {
      * @param dbSnpTable The dbSNP database table name, it is constant.
      * @return true if dbSNP data exists in the database.
      */
-    public boolean hasEstablishDbSNPTable(String dbSnpTable) throws SQLException {
+    public boolean hasEstablishDbSNPTable(String dbSnpTable) {
         return databaseManager.getRowCount(dbSnpTable) > 0;
     }
 
@@ -72,13 +71,13 @@ public class KnownSNPFilter {
      * @param dbSNPTable The dbSNP database table name, it is constant.
      * @param dbSNPPath  The dbSNP file path.
      */
-    public void loadDbSNPTable(String dbSNPTable, String dbSNPPath) throws SQLException, DataLoadException {
+    public void loadDbSNPTable(String dbSNPTable, String dbSNPPath) throws DataLoadException {
         logger.info("Start loading dbSNPTable... {}", Timer.getCurrentTime());
         progressBar.addProgressListener(new ProgressDialog("Import dbSNP file into database..."));
         int count = 0;
         BufferedReader rin = null;
         try {
-            progressBar.progressUpdated("Start loading dbSNP data from " + dbSNPPath + " to " + dbSNPTable, 0, 0);
+            progressBar.progressUpdated("Start loading dbSNP data from " + dbSNPPath + " to " + dbSNPTable + " table", 0, 0);
             if (!hasEstablishDbSNPTable(dbSNPTable)) {
                 rin = new BufferedReader(new InputStreamReader(new FileInputStream(dbSNPPath)));
                 String line;
@@ -118,7 +117,7 @@ public class KnownSNPFilter {
      * @param dbSnpResultTable The result table
      * @param previousTable    The previous table
      */
-    public void executeDbSNPFilter(String dbSnpTable, String dbSnpResultTable, String previousTable) throws SQLException {
+    public void executeDbSNPFilter(String dbSnpTable, String dbSnpResultTable, String previousTable) {
         logger.info("Start executing KnownSNPFilter...... {}", Timer.getCurrentTime());
         databaseManager.executeSQL("insert into " + dbSnpResultTable + " select * from " + previousTable + " where not exists (select chrom from " +
                 dbSnpTable + " where (" + dbSnpTable + ".chrom=" + previousTable + ".chrom and " + dbSnpTable + ".pos=" + previousTable + ".pos))");

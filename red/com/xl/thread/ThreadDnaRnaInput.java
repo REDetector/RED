@@ -31,12 +31,12 @@ import com.xl.filter.denovo.SpliceJunctionFilter;
 import com.xl.main.REDApplication;
 import com.xl.parsers.dataparsers.DNAVCFParser;
 import com.xl.parsers.dataparsers.RNAVCFParser;
+import com.xl.preferences.DatabasePreferences;
 import com.xl.preferences.LocationPreferences;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
-import java.sql.SQLException;
 
 /**
  * Created by Xing Li on 2014/7/22.
@@ -48,8 +48,10 @@ public class ThreadDnaRnaInput implements Runnable {
 
     @Override
     public void run() {
+        logger.info("DNA-RNA mode Input Start.");
         DatabaseManager manager = DatabaseManager.getInstance();
         LocationPreferences locationPreferences = LocationPreferences.getInstance();
+        DatabasePreferences.getInstance().setCurrentDatabase(DatabaseManager.DNA_RNA_DATABASE_NAME);
         manager.setAutoCommit(true);
         try {
             manager.createDatabase(DatabaseManager.DNA_RNA_DATABASE_NAME);
@@ -90,9 +92,6 @@ public class ThreadDnaRnaInput implements Runnable {
             FisherExactTestFilter pv = new FisherExactTestFilter(manager);
             TableCreator.createDARNEDTable(DatabaseManager.DARNED_DATABASE_TABLE_NAME);
             pv.loadDarnedTable(DatabaseManager.DARNED_DATABASE_TABLE_NAME, locationPreferences.getDarnedFile());
-        } catch (SQLException e) {
-            logger.error("Unable to input all data for DNA-RNA mode.", e);
-            return;
         } catch (REDException e) {
             logger.error("", e);
         } catch (DataLoadException e) {

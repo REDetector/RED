@@ -187,11 +187,8 @@ public class DatabaseSelector extends JDialog implements ListSelectionListener, 
         } else if (ae.getActionCommand().equals(MenuUtils.DELETE_BUTTON)) {
             TableNode lastComponent = (TableNode) databaseTree.getSelectionPath().getLastPathComponent();
             String parentNode = databaseTree.getSelectionPath().getParentPath().getLastPathComponent().toString();
-            try {
-                DatabaseManager.getInstance().deleteTableAndFilters(parentNode, lastComponent.getSampleName());
-            } catch (SQLException e) {
-                logger.error("Something wrong when deleting the table and all relative filters at '" + lastComponent.getSampleName() + "'", e);
-            }
+            logger.info("Deleting the table '{}' and relative filters...", lastComponent.getTableName());
+            DatabaseManager.getInstance().deleteTableAndFilters(parentNode, lastComponent.getSampleName());
             dispose();
             new DatabaseSelector(application);
         } else if (ae.getActionCommand().equals(MenuUtils.CANCEL_BUTTON)) {
@@ -209,7 +206,6 @@ public class DatabaseSelector extends JDialog implements ListSelectionListener, 
             okButton.setEnabled(true);
         }
     }
-
 
     @Override
     public void valueChanged(TreeSelectionEvent e) {

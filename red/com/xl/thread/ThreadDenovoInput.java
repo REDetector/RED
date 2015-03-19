@@ -29,12 +29,12 @@ import com.xl.filter.denovo.RepeatRegionsFilter;
 import com.xl.filter.denovo.SpliceJunctionFilter;
 import com.xl.main.REDApplication;
 import com.xl.parsers.dataparsers.RNAVCFParser;
+import com.xl.preferences.DatabasePreferences;
 import com.xl.preferences.LocationPreferences;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
-import java.sql.SQLException;
 
 /**
  * Created by Xing Li on 2014/7/22.
@@ -48,6 +48,7 @@ public class ThreadDenovoInput implements Runnable {
     public void run() {
         DatabaseManager manager = DatabaseManager.getInstance();
         LocationPreferences locationPreferences = LocationPreferences.getInstance();
+        DatabasePreferences.getInstance().setCurrentDatabase(DatabaseManager.DENOVO_DATABASE_NAME);
         manager.setAutoCommit(true);
         try {
             manager.createDatabase(DatabaseManager.DENOVO_DATABASE_NAME);
@@ -71,9 +72,6 @@ public class ThreadDenovoInput implements Runnable {
             FisherExactTestFilter fisherExactTestFilter = new FisherExactTestFilter(manager);
             TableCreator.createDARNEDTable(DatabaseManager.DARNED_DATABASE_TABLE_NAME);
             fisherExactTestFilter.loadDarnedTable(DatabaseManager.DARNED_DATABASE_TABLE_NAME, locationPreferences.getDarnedFile());
-        } catch (SQLException e) {
-            logger.error("Unable to input all data for denovo mode.", e);
-            return;
         } catch (DataLoadException e) {
             JOptionPane.showMessageDialog(REDApplication.getInstance(), "Sorry, fail to import the data to database. You may select one of wrong " +
                     "path for the relative data.", "Imported Failed", JOptionPane.ERROR_MESSAGE);
