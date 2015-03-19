@@ -20,6 +20,8 @@ package com.xl.parsers.dataparsers;
 
 
 import com.xl.database.DatabaseManager;
+import com.xl.display.dialog.ProgressDialog;
+import com.xl.display.dialog.REDProgressBar;
 import com.xl.exception.DataLoadException;
 import com.xl.utils.Indexer;
 import com.xl.utils.Timer;
@@ -30,7 +32,6 @@ import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.sql.SQLException;
 import java.util.Arrays;
 
 /**
@@ -61,6 +62,11 @@ public class DNAVCFParser {
     private DatabaseManager databaseManager;
 
     /**
+     * The progress bar for loading VCF information from a VCF file.
+     */
+    private REDProgressBar progressBar = REDProgressBar.getInstance();
+
+    /**
      * Initiate a new DNA VCF parser.
      */
     public DNAVCFParser() {
@@ -81,19 +87,22 @@ public class DNAVCFParser {
      *
      * @param vcfPath the vcf file path.
      */
-    public void parseVCFFile(String vcfPath) throws SQLException, DataLoadException {
+    public void parseVCFFile(String vcfPath) throws DataLoadException {
         logger.info("Start Parsing DNA VCF file... {}", Timer.getCurrentTime());
+        progressBar.addProgressListener(new ProgressDialog("Import DNA VCF file into database..."));
+        progressBar.progressUpdated("Start loading DNA VCF data from " + vcfPath + " to " + DatabaseManager.DNA_VCF_RESULT_TABLE_NAME, 0, 0);
         BufferedReader bufferedReader = null;
-        StringBuilder sqlClause;
+        StringBuilder sqlClause = null;
         try {
             if (vcfPath == null || vcfPath.length() == 0) {
-                throw new DataLoadException("RNA VCF file has not been found, please have a check.");
+                throw new DataLoadException("DNA VCF file has not been found, please have a check.");
             }
             bufferedReader = new BufferedReader(new InputStreamReader(new FileInputStream(vcfPath)));
             String line;
             int columnLength = 0;
             String[] columnStrings = new String[0];
             StringBuilder tableBuilders = new StringBuilder();
+            String[] tableName = null;
             databaseManager.setAutoCommit(false);
             int lineCount = 0;
             boolean hasEstablishTable = false;
@@ -130,8 +139,8 @@ public class DNAVCFParser {
                     if (formatLength != dataColumnLength) {
                         continue;
                     }
-                    String[] tableName = new String[sampleNames.length];
                     if (!hasEstablishTable) {
+                        tableName = new String[sampleNames.length];
                         for (String formatColumn : formatColumns) {
                             tableBuilders.append(formatColumn).append(" text,");
                         }
@@ -195,6 +204,7 @@ public class DNAVCFParser {
                     databaseManager.executeSQL(sqlClause.toString());
                     if (++lineCount % DatabaseManager.COMMIT_COUNTS_PER_ONCE == 0) {
                         databaseManager.commit();
+                        progressBar.progressUpdated("Importing " + lineCount + " lines from " + vcfPath + " to " + DatabaseManager.DNA_VCF_RESULT_TABLE_NAME, 0, 0);
                     }
                 }
             }
@@ -211,6 +221,7 @@ public class DNAVCFParser {
                 }
             }
         }
+        progressBar.progressComplete("dna_vcf_loaded", null);
         logger.info("End Parsing DNA VCF file... {}", Timer.getCurrentTime());
     }
 
