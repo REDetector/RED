@@ -119,14 +119,6 @@ public class DatabasePreferences implements DatabaseListener {
         this.databaseUser = databaseUser;
     }
 
-    public String getDatabaseTableBuilder() {
-        return databaseTableBuilder;
-    }
-
-    public void setDatabaseTableBuilder(String databaseTableBuilder) {
-        this.databaseTableBuilder = databaseTableBuilder;
-    }
-
     public String getDatabasePasswd() {
         return databasePasswd;
     }
@@ -165,7 +157,6 @@ public class DatabasePreferences implements DatabaseListener {
         setDatabaseHost(properties.getProperty(DATABASE_HOST));
         setDatabasePort(properties.getProperty(DATABASE_PORT));
         setDatabaseUser(properties.getProperty(DATABASE_USER));
-        setDatabaseTableBuilder(properties.getProperty(DATABASE_TABLE_BUILDER));
     }
 
     @Override
