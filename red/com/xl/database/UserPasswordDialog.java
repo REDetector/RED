@@ -197,6 +197,7 @@ public class UserPasswordDialog extends JDialog implements ActionListener {
                     }
                     new DatabaseSelector(application);
                     DatabaseManager.getInstance().databaseConnected();
+                    logger.info("Database has been connected.");
                 }
             } catch (ClassNotFoundException e1) {
                 logger.warn("The driver has been integrated into the software and should not be found. If the ClassNotFoundException happens again, " +
