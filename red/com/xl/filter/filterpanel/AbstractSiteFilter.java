@@ -76,7 +76,7 @@ abstract class AbstractSiteFilter implements Runnable, Cancellable {
         this.dataStore = dataStore;
         databaseManager = DatabaseManager.getInstance();
         parentList = dataStore.siteSet().getActiveList();
-        currentSample = NameRetriever.getSampleName(dataStore.siteSet().getFilterName());
+        currentSample = NameRetriever.getSampleName(dataStore.siteSet().getTableName());
     }
 
     public void cancel() {
