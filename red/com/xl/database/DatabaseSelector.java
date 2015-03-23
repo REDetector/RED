@@ -171,6 +171,7 @@ public class DatabaseSelector extends JDialog implements ListSelectionListener, 
                 String parentNode = databaseTree.getSelectionPath().getParentPath().getLastPathComponent().toString();
                 DatabaseManager.getInstance().databaseChanged(parentNode, node.getSampleName());
                 SiteSet siteSet = Query.getSiteSetFromDatabase(node.getSampleName());
+                selectedDataSet = (DataSet) dataSetList.getSelectedValue();
                 siteSet.setDataStore(selectedDataSet);
                 selectedDataSet.setSiteSet(siteSet);
                 dispose();
@@ -203,7 +204,7 @@ public class DatabaseSelector extends JDialog implements ListSelectionListener, 
                 dataSetList.getSelectedValue() instanceof DataSet) {
             okButton.setEnabled(true);
         } else {
-            okButton.setEnabled(true);
+            okButton.setEnabled(false);
         }
     }
 
