@@ -55,7 +55,7 @@ public class SiteListViewer extends JDialog implements MouseListener, ActionList
      * @param application the application
      */
     public SiteListViewer(SiteList list, REDApplication application) {
-        super(application, list.getListName() + " (" + list.getAllSiteLists().length + " sites)");
+        super(application, list.getListName() + " (" + list.getAllSites().length + " sites)");
 
         Site[] sites = list.getAllSites();
 
@@ -82,7 +82,7 @@ public class SiteListViewer extends JDialog implements MouseListener, ActionList
 
         TableSorter sorter = new TableSorter(new SiteTableModel(rowData, headers, classes));
         table = new JTable(sorter);
-//		table.setDefaultRenderer(Double.class, new SmallDoubleCellRenderer());
+        //		table.setDefaultRenderer(Double.class, new SmallDoubleCellRenderer());
         table.addMouseListener(this);
         sorter.setTableHeader(table.getTableHeader());
 
@@ -134,7 +134,7 @@ public class SiteListViewer extends JDialog implements MouseListener, ActionList
 
         TableSorter sorter = new TableSorter(new SiteTableModel(rowData, headers, classes));
         table = new JTable(sorter);
-//		table.setDefaultRenderer(Double.class, new SmallDoubleCellRenderer());
+        //		table.setDefaultRenderer(Double.class, new SmallDoubleCellRenderer());
         table.addMouseListener(this);
         sorter.setTableHeader(table.getTableHeader());
 
