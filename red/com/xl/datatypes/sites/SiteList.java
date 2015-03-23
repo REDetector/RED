@@ -19,6 +19,8 @@
 package com.xl.datatypes.sites;
 
 import com.xl.utils.NameRetriever;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Collections;
 import java.util.Enumeration;
@@ -29,6 +31,7 @@ import java.util.Vector;
  * the filtration result. It is like that a leaf has been grown out with the tree root or associated tree branch.
  */
 public class SiteList {
+    private final Logger logger = LoggerFactory.getLogger(SiteList.class);
 
     // This vector stores all of the sites currently in the list and keeps them sorted for convenience.
     /**
@@ -371,7 +374,7 @@ public class SiteList {
     }
 
     public String toWrite() {
-        return listName + "\t" + filterName + "\t" + tableName + "\t" + description.replaceAll("[\\t]", " ").replaceAll("[\\r\\n]",
+        return listName + "\t" + tableName + "\t" + description.replaceAll("[\\t]", " ").replaceAll("[\\r\\n]",
                 "`") + "\t" + comments.replaceAll("[\\t]", " ").replaceAll("[\\r\\n]", "`");
     }
 
