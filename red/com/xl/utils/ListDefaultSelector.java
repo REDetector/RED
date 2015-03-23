@@ -20,6 +20,8 @@ package com.xl.utils;
 
 import com.xl.datatypes.DataStore;
 import com.xl.main.REDApplication;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
 
@@ -29,6 +31,7 @@ import javax.swing.*;
  * Select the default data store in a JList.
  */
 public class ListDefaultSelector {
+    private static final Logger logger = LoggerFactory.getLogger(ListDefaultSelector.class);
 
     public static DataStore selectDefaultStore(JList list) {
         DataStore[] stores = REDApplication.getInstance().drawnDataStores();

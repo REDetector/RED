@@ -59,7 +59,7 @@ public class NameRetriever {
             if (ref.length() != 1 || alt.length() != 1) {
                 return "Editing Type Filter";
             } else {
-                return "Focus on " + sections[length - 2] + " to " + sections[length - 1];
+                return "Focus on " + sections[length - 2].toUpperCase() + " to " + sections[length - 1].toUpperCase();
             }
         } else if (currentTable.equals(DatabaseManager.PVALUE_FILTER_RESULT_TABLE_NAME)) {
             return "FET Filter";
@@ -106,7 +106,6 @@ public class NameRetriever {
      * @return The sample name.
      */
     public static String getSampleName(String tableName) {
-        logger.info("Table Name: {}", tableName);
         if (tableName == null) {
             return null;
         }
