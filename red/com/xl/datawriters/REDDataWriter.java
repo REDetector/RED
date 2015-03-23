@@ -321,7 +321,7 @@ public class REDDataWriter implements Runnable, Cancellable {
      * @param siteSet the site set
      */
     private void printSiteSetTree(PrintStream p, SiteSet siteSet) throws IOException {
-        logger.info("Print the site set tree for a sample: {}" + siteSet.getListName());
+        logger.info("Print the site set tree for a sample: {}" , siteSet.getListName());
         // We need the saved string to be linear so we replace the line breaks with ` (which we've replaced with ' in the comment. We put back the line
         // breaks when we load the comments back.
 
@@ -363,7 +363,6 @@ public class REDDataWriter implements Runnable, Cancellable {
             Site[] sites = lists[i].getAllSites();
             int siteLength = sites.length;
             p.println(getListDepth(lists[i]) + "\t" + siteLength + "\t" + lists[i].toWrite());
-
             for (int j = 0; j < siteLength; j++) {
                 if (j % 1000 == 0) {
                     if (cancel) {
