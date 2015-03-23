@@ -29,12 +29,12 @@ import com.xl.datatypes.sequence.Location;
 import com.xl.datatypes.sites.Site;
 import com.xl.datatypes.sites.SiteList;
 import com.xl.datatypes.sites.SiteSet;
+import com.xl.display.dialog.CrashReporter;
 import com.xl.display.dialog.ProgressDialog;
 import com.xl.exception.REDException;
 import com.xl.interfaces.ProgressListener;
 import com.xl.main.Global;
 import com.xl.main.REDApplication;
-import com.xl.display.dialog.CrashReporter;
 import com.xl.net.genomes.GenomeDownloader;
 import com.xl.parsers.annotationparsers.IGVGenomeParser;
 import com.xl.preferences.DisplayPreferences;
@@ -534,9 +534,9 @@ public class REDParser implements Runnable, ProgressListener {
             // The fields should be linkage, name, value name, description
             int siteLength = Integer.parseInt(sections[1]);
 
-            lists[i] = new SiteList(linkage[Integer.parseInt(sections[0]) - 1], sections[2], sections[3], sections[4]);
-            if (sections.length > 5) {
-                lists[i].setComments(sections[5]);
+            lists[i] = new SiteList(linkage[Integer.parseInt(sections[0]) - 1], sections[2], sections[3], sections[4],sections[5]);
+            if (sections.length > 6) {
+                lists[i].setComments(sections[6]);
             }
             linkage[Integer.parseInt(sections[0])] = lists[i];
             // Next we reach the site list data. These comes as a long list of values the first of which is the site name,
