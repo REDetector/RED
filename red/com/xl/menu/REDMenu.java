@@ -555,7 +555,21 @@ public class REDMenu extends JMenuBar implements ActionListener, DatabaseListene
         }
         // --------------------HelpMenu---------------------
         else if (action.equals(MenuUtils.HELP_CONTENTS)) {
-            new HelpDialog(new File(ClassLoader.getSystemResource("Help").getFile().replaceAll("%20", " ")));
+            try {
+                new HelpDialog(new File(ClassLoader.getSystemResource("Help").getFile().replaceAll("%20", " ")));
+            } catch (REDException e) {
+                JOptionPane.showMessageDialog(application, "<html>The embedded help content did not work, please use online help at <a href=\"" + Global
+                        .HELP_ONLINE + "\">" + Global.HELP_ONLINE + "</a> instead");
+                try {
+                    Desktop.getDesktop().browse(new URI(Global.HELP_ONLINE));
+                } catch (IOException e1) {
+                    logger.error("I/O exception.", e);
+                } catch (URISyntaxException e1) {
+                    logger.error("Syntax exception.", e);
+                }
+                logger.warn("The embedded help content did not work.");
+                helpContents.setEnabled(false);
+            }
         } else if (action.equals(MenuUtils.HELP_ONLINE)) {
             try {
                 Desktop.getDesktop().browse(new URI(Global.HELP_ONLINE));

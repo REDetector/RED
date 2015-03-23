@@ -17,6 +17,7 @@
  */
 package com.xl.help;
 
+import com.xl.exception.REDException;
 import com.xl.main.REDApplication;
 
 import javax.swing.*;
@@ -48,7 +49,7 @@ public class HelpDialog extends JDialog implements TreeSelectionListener {
      *
      * @param startingLocation the folder containing the html help documentation
      */
-    public HelpDialog(File startingLocation) {
+    public HelpDialog(File startingLocation) throws REDException {
         super(REDApplication.getInstance(), "Help Contents");
 
         HelpIndexRoot root = new HelpIndexRoot(startingLocation);
