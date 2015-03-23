@@ -382,7 +382,6 @@ public class DatabaseManager {
         try {
             Statement stmt = con.createStatement();
             rs = stmt.executeQuery(queryClause);
-            stmt.close();
         } catch (SQLException e) {
             logger.error("Error execute the SQL clause: " + queryClause, e);
         }
