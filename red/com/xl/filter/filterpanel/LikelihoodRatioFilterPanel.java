@@ -73,7 +73,8 @@ public class LikelihoodRatioFilterPanel extends AbstractSiteFilter {
     protected void generateSiteList() throws SQLException {
         progressUpdated("Filtering RNA editing sites by statistic method (LLR), please wait...", 0, 0);
         logger.info("Filtering RNA editing sites by statistic method (LLR).");
-        String linearTableName = currentSample + "_" + parentList.getFilterName() + "_" + DatabaseManager.LLR_FILTER_RESULT_TABLE_NAME + "_" + llrThreshold;
+        String llr = thresholdField.getText().replace(".", "");
+        String linearTableName = currentSample + "_" + parentList.getFilterName() + "_" + DatabaseManager.LLR_FILTER_RESULT_TABLE_NAME + "_" + llr;
         if (!TableCreator.createFilterTable(parentList.getTableName(), linearTableName)) {
             progressCancelled();
             return;

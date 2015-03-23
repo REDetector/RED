@@ -94,8 +94,10 @@ public class FisherExactTestFilterPanel extends AbstractSiteFilter {
     protected void generateSiteList() throws SQLException {
         progressUpdated("Filtering RNA editing sites by statistic method (P-Value), please wait...", 0, 0);
         logger.info("Filtering RNA editing sites by statistic method (P-Value).");
+        String pvalue = pvalueField.getText().replace(".", "");
+        String fdr = fdrField.getText().replace(".", "");
         String linearTableName = currentSample + "_" + parentList.getFilterName() + "_" + DatabaseManager
-                .PVALUE_FILTER_RESULT_TABLE_NAME + "_" + pvalueThreshold + "_" + fdrThreshold;
+                .PVALUE_FILTER_RESULT_TABLE_NAME + "_" + pvalue + "_" + fdr;
         if (!TableCreator.createFisherExactTestTable(parentList.getTableName(), linearTableName)) {
             progressCancelled();
             return;
