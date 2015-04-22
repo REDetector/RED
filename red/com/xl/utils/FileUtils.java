@@ -37,6 +37,14 @@ import java.util.List;
  * The Class FileUtils provides some I/O operations
  */
 public class FileUtils {
+    /**
+     * Search the files which meets the file name in the given directory.
+     *
+     * @param fileName  the name of the searching file
+     * @param directory the directory to be searched
+     * @return a list that contains the required files.
+     */
+    private static List<File> fileLists = new ArrayList<File>();
     private final Logger logger = LoggerFactory.getLogger(FileUtils.class);
 
     public static boolean createDirectory(String path) {
@@ -156,15 +164,7 @@ public class FileUtils {
         return flag;
     }
 
-    /**
-     * Search the files which meets the file name in the given directory.
-     *
-     * @param fileName  the name of the searching file
-     * @param directory the directory to be searched
-     * @return a list that contains the required files.
-     */
     public static List<File> searchFile(String fileName, File directory) {
-        List<File> fileLists = new ArrayList<File>();
         if (directory.isDirectory()) {
             File[] files = directory.listFiles();
             if (files != null) {
