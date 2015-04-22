@@ -31,6 +31,8 @@ import com.xl.utils.FileUtils;
 import com.xl.utils.NameRetriever;
 import com.xl.utils.ParsingUtils;
 import com.xl.utils.namemanager.SuffixUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
 import java.io.*;
@@ -42,6 +44,7 @@ import java.util.List;
  * because the  whole file is too large to be loaded with small memory.
  */
 public class FastaFileParser extends DataParser {
+    private final Logger logger = LoggerFactory.getLogger(FastaFileParser.class);
     /**
      * The genome.
      */
@@ -54,6 +57,10 @@ public class FastaFileParser extends DataParser {
      */
     public FastaFileParser(DataCollection collection) {
         genome = collection.genome();
+    }
+
+    public FastaFileParser(Genome genome) {
+        this.genome = genome;
     }
 
     /**
@@ -97,10 +104,10 @@ public class FastaFileParser extends DataParser {
                             throw new IOException();
                         }
                         FileUtils.deleteAllFilesWithSuffix(fastaCacheDirectory, SuffixUtils.CACHE_FASTA);
-                        reparseFasta(fastaCacheDirectory);
+                        parseNewFasta(fastaCacheDirectory);
                     }
                 } else {
-                    reparseFasta(fastaCacheDirectory);
+                    parseNewFasta(fastaCacheDirectory);
                 }
             } else {
                 throw new IOException("Fasta cache file path " + fastaCacheDirectory + " can not be accessed, please have a check for permission.");
@@ -155,11 +162,65 @@ public class FastaFileParser extends DataParser {
     /**
      * Read an entire fasta file, which might be local or remote and might be gzipped.
      */
-    public void reparseFasta(String fastaCacheDirectory) throws IOException {
+    public void parseNewFasta(String fastaCacheDirectory) throws IOException {
         BufferedReader br;
         FileOutputStream fos = null;
         String currentChr = null;
         File fastaFile = getFile();
+        String nextLine;
+        br = ParsingUtils.openBufferedReader(fastaFile);
+        int line = 0;
+        int chr = 0;
+        while ((nextLine = br.readLine()) != null) {
+            if (nextLine.startsWith(">")) {
+                // A new chromosome starts with '>', so we flush the previous chromosome and find the next.
+                if (fos != null) {
+                    fos.flush();
+                    fos.close();
+                    System.gc();
+                }
+                // Find the next standard chromosome.
+                currentChr = skipToNextChr(br, nextLine);
+                // Open and cache it.
+                if (currentChr != null) {
+                    chr++;
+                    line = 0;
+                    String currentChrPath = fastaCacheDirectory + File.separator + currentChr + SuffixUtils.CACHE_FASTA;
+                    fos = new FileOutputStream(currentChrPath, true);
+                }
+            } else {
+                // Copy the data.
+                if (fos != null) {
+                    fos.write(nextLine.trim().getBytes());
+                    if (++line % 100000 == 0) {
+                        progressUpdated("Read " + line + " lines from " + currentChr + ", " + genome.getDisplayName(), chr, 24);
+                    }
+                }
+            }
+        }
+        // Flush the last chromosome.
+        if (fos != null) {
+            fos.flush();
+            fos.close();
+            System.gc();
+        }
+        br.close();
+        // Set up a complete flag.
+        FileWriter fw = new FileWriter(fastaCacheDirectory + File.separator + SuffixUtils.CACHE_FASTA_COMPLETE);
+        fw.write(Global.VERSION);
+        fw.close();
+        processingComplete(null);
+    }
+
+    /**
+     * Read an entire fasta file, which might be local or remote and might be gzipped.
+     */
+    public void parseNewFasta(String fastaFile, String fastaCacheDirectory) throws IOException {
+        logger.info("Fasta file path: " + fastaFile);
+        logger.info("Fasta cache directory: " + fastaCacheDirectory);
+        BufferedReader br;
+        FileOutputStream fos = null;
+        String currentChr = null;
         String nextLine;
         br = ParsingUtils.openBufferedReader(fastaFile);
         int line = 0;

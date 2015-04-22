@@ -34,6 +34,7 @@ import com.xl.exception.REDException;
 import com.xl.interfaces.ProgressListener;
 import com.xl.main.Global;
 import com.xl.main.REDApplication;
+import com.xl.parsers.dataparsers.FastaFileParser;
 import com.xl.preferences.DisplayPreferences;
 import com.xl.preferences.LocationPreferences;
 import com.xl.utils.FileUtils;
@@ -46,6 +47,7 @@ import com.xl.utils.namemanager.SuffixUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.swing.*;
 import java.io.*;
 import java.util.*;
 import java.util.zip.ZipEntry;
@@ -81,6 +83,8 @@ public class IGVGenomeParser implements Runnable {
      * The gene type.
      */
     private GeneType geneType = null;
+
+    private String sequenceLocation = null;
 
     /**
      * Parses the genome.
@@ -154,16 +158,8 @@ public class IGVGenomeParser implements Runnable {
         //            }
         try {
             parseNewGenome();
-
-            List<File> fastaCacheCompleteFiles = FileUtils.searchFile(SuffixUtils.CACHE_FASTA_COMPLETE, cacheDirectory);
-            for (File fastaCacheCompleteFile : fastaCacheCompleteFiles) {
-                Properties properties = new Properties();
-                properties.load(new FileReader(fastaCacheCompleteFile));
-                String version = properties.getProperty(GenomeUtils.KEY_VERSION_NAME);
-                if (Global.VERSION.equals(version)) {
-                    DisplayPreferences.getInstance().setFastaEnable(true);
-                    break;
-                }
+            if (!reloadCacheFasta(cacheDirectory)) {
+                parseNewFasta(sequenceLocation, LocationPreferences.getInstance().getCacheDirectory() + File.separator + genome.getDisplayName());
             }
         } catch (IOException e) {
             logger.error("I/O exception.", e);
@@ -173,6 +169,20 @@ public class IGVGenomeParser implements Runnable {
             progressExceptionReceived(e);
         }
 
+    }
+
+    private boolean reloadCacheFasta(File cacheDirectory) throws IOException, REDException {
+        List<File> fastaCacheCompleteFiles = FileUtils.searchFile(SuffixUtils.CACHE_FASTA_COMPLETE, cacheDirectory);
+        for (File fastaCacheCompleteFile : fastaCacheCompleteFiles) {
+            BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(fastaCacheCompleteFile)));
+            String version = br.readLine();
+            if (Global.VERSION.equals(version)) {
+                logger.info("Fasta file is available");
+                DisplayPreferences.getInstance().setFastaEnable(true);
+                return true;
+            }
+        }
+        return false;
     }
 
     private void reloadCacheGenome() throws IOException, REDException {
@@ -246,6 +256,24 @@ public class IGVGenomeParser implements Runnable {
         progressComplete("load_genome", genome);
     }
 
+    private void parseNewFasta(String fastaFile, String fastaCacheFile) throws REDException, IOException {
+        if (genome == null) {
+            throw new REDException("Genome has not been loaded before parsing fasta file.");
+        }
+        if (fastaFile == null) {
+            return;
+        }
+        if (ParsingUtils.isHttpPath(fastaFile)) {
+            int ans = JOptionPane.showConfirmDialog(REDApplication.getInstance(), "The fasta file start to be downloading on the background, click ok to " +
+                    "continue...", "Download fasta file", JOptionPane.OK_CANCEL_OPTION);
+            logger.info("Answer: " + ans);
+            if (ans == 0) {
+                FastaFileParser parser = new FastaFileParser(genome);
+                parser.parseNewFasta(fastaFile, fastaCacheFile);
+            }
+        }
+    }
+
     private void parseNewGenome() throws IOException, REDException {
         GenomeDescriptor genomeDescriptor = parseGenomeArchiveFile(genomeFile);
         final String id = genomeDescriptor.getGenomeId();
@@ -256,7 +284,7 @@ public class IGVGenomeParser implements Runnable {
         if (cytobandReader != null && genomeDescriptor.hasCytobands()) {
             cytobandMap = CytobandFileParser.loadData(cytobandReader, genomeDescriptor);
         }
-        String sequenceLocation = genomeDescriptor.getSequenceLocation();
+        sequenceLocation = genomeDescriptor.getSequenceLocation();
         Sequence sequence;
         boolean chromosomeOrdered = false;
         if (sequenceLocation == null) {
