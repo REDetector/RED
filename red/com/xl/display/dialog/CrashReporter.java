@@ -22,6 +22,7 @@ import com.xl.main.Global;
 import com.xl.main.REDApplication;
 import com.xl.utils.FontManager;
 import com.xl.utils.namemanager.MenuUtils;
+import com.xl.utils.ui.OptionDialogUtils;
 
 import javax.swing.*;
 import java.awt.*;
@@ -49,8 +50,8 @@ public class CrashReporter extends JDialog implements ActionListener {
 
         if (e instanceof OutOfMemoryError) {
             // Don't issue a normal crash report but tell them that they ran out of memory.
-            JOptionPane.showMessageDialog(REDApplication.getInstance(), "<html>You ran out of memory!<br><br>Please look at Help &gt; Help Contents &gt; " +
-                    "Configuration to see how to fix this", "Out of memory", JOptionPane.ERROR_MESSAGE);
+            OptionDialogUtils.showErrorDialog(REDApplication.getInstance(), "<html>You ran out of memory!<br><br>Please look at Help &gt; Help Contents &gt; " +
+                    "Configuration to see how to fix this");
             return;
         }
 

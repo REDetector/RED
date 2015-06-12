@@ -18,7 +18,10 @@
 
 package com.xl.net.genomes;
 
+import com.xl.exception.NetworkException;
 import com.xl.preferences.LocationPreferences;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -30,6 +33,7 @@ import java.util.Vector;
  * The Class DownloadableGenomeSet downloads the gene lists from IGV server.
  */
 public class DownloadableGenomeSet {
+    private static final Logger logger = LoggerFactory.getLogger(DownloadableGenomeSet.class);
     /**
      * The genome lists.
      */
@@ -39,7 +43,7 @@ public class DownloadableGenomeSet {
      */
     private static int genomeCount = 0;
 
-    public DownloadableGenomeSet() throws IOException {
+    public DownloadableGenomeSet() throws IOException, NetworkException {
         // If the size of genome lists is equal to the genome count, then we used the genome lists instead of downloading the same thing again.
         if (genomeLists.size() == genomeCount && genomeCount != 0) {
             return;
@@ -52,6 +56,9 @@ public class DownloadableGenomeSet {
 
         String indexLine;
         while ((indexLine = genomeIndexReader.readLine()) != null) {
+            if (indexLine.startsWith("<!DOCTYPE")) {
+                throw new NetworkException();
+            }
             String[] sections = indexLine.split("\\t");
             if (sections[0].startsWith("<")) {
                 continue;

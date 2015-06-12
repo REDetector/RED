@@ -18,12 +18,14 @@
 
 package com.xl.display.dialog;
 
+import com.xl.exception.NetworkException;
 import com.xl.main.REDApplication;
 import com.xl.preferences.LocationPreferences;
 import com.xl.utils.ChromosomeNameComparator;
 import com.xl.utils.FileUtils;
 import com.xl.utils.namemanager.MenuUtils;
 import com.xl.utils.namemanager.SuffixUtils;
+import com.xl.utils.ui.OptionDialogUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -37,6 +39,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.io.IOException;
 import java.util.Comparator;
 import java.util.Set;
 import java.util.TreeSet;
@@ -81,12 +84,12 @@ public class GenomeSelector extends JDialog implements ActionListener, TreeSelec
         File[] genomes = genomeDirectory.listFiles();
 
         if (genomes == null || genomes.length == 0) {
-            JOptionPane.showMessageDialog(application, "<html>The default Genome directory is " + LocationPreferences.getInstance().getGenomeDirectory() + "." +
+            OptionDialogUtils.showWarningDialog(application, "<html>The default Genome directory is " + LocationPreferences.getInstance().getGenomeDirectory() + "." +
                             "<br>There is nothing in the default genome directory." +
                             "<br>You can move your genome files into the default genome directory or select <i>Edit->Preferences...</i> to change genome " +
                             "directory." +
                             "<br>If you don't have any genome file, you can download one by selecting <i>Import New</i> after you press OK button.",
-                    "Genome Directory Warning", JOptionPane.WARNING_MESSAGE);
+                    "Genome Directory Warning");
         } else {
             Set<GenomeNode> genomeFile = new TreeSet<GenomeNode>(new GenomeNodeComparator());
             for (File genome : genomes) {
@@ -165,8 +168,11 @@ public class GenomeSelector extends JDialog implements ActionListener, TreeSelec
         } else if (ae.getActionCommand().equals(MenuUtils.IMPORT_BUTTON)) {
             try {
                 new GenomeDownloadSelector(application);
-            } catch (Exception e) {
+            } catch (IOException e) {
+                logger.error(e.getMessage(), e);
+            } catch (NetworkException e) {
                 new CrashReporter(e);
+                logger.error(e.getMessage(), e);
             }
             setVisible(false);
             dispose();

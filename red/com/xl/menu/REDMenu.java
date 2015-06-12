@@ -50,6 +50,7 @@ import com.xl.preferences.DisplayPreferences;
 import com.xl.preferences.LocationPreferences;
 import com.xl.utils.imagemanager.ImageSaver;
 import com.xl.utils.namemanager.MenuUtils;
+import com.xl.utils.ui.OptionDialogUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -445,8 +446,8 @@ public class REDMenu extends JMenuBar implements ActionListener, DatabaseListene
             application.genomeViewer().displayPreferencesUpdated(DisplayPreferences.getInstance());
         } else if (action.equals(MenuUtils.CLEAR_LISTS)) {
             LocationPreferences.getInstance().clearRecentlyOpenedFiles();
-            JOptionPane.showMessageDialog(application, "The recently opened file lists will be cleared before RED is restarted.",
-                    "Clear Recently Opened Files.", JOptionPane.INFORMATION_MESSAGE);
+            OptionDialogUtils.showMessageDialog(application, "The recently opened file lists will be cleared before RED is restarted.",
+                    "Clear Recently Opened Files.");
         } else if (action.equals(MenuUtils.EXIT)) {
             application.dispose();
             System.exit(0);
@@ -532,21 +533,21 @@ public class REDMenu extends JMenuBar implements ActionListener, DatabaseListene
         // --------------------ReportsMenu------------------
         else if (action.equals(MenuUtils.VARIANT_DISTRIBUTION)) {
             if (application.dataCollection().getActiveDataStore() == null) {
-                JOptionPane.showMessageDialog(application, "You need to select a data store in the Data panel before viewing this plot",
-                        "No data selected...", JOptionPane.INFORMATION_MESSAGE);
+                OptionDialogUtils.showMessageDialog(application, "You need to select a data store in the Data panel before viewing this plot",
+                        "No data selected...");
             } else if (application.dataCollection().getActiveSiteList() == null) {
-                JOptionPane.showMessageDialog(application, "You need to select a site set/site list in the Data panel before viewing this plot",
-                        "No data selected...", JOptionPane.INFORMATION_MESSAGE);
+                OptionDialogUtils.showMessageDialog(application, "You need to select a site set/site list in the Data panel before viewing this plot",
+                        "No data selected...");
             } else {
                 new VariantDistributionHistogram(application.dataCollection().getActiveDataStore());
             }
         } else if (action.equals(MenuUtils.RNA_EDITING_SITES_DISTRIBUTION)) {
             if (application.dataCollection().getActiveDataStore() == null) {
-                JOptionPane.showMessageDialog(application, "You need to select a data store in the Data panel before viewing this plot",
-                        "No data selected...", JOptionPane.INFORMATION_MESSAGE);
+                OptionDialogUtils.showMessageDialog(application, "You need to select a data store in the Data panel before viewing this plot",
+                        "No data selected...");
             } else if (application.dataCollection().getActiveSiteList() == null) {
-                JOptionPane.showMessageDialog(application, "You need to select a site set/site list in the Data panel before viewing this plot",
-                        "No data selected...", JOptionPane.INFORMATION_MESSAGE);
+                OptionDialogUtils.showMessageDialog(application, "You need to select a site set/site list in the Data panel before viewing this plot",
+                        "No data selected...");
             } else {
                 new SitesDistributionHistogram(application.dataCollection().getActiveDataStore());
             }
@@ -558,7 +559,7 @@ public class REDMenu extends JMenuBar implements ActionListener, DatabaseListene
             try {
                 new HelpDialog(new File(ClassLoader.getSystemResource("Help").getFile().replaceAll("%20", " ")));
             } catch (REDException e) {
-                JOptionPane.showMessageDialog(application, "<html>The embedded help content did not work, please use online help at <a href=\"" + Global
+                OptionDialogUtils.showMessageDialog(application, "<html>The embedded help content did not work, please use online help at <a href=\"" + Global
                         .HELP_ONLINE + "\">" + Global.HELP_ONLINE + "</a> instead");
                 try {
                     Desktop.getDesktop().browse(new URI(Global.HELP_ONLINE));
@@ -582,12 +583,11 @@ public class REDMenu extends JMenuBar implements ActionListener, DatabaseListene
             try {
                 if (UpdateChecker.isUpdateAvailable()) {
                     String latestVersion = UpdateChecker.getLatestVersionNumber();
-                    JOptionPane.showMessageDialog(application, "<html>A newer version of RED (v" + latestVersion + ") is available, " +
+                    OptionDialogUtils.showMessageDialog(application, "<html>A newer version of RED (v" + latestVersion + ") is available, " +
                                     "<br>please go to  <a href=\"" + Global.HOME_PAGE + "\">" + Global.HOME_PAGE + "</a> for the latest version",
-                            "Update available", JOptionPane.INFORMATION_MESSAGE);
+                            "Update available");
                 } else {
-                    JOptionPane.showMessageDialog(application, "<html>You are running the latest version of RED.", "Latest version of RED",
-                            JOptionPane.INFORMATION_MESSAGE);
+                    OptionDialogUtils.showMessageDialog(application, "<html>You are running the latest version of RED.", "Latest version of RED");
                 }
             } catch (REDException e) {
                 e.printStackTrace();

@@ -33,10 +33,9 @@ import com.xl.parsers.dataparsers.DNAVCFParser;
 import com.xl.parsers.dataparsers.RNAVCFParser;
 import com.xl.preferences.DatabasePreferences;
 import com.xl.preferences.LocationPreferences;
+import com.xl.utils.ui.OptionDialogUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import javax.swing.*;
 
 /**
  * Created by Xing Li on 2014/7/22.
@@ -95,8 +94,8 @@ public class ThreadDnaRnaInput implements Runnable {
         } catch (REDException e) {
             logger.error("", e);
         } catch (DataLoadException e) {
-            JOptionPane.showMessageDialog(REDApplication.getInstance(), "Sorry, fail to import the data to database. You may select one of wrong " +
-                    "path for the relative data.", "Imported Failed", JOptionPane.ERROR_MESSAGE);
+            OptionDialogUtils.showErrorDialog(REDApplication.getInstance(), "Sorry, fail to import the data to database. You may select one of wrong " +
+                    "path for the relative data.");
             logger.error("", e);
             new DataImportDialog(REDApplication.getInstance());
             return;

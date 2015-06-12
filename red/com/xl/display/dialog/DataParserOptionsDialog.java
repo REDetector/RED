@@ -20,6 +20,7 @@ package com.xl.display.dialog;
 import com.xl.exception.REDException;
 import com.xl.main.REDApplication;
 import com.xl.parsers.dataparsers.DataParser;
+import com.xl.utils.ui.OptionDialogUtils;
 
 import javax.swing.*;
 import java.awt.*;
@@ -92,7 +93,7 @@ public class DataParserOptionsDialog extends JDialog implements ActionListener {
                 setVisible(false);
                 dispose();
             } else {
-                JOptionPane.showMessageDialog(this, "Some options have not been set", "Can't Import yet..", JOptionPane.ERROR_MESSAGE);
+                OptionDialogUtils.showErrorDialog(this, "Some options have not been set");
             }
         } else {
             new CrashReporter(new REDException("Don't know how to handle action '" + ae.getActionCommand() + "'"));

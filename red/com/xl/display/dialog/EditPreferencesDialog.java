@@ -21,6 +21,7 @@ package com.xl.display.dialog;
 import com.xl.main.REDApplication;
 import com.xl.preferences.LocationPreferences;
 import com.xl.preferences.REDPreferences;
+import com.xl.utils.ui.OptionDialogUtils;
 
 import javax.swing.*;
 import java.awt.*;
@@ -318,7 +319,7 @@ public class EditPreferencesDialog extends JDialog implements ActionListener {
             for (String directory : allDirectories) {
                 File f = new File(directory);
                 if (!f.exists()) {
-                    JOptionPane.showMessageDialog(this, "Invalid location :" + directory, "Error", JOptionPane.ERROR_MESSAGE);
+                    OptionDialogUtils.showErrorDialog(this, "Invalid location :" + directory);
                     locationPreferences.initialDirectories();
                     return;
                 }
@@ -330,13 +331,13 @@ public class EditPreferencesDialog extends JDialog implements ActionListener {
                 try {
                     proxyPortValue = Integer.parseInt(proxyPort.getText());
                 } catch (NumberFormatException e) {
-                    JOptionPane.showMessageDialog(this, "Proxy port number was not an integer", "Error", JOptionPane.ERROR_MESSAGE);
+                    OptionDialogUtils.showErrorDialog(this, "Proxy port number was not an integer");
                     return;
                 }
             }
 
             if (proxyHostValue.length() > 0 && proxyPort.getText().length() == 0) {
-                JOptionPane.showMessageDialog(this, "You specified a proxy server address, but did not provide the port number (default is usually 80 or 8080)", "Error", JOptionPane.ERROR_MESSAGE);
+                OptionDialogUtils.showErrorDialog(this, "You specified a proxy server address, but did not provide the port number (default is usually 80 or 8080)");
                 return;
             }
 

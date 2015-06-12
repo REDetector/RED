@@ -247,7 +247,7 @@ public class REDApplication extends JFrame implements ProgressListener, DataStor
     private void addNewLoadedGenome(Genome genome) {
         // We've had a trace where the imported genome contained no chromosomes. No idea how that happened but we can check that here.
         if (genome.getAllChromosomes() == null || genome.getAllChromosomes().length == 0) {
-            JOptionPane.showMessageDialog(this, "No data was present in the imported genome", "Genome import error", JOptionPane.ERROR_MESSAGE);
+            OptionDialogUtils.showErrorDialog(this, "No data was present in the imported genome");
             return;
         }
 
@@ -750,8 +750,8 @@ public class REDApplication extends JFrame implements ProgressListener, DataStor
             resetChangesWereMade();
         } else if (command.equals("fasta_loaded")) {
             DisplayPreferences.getInstance().setFastaEnable(true);
-            JOptionPane.showMessageDialog(this, "The fasta file has been loaded. Please zoom out to make it visible" +
-                    "...", "Load fasta file completed", JOptionPane.INFORMATION_MESSAGE);
+            OptionDialogUtils.showMessageDialog(this, "The fasta file has been loaded. Please zoom out to make it visible" +
+                    "...", "Load fasta file completed");
             changesWereMade();
         } else if (command.equals("data_written")) {
             // Since we've just saved we can reset the changes flag
@@ -809,7 +809,7 @@ public class REDApplication extends JFrame implements ProgressListener, DataStor
         } else {
             mode = "DNA-RNA mode";
         }
-        JOptionPane.showMessageDialog(this, "Database has been changed to " + mode + ", " + sampleName, mode, JOptionPane.INFORMATION_MESSAGE);
+        OptionDialogUtils.showMessageDialog(this, "Database has been changed to " + mode + ", " + sampleName, mode);
         DisplayPreferences.getInstance().setDisplayMode(DisplayPreferences.DISPLAY_MODE_READS_AND_PROBES);
         changesWereMade();
     }

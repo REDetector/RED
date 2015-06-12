@@ -27,6 +27,7 @@ import com.xl.interfaces.ProgressListener;
 import com.xl.main.REDApplication;
 import com.xl.utils.FontManager;
 import com.xl.utils.namemanager.MenuUtils;
+import com.xl.utils.ui.OptionDialogUtils;
 
 import javax.swing.*;
 import java.awt.*;
@@ -114,7 +115,7 @@ public class FilterOptionDialog extends JDialog implements OptionsListener, Prog
                     progressExceptionReceived(e);
                 }
             } else {
-                JOptionPane.showMessageDialog(this, "Filter options have not all been set", "Can't run filter", JOptionPane.INFORMATION_MESSAGE);
+                OptionDialogUtils.showMessageDialog(this, "Filter options have not all been set", "Can't run filter");
             }
         }
     }
@@ -158,7 +159,7 @@ public class FilterOptionDialog extends JDialog implements OptionsListener, Prog
         if (newList.getAllSiteLists().length == 0) {
             // We need to remove this empty list.
             newList.delete();
-            JOptionPane.showMessageDialog(this, "No sites matched the criteria set", "Info", JOptionPane.INFORMATION_MESSAGE);
+            OptionDialogUtils.showMessageDialog(this, "No sites matched the criteria set", "Info");
             return;
         }
 

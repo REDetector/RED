@@ -26,6 +26,7 @@ import com.xl.display.featureviewer.FeatureListViewer;
 import com.xl.exception.REDException;
 import com.xl.interfaces.Cancellable;
 import com.xl.main.REDApplication;
+import com.xl.utils.ui.OptionDialogUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -201,7 +202,7 @@ public class FindFeatureDialog extends JDialog implements ActionListener, Runnab
             validate();
         } else {
             repaint(); // So we aren't left with a corrupted table showing from a previous search
-            JOptionPane.showMessageDialog(this, "No hits found", "Search results", JOptionPane.INFORMATION_MESSAGE);
+            OptionDialogUtils.showMessageDialog(this, "No hits found", "Search results");
         }
 
     }
@@ -241,8 +242,7 @@ public class FindFeatureDialog extends JDialog implements ActionListener, Runnab
         } else if (ae.getActionCommand().equals("save_annotation_selected")) {
             Feature[] selectedHits = viewer.getSelectedFeatures();
             if (selectedHits.length == 0) {
-                JOptionPane.showMessageDialog(this, "There are no selected features from which to make a track", "Can't make track",
-                        JOptionPane.INFORMATION_MESSAGE);
+                OptionDialogUtils.showMessageDialog(this, "There are no selected features from which to make a track", "Can't make track");
                 return;
             }
 

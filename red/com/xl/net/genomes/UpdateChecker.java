@@ -19,6 +19,8 @@ package com.xl.net.genomes;
 
 import com.xl.exception.REDException;
 import com.xl.main.Global;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.BufferedInputStream;
 import java.io.DataInputStream;
@@ -32,6 +34,7 @@ import java.util.Arrays;
  * user to get the update.
  */
 public class UpdateChecker {
+    private static final Logger logger = LoggerFactory.getLogger(UpdateChecker.class);
 
     private static String latestVersion = null;
 
@@ -56,7 +59,7 @@ public class UpdateChecker {
      * @return true, if the remote version is newer
      */
     private static boolean isNewer(String thisVersion, String remoteVersion) {
-
+        logger.info(remoteVersion);
         String[] thisSections = thisVersion.split("[ \\.]");
         String[] remoteSections = remoteVersion.split("[ \\.]");
 

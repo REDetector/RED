@@ -46,8 +46,22 @@ public class OptionDialogUtils {
                 new String[]{"Overwrite and Save", "Cancel"}, "Overwrite and Save");
     }
 
+
     public static void showMessageDialog(Component c, String message) {
         JOptionPane.showMessageDialog(c, message);
     }
+
+    public static void showMessageDialog(Component c, String message, String title) {
+        JOptionPane.showMessageDialog(c, message, title, JOptionPane.INFORMATION_MESSAGE, IconLoader.ICON_INFO);
+    }
+
+    public static void showWarningDialog(Component c, String message, String title) {
+        JOptionPane.showMessageDialog(c, message, title, JOptionPane.WARNING_MESSAGE, IconLoader.ICON_WARNING);
+    }
+
+    public static void showErrorDialog(Component c, String message) {
+        JOptionPane.showMessageDialog(c, message, "Oops, RED has encountered a problem...", JOptionPane.ERROR_MESSAGE, IconLoader.ICON_ERROR);
+    }
+
 
 }

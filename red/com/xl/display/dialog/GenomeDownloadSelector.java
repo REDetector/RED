@@ -17,6 +17,7 @@
  */
 package com.xl.display.dialog;
 
+import com.xl.exception.NetworkException;
 import com.xl.main.REDApplication;
 import com.xl.net.genomes.DownloadableGenomeSet;
 import com.xl.net.genomes.DownloadableGenomeTreeModel;
@@ -61,7 +62,7 @@ public class GenomeDownloadSelector extends JDialog implements ActionListener, T
      * @param application the application
      * @throws IOException if there was a problem getting or parsing the list of genomes
      */
-    public GenomeDownloadSelector(REDApplication application) throws IOException {
+    public GenomeDownloadSelector(REDApplication application) throws IOException, NetworkException {
         super(application, "Select Genome to Download...");
         this.application = application;
         setSize(380, 340);

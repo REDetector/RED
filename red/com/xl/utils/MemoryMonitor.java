@@ -19,6 +19,7 @@
 package com.xl.utils;
 
 import com.xl.main.REDApplication;
+import com.xl.utils.ui.OptionDialogUtils;
 
 import javax.swing.*;
 import java.awt.*;
@@ -99,8 +100,8 @@ public class MemoryMonitor extends JPanel implements Runnable, MouseListener, Mo
         if (shownWarning) return;
         shownWarning = true;
 
-        JOptionPane.showMessageDialog(null, "You are running short of available memory.\n Please look at Help > Help Contents > Configuration to see what you" +
-                " can do about this.", "Low Memory Warning", JOptionPane.WARNING_MESSAGE);
+        OptionDialogUtils.showWarningDialog(null, "You are running short of available memory.\n Please look at Help > Help Contents > Configuration to see what you" +
+                " can do about this.", "Low Memory Warning");
 
     }
 

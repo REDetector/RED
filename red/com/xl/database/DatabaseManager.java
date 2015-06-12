@@ -26,11 +26,10 @@ package com.xl.database;
 import com.xl.main.REDApplication;
 import com.xl.preferences.DatabasePreferences;
 import com.xl.utils.RandomStringGenerator;
-import com.xl.utils.ui.IconLoader;
+import com.xl.utils.ui.OptionDialogUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.swing.*;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.Enumeration;
@@ -244,8 +243,7 @@ public class DatabaseManager {
         try {
             databaseMetaData = con.getMetaData();
         } catch (SQLException e) {
-            JOptionPane.showMessageDialog(REDApplication.getInstance(), "Statement has not been created. Could not get meta data from database.", "Oops, " +
-                    "something wrong...", JOptionPane.ERROR_MESSAGE, IconLoader.ICON_ERROR);
+            OptionDialogUtils.showErrorDialog(REDApplication.getInstance(),"Statement has not been created. Could not get meta data from database.");
             logger.error("Statement has not been created. Could not get meta data from database.", e);
             return new ArrayList<String>();
         }
@@ -258,8 +256,7 @@ public class DatabaseManager {
             }
             return tableLists;
         } catch (SQLException e) {
-            JOptionPane.showMessageDialog(REDApplication.getInstance(), "Database " + database + " does not exist. Please have a check in your database.", "Oops, " +
-                    "something wrong...", JOptionPane.ERROR_MESSAGE, IconLoader.ICON_ERROR);
+            OptionDialogUtils.showErrorDialog(REDApplication.getInstance(),"Database " + database + " does not exist. Please have a check in your database.");
             logger.error("Database " + database + " does not exist. Please have a check in your database.", e);
             return new ArrayList<String>();
         }
