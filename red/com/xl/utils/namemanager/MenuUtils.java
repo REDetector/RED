@@ -39,7 +39,8 @@ public class MenuUtils {
     public static final String EXPORT_IMAGE = "Export Image";
     public static final String GENOME_VIEW = "Genome Panel...";
     public static final String CHROMOSOME_VIEW = "Chromosome Panel...";
-    public static final String CLEAR_LISTS = "Clear above lists...";
+    public static final String REOPEN_PROJECT = "Reopen Project";
+    public static final String CLEAR_LISTS = "Clear Lists...";
     public static final String EXIT = "Exit";
 
     /*Edit menu*/

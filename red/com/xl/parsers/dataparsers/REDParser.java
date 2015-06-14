@@ -42,6 +42,8 @@ import com.xl.preferences.LocationPreferences;
 import com.xl.utils.ParsingUtils;
 import com.xl.utils.Strand;
 import com.xl.utils.namemanager.GenomeUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -55,6 +57,7 @@ import java.util.zip.GZIPInputStream;
  * data, but can also load genomes and sites and can set visual preferences.
  */
 public class REDParser implements Runnable, ProgressListener {
+    private static final Logger logger = LoggerFactory.getLogger(REDParser.class);
 
     /**
      * The RED application.
@@ -534,7 +537,12 @@ public class REDParser implements Runnable, ProgressListener {
             // The fields should be linkage, name, value name, description
             int siteLength = Integer.parseInt(sections[1]);
 
-            lists[i] = new SiteList(linkage[Integer.parseInt(sections[0]) - 1], sections[2], sections[3], sections[4]);
+            if (sections.length > 4) {
+                lists[i] = new SiteList(linkage[Integer.parseInt(sections[0]) - 1], sections[2], sections[3], sections[4]);
+            } else {
+                lists[i] = new SiteList(linkage[Integer.parseInt(sections[0]) - 1], sections[2], sections[3], "");
+            }
+
             if (sections.length > 5) {
                 lists[i].setComments(sections[5]);
             }

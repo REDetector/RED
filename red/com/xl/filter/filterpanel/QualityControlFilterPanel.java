@@ -25,6 +25,7 @@ import com.xl.datatypes.sites.Site;
 import com.xl.datatypes.sites.SiteList;
 import com.xl.exception.REDException;
 import com.xl.filter.denovo.QualityControlFilter;
+import com.xl.utils.ui.OptionDialogUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -78,6 +79,12 @@ public class QualityControlFilterPanel extends AbstractSiteFilter {
 
     @Override
     protected void generateSiteList() throws SQLException {
+        if (!isValidInput()) {
+            OptionDialogUtils.showWarningDialog(getOptionsPanel(), "The quality or depth of coverage is invalid, which must be between 0-255, please try again.", "Invalid " +
+                    "input.");
+            return;
+        }
+
         progressUpdated("Filtering RNA editing sites by quality and coverage, please wait...", 0, 0);
         logger.info("Filtering RNA editing sites by quality and coverage.");
         String linearTableName = currentSample + "_" + parentList.getFilterName() + "_" + DatabaseManager
@@ -105,6 +112,10 @@ public class QualityControlFilterPanel extends AbstractSiteFilter {
             newList.addSite(site);
         }
         filterFinished(newList);
+    }
+
+    private boolean isValidInput() {
+        return qualityThreshold > 0 && qualityThreshold <= 255 && depthThreshold > 0 && depthThreshold <= 255;
     }
 
     @Override

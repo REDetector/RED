@@ -271,7 +271,7 @@ public class FastaFileParser extends DataParser {
     public FileFilter getFileFilter() {
         return new FileFilter() {
             public boolean accept(File f) {
-                return f.isDirectory() || f.getName().toLowerCase().endsWith(".fasta");
+                return f.isDirectory() || f.getName().toLowerCase().endsWith(".fasta")|| f.getName().toLowerCase().endsWith(".fa");
             }
 
             public String getDescription() {

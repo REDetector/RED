@@ -92,16 +92,17 @@ public class REDMenu extends JMenuBar implements ActionListener, DatabaseListene
     private JMenuItem openProject;
     private JMenuItem saveProject;
     private JMenuItem saveProjectAs;
-    private JMenuItem connectToMySQL;
+    private JMenuItem connectToDatabase;
     private JMenu importDataMenu;
-    private JMenuItem toDatabase;
-    private JMenuItem rna;
-    private JMenuItem dna;
-    private JMenuItem fasta;
-    private JMenuItem annotation;
+    private JMenuItem importToDatabase;
+    private JMenuItem importRna;
+    private JMenuItem importDna;
+    private JMenuItem importFasta;
+    private JMenuItem importAnnotation;
     private JMenu exportImage;
     private JMenuItem genomeView;
     private JMenuItem chromosomeView;
+    private JMenu reopenProject;
     private JMenuItem clearAboveLists;
     private JMenuItem exit;
 
@@ -187,15 +188,16 @@ public class REDMenu extends JMenuBar implements ActionListener, DatabaseListene
         saveProject = new JMenuItem();
         saveProjectAs = new JMenuItem();
         importDataMenu = new JMenu();
-        connectToMySQL = new JMenuItem();
-        toDatabase = new JMenuItem();
-        rna = new JMenuItem();
-        dna = new JMenuItem();
-        fasta = new JMenuItem();
-        annotation = new JMenuItem();
+        connectToDatabase = new JMenuItem();
+        importToDatabase = new JMenuItem();
+        importRna = new JMenuItem();
+        importDna = new JMenuItem();
+        importFasta = new JMenuItem();
+        importAnnotation = new JMenuItem();
         exportImage = new JMenu();
         genomeView = new JMenuItem();
         chromosomeView = new JMenuItem();
+        reopenProject = new JMenu();
         clearAboveLists = new JMenuItem();
         exit = new JMenuItem();
 
@@ -253,14 +255,16 @@ public class REDMenu extends JMenuBar implements ActionListener, DatabaseListene
             fileMenu.addSeparator();
             // ======== import data ========
             {
-                addJMenuItem(fileMenu, connectToMySQL, MenuUtils.CONNECT_TO_DATABASE, KeyEvent.VK_C, false);
+                addJMenuItem(fileMenu, connectToDatabase, MenuUtils.CONNECT_TO_DATABASE, KeyEvent.VK_C, false);
                 importDataMenu.setText(MenuUtils.IMPORT_DATA);
-                addJMenuItem(importDataMenu, toDatabase, MenuUtils.DATABASE, -1, false);
-                addJMenuItem(importDataMenu, fasta, MenuUtils.FASTA, -1, true);
-                addJMenuItem(importDataMenu, rna, MenuUtils.RNA, -1, true);
-                addJMenuItem(importDataMenu, dna, MenuUtils.DNA, -1, true);
+                addJMenuItem(importDataMenu, importToDatabase, MenuUtils.DATABASE, -1, false);
+                addJMenuItem(importDataMenu, importFasta, MenuUtils.FASTA, -1, true);
+                addJMenuItem(importDataMenu, importRna, MenuUtils.RNA, -1, true);
+                importRna.setToolTipText("It's usually a BAM file for a RNA data set");
+                addJMenuItem(importDataMenu, importDna, MenuUtils.DNA, -1, true);
+                importDna.setToolTipText("It's usually a BAM file for a DNA data set");
                 // We don't support annotation import now.
-                addJMenuItem(importDataMenu, annotation, MenuUtils.ANNOTATION, -1, false);
+                addJMenuItem(importDataMenu, importAnnotation, MenuUtils.ANNOTATION, -1, false);
                 fileMenu.add(importDataMenu);
                 importDataMenu.setEnabled(false);
             }
@@ -276,18 +280,25 @@ public class REDMenu extends JMenuBar implements ActionListener, DatabaseListene
 
             fileMenu.addSeparator();
 
-            List<String> recentPaths = LocationPreferences.getInstance().getRecentlyOpenedFiles();
-            for (String recentPath : recentPaths) {
-                File f = new File(recentPath);
-                if (f.exists()) {
-                    JMenuItem menuItem2 = new JMenuItem(f.getName());
-                    menuItem2.addActionListener(new FileOpener(application, f));
-                    fileMenu.add(menuItem2);
+            // ======== Recently Opened Files ========
+            {
+                reopenProject.setText(MenuUtils.REOPEN_PROJECT);
+                List<String> recentPaths = LocationPreferences.getInstance().getRecentlyOpenedFiles();
+                for (String recentPath : recentPaths) {
+                    File f = new File(recentPath);
+                    if (f.exists()) {
+                        JMenuItem menuItem2 = new JMenuItem(f.getName());
+                        menuItem2.addActionListener(new FileOpener(application, f));
+                        reopenProject.add(menuItem2);
+                    }
                 }
+                if (recentPaths.size() != 0) {
+                    reopenProject.addSeparator();
+                    addJMenuItem(reopenProject, clearAboveLists, MenuUtils.CLEAR_LISTS, -1, true);
+                }
+                fileMenu.add(reopenProject);
             }
-            if (recentPaths.size() != 0) {
-                addJMenuItem(fileMenu, clearAboveLists, MenuUtils.CLEAR_LISTS, -1, true);
-            }
+
             addJMenuItem(fileMenu, exit, MenuUtils.EXIT, KeyEvent.VK_Q, true);
         }
         add(fileMenu);
@@ -423,6 +434,11 @@ public class REDMenu extends JMenuBar implements ActionListener, DatabaseListene
         } else if (action.equals(MenuUtils.SAVE_PROJECT_AS)) {
             application.saveProjectAs();
         } else if (action.equals(MenuUtils.CONNECT_TO_DATABASE)) {
+            if (application.dataCollection().getAllDataSets() == null || application.dataCollection().getAllDataSets().length == 0) {
+                OptionDialogUtils.showWarningDialog(application, "You must import relative dataset(BAM file) before connecting to database.", "Unable to " +
+                        "connect to database now...");
+                return;
+            }
             new UserPasswordDialog(application);
         } else if (action.equals(MenuUtils.DATABASE)) {
             new DataImportDialog(application);
@@ -622,7 +638,6 @@ public class REDMenu extends JMenuBar implements ActionListener, DatabaseListene
         viewMenu.setEnabled(true);
         setDataTracks.setEnabled(true);
         reportsMenu.setEnabled(true);
-        connectToMySQL.setEnabled(true);
     }
 
     @Override
@@ -640,7 +655,7 @@ public class REDMenu extends JMenuBar implements ActionListener, DatabaseListene
 
     @Override
     public void databaseConnected() {
-        toDatabase.setEnabled(true);
+        importToDatabase.setEnabled(true);
         filterReports.setEnabled(true);
     }
 
@@ -663,6 +678,7 @@ public class REDMenu extends JMenuBar implements ActionListener, DatabaseListene
         showChromosomePanel.setEnabled(true);
         showFeaturePanel.setEnabled(true);
         showStatusPanel.setEnabled(true);
+        connectToDatabase.setEnabled(true);
         redToolbar.genomeLoaded();
     }
 
