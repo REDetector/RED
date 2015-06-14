@@ -35,6 +35,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
+import javax.swing.filechooser.FileFilter;
 import java.io.*;
 import java.util.Iterator;
 import java.util.List;
@@ -264,5 +265,18 @@ public class FastaFileParser extends DataParser {
         fw.write(Global.VERSION);
         fw.close();
         processingComplete(null);
+    }
+
+    @Override
+    public FileFilter getFileFilter() {
+        return new FileFilter() {
+            public boolean accept(File f) {
+                return f.isDirectory() || f.getName().toLowerCase().endsWith(".fasta");
+            }
+
+            public String getDescription() {
+                return "Fasta Files";
+            }
+        };
     }
 }

@@ -18,11 +18,16 @@
 
 package com.xl.display.dialog;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.filechooser.FileFilter;
 import java.awt.*;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.util.LinkedList;
 
@@ -32,6 +37,7 @@ import java.util.LinkedList;
  * The class JFileChooserExt extends JFileChooser and provide
  */
 public class JFileChooserExt extends JFileChooser {
+    private final Logger logger = LoggerFactory.getLogger(JFileChooserExt.class);
 
     private JTextField tf = null;
     private String regex;
@@ -56,9 +62,29 @@ public class JFileChooserExt extends JFileChooser {
                 }
 
                 public void changedUpdate(DocumentEvent e) {
-                    modifyFilter();
+                    //                    modifyFilter();
                 }
             });
+        }
+
+        addPropertyChangeListener(new PropertyChangeListenerImpl());
+
+    }
+
+    private class PropertyChangeListenerImpl implements PropertyChangeListener {
+
+        @Override
+        public void propertyChange(PropertyChangeEvent evt) {
+            if (JFileChooser.DIRECTORY_CHANGED_PROPERTY.equals(evt.getPropertyName())) {
+                //                JFileChooser chooser = (JFileChooser) evt.getSource();
+                //                File oldDir = (File) evt.getOldValue();
+                //                File newDir = (File) evt.getNewValue();
+                //                File curDir = chooser.getCurrentDirectory();
+                //
+                //                logger.info(oldDir.getAbsolutePath() + "\t" + newDir.getAbsolutePath() + "\t" + curDir.getAbsolutePath());
+                tf.setText("");
+                tf.requestFocus();
+            }
         }
     }
 

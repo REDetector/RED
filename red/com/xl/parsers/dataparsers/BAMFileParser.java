@@ -222,6 +222,7 @@ public class BAMFileParser extends DataParser {
         return samRecords;
     }
 
+    @Override
     public FileFilter getFileFilter() {
         return new FileFilter() {
             public boolean accept(File f) {

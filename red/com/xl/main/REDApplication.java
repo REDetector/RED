@@ -425,6 +425,7 @@ public class REDApplication extends JFrame implements ProgressListener, DataStor
         parser.addProgressListener(this);
 
         JFileChooserExt chooser = new JFileChooserExt(LocationPreferences.getInstance().getProjectDataDirectory(), null);
+        chooser.setFileFilter(parser.getFileFilter());
         chooser.setMultiSelectionEnabled(false);
 
         int result = chooser.showOpenDialog(this);
