@@ -82,6 +82,7 @@ public class QualityControlFilterPanel extends AbstractSiteFilter {
         if (!isValidInput()) {
             OptionDialogUtils.showWarningDialog(getOptionsPanel(), "The quality or depth of coverage is invalid, which must be between 0-255, please try again.", "Invalid " +
                     "input.");
+            progressCancelled();
             return;
         }
 
