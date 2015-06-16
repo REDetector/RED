@@ -36,6 +36,7 @@ import com.xl.display.report.FilterReports;
 import com.xl.display.report.ReportOptions;
 import com.xl.display.report.SitesDistributionHistogram;
 import com.xl.display.report.VariantDistributionHistogram;
+import com.xl.exception.NetworkException;
 import com.xl.exception.REDException;
 import com.xl.filter.filterpanel.*;
 import com.xl.help.HelpDialog;
@@ -596,18 +597,29 @@ public class REDMenu extends JMenuBar implements ActionListener, DatabaseListene
                 logger.error("Syntax exception.", e);
             }
         } else if (action.equals(MenuUtils.CHECK_FOR_UPDATES)) {
-            try {
-                if (UpdateChecker.isUpdateAvailable()) {
-                    String latestVersion = UpdateChecker.getLatestVersionNumber();
-                    OptionDialogUtils.showMessageDialog(application, "<html>A newer version of RED (v" + latestVersion + ") is available, " +
-                                    "<br>please go to  <a href=\"" + Global.HOME_PAGE + "\">" + Global.HOME_PAGE + "</a> for the latest version",
-                            "Update available");
-                } else {
-                    OptionDialogUtils.showMessageDialog(application, "<html>You are running the latest version of RED.", "Latest version of RED");
+            UpdateChecker.isUpdateAvailable(new UpdateChecker.IUpdateCheck() {
+                @Override
+                public void onSuccess(boolean isUpdateAvailable) {
+                    if (isUpdateAvailable) {
+                        String latestVersion;
+                        try {
+                            latestVersion = UpdateChecker.getLatestVersionNumber();
+                            OptionDialogUtils.showMessageDialog(application, "<html>A newer version of RED (v" + latestVersion + ") is available, " +
+                                            "<br>please go to  <a href=\"" + Global.HOME_PAGE + "\">" + Global.HOME_PAGE + "</a> for the latest version",
+                                    "Update available");
+                        } catch (NetworkException e) {
+                            OptionDialogUtils.showErrorDialog(application, "Network is unavailable, please have a check.");
+                        }
+                    } else {
+                        OptionDialogUtils.showMessageDialog(application, "<html>You are running the latest version of RED.", "Latest version of RED");
+                    }
                 }
-            } catch (REDException e) {
-                e.printStackTrace();
-            }
+
+                @Override
+                public void onFailed() {
+                    OptionDialogUtils.showErrorDialog(application, "Network is unavailable, please have a check.");
+                }
+            });
         } else if (action.equals(MenuUtils.ABOUT_RED)) {
             new AboutDialog();
         }

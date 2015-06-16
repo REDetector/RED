@@ -50,4 +50,10 @@ public class Global {
      */
     public static final String NEW_ISSUE_PAGE = ISSUES_PAGE + "/new";
 
+    /**
+     * Check online version.
+     */
+    public static final String VERSION_PAGE = HELP_ONLINE + "/version.txt";
+
+
 }

@@ -19,6 +19,7 @@ package com.xl.display.panel;
 
 import com.xl.display.dialog.CrashReporter;
 import com.xl.display.dialog.JFileChooserExt;
+import com.xl.exception.NetworkException;
 import com.xl.main.Global;
 import com.xl.main.REDApplication;
 import com.xl.net.genomes.UpdateChecker;
@@ -279,19 +280,36 @@ public class REDInfoPanel extends JPanel implements Runnable, ActionListener {
     @Override
     public void run() {
         try {
-            if (UpdateChecker.isUpdateAvailable()) {
-                String latestVersion = UpdateChecker.getLatestVersionNumber();
-                programUpdateLabel.setIcon(IconLoader.ICON_WARNING);
-                programUpdateLabelText.setText("A newer version of RED (v" + latestVersion + ") is available");
-            } else {
-                if (Global.VERSION.contains("dev")) {
-                    programUpdateLabel.setIcon(IconLoader.ICON_WARNING);
-                    programUpdateLabelText.setText("You are running a current development version of RED");
-                } else {
-                    programUpdateLabel.setIcon(IconLoader.ICON_TICK);
-                    programUpdateLabelText.setText("You are running the latest version of RED");
+            UpdateChecker.isUpdateAvailable(new UpdateChecker.IUpdateCheck() {
+                @Override
+                public void onSuccess(boolean isUpdateAvailable) {
+                    if (isUpdateAvailable) {
+                        String latestVersion;
+                        try {
+                            latestVersion = UpdateChecker.getLatestVersionNumber();
+                            programUpdateLabel.setIcon(IconLoader.ICON_WARNING);
+                            programUpdateLabelText.setText("A newer version of RED (v" + latestVersion + ") is available");
+                        } catch (NetworkException e) {
+                            programUpdateLabel.setIcon(IconLoader.ICON_ERROR);
+                            programUpdateLabelText.setText("Failed to check for RED updates");
+                        }
+                    } else {
+                        if (Global.VERSION.contains("dev")) {
+                            programUpdateLabel.setIcon(IconLoader.ICON_WARNING);
+                            programUpdateLabelText.setText("You are running a current development version of RED");
+                        } else {
+                            programUpdateLabel.setIcon(IconLoader.ICON_TICK);
+                            programUpdateLabelText.setText("You are running the latest version of RED");
+                        }
+                    }
                 }
-            }
+
+                @Override
+                public void onFailed() {
+                    programUpdateLabel.setIcon(IconLoader.ICON_ERROR);
+                    programUpdateLabelText.setText("Failed to check for RED updates");
+                }
+            });
         } catch (Exception e) {
             programUpdateLabel.setIcon(IconLoader.ICON_ERROR);
             programUpdateLabelText.setText("Failed to check for RED updates");

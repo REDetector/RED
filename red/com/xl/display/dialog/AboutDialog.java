@@ -57,12 +57,6 @@ public class AboutDialog extends JDialog {
 
         cont.add(buttonPanel, BorderLayout.SOUTH);
 
-        JPanel panel = new JPanel();
-        panel.setLayout(new BorderLayout());
-        JFileChooser chooser = new JFileChooser();
-        panel.add(chooser.getComponent(3));
-        cont.add(panel, BorderLayout.EAST);
-
         setSize(1000, 300);
         setLocationRelativeTo(REDApplication.getInstance());
         setResizable(false);

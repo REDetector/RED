@@ -17,8 +17,9 @@
  */
 package com.xl.net.genomes;
 
-import com.xl.exception.REDException;
+import com.xl.exception.NetworkException;
 import com.xl.main.Global;
+import com.xl.utils.NetworkDetector;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -33,22 +34,22 @@ import java.util.Arrays;
  * The UpdateChecker allows the program to check on the homepage of RED to determine if a newer version of the program has been released so we can prompt the
  * user to get the update.
  */
-public class UpdateChecker {
-    private static final Logger logger = LoggerFactory.getLogger(UpdateChecker.class);
+public class UpdateChecker implements Runnable {
+    private final Logger logger = LoggerFactory.getLogger(UpdateChecker.class);
 
     private static String latestVersion = null;
 
+    private IUpdateCheck updateListener;
+
     /**
      * Checks if an is update available.
-     *
-     * @return true, if an update is available
-     * @throws REDException if we were unable to check for an update
      */
-    public static boolean isUpdateAvailable() throws REDException {
-        if (latestVersion == null) {
-            getLatestVersionNumber();
-        }
-        return UpdateChecker.isNewer(Global.VERSION, latestVersion);
+    public static void isUpdateAvailable(IUpdateCheck listener) {
+        new Thread(new UpdateChecker(listener)).start();
+    }
+
+    private UpdateChecker(IUpdateCheck listener) {
+        this.updateListener = listener;
     }
 
     /**
@@ -58,8 +59,8 @@ public class UpdateChecker {
      * @param remoteVersion The version string from the latest remote version
      * @return true, if the remote version is newer
      */
-    private static boolean isNewer(String thisVersion, String remoteVersion) {
-        logger.info(remoteVersion);
+    private boolean isNewer(String thisVersion, String remoteVersion) {
+        logger.info("Current version: " + thisVersion + "\tRemote version: " + remoteVersion);
         String[] thisSections = thisVersion.split("[ \\.]");
         String[] remoteSections = remoteVersion.split("[ \\.]");
 
@@ -93,12 +94,12 @@ public class UpdateChecker {
      * Gets the latest version number from the main RED site
      *
      * @return The version string from the remote site
-     * @throws REDException if the remote version couldn't be retrieved
+     * @throws NetworkException if the remote version couldn't be retrieved
      */
-    public static String getLatestVersionNumber() throws REDException {
+    public static String getLatestVersionNumber() throws NetworkException {
 
         try {
-            URL updateURL = new URL("http", "redetector.github.io", "/version.txt");
+            URL updateURL = new URL(Global.VERSION_PAGE);
 
             URLConnection connection = updateURL.openConnection();
             connection.setUseCaches(false);
@@ -113,9 +114,33 @@ public class UpdateChecker {
             latestVersion = new String(actualData);
             return latestVersion.replaceAll("[\\r\\n]", "").trim();
         } catch (IOException e) {
-            e.printStackTrace();
-            throw new REDException("Couldn't contact the update server to check for updates");
+            throw new NetworkException("Couldn't contact the update server to check for updates");
         }
     }
 
+    @Override
+    public void run() {
+        try {
+            if (!NetworkDetector.isNetworkAvailable()) {
+                throw new NetworkException("Couldn't contact the update server to check for updates");
+            }
+            if (latestVersion == null) {
+                getLatestVersionNumber();
+            }
+            if (updateListener != null) {
+                updateListener.onSuccess(isNewer(Global.VERSION, latestVersion));
+            }
+
+        } catch (NetworkException e) {
+            if (updateListener != null) {
+                updateListener.onFailed();
+            }
+        }
+    }
+
+    public interface IUpdateCheck {
+        void onSuccess(boolean isUpdateAvailable);
+
+        void onFailed();
+    }
 }
