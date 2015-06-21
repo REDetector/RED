@@ -18,6 +18,9 @@
 
 package com.xl.utils;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.IOException;
 import java.net.URL;
 import java.net.URLConnection;
@@ -28,21 +31,40 @@ import java.net.URLConnection;
  * A tool to detect whether the network is available.
  */
 public class NetworkDetector {
-    public static boolean isNetworkAvailable() {
-        return isNetworkAvailable("http://www.github.com");
+    private static final Logger logger = LoggerFactory.getLogger(NetworkDetector.class);
+
+    public static void isNetworkAvailable(INetwork listener) {
+        accessNetWork("http://www.github.com", listener);
     }
 
-    public static boolean isNetworkAvailable(String path) {
-        URL url;
-        try {
-            url = new URL(path);
-            URLConnection connection = url.openConnection();
-            connection.setConnectTimeout(10000);
-            connection.setReadTimeout(10000);
-            connection.getInputStream();
-            return true;
-        } catch (IOException e) {
-            return false;
-        }
+    public static void accessNetWork(final String path, final INetwork listener) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                URL url;
+                try {
+                    url = new URL(path);
+                    URLConnection connection = url.openConnection();
+                    connection.setConnectTimeout(10000);
+                    connection.setReadTimeout(10000);
+                    connection.getInputStream();
+                    if (listener != null) {
+                        logger.info("Network is Available.");
+                        listener.onSuccess();
+                    }
+                } catch (IOException e) {
+                    if (listener != null) {
+                        logger.info("Network is unavailable.");
+                        listener.onFailed();
+                    }
+                }
+            }
+        }).start();
+    }
+
+    public interface INetwork {
+        void onSuccess();
+
+        void onFailed();
     }
 }

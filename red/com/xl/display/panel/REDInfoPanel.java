@@ -28,6 +28,8 @@ import com.xl.preferences.REDPreferences;
 import com.xl.utils.FileUtils;
 import com.xl.utils.namemanager.InfoPanelUtils;
 import com.xl.utils.ui.IconLoader;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
 import java.awt.*;
@@ -41,8 +43,8 @@ import java.text.DecimalFormat;
 /**
  * This panel is displayed when the program first starts. It shows information about the current RED install
  */
-public class REDInfoPanel extends JPanel implements Runnable, ActionListener {
-
+public class REDInfoPanel extends JPanel implements ActionListener {
+    private final Logger logger = LoggerFactory.getLogger(REDInfoPanel.class);
     /**
      * The update label.
      */
@@ -254,8 +256,7 @@ public class REDInfoPanel extends JPanel implements Runnable, ActionListener {
 
         // We can start the update checker if they've allowed us to
         if (REDPreferences.getInstance().checkForUpdates()) {
-            Thread t = new Thread(this);
-            t.start();
+            checkUpdate();
         } else {
             programUpdateLabel.setIcon(IconLoader.ICON_WARNING);
             programUpdateLabelText.setText(InfoPanelUtils.PROGRAM_CHECK_UPDATE_DISABLE);
@@ -277,8 +278,8 @@ public class REDInfoPanel extends JPanel implements Runnable, ActionListener {
         return jb;
     }
 
-    @Override
-    public void run() {
+    public void checkUpdate() {
+        logger.info("Start running RED update program.");
         try {
             UpdateChecker.isUpdateAvailable(new UpdateChecker.IUpdateCheck() {
                 @Override

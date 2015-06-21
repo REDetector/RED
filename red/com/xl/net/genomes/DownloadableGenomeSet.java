@@ -18,8 +18,10 @@
 
 package com.xl.net.genomes;
 
-import com.xl.exception.NetworkException;
+import com.xl.main.REDApplication;
 import com.xl.preferences.LocationPreferences;
+import com.xl.utils.NetworkDetector;
+import com.xl.utils.ui.OptionDialogUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -43,7 +45,7 @@ public class DownloadableGenomeSet {
      */
     private static int genomeCount = 0;
 
-    public DownloadableGenomeSet() throws IOException, NetworkException {
+    public DownloadableGenomeSet() {
         // If the size of genome lists is equal to the genome count, then we used the genome lists instead of downloading the same thing again.
         if (genomeLists.size() == genomeCount && genomeCount != 0) {
             return;
@@ -51,24 +53,47 @@ public class DownloadableGenomeSet {
         genomeCount = 0;
         genomeLists.clear();
 
-        URL genomeIndexURL = new URL(LocationPreferences.getInstance().getGenomeDownloadLists() + "genomes.txt");
-        BufferedReader genomeIndexReader = new BufferedReader(new InputStreamReader(genomeIndexURL.openStream()));
+        final String genomeDownloadPath = LocationPreferences.getInstance().getGenomeDownloadLists() + "genomes.txt";
 
-        String indexLine;
-        while ((indexLine = genomeIndexReader.readLine()) != null) {
-            if (indexLine.startsWith("<!DOCTYPE")) {
-                throw new NetworkException();
+        NetworkDetector.accessNetWork(genomeDownloadPath, new NetworkDetector.INetwork() {
+            @Override
+            public void onSuccess() {
+                BufferedReader genomeIndexReader = null;
+                try {
+                    URL genomeIndexURL = new URL(genomeDownloadPath);
+                    genomeIndexReader = new BufferedReader(new InputStreamReader(genomeIndexURL.openStream()));
+                    String indexLine;
+                    while ((indexLine = genomeIndexReader.readLine()) != null) {
+                        String[] sections = indexLine.split("\\t");
+                        if (sections[0].startsWith("<")) {
+                            continue;
+                        } else if (sections.length < 3) {
+                            throw new IOException("Genome list file is corrupt. Expected 3 sections on line '" + indexLine + "' but got " + sections.length);
+                        }
+                        genomeCount++;
+                        //A. baumannii str. ATCC	http://igv.broadinstitute.org/genomes/ABaumannii_ATCC_17978.genome	ABaumannii_ATCC_17978
+                        genomeLists.add(new GenomeList(sections[0], sections[1], sections[2]));
+                    }
+                } catch (IOException e) {
+                    logger.error("Error parsing the online genome list at '{}'", genomeDownloadPath);
+                } finally {
+                    if (genomeIndexReader != null) {
+                        try {
+                            genomeIndexReader.close();
+                        } catch (IOException e) {
+                            logger.error("Error close the buffered reader.", e);
+                        }
+                    }
+                }
             }
-            String[] sections = indexLine.split("\\t");
-            if (sections[0].startsWith("<")) {
-                continue;
-            } else if (sections.length < 3) {
-                throw new IOException("Genome list file is corrupt. Expected 3 sections on line '" + indexLine + "' but got " + sections.length);
+
+            @Override
+            public void onFailed() {
+                OptionDialogUtils.showErrorDialog(REDApplication.getInstance(), "Network is unavailable, please have a check.");
             }
-            genomeCount++;
-            //A. baumannii str. ATCC	http://igv.broadinstitute.org/genomes/ABaumannii_ATCC_17978.genome	ABaumannii_ATCC_17978
-            genomeLists.add(new GenomeList(sections[0], sections[1], sections[2]));
-        }
+        });
+
+
     }
 
     public static Vector<GenomeList> getGenomeLists() {

@@ -200,6 +200,7 @@ public class REDApplication extends JFrame implements ProgressListener, DataStor
     }
 
     public static void main(String[] args) {
+        logger.info("Start running the RED");
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
         } catch (Exception e) {

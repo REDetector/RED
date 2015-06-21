@@ -34,22 +34,39 @@ import java.util.Arrays;
  * The UpdateChecker allows the program to check on the homepage of RED to determine if a newer version of the program has been released so we can prompt the
  * user to get the update.
  */
-public class UpdateChecker implements Runnable {
-    private final Logger logger = LoggerFactory.getLogger(UpdateChecker.class);
+public class UpdateChecker {
+    private final static Logger logger = LoggerFactory.getLogger(UpdateChecker.class);
 
     private static String latestVersion = null;
-
-    private IUpdateCheck updateListener;
 
     /**
      * Checks if an is update available.
      */
-    public static void isUpdateAvailable(IUpdateCheck listener) {
-        new Thread(new UpdateChecker(listener)).start();
-    }
+    public static void isUpdateAvailable(final IUpdateCheck listener) {
+        NetworkDetector.isNetworkAvailable(new NetworkDetector.INetwork() {
+            @Override
+            public void onSuccess() {
+                try {
+                    if (latestVersion == null) {
+                        getLatestVersionNumber();
+                    }
+                    if (listener != null) {
+                        listener.onSuccess(isNewer(Global.VERSION, latestVersion));
+                    }
+                } catch (NetworkException e) {
+                    if (listener != null) {
+                        listener.onFailed();
+                    }
+                }
+            }
 
-    private UpdateChecker(IUpdateCheck listener) {
-        this.updateListener = listener;
+            @Override
+            public void onFailed() {
+                if (listener != null) {
+                    listener.onFailed();
+                }
+            }
+        });
     }
 
     /**
@@ -59,7 +76,7 @@ public class UpdateChecker implements Runnable {
      * @param remoteVersion The version string from the latest remote version
      * @return true, if the remote version is newer
      */
-    private boolean isNewer(String thisVersion, String remoteVersion) {
+    private static boolean isNewer(String thisVersion, String remoteVersion) {
         logger.info("Current version: " + thisVersion + "\tRemote version: " + remoteVersion);
         String[] thisSections = thisVersion.split("[ \\.]");
         String[] remoteSections = remoteVersion.split("[ \\.]");
@@ -74,7 +91,7 @@ public class UpdateChecker implements Runnable {
                 return true;
             } else if (thisNumber > remoteNumber) {
                 // This version is higher
-                System.err.println("Local version (" + thisVersion + ") is higher than the remote (" + remoteVersion + ")");
+                logger.error("Local version (" + thisVersion + ") is higher than the remote (" + remoteVersion + ")");
                 return false;
             }
         }
@@ -85,7 +102,7 @@ public class UpdateChecker implements Runnable {
         }
 
         if (thisSections.length > remoteSections.length) {
-            System.err.println("Local version (" + thisVersion + ") is higher than the remote (" + remoteVersion + ")");
+            logger.error("Local version (" + thisVersion + ") is higher than the remote (" + remoteVersion + ")");
         }
         return false;
     }
@@ -97,7 +114,7 @@ public class UpdateChecker implements Runnable {
      * @throws NetworkException if the remote version couldn't be retrieved
      */
     public static String getLatestVersionNumber() throws NetworkException {
-
+        logger.info("Try to get the latest version of RED");
         try {
             URL updateURL = new URL(Global.VERSION_PAGE);
 
@@ -115,26 +132,6 @@ public class UpdateChecker implements Runnable {
             return latestVersion.replaceAll("[\\r\\n]", "").trim();
         } catch (IOException e) {
             throw new NetworkException("Couldn't contact the update server to check for updates");
-        }
-    }
-
-    @Override
-    public void run() {
-        try {
-            if (!NetworkDetector.isNetworkAvailable()) {
-                throw new NetworkException("Couldn't contact the update server to check for updates");
-            }
-            if (latestVersion == null) {
-                getLatestVersionNumber();
-            }
-            if (updateListener != null) {
-                updateListener.onSuccess(isNewer(Global.VERSION, latestVersion));
-            }
-
-        } catch (NetworkException e) {
-            if (updateListener != null) {
-                updateListener.onFailed();
-            }
         }
     }
 
