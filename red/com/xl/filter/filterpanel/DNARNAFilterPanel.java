@@ -1,29 +1,24 @@
 /*
- * RED: RNA Editing Detector
- *     Copyright (C) <2014>  <Xing Li>
- *
- *     RED is free software: you can redistribute it and/or modify
- *     it under the terms of the GNU General Public License as published by
- *     the Free Software Foundation, either version 3 of the License, or
- *     (at your option) any later version.
- *
- *     RED is distributed in the hope that it will be useful,
- *     but WITHOUT ANY WARRANTY; without even the implied warranty of
- *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *     GNU General Public License for more details.
- *
- *     You should have received a copy of the GNU General Public License
- *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * RED: RNA Editing Detector Copyright (C) <2014> <Xing Li>
+ * 
+ * RED is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as
+ * published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * 
+ * RED is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License along with this program. If not, see
+ * <http://www.gnu.org/licenses/>.
  */
 package com.xl.filter.filterpanel;
 
 import com.xl.database.DatabaseManager;
 import com.xl.database.Query;
-import com.xl.database.TableCreator;
 import com.xl.datatypes.DataStore;
 import com.xl.datatypes.sites.Site;
 import com.xl.datatypes.sites.SiteList;
 import com.xl.exception.REDException;
+import com.xl.filter.Filter;
 import com.xl.filter.dnarna.DNARNAFilter;
 import com.xl.preferences.DatabasePreferences;
 import org.slf4j.Logger;
@@ -32,12 +27,15 @@ import org.slf4j.LoggerFactory;
 import javax.swing.*;
 import javax.swing.event.TreeSelectionEvent;
 import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Vector;
 
 /**
- * The Class DNARNAFilterPanel is a rule-based filter panel to provide some parameters to be set as user's preference if there is any choice.
+ * The Class DNARNAFilterPanel is a rule-based filter panel to provide some parameters to be set as user's preference if
+ * there is any choice.
  */
-public class DNARNAFilterPanel extends AbstractSiteFilter {
+public class DNARNAFilterPanel extends AbstractFilterPanel {
     private final Logger logger = LoggerFactory.getLogger(DNARNAFilterPanel.class);
     /**
      * The DNA-RNA filter option panel.
@@ -62,17 +60,20 @@ public class DNARNAFilterPanel extends AbstractSiteFilter {
     protected void generateSiteList() throws SQLException {
         progressUpdated("Filtering RNA editing sites by DNA-RNA filter, please wait...", 0, 0);
         logger.info("Filtering RNA editing sites by DNA-RNA filter.");
-        String linearTableName = currentSample + "_" + parentList.getFilterName() + "_" + DatabaseManager.DNA_RNA_FILTER_RESULT_TABLE_NAME;
-        if (!TableCreator.createFilterTable(parentList.getTableName(), linearTableName)) {
-            progressCancelled();
-            return;
-        }
-        DNARNAFilter dnaRnaFilter = new DNARNAFilter(databaseManager);
+        String linearTableName =
+            currentSample + "_" + parentList.getFilterName() + "_" + DatabaseManager.DNA_RNA_FILTER_RESULT_TABLE_NAME;
+        Filter filter = new DNARNAFilter();
         String sampleName = DatabasePreferences.getInstance().getCurrentSample();
-        dnaRnaFilter.executeDnaRnaFilter(linearTableName, sampleName + "_" + DatabaseManager.DNA_VCF_RESULT_TABLE_NAME, parentList.getTableName());
+        Map<String, String> params = new HashMap<String, String>();
+        params.put(DNARNAFilter.PARAMS_STRING_DNA_VCF_TABLE, sampleName + "_"
+            + DatabaseManager.DNA_VCF_RESULT_TABLE_NAME);
+        params.put(DNARNAFilter.PARAMS_STRING_EDITING_TYPE, "AG");
+        filter.performFilter(parentList.getTableName(), linearTableName, params);
         DatabaseManager.getInstance().distinctTable(linearTableName);
         Vector<Site> sites = Query.queryAllEditingSites(linearTableName);
-        SiteList newList = new SiteList(parentList, listName(), DatabaseManager.DNA_RNA_FILTER_RESULT_TABLE_NAME, linearTableName, description());
+        SiteList newList =
+            new SiteList(parentList, listName(), DatabaseManager.DNA_RNA_FILTER_RESULT_TABLE_NAME, linearTableName,
+                description());
         int index = 0;
         int sitesLength = sites.size();
         for (Site site : sites) {
@@ -115,7 +116,7 @@ public class DNARNAFilterPanel extends AbstractSiteFilter {
     /**
      * The DNA-RNA filter option panel.
      */
-    private class DNARNAFilterOptionPanel extends AbstractOptionPanel {
+    private class DNARNAFilterOptionPanel extends AbstractFilterOptionPanel {
 
         /**
          * Instantiates a new DNA-RNA filter option panel.
@@ -136,8 +137,8 @@ public class DNARNAFilterPanel extends AbstractSiteFilter {
 
         @Override
         protected String getPanelDescription() {
-            return "RNA-seq variants where its counterparts in genomic DNA is not reference homozygote (e.g., AA) would be excluded if DNA sequencing data is" +
-                    " available.";
+            return "RNA-seq variants where its counterparts in genomic DNA is not reference homozygote (e.g., AA) would be excluded if DNA sequencing data is"
+                + " available.";
         }
 
         @Override

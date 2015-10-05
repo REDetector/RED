@@ -36,7 +36,8 @@ import java.util.ArrayList;
 /**
  * The Class AbstractSiteFilter represents a generic filter from which all of the actual filters derive
  */
-abstract class AbstractSiteFilter implements Runnable, Cancellable {
+abstract class AbstractFilterPanel implements Runnable, Cancellable {
+    private final Logger logger = LoggerFactory.getLogger(AbstractFilterPanel.class);
     /**
      * The data store.
      */
@@ -49,7 +50,6 @@ abstract class AbstractSiteFilter implements Runnable, Cancellable {
      * The sample name derive from the site set.
      */
     protected final String currentSample;
-    private final Logger logger = LoggerFactory.getLogger(AbstractSiteFilter.class);
     /**
      * The parent list selected from the left option panel by user.
      */
@@ -72,7 +72,7 @@ abstract class AbstractSiteFilter implements Runnable, Cancellable {
      *
      * @param dataStore The dataCollection
      */
-    public AbstractSiteFilter(DataStore dataStore) {
+    public AbstractFilterPanel(DataStore dataStore) {
         this.dataStore = dataStore;
         databaseManager = DatabaseManager.getInstance();
         parentList = dataStore.siteSet().getActiveList();

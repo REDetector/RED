@@ -1,26 +1,21 @@
 /*
- * RED: RNA Editing Detector
- *     Copyright (C) <2014>  <Xing Li>
- *
- *     RED is free software: you can redistribute it and/or modify
- *     it under the terms of the GNU General Public License as published by
- *     the Free Software Foundation, either version 3 of the License, or
- *     (at your option) any later version.
- *
- *     RED is distributed in the hope that it will be useful,
- *     but WITHOUT ANY WARRANTY; without even the implied warranty of
- *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *     GNU General Public License for more details.
- *
- *     You should have received a copy of the GNU General Public License
- *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * RED: RNA Editing Detector Copyright (C) <2014> <Xing Li>
+ * 
+ * RED is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as
+ * published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * 
+ * RED is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License along with this program. If not, see
+ * <http://www.gnu.org/licenses/>.
  */
 
 package com.xl.database;
 
 /**
- * DatabaseManager is a class to manage database. We make it as a static private class so everyone can only use it in a single thread,
- * which will influence the efficiency, but in order to synchronize, we would like to make it.
+ * DatabaseManager is a class to manage database. We make it as a static private class so everyone can only use it in a
+ * single thread, which will influence the efficiency, but in order to synchronize, we would like to make it.
  */
 
 import com.xl.main.REDApplication;
@@ -47,23 +42,23 @@ public class DatabaseManager {
     public static final String EDITING_TYPE_FILTER_RESULT_TABLE_NAME = "etfilter";
     public static final String SPLICE_JUNCTION_FILTER_RESULT_TABLE_NAME = "sjfilter";
     public static final String DBSNP_FILTER_RESULT_TABLE_NAME = "dbfilter";
-    public static final String PVALUE_FILTER_RESULT_TABLE_NAME = "fetfilter";
+    public static final String FET_FILTER_RESULT_TABLE_NAME = "fetfilter";
     public static final String REPEAT_FILTER_RESULT_TABLE_NAME = "rrfilter";
     public static final String DNA_RNA_FILTER_RESULT_TABLE_NAME = "drfilter";
     public static final String LLR_FILTER_RESULT_TABLE_NAME = "llrfilter";
-    public static final String ALU_FILTER_RESULT_TABLE_NAME = "alufilter";
     public static final String SPLICE_JUNCTION_TABLE_NAME = "splice_junction";
-    public static final String DBSNP_DATABASE_TABLE_NAME = "dbsnp_database";
-    public static final String REPEAT_MASKER_TABLE_NAME = "repeat_masker";
     public static final String DARNED_DATABASE_TABLE_NAME = "darned_database";
+    public static final String REPEAT_MASKER_TABLE_NAME = "repeat_masker";
+    public static final String DBSNP_DATABASE_TABLE_NAME = "dbsnp_database";
+    public static final String REFSEQ_GENE_TABLE_NAME = "reference_gene";
     private static final Logger logger = LoggerFactory.getLogger(DatabaseManager.class);
     /**
      * The single instance of DatabaseManager.
      */
     private static final DatabaseManager DATABASE_MANAGER = new DatabaseManager();
     /**
-     * A statement to execute SQL clause. We use this statement in insert clause to improve the performance that prevent creating statement every time executing
-     * the insert clause.
+     * A statement to execute SQL clause. We use this statement in insert clause to improve the performance that prevent
+     * creating statement every time executing the insert clause.
      */
     private static Statement stmt;
     /**
@@ -125,7 +120,7 @@ public class DatabaseManager {
     /**
      * Tell all classes which have inherit <code>DatabaseListener</code> that database or sample has been changed.
      *
-     * @param database   The changed database.
+     * @param database The changed database.
      * @param sampleName The changed sample.
      */
     public void databaseChanged(String database, String sampleName) {
@@ -140,17 +135,26 @@ public class DatabaseManager {
     /**
      * A method to connect database using Java Database Connectivity.
      *
-     * @param host     Host where database is on.
-     * @param port     Port that database is used.
-     * @param user     The user.
+     * @param host Host where database is on.
+     * @param port Port that database is used.
+     * @param user The user.
      * @param password The password.
      * @return Whether database has been connected, true if it is successful.
      */
-    public boolean connectDatabase(String host, String port, String user, String password) throws SQLException, ClassNotFoundException {
-        Class.forName("com.mysql.jdbc.Driver");
+    public boolean connectDatabase(String host, String port, String user, String password) throws SQLException,
+        ClassNotFoundException {
+        try {
+            Class.forName("com.mysql.jdbc.Driver");
+        } catch (ClassNotFoundException e) {
+            logger.error("The JDBC driver has not been found.", e);
+        }
+
         String connectionURL = "jdbc:mysql://" + host + ":" + port;
-        logger.info("Connecting to MySQL database...");
-        con = DriverManager.getConnection(connectionURL, user, password);
+        try {
+            con = DriverManager.getConnection(connectionURL, user, password);
+        } catch (SQLException e) {
+            logger.error("Database connection error.", e);
+        }
         return con != null;
     }
 
@@ -179,13 +183,13 @@ public class DatabaseManager {
     }
 
     /**
-     * Calculate the row count accurately of a given database table. We used 'select count(*) from tableName' before, but it seems that 'select count(1) from
-     * tableName' is faster and get the same result.
+     * Calculate the row count accurately of a given database table. We used 'select count(*) from tableName' before,
+     * but it seems that 'select count(1) from tableName' is faster and get the same result.
      *
      * @param tableName The table name to be counted its row line.
      * @return The row count of a given table name.
      */
-    public int getRowCount(String tableName) {
+    public int calRowCount(String tableName) {
         Statement stmt;
         try {
             stmt = con.createStatement();
@@ -203,8 +207,8 @@ public class DatabaseManager {
     }
 
     /**
-     * Create a database. This should be only called before data is being imported to check whether the database has been created. We only create two database:
-     * DENOVO_MODE and DNA_RNA_MODE.
+     * Create a database. This should be only called before data is being imported to check whether the database has
+     * been created. We only create two databases: DENOVO_MODE and DNA_RNA_MODE.
      *
      * @param databaseName The database to be created.
      */
@@ -216,6 +220,10 @@ public class DatabaseManager {
         } catch (SQLException e) {
             logger.error("Unable to create database: create database if not exists {}", databaseName);
         }
+    }
+
+    public boolean hasEstablishTable(String darnedTable) {
+        return calRowCount(darnedTable) > 0;
     }
 
     /**
@@ -243,20 +251,22 @@ public class DatabaseManager {
         try {
             databaseMetaData = con.getMetaData();
         } catch (SQLException e) {
-            OptionDialogUtils.showErrorDialog(REDApplication.getInstance(),"Statement has not been created. Could not get meta data from database.");
+            OptionDialogUtils.showErrorDialog(REDApplication.getInstance(),
+                "Statement has not been created. Could not get meta data from database.");
             logger.error("Statement has not been created. Could not get meta data from database.", e);
             return new ArrayList<String>();
         }
         ResultSet rs;
         try {
-            rs = databaseMetaData.getTables(database, null, null, new String[]{"TABLE"});
+            rs = databaseMetaData.getTables(database, null, null, new String[] { "TABLE" });
             while (rs.next()) {
                 // get table name
                 tableLists.add(rs.getString(3));
             }
             return tableLists;
         } catch (SQLException e) {
-            OptionDialogUtils.showErrorDialog(REDApplication.getInstance(),"Database " + database + " does not exist. Please have a check in your database.");
+            OptionDialogUtils.showErrorDialog(REDApplication.getInstance(), "Database " + database
+                + " does not exist. Please have a check in your database.");
             logger.error("Database " + database + " does not exist. Please have a check in your database.", e);
             return new ArrayList<String>();
         }
@@ -280,10 +290,11 @@ public class DatabaseManager {
     /**
      * We provide this method to delete a sample and its relative filtration result from database.
      * <p/>
-     * Here is an example: If the sample name is 'BJ22', then we will check all table from this database and find out the table names which starts with 'BJ22_',
-     * we add an '_' to prevent from deleting the replicate sample like 'BJ22N', 'BJ22T', 'BJ22P', etc.
+     * Here is an example: If the sample name is 'BJ22', then we will check all table from this database and find out
+     * the table names which starts with 'BJ22_', we add an '_' to prevent from deleting the replicate sample like
+     * 'BJ22N', 'BJ22T', 'BJ22P', etc.
      *
-     * @param database   Database which is currently used.
+     * @param database Database which is currently used.
      * @param sampleName The sample to be deleted.
      */
     public void deleteTableAndFilters(String database, String sampleName) {
@@ -292,24 +303,56 @@ public class DatabaseManager {
             List<String> tableLists = getCurrentTables(database);
             // Prevent from deleting BJ22N sample, but actually we want to delete BJ22 sample.
             Statement stmt = con.createStatement();
-            logger.info(tableLists.toString());
             for (String table : tableLists) {
+                // We won't drop your own data set in the database.
+                if (table.equals(sampleName + "_" + DatabaseManager.DNA_VCF_RESULT_TABLE_NAME)
+                    || table.equals(sampleName + "_" + DatabaseManager.RNA_VCF_RESULT_TABLE_NAME)) {
+                    continue;
+                }
                 if (table.startsWith(sampleName + "_")) {
-                    logger.info("drop table if exists " + table);
                     stmt.executeUpdate("drop table if exists " + table);
                 }
             }
             stmt.close();
         } catch (SQLException e) {
-            logger.error("Unable to drop tables and filters for sample " + sampleName, e);
+            logger.error("Error delete sample '" + sampleName + "' in database '" + database + "'", e);
+        }
+    }
+
+    /**
+     * We get the name of a table like "BJ22" from "BJ22_qcfilter_etfilter"
+     *
+     * @param tableName
+     * @return
+     */
+    public String getSampleName(String tableName) {
+        if (tableName == null) {
+            return null;
+        }
+        String[] sections = tableName.split("_");
+        if (sections.length == 1) {
+            return tableName;
+        } else if (sections.length == 2) {
+            return tableName.substring(0, tableName.indexOf("_"));
+        } else {
+            StringBuilder builder = new StringBuilder();
+            for (String section : sections) {
+                if (section.contains(DatabaseManager.RNA_VCF_RESULT_TABLE_NAME) || section.contains(FILTER)) {
+                    break;
+                } else {
+                    builder.append(section).append("_");
+                }
+            }
+            return builder.substring(0, builder.length() - 1);
         }
     }
 
     /**
      * Query all relative tables to the sample from database.
      * <p/>
-     * Here is an example: If the sample name is 'BJ22', then we will check all table from this database and find out the table names which starts with 'BJ22_',
-     * we add an '_' to prevent from querying the replicate sample like 'BJ22N', 'BJ22T', 'BJ22P', etc.
+     * Here is an example: If the sample name is 'BJ22', then we will check all table from this database and find out
+     * the table names which starts with 'BJ22_', we add an '_' to prevent from querying the replicate sample like
+     * 'BJ22N', 'BJ22T', 'BJ22P', etc.
      *
      * @param sampleName The sample which should be queried.
      * @return A list contains all tables relative to this sample.
@@ -345,7 +388,7 @@ public class DatabaseManager {
      *
      * @param sql The SQL clause.
      */
-    public void insert(String sql) throws SQLException {
+    public void insertClause(String sql) throws SQLException {
         if (stmt == null || stmt.isClosed()) {
             stmt = con.createStatement();
         }
@@ -353,23 +396,25 @@ public class DatabaseManager {
     }
 
     /**
-     * Provide a common method to execute SQL clause. Some SQL clauses can't use specific methods provided by DatabaseManager table creation.
+     * Provide a common method to execute SQL clause. Some SQL clauses can't use specific methods provided by
+     * DatabaseManager table creation.
      *
      * @param sql The SQL clause.
      */
-    public void executeSQL(String sql) {
+    public void executeSQL(String sql) throws SQLException {
         try {
             Statement stmt = con.createStatement();
             stmt.executeUpdate(sql);
             stmt.close();
         } catch (SQLException e) {
             logger.error("Error execute the SQL clause: " + sql, e);
+            throw e;
         }
     }
 
     /**
-     * Provide a method to execute multi-table queries. You should not use this method to do a single table query, and use 'query(String table, String[]
-     * columns, String selection, String[] selectionArgs)' instead.
+     * Provide a method to execute multi-table queries. You should not use this method to do a single table query, and
+     * use 'query(String table, String[] columns, String selection, String[] selectionArgs)' instead.
      *
      * @param queryClause The query clause.
      * @return A result set contains all query result.
@@ -388,13 +433,13 @@ public class DatabaseManager {
     /**
      * Query the given table, returning the result set.
      *
-     * @param table         The table name to compile the query against.
-     * @param columns       A list of which columns to return. Passing null will return all columns, which is discouraged to prevent reading data from storage
-     *                      that isn't going to be used.
-     * @param selection     A filter declaring which rows to return, formatted as an SQL WHERE clause (excluding the WHERE itself). Passing null will return all
-     *                      rows for the given table.
-     * @param selectionArgs You may include ?s in selection, which will be replaced by the values from selectionArgs, in order that they appear in the
-     *                      selection. The values will be bound as Strings.
+     * @param table The table name to compile the query against.
+     * @param columns A list of which columns to return. Passing null will return all columns, which is discouraged to
+     *            prevent reading data from storage that isn't going to be used.
+     * @param selection A filter declaring which rows to return, formatted as an SQL WHERE clause (excluding the WHERE
+     *            itself). Passing null will return all rows for the given table.
+     * @param selectionArgs You may include ?s in selection, which will be replaced by the values from selectionArgs, in
+     *            order that they appear in the selection. The values will be bound as Strings.
      * @return A ResultSet object, which is positioned before the first entry.
      */
     public ResultSet query(String table, String[] columns, String selection, String[] selectionArgs) {
@@ -420,10 +465,10 @@ public class DatabaseManager {
                 for (int i = 1, len = selectionArgs.length; i <= len; i++) {
                     statement.setString(i, selectionArgs[i - 1]);
                 }
-                rs = statement.executeQuery(stringBuilder.toString());
+                rs = statement.executeQuery();
             }
         } catch (SQLException e) {
-            logger.error("Error execute SQL clause: " + stringBuilder.toString(), e);
+            logger.error("There is a syntax error: " + stringBuilder.toString(), e);
         }
         return rs;
     }
@@ -447,11 +492,15 @@ public class DatabaseManager {
      * @param resultTable The table to distinct.
      */
     public void distinctTable(String resultTable) {
-        String tempTable = RandomStringGenerator.createRandomString(10);
-        executeSQL("create temporary table " + tempTable + " select distinct * from " + resultTable);
-        executeSQL("truncate table " + resultTable);
-        executeSQL("insert into " + resultTable + " select * from " + tempTable);
-        deleteTable(tempTable);
+        try {
+            String tempTable = RandomStringGenerator.createRandomString(10);
+            executeSQL("create temporary table " + tempTable + " select distinct * from " + resultTable);
+            executeSQL("truncate table " + resultTable);
+            executeSQL("insert into " + resultTable + " select * from " + tempTable);
+            deleteTable(tempTable);
+        } catch (SQLException e) {
+            logger.error("Error execute sql clause in " + DatabaseManager.class.getName() + ":distinctTable()", e);
+        }
     }
 
     @Override

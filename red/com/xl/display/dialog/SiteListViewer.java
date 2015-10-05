@@ -315,7 +315,7 @@ public class SiteListViewer extends JDialog implements MouseListener, ActionList
         }
 
         /* (non-Javadoc)
-         * @see javax.swing.table.TableModel#getRowCount()
+         * @see javax.swing.table.TableModel#calRowCount()
          */
         public int getRowCount() {
             return data.length;

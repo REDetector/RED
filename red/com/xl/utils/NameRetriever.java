@@ -61,7 +61,7 @@ public class NameRetriever {
             } else {
                 return "Focus on " + sections[length - 2].toUpperCase() + " to " + sections[length - 1].toUpperCase();
             }
-        } else if (currentTable.equals(DatabaseManager.PVALUE_FILTER_RESULT_TABLE_NAME)) {
+        } else if (currentTable.equals(DatabaseManager.FET_FILTER_RESULT_TABLE_NAME)) {
             return "FET Filter";
         } else if (currentTable.equals(DatabaseManager.DBSNP_FILTER_RESULT_TABLE_NAME)) {
             return "Known SNP Filter";

@@ -43,7 +43,7 @@ public class FilterOptionDialog extends JDialog implements OptionsListener, Prog
     /**
      * The filter which should be wrapped.
      */
-    private AbstractSiteFilter filter;
+    private AbstractFilterPanel filter;
     /**
      * The filter button.
      */
@@ -54,7 +54,7 @@ public class FilterOptionDialog extends JDialog implements OptionsListener, Prog
      *
      * @param filter the filter.
      */
-    public FilterOptionDialog(AbstractSiteFilter filter) {
+    public FilterOptionDialog(AbstractFilterPanel filter) {
         super(REDApplication.getInstance(), filter.name());
 
         this.filter = filter;

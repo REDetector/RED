@@ -1,108 +1,76 @@
 /*
- * RED: RNA Editing Detector
- *     Copyright (C) <2014>  <Xing Li>
- *
- *     RED is free software: you can redistribute it and/or modify
- *     it under the terms of the GNU General Public License as published by
- *     the Free Software Foundation, either version 3 of the License, or
- *     (at your option) any later version.
- *
- *     RED is distributed in the hope that it will be useful,
- *     but WITHOUT ANY WARRANTY; without even the implied warranty of
- *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *     GNU General Public License for more details.
- *
- *     You should have received a copy of the GNU General Public License
- *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * REFilters: RNA Editing Filters Copyright (C) <2014> <Xing Li>
+ * 
+ * RED is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as
+ * published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * 
+ * RED is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License along with this program. If not, see
+ * <http://www.gnu.org/licenses/>.
  */
 
-package com.xl.parsers.dataparsers;
-
+package com.xl.dataparser;
 
 import com.xl.database.DatabaseManager;
-import com.xl.display.dialog.ProgressDialog;
-import com.xl.display.dialog.REDProgressBar;
-import com.xl.exception.DataLoadException;
+import com.xl.interfaces.ProgressListener;
 import com.xl.utils.Indexer;
-import com.xl.utils.Timer;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.sql.SQLException;
 import java.util.Arrays;
 
 /**
  * Created by Administrator on 2014/9/29.
  * <p/>
- * The Class RNAVCFParser can parser RNA VCF file with single or multiple samples in a file, then insert all data into database. Pay attention that the
- * class will delete old sample tables and create new ones for all samples in this RNA VCF file..
+ * The Class RNAVCFParser can parser RNA VCF file with single or multiple samples in a file, then insert all data into
+ * database. Pay attention that the class will delete old sample tables and create new ones for all samples in this RNA
+ * VCF file..
  */
-public class RNAVCFParser {
-    private final Logger logger = LoggerFactory.getLogger(RNAVCFParser.class);
-
-    //    private int chromColumn = 0;
-    //    private int posColumn = 1;
-    //    private int idColumn = 2;
-    //    private int refColumn = 3;
+public class RNAVCFParser extends AbstractParser {
+    // public static final String VCF_ID = "ID";
+    // public static final String VCF_REF = "REF";
+    // public static final String VCF_ALT = "ALT";
+    // public static final String VCF_QUAL = "QUAL";
+    // public static final String VCF_FILTER = "FILTER";
+    // public static final String VCF_INFO = "INFO";
+    // public static final String VCF_FORMAT = "FORMAT";
+    // private int chromColumn = 0;
+    // private int posColumn = 1;
+    // private int idColumn = 2;
+    // private int refColumn = 3;
     private int altColumn = 4;
-    //    private int qualColumn = 5;
-    //    private int filterColumn = 6;
-    //    private int infoColumn = 7;
+    // private int qualColumn = 5;
+    // private int filterColumn = 6;
+    private int infoColumn = 7;
     private int formatColumnIndex = 8;
-    /**
-     * The samples in this RNA VCF file.
-     */
+
     private String[] sampleNames = null;
-    /**
-     * The database manager.
-     */
-    private DatabaseManager databaseManager;
+    private int columnLength = 0;
+    private String[] tableName = null;
+    private DatabaseManager databaseManager = DatabaseManager.getInstance();
 
-    /**
-     * The progress bar for loading VCF information from a VCF file.
-     */
-    private REDProgressBar progressBar = REDProgressBar.getInstance();
-
-    /**
-     * Initiate a new RNA VCF parser.
-     */
-    public RNAVCFParser() {
-        databaseManager = DatabaseManager.getInstance();
+    public RNAVCFParser(String dataPath) {
+        super(dataPath);
     }
 
-    /**
-     * Get the sample names in this VCF file.
-     *
-     * @return the samples array.
-     */
-    public String[] getSampleNames() {
-        return sampleNames;
+    @Override
+    protected void createTable() {
     }
 
-    /**
-     * Parse vcf file and import the data into database.
-     *
-     * @param vcfPath the vcf file path.
-     */
-    public void parseVCFFile(String vcfPath) throws DataLoadException {
-        if (vcfPath == null || vcfPath.length() == 0) {
-            throw new DataLoadException("RNA VCF file has not been found, please have a check.");
-        }
-        logger.info("Start Parsing RNA VCF file... {}", Timer.getCurrentTime());
-        progressBar.addProgressListener(new ProgressDialog("Import RNA VCF file into database..."));
-        progressBar.progressUpdated("Start loading RNA VCF data from " + vcfPath + " to " + DatabaseManager.DNA_VCF_RESULT_TABLE_NAME, 0, 0);
+    @Override
+    protected void loadData(ProgressListener listener) {
         BufferedReader bufferedReader = null;
-        StringBuilder sqlClause = null;
+        StringBuilder sqlClause = new StringBuilder();
         try {
-            bufferedReader = new BufferedReader(new InputStreamReader(new FileInputStream(vcfPath)));
-            int columnLength = 0;
+            bufferedReader = new BufferedReader(new InputStreamReader(new FileInputStream(dataPath)));
             String line;
             String[] columnStrings = new String[0];
             StringBuilder tableBuilders = new StringBuilder();
-            String[] tableName = null;
             databaseManager.setAutoCommit(false);
             int lineCount = 0;
             boolean hasEstablishTable = false;
@@ -113,13 +81,16 @@ public class RNAVCFParser {
                     columnStrings = line.substring(1).split("\\t");
                     columnLength = columnStrings.length;
                     sampleNames = Arrays.copyOfRange(columnStrings, formatColumnIndex + 1, columnLength);
-                    tableBuilders.append(columnStrings[0]).append(" varchar(30),").append(columnStrings[1]).append(" int,")
-                            .append(columnStrings[2]).append(" varchar(30),").append(columnStrings[3]).append(" varchar(5),")
-                            .append(columnStrings[4]).append(" varchar(5),").append(columnStrings[5]).append(" float(10,2),")
-                            .append(columnStrings[6]).append(" text,").append(columnStrings[7]).append(" text,");
+                    tableBuilders.append(columnStrings[0]).append(" varchar(30),").append(columnStrings[1])
+                        .append(" int,").append(columnStrings[2]).append(" varchar(30),").append(columnStrings[3])
+                        .append(" varchar(5),").append(columnStrings[4]).append(" varchar(5),")
+                        .append(columnStrings[5]).append(" float(10,2),").append(columnStrings[6]).append(" text,")
+                        .append(columnStrings[7]).append(" text,");
+                    // return;
                     continue;
                 }
                 if (sampleNames == null) {
+                    logger.error("There are no samples in this vcf file.");
                     throw new NullPointerException("There are no samples in this vcf file.");
                 }
 
@@ -138,8 +109,8 @@ public class RNAVCFParser {
                     if (formatLength != dataColumnLength) {
                         continue;
                     }
+
                     if (!hasEstablishTable) {
-                        tableName = new String[sampleNames.length];
                         for (String formatColumn : formatColumns) {
                             tableBuilders.append(formatColumn).append(" text,");
                         }
@@ -147,6 +118,7 @@ public class RNAVCFParser {
                         tableBuilders.append("alu varchar(1) default 'F'");
                         tableBuilders.append(",");
                         tableBuilders.append(Indexer.CHROM_POSITION);
+                        tableName = new String[sampleNames.length];
                         for (int j = 0, len = sampleNames.length; j < len; j++) {
                             tableName[j] = sampleNames[j] + "_" + DatabaseManager.RNA_VCF_RESULT_TABLE_NAME;
                             databaseManager.deleteTable(tableName[j]);
@@ -156,9 +128,9 @@ public class RNAVCFParser {
                         hasEstablishTable = true;
                     }
 
-                    //INSERT INTO table_name (col1, col2,...) VALUES (value1, value2,....)
+                    // INSERT INTO table_name (col1, col2,...) VALUES (value1, value2,....)
 
-                    //insert into
+                    // insert into
                     sqlClause = new StringBuilder("insert into ");
                     // insert into table_name (
                     sqlClause.append(tableName[i - formatColumnIndex - 1]).append("(");
@@ -199,30 +171,34 @@ public class RNAVCFParser {
                     // insert into table_name (col1,col2,...,colK,colK+1,colK+2,...,colN) values('value1','value2',...,
                     // 'valueK','valueK+1','valueK+2',...,'valueN')
                     sqlClause.append(")");
-                    //                System.out.println(lineCount+"\t"+sqlClause.toString());
                     databaseManager.executeSQL(sqlClause.toString());
 
                     if (++lineCount % DatabaseManager.COMMIT_COUNTS_PER_ONCE == 0) {
                         databaseManager.commit();
-                        progressBar.progressUpdated("Importing " + lineCount + " lines from " + vcfPath + " to " + DatabaseManager.DNA_VCF_RESULT_TABLE_NAME, 0, 0);
+                        if (listener != null) {
+                            listener.progressUpdated("Importing " + lineCount + " lines from " + dataPath, 0, 0);
+                        }
                     }
                 }
             }
             databaseManager.commit();
             databaseManager.setAutoCommit(true);
         } catch (IOException e) {
-            logger.error("Error load file from " + vcfPath + " to file stream", new DataLoadException("Error load file", vcfPath));
+            logger.error("Error open file: " + dataPath, e);
+        } catch (SQLException e) {
+            logger.error("Error execute sql clause: " + sqlClause, e);
         } finally {
             if (bufferedReader != null) {
                 try {
                     bufferedReader.close();
                 } catch (IOException e) {
-                    logger.error("", e);
+                    logger.error("Error close the buffered reader.", e);
                 }
             }
         }
-        progressBar.progressComplete("rna_vcf_loaded", null);
-        logger.info("End Parsing RNA VCF file... {}", Timer.getCurrentTime());
     }
 
+    public String[] getSampleNames() {
+        return sampleNames;
+    }
 }

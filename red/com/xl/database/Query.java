@@ -71,7 +71,7 @@ public class Query {
             SiteBean p = new SiteBean(rs.getString(1), rs.getInt(2), rs.getString(3), rs.getString(4).charAt(0), rs.getString(5).charAt(0),
                     rs.getFloat(6), rs.getString(7), rs.getString(8), rs.getString(9), rs.getString(10), rs.getString(11), rs.getString(12),
                     rs.getString(13), rs.getString(14));
-            if (tableName.contains(DatabaseManager.PVALUE_FILTER_RESULT_TABLE_NAME)) {
+            if (tableName.contains(DatabaseManager.FET_FILTER_RESULT_TABLE_NAME)) {
                 p.setLevel(rs.getDouble(15));
                 p.setPValue(rs.getDouble(16));
                 p.setFdr(rs.getDouble(17));
@@ -154,13 +154,6 @@ public class Query {
         //Next, we need to remove DNA VCF file from filter list
         for (String table : tableNames) {
             if (table.endsWith(DatabaseManager.DNA_VCF_RESULT_TABLE_NAME)) {
-                tableNames.remove(table);
-                break;
-            }
-        }
-        //Next, we need to remove ALU Filter from filter list
-        for (String table : tableNames) {
-            if (table.endsWith(DatabaseManager.ALU_FILTER_RESULT_TABLE_NAME)) {
                 tableNames.remove(table);
                 break;
             }

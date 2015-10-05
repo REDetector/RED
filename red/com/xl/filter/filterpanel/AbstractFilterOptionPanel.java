@@ -31,7 +31,7 @@ import java.awt.*;
  * <p/>
  * The Class AbstractOptionPanel represents a filter panel before performing the filter and provides some parameters for user if there is any choice.
  */
-abstract class AbstractOptionPanel extends JPanel implements TreeSelectionListener {
+abstract class AbstractFilterOptionPanel extends JPanel implements TreeSelectionListener {
     /**
      * The site set tree model.
      */
@@ -42,7 +42,7 @@ abstract class AbstractOptionPanel extends JPanel implements TreeSelectionListen
      *
      * @param dataStore The data store, refer to a sample relative to this site set
      */
-    public AbstractOptionPanel(DataStore dataStore) {
+    public AbstractFilterOptionPanel(DataStore dataStore) {
         setLayout(new BorderLayout());
         JPanel dataPanel = new JPanel();
         dataPanel.setBorder(BorderFactory.createEmptyBorder(4, 4, 4, 4));

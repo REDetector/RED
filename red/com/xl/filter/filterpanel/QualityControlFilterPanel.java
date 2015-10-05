@@ -1,29 +1,24 @@
 /*
- * RED: RNA Editing Detector
- *     Copyright (C) <2014>  <Xing Li>
- *
- *     RED is free software: you can redistribute it and/or modify
- *     it under the terms of the GNU General Public License as published by
- *     the Free Software Foundation, either version 3 of the License, or
- *     (at your option) any later version.
- *
- *     RED is distributed in the hope that it will be useful,
- *     but WITHOUT ANY WARRANTY; without even the implied warranty of
- *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *     GNU General Public License for more details.
- *
- *     You should have received a copy of the GNU General Public License
- *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * RED: RNA Editing Detector Copyright (C) <2014> <Xing Li>
+ * 
+ * RED is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as
+ * published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * 
+ * RED is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License along with this program. If not, see
+ * <http://www.gnu.org/licenses/>.
  */
 package com.xl.filter.filterpanel;
 
 import com.xl.database.DatabaseManager;
 import com.xl.database.Query;
-import com.xl.database.TableCreator;
 import com.xl.datatypes.DataStore;
 import com.xl.datatypes.sites.Site;
 import com.xl.datatypes.sites.SiteList;
 import com.xl.exception.REDException;
+import com.xl.filter.Filter;
 import com.xl.filter.denovo.QualityControlFilter;
 import com.xl.utils.ui.OptionDialogUtils;
 import org.slf4j.Logger;
@@ -35,12 +30,15 @@ import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Vector;
 
 /**
- * The Class QualityControlFilterPanel is a rule-based filter panel to provide some parameters to be set as user's preference if there is any choice.
+ * The Class QualityControlFilterPanel is a rule-based filter panel to provide some parameters to be set as user's
+ * preference if there is any choice.
  */
-public class QualityControlFilterPanel extends AbstractSiteFilter {
+public class QualityControlFilterPanel extends AbstractFilterPanel {
     private final Logger logger = LoggerFactory.getLogger(QualityControlFilterPanel.class);
     /**
      * The threshold of quality.
@@ -80,27 +78,30 @@ public class QualityControlFilterPanel extends AbstractSiteFilter {
     @Override
     protected void generateSiteList() throws SQLException {
         if (!isValidInput()) {
-            OptionDialogUtils.showWarningDialog(getOptionsPanel(), "The quality or depth of coverage is invalid, which must be between 0-255, please try again.", "Invalid " +
-                    "input.");
+            OptionDialogUtils.showWarningDialog(getOptionsPanel(),
+                "The quality or depth of coverage is invalid, which must be between 0-255, please try again.",
+                "Invalid " + "input.");
             progressCancelled();
             return;
         }
 
         progressUpdated("Filtering RNA editing sites by quality and coverage, please wait...", 0, 0);
         logger.info("Filtering RNA editing sites by quality and coverage.");
-        String linearTableName = currentSample + "_" + parentList.getFilterName() + "_" + DatabaseManager
-                .QC_FILTER_RESULT_TABLE_NAME + "_" + qualityThreshold + "_" + depthThreshold;
-        if (!TableCreator.createFilterTable(parentList.getTableName(), linearTableName)) {
-            progressCancelled();
-            return;
-        }
-        QualityControlFilter bf = new QualityControlFilter(databaseManager);
+        String linearTableName =
+            currentSample + "_" + parentList.getFilterName() + "_" + DatabaseManager.QC_FILTER_RESULT_TABLE_NAME + "_"
+                + qualityThreshold + "_" + depthThreshold;
+        Filter filter = new QualityControlFilter();
+        Map<String, String> params = new HashMap<String, String>();
         // The first parameter means quality and the second means depth
-        bf.executeQCFilter(parentList.getTableName(), linearTableName, qualityThreshold, depthThreshold);
+        params.put(QualityControlFilter.PARAMS_STRING_QUALITY, qualityThreshold + "");
+        params.put(QualityControlFilter.PARAMS_INT_DEPTH, depthThreshold + "");
+        filter.performFilter(parentList.getTableName(), linearTableName, params);
         DatabaseManager.getInstance().distinctTable(linearTableName);
 
         Vector<Site> sites = Query.queryAllEditingSites(linearTableName);
-        SiteList newList = new SiteList(parentList, listName(), DatabaseManager.QC_FILTER_RESULT_TABLE_NAME, linearTableName, description());
+        SiteList newList =
+            new SiteList(parentList, listName(), DatabaseManager.QC_FILTER_RESULT_TABLE_NAME, linearTableName,
+                description());
         int index = 0;
         int sitesLength = sites.size();
         for (Site site : sites) {
@@ -147,8 +148,7 @@ public class QualityControlFilterPanel extends AbstractSiteFilter {
     /**
      * The quality control filter option panel.
      */
-    private class QCFilterOptionPanel extends AbstractOptionPanel implements KeyListener {
-
+    private class QCFilterOptionPanel extends AbstractFilterOptionPanel implements KeyListener {
 
         /**
          * Instantiates a new quality control filter option panel.
@@ -224,8 +224,8 @@ public class QualityControlFilterPanel extends AbstractSiteFilter {
 
         @Override
         protected String getPanelDescription() {
-            return "Two measures of base quality (Q, range of 1-255) and depth of coverage (DP, range of 1-255) are used in the QC filter. For example, " +
-                    "a given site will be removed if it was of a low quality (Q< 20) or with a low depth of coverage (DP< 6).";
+            return "Two measures of base quality (Q, range of 1-255) and depth of coverage (DP, range of 1-255) are used in the QC filter. For example, "
+                + "a given site will be removed if it was of a low quality (Q< 20) or with a low depth of coverage (DP< 6).";
         }
 
         @Override

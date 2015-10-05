@@ -28,4 +28,5 @@ public class Indexer {
     public static final String CHROM_COORDINATE = "index(chrom,coordinate)";
     public static final String CHROM_BEGIN_END = "index(chrom,begin,end)";
     public static final String CHROM_TYPE = "index(chrom,type)";
+    public static final String CHROM_START_END = "index(chrom,txStart,txEnd)";
 }

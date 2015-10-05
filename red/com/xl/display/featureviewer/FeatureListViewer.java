@@ -166,7 +166,7 @@ public class FeatureListViewer extends JTable implements MouseListener {
         /*
          * (non-Javadoc)
          *
-         * @see javax.swing.table.TableModel#getRowCount()
+         * @see javax.swing.table.TableModel#calRowCount()
          */
         public int getRowCount() {
             return data.length;

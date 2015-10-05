@@ -1,31 +1,26 @@
 /*
- * RED: RNA Editing Detector
- *     Copyright (C) <2014>  <Xing Li>
- *
- *     RED is free software: you can redistribute it and/or modify
- *     it under the terms of the GNU General Public License as published by
- *     the Free Software Foundation, either version 3 of the License, or
- *     (at your option) any later version.
- *
- *     RED is distributed in the hope that it will be useful,
- *     but WITHOUT ANY WARRANTY; without even the implied warranty of
- *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *     GNU General Public License for more details.
- *
- *     You should have received a copy of the GNU General Public License
- *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * RED: RNA Editing Detector Copyright (C) <2014> <Xing Li>
+ * 
+ * RED is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as
+ * published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * 
+ * RED is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License along with this program. If not, see
+ * <http://www.gnu.org/licenses/>.
  */
 package com.xl.filter.filterpanel;
 
 import com.xl.database.DatabaseManager;
 import com.xl.database.Query;
-import com.xl.database.TableCreator;
 import com.xl.datatypes.DataStore;
 import com.xl.datatypes.sites.Site;
 import com.xl.datatypes.sites.SiteList;
 import com.xl.display.dialog.JFileChooserExt;
 import com.xl.display.panel.DataIntroductionPanel;
 import com.xl.exception.REDException;
+import com.xl.filter.Filter;
 import com.xl.filter.denovo.FisherExactTestFilter;
 import com.xl.preferences.LocationPreferences;
 import org.slf4j.Logger;
@@ -40,12 +35,15 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.io.File;
 import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Vector;
 
 /**
- * The Class FisherExactTestFilterPanel is a statistical filter panel to provide some parameters to be set as user's preference if there is any choice.
+ * The Class FisherExactTestFilterPanel is a statistical filter panel to provide some parameters to be set as user's
+ * preference if there is any choice.
  */
-public class FisherExactTestFilterPanel extends AbstractSiteFilter {
+public class FisherExactTestFilterPanel extends AbstractFilterPanel {
     private final Logger logger = LoggerFactory.getLogger(FisherExactTestFilterPanel.class);
     /**
      * The R script or executable path, which is used to calculate FDR value.
@@ -96,18 +94,22 @@ public class FisherExactTestFilterPanel extends AbstractSiteFilter {
         logger.info("Filtering RNA editing sites by statistic method (P-Value).");
         String pvalue = pvalueField.getText().replace(".", "");
         String fdr = fdrField.getText().replace(".", "");
-        String linearTableName = currentSample + "_" + parentList.getFilterName() + "_" + DatabaseManager
-                .PVALUE_FILTER_RESULT_TABLE_NAME + "_" + pvalue + "_" + fdr;
-        if (!TableCreator.createFisherExactTestTable(parentList.getTableName(), linearTableName)) {
-            progressCancelled();
-            return;
-        }
-        FisherExactTestFilter pv = new FisherExactTestFilter(databaseManager);
-        pv.executeFDRFilter(DatabaseManager.DARNED_DATABASE_TABLE_NAME, linearTableName, parentList.getTableName(),
-                LocationPreferences.getInstance().getRScriptPath(), pvalueThreshold, fdrThreshold);
-
+        String linearTableName =
+            currentSample + "_" + parentList.getFilterName() + "_" + DatabaseManager.FET_FILTER_RESULT_TABLE_NAME + "_"
+                + pvalue + "_" + fdr;
+        Filter filter = new FisherExactTestFilter();
+        Map<String, String> params = new HashMap<String, String>();
+        params.put(FisherExactTestFilter.PARAMS_STRING_EDITING_TYPE, "AG");
+        params.put(FisherExactTestFilter.PARAMS_STRING_FDR_THRESHOLD, fdrThreshold + "");
+        params.put(FisherExactTestFilter.PARAMS_STRING_P_VALUE_THRESHOLD, pvalueThreshold + "");
+        params.put(FisherExactTestFilter.PARAMS_STRING_R_SCRIPT_PATH, LocationPreferences.getInstance()
+            .getRScriptPath());
+        filter.performFilter(parentList.getTableName(), linearTableName, params);
+        DatabaseManager.getInstance().distinctTable(linearTableName);
         Vector<Site> sites = Query.queryAllEditingSites(linearTableName);
-        SiteList newList = new SiteList(parentList, listName(), DatabaseManager.PVALUE_FILTER_RESULT_TABLE_NAME, linearTableName, description());
+        SiteList newList =
+            new SiteList(parentList, listName(), DatabaseManager.FET_FILTER_RESULT_TABLE_NAME, linearTableName,
+                description());
         int index = 0;
         int sitesLength = sites.size();
         for (Site site : sites) {
@@ -150,7 +152,7 @@ public class FisherExactTestFilterPanel extends AbstractSiteFilter {
     /**
      * The fisher's exact test filter option panel.
      */
-    private class FETFilterOptionPanel extends AbstractOptionPanel implements ActionListener, KeyListener {
+    private class FETFilterOptionPanel extends AbstractFilterOptionPanel implements ActionListener, KeyListener {
 
         /**
          * Instantiates a new fisher's exact test filter option panel.
@@ -183,10 +185,11 @@ public class FisherExactTestFilterPanel extends AbstractSiteFilter {
          * Launches a file browser to select a directory
          *
          * @param dataType The action.
-         * @param f        the TextFild from which to take the starting directory
+         * @param f the TextFild from which to take the starting directory
          */
         private void getFile(String dataType, JTextField f) {
-            JFileChooser chooser = new JFileChooserExt(LocationPreferences.getInstance().getProjectSaveLocation(), null);
+            JFileChooser chooser =
+                new JFileChooserExt(LocationPreferences.getInstance().getProjectSaveLocation(), null);
             chooser.setCurrentDirectory(new File(f.getText()));
             chooser.setAccessory(new DataIntroductionPanel(dataType));
             chooser.setDialogTitle("Select Directory");
