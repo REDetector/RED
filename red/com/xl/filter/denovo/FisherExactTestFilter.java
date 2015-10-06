@@ -53,7 +53,7 @@ public class FisherExactTestFilter implements Filter {
      */
     private List<PValueInfo> getExpectedInfo(String refTable, String editingType) {
         List<PValueInfo> valueInfos = new ArrayList<PValueInfo>();
-        String darnedTable = DatabaseManager.DARNED_DATABASE_TABLE_NAME;
+        String darnedTable = DatabaseManager.KNOWN_RNA_EDITING_TABLE_NAME;
         try {
             ResultSet rs = databaseManager.query(refTable, null, null, null);
             while (rs.next()) {

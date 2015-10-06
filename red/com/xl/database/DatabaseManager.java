@@ -47,10 +47,13 @@ public class DatabaseManager {
     public static final String DNA_RNA_FILTER_RESULT_TABLE_NAME = "drfilter";
     public static final String LLR_FILTER_RESULT_TABLE_NAME = "llrfilter";
     public static final String SPLICE_JUNCTION_TABLE_NAME = "splice_junction";
+    public static final String KNOWN_RNA_EDITING_TABLE_NAME = "known_rna_editing";
     public static final String DARNED_DATABASE_TABLE_NAME = "darned_database";
+    public static final String RADAR_DATABASE_TABLE_NAME = "radar_database";
     public static final String REPEAT_MASKER_TABLE_NAME = "repeat_masker";
     public static final String DBSNP_DATABASE_TABLE_NAME = "dbsnp_database";
     public static final String REFSEQ_GENE_TABLE_NAME = "reference_gene";
+    public static final String INFORMATION_TABLE_NAME = "information";
     private static final Logger logger = LoggerFactory.getLogger(DatabaseManager.class);
     /**
      * The single instance of DatabaseManager.
@@ -111,6 +114,12 @@ public class DatabaseManager {
      * Tell all classes which have inherit <code>DatabaseListener</code> that database has been connected.
      */
     public void databaseConnected() {
+        String infoTable = INFORMATION_TABLE_NAME;
+        if (!existTable(infoTable)) {
+            TableCreator.createReferenceTable(infoTable, new String[] { "tableName", "counts" },
+                new String[] { "varchar(30)", "int" }, null);
+        }
+
         Enumeration<DatabaseListener> e = listeners.elements();
         while (e.hasMoreElements()) {
             e.nextElement().databaseConnected();
@@ -141,8 +150,8 @@ public class DatabaseManager {
      * @param password The password.
      * @return Whether database has been connected, true if it is successful.
      */
-    public boolean connectDatabase(String host, String port, String user, String password) throws SQLException,
-        ClassNotFoundException {
+    public boolean connectDatabase(String host, String port, String user, String password)
+        throws SQLException, ClassNotFoundException {
         try {
             Class.forName("com.mysql.jdbc.Driver");
         } catch (ClassNotFoundException e) {
@@ -222,10 +231,6 @@ public class DatabaseManager {
         }
     }
 
-    public boolean hasEstablishTable(String darnedTable) {
-        return calRowCount(darnedTable) > 0;
-    }
-
     /**
      * Check whether the table exists in the database.
      *
@@ -233,7 +238,6 @@ public class DatabaseManager {
      * @return True if the table exists.
      */
     public boolean existTable(String tableName) {
-
         List<String> tableLists = getCurrentTables(DatabasePreferences.getInstance().getCurrentDatabase());
         return tableLists.contains(tableName.toLowerCase());
     }
@@ -265,8 +269,8 @@ public class DatabaseManager {
             }
             return tableLists;
         } catch (SQLException e) {
-            OptionDialogUtils.showErrorDialog(REDApplication.getInstance(), "Database " + database
-                + " does not exist. Please have a check in your database.");
+            OptionDialogUtils.showErrorDialog(REDApplication.getInstance(),
+                "Database " + database + " does not exist. Please have a check in your database.");
             logger.error("Database " + database + " does not exist. Please have a check in your database.", e);
             return new ArrayList<String>();
         }
@@ -471,6 +475,19 @@ public class DatabaseManager {
             logger.error("There is a syntax error: " + stringBuilder.toString(), e);
         }
         return rs;
+    }
+
+    public boolean isTableExistAndValid(String tableName) {
+        ResultSet rs =
+            query(tableName, new String[] { "counts" }, " tableName=?", new String[] { INFORMATION_TABLE_NAME });
+        try {
+            int informationCounts = rs.getInt(1);
+            int currentCount = calRowCount(tableName);
+            return Math.abs(informationCounts - currentCount) < 500;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 
     /**

@@ -54,7 +54,7 @@ public class DNARNAFilter implements Filter {
         String dnaVcfTable = params.get(PARAMS_STRING_DNA_VCF_TABLE);
         String editingType = params.get(PARAMS_STRING_EDITING_TYPE);
         String negativeType = NegativeType.getNegativeStrandEditingType(editingType);
-        String darnedTable = DatabaseManager.DARNED_DATABASE_TABLE_NAME;
+        String darnedTable = DatabaseManager.KNOWN_RNA_EDITING_TABLE_NAME;
         /**
          * chrom | coordinate | strand | inchr | inrna
          */

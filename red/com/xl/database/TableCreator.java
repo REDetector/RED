@@ -66,8 +66,8 @@ public class TableCreator {
     public static boolean createFisherExactTestTable(String refTable, String tableName) {
         if (createFilterTable(refTable, tableName)) {
             try {
-                databaseManager.executeSQL("alter table " + tableName
-                    + " add level float,add pvalue float,add fdr float;");
+                databaseManager
+                    .executeSQL("alter table " + tableName + " add level float,add pvalue float,add fdr float;");
                 return true;
             } catch (SQLException e) {
                 logger.error("Can not create Fisher Exact Test Table.", e);
@@ -87,7 +87,8 @@ public class TableCreator {
      * @param index Index we use when creating a table, which can be obtained from {@link com.xl.utils.Indexer Indexer}
      *            class.
      */
-    public static void createReferenceTable(String tableName, String[] columnNames, String[] columnParams, String index) {
+    public static void createReferenceTable(String tableName, String[] columnNames, String[] columnParams,
+        String index) {
         if (columnNames == null || columnParams == null || columnNames.length == 0
             || columnNames.length != columnParams.length) {
             throw new IllegalArgumentException("Column names and column parameters can't not be null or zero-length.");
@@ -98,8 +99,10 @@ public class TableCreator {
         for (int i = 1, len = columnNames.length; i < len; i++) {
             stringBuilder.append(", ").append(columnNames[i]).append(" ").append(columnParams[i]);
         }
-        stringBuilder.append(",");
-        stringBuilder.append(index);
+        if (index != null && index.length() != 0) {
+            stringBuilder.append(",");
+            stringBuilder.append(index);
+        }
         stringBuilder.append(")");
         try {
             databaseManager.executeSQL(stringBuilder.toString());

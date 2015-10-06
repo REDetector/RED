@@ -11,7 +11,7 @@
  * <http://www.gnu.org/licenses/>.
  */
 
-package com.xl.dataparser;
+package com.xl.parsers.referenceparsers;
 
 import com.xl.database.DatabaseManager;
 

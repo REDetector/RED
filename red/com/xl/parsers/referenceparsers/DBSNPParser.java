@@ -11,7 +11,7 @@
  * <http://www.gnu.org/licenses/>.
  */
 
-package com.xl.dataparser;
+package com.xl.parsers.referenceparsers;
 
 import com.xl.database.DatabaseManager;
 import com.xl.database.TableCreator;
@@ -25,61 +25,52 @@ import java.io.InputStreamReader;
 import java.sql.SQLException;
 
 /**
- * we will filter out base in repeated area except for SINE/alu
+ * we will filter out base which already be recognized
  */
-public class RepeatMaskerParser extends AbstractParser {
+public class DBSNPParser extends AbstractParser {
     private DatabaseManager databaseManager = DatabaseManager.getInstance();
 
-    public RepeatMaskerParser(String dataPath, String tableName) {
+    public DBSNPParser(String dataPath, String tableName) {
         super(dataPath, tableName);
     }
 
     @Override
     protected void createTable() {
         if (!databaseManager.existTable(tableName)) {
-            // chrom varchar(30),begin int,end int,type varchar(40),index(chrom,begin,end);
-            TableCreator.createReferenceTable(tableName, new String[] { "chrom", "begin", "end", "type" },
-                new String[] { "varchar(30)", "int", "int", "varchar(40)" }, Indexer.CHROM_BEGIN_END);
+            // chrom varchar(15),pos int,index(chrom,pos);
+            TableCreator.createReferenceTable(tableName, new String[] { "chrom", "pos" }, new String[] { "varchar(30)",
+                "int" }, Indexer.CHROM_POSITION);
         }
     }
 
     @Override
     protected void loadData(ProgressListener listener) {
-        BufferedReader rin = null;
         try {
-            if (!databaseManager.hasEstablishTable(tableName)) {
+            if (!databaseManager.isTableExistAndValid(tableName)) {
                 createTable();
-                databaseManager.setAutoCommit(false);
                 int count = 0;
                 FileInputStream inputStream = new FileInputStream(dataPath);
-                rin = new BufferedReader(new InputStreamReader(inputStream));
+                BufferedReader rin = new BufferedReader(new InputStreamReader(inputStream));
                 String line;
-                rin.readLine();
-                rin.readLine();
-                rin.readLine();
                 while ((line = rin.readLine()) != null) {
-                    String section[] = line.trim().split("\\s+");
-                    databaseManager.executeSQL("insert into " + tableName + "(chrom,begin,end,type) values('"
-                        + section[4] + "','" + section[5] + "','" + section[6] + "','" + section[10] + "')");
-                    if (++count % DatabaseManager.COMMIT_COUNTS_PER_ONCE == 0)
-                        databaseManager.commit();
+                    if (line.startsWith("#")) {
+                        count++;
+                    } else {
+                        break;
+                    }
                 }
-                databaseManager.commit();
-                databaseManager.setAutoCommit(true);
+                rin.close();
+                if (listener != null) {
+                    listener.progressUpdated("Start loading dbSNP data from " + dataPath + " to " + tableName
+                            + " table", 0, 0);
+                }
+                databaseManager.executeSQL("load data local infile '" + dataPath + "' into table " + tableName + ""
+                    + " fields terminated by '\t' lines terminated by '\n' IGNORE " + count + " LINES");
             }
-
         } catch (IOException e) {
             logger.error("Error load file from " + dataPath + " to file stream", e);
         } catch (SQLException e) {
-            logger.error("Error execute sql clause in " + RepeatMaskerParser.class.getName() + ":loadRepeatTable()", e);
-        } finally {
-            if (rin != null) {
-                try {
-                    rin.close();
-                } catch (IOException e) {
-                    logger.error("", e);
-                }
-            }
+            logger.error("Error execute sql clause in " + DBSNPParser.class.getName() + ":loadDbSNPTable()", e);
         }
     }
 }

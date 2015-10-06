@@ -11,14 +11,16 @@
  * <http://www.gnu.org/licenses/>.
  */
 
-package com.xl.dataparser;
+package com.xl.parsers.referenceparsers;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
+import com.xl.database.DatabaseManager;
 import com.xl.exception.DataLoadException;
 import com.xl.interfaces.ProgressListener;
 import com.xl.utils.Timer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.sql.SQLException;
 
 /**
  * Created by Administrator on 2015/10/5.
@@ -27,6 +29,7 @@ public abstract class AbstractParser {
     protected static final Logger logger = LoggerFactory.getLogger(AbstractParser.class);
     protected final String dataPath;
     protected final String tableName;
+    protected final DatabaseManager databaseManager = DatabaseManager.getInstance();
 
     public AbstractParser(String dataPath) {
         this(dataPath, "");
@@ -49,6 +52,15 @@ public abstract class AbstractParser {
         loadData(listener);
         if (listener != null) {
             listener.progressComplete(tableName + "_loaded", null);
+        }
+        int counts = databaseManager.calRowCount(tableName);
+        // INSERT table (auto_id, auto_name) values (1, ¡®yourname') ON DUPLICATE KEY UPDATE auto_name='yourname'
+        try {
+            databaseManager
+                .insertClause("insert into " + DatabaseManager.INFORMATION_TABLE_NAME + "(tableName,counts) values("
+                    + tableName + ",'" + counts + "') ON DUPLICATE KEY UPDATE counts='" + counts + "'");
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
         logger.info("End loading " + tableName + "... at {}", Timer.getCurrentTime());
     }

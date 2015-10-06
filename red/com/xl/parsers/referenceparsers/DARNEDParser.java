@@ -11,7 +11,7 @@
  * <http://www.gnu.org/licenses/>.
  */
 
-package com.xl.dataparser;
+package com.xl.parsers.referenceparsers;
 
 import com.xl.database.DatabaseManager;
 import com.xl.database.TableCreator;
@@ -39,16 +39,15 @@ public class DARNEDParser extends AbstractParser {
         if (!databaseManager.existTable(tableName)) {
             // "(chrom varchar(15),coordinate int,strand varchar(5),inchr varchar(5), inrna varchar(5)
             // ,index(chrom,coordinate))");
-            TableCreator.createReferenceTable(tableName, new String[] { "chrom", "coordinate", "strand", "inchr",
-                "inrna" }, new String[] { "varchar(30)", "int", "varchar(5)", "varchar(5)", "varchar(5)" },
-                Indexer.CHROM_COORDINATE);
+            TableCreator.createReferenceTable(tableName, new String[] { "chrom", "pos", "strand", "ref", "alt" },
+                new String[] { "varchar(30)", "int", "varchar(5)", "varchar(5)", "varchar(5)" },
+                Indexer.CHROM_POSITION);
         }
     }
 
     @Override
     protected void loadData(ProgressListener listener) {
-        String darnedTable = DatabaseManager.DARNED_DATABASE_TABLE_NAME;
-        if (!databaseManager.hasEstablishTable(darnedTable)) {
+        if (!databaseManager.isTableExistAndValid(tableName)) {
             createTable();
             try {
                 int count = 0;
@@ -61,8 +60,8 @@ public class DARNEDParser extends AbstractParser {
                 while ((line = rin.readLine()) != null) {
                     String[] sections = line.trim().split("\\t");
                     StringBuilder stringBuilder = new StringBuilder("insert into ");
-                    stringBuilder.append(darnedTable);
-                    stringBuilder.append("(chrom,coordinate,strand,inchr,inrna) values(");
+                    stringBuilder.append(tableName);
+                    stringBuilder.append("(chrom,pos,strand,ref,alt) values(");
                     for (int i = 0; i < 5; i++) {
                         if (i == 0) {
                             stringBuilder.append("'chr").append(sections[i]).append("',");
@@ -80,12 +79,16 @@ public class DARNEDParser extends AbstractParser {
                     if (++count % DatabaseManager.COMMIT_COUNTS_PER_ONCE == 0)
                         databaseManager.commit();
                     if (listener != null) {
-                        listener.progressUpdated("Importing " + count + " lines from " + dataPath + " to " + tableName
-                            + " table", 0, 0);
+                        listener.progressUpdated(
+                            "Importing " + count + " lines from " + dataPath + " to " + tableName + " table", 0, 0);
                     }
                 }
                 databaseManager.commit();
                 databaseManager.setAutoCommit(true);
+                int counts = databaseManager.calRowCount(tableName);
+                databaseManager.insertClause(
+                    "insert into " + DatabaseManager.INFORMATION_TABLE_NAME + "(tableName,counts,sample) values("
+                        + tableName + "," + counts + "," + DatabaseManager.DARNED_DATABASE_TABLE_NAME);
             } catch (IOException e) {
                 logger.error("Error load file from " + dataPath + " to file stream", e);
             } catch (SQLException e) {

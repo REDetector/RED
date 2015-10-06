@@ -18,8 +18,8 @@ import org.slf4j.LoggerFactory;
 
 import com.xl.database.DatabaseManager;
 import com.xl.database.DatabaseSelector;
-import com.xl.dataparser.AbstractParser;
-import com.xl.dataparser.ParserFactory;
+import com.xl.parsers.referenceparsers.AbstractParser;
+import com.xl.parsers.referenceparsers.ParserFactory;
 import com.xl.display.dialog.DataImportDialog;
 import com.xl.display.dialog.ProgressDialog;
 import com.xl.exception.DataLoadException;

@@ -48,6 +48,7 @@ public class Global {
     /**
      * Check online version.
      */
-    public static final String VERSION_PAGE = HOME_PAGE + "/Version.txt";
+    // public static final String VERSION_PAGE = HOME_PAGE + "/Version.txt";
+    public static final String VERSION_PAGE = "https://raw.githubusercontent.com/REDetector/RED/dev/Version.txt";
 
 }

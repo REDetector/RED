@@ -11,13 +11,12 @@
  * <http://www.gnu.org/licenses/>.
  */
 
-package com.xl.dataparser;
+package com.xl.parsers.referenceparsers;
 
 import com.xl.database.DatabaseManager;
 import com.xl.database.TableCreator;
 import com.xl.interfaces.ProgressListener;
 import com.xl.utils.Indexer;
-import com.xl.utils.Timer;
 
 import java.sql.SQLException;
 
@@ -25,10 +24,10 @@ import java.sql.SQLException;
  * Comprehensive phase we focus on base in exon we discard base in the rear or front of the sequence
  */
 
-public class GTFParser extends AbstractParser {
+public class RefGeneParser extends AbstractParser {
     private DatabaseManager databaseManager = DatabaseManager.getInstance();
 
-    public GTFParser(String dataPath, String tableName) {
+    public RefGeneParser(String dataPath, String tableName) {
         super(dataPath, tableName);
     }
 
@@ -38,29 +37,29 @@ public class GTFParser extends AbstractParser {
             // "(chrom varchar(15),ref varchar(30),type varchar(9),begin int,end int,unuse1 float(8,6),unuse2
             // varchar(5),unuse3 varchar(5),
             // info varchar(100),index(chrom,type))");
-            TableCreator.createReferenceTable(tableName, new String[] { "chrom", "ref", "type", "begin", "end",
-                "score", "strand", "frame", "info" }, new String[] { "varchar(30)", "varchar(30)", "varchar(10)",
-                "int", "int", "float(8,6)", "varchar(1)", "varchar(1)", "varchar(100)" }, Indexer.CHROM_TYPE);
+            TableCreator.createReferenceTable(tableName, new String[] { "bin", "name", "chrom", "strand", "txStart",
+                "txEnd", "cdsStart", "cdsEnd", "exonCount", "exonStarts", "exonEnds", "score", "name2", "cdsStartStat",
+                "cdsEndStat", "exonFrames" }, new String[] { "int", "varchar(255)", "varchar(255)", "varchar(1)",
+                "int", "int", "int", "int", "int", "longblob", "longblob", "int", "varchar(255)", "varchar(8)",
+                "varchar(8)", "longblob" }, Indexer.CHROM_START_END);
         }
     }
 
     @Override
     protected void loadData(ProgressListener listener) {
-        logger.info("Start loading Gene Annotation File into database...\t" + Timer.getCurrentTime());
-        if (!databaseManager.hasEstablishTable(tableName)) {
+        if (!databaseManager.isTableExistAndValid(tableName)) {
             createTable();
             try {
                 databaseManager.executeSQL("load data local infile '" + dataPath + "' into table " + tableName
                     + " fields terminated" + " by '\t' lines terminated by '\n'");
                 if (listener != null) {
-                    listener.progressUpdated("Start loading Gene Annotation data from " + dataPath + " to " + tableName
+                    listener.progressUpdated("Start loading Ref Seq Gene data from " + dataPath + " to " + tableName
                         + " table", 0, 0);
                 }
             } catch (SQLException e) {
                 logger.error(
-                    "Error execute sql clause in " + GTFParser.class.getName() + ":loadSpliceJunctionTable().", e);
+                    "Error execute sql clause in " + RefGeneParser.class.getName() + ":loadRefSeqGeneTable().", e);
             }
         }
-        logger.info("End loading Gene Annotation File into database...\t" + Timer.getCurrentTime());
     }
 }
