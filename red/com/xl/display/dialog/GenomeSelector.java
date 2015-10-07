@@ -1,22 +1,36 @@
 /*
- * RED: RNA Editing Detector
- *     Copyright (C) <2014>  <Xing Li>
+ * RED: RNA Editing Detector Copyright (C) <2014> <Xing Li>
  *
- *     RED is free software: you can redistribute it and/or modify
- *     it under the terms of the GNU General Public License as published by
- *     the Free Software Foundation, either version 3 of the License, or
- *     (at your option) any later version.
+ * RED is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as
+ * published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
- *     RED is distributed in the hope that it will be useful,
- *     but WITHOUT ANY WARRANTY; without even the implied warranty of
- *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *     GNU General Public License for more details.
+ * RED is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  *
- *     You should have received a copy of the GNU General Public License
- *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU General Public License along with this program. If not, see
+ * <http://www.gnu.org/licenses/>.
  */
 
 package com.xl.display.dialog;
+
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.IOException;
+import java.util.Comparator;
+import java.util.Set;
+import java.util.TreeSet;
+
+import javax.swing.*;
+import javax.swing.event.TreeSelectionEvent;
+import javax.swing.event.TreeSelectionListener;
+import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.DefaultTreeModel;
+import javax.swing.tree.TreeSelectionModel;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.xl.exception.NetworkException;
 import com.xl.main.REDApplication;
@@ -26,23 +40,6 @@ import com.xl.utils.FileUtils;
 import com.xl.utils.namemanager.MenuUtils;
 import com.xl.utils.namemanager.SuffixUtils;
 import com.xl.utils.ui.OptionDialogUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import javax.swing.*;
-import javax.swing.event.TreeSelectionEvent;
-import javax.swing.event.TreeSelectionListener;
-import javax.swing.tree.DefaultMutableTreeNode;
-import javax.swing.tree.DefaultTreeModel;
-import javax.swing.tree.TreeSelectionModel;
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.io.File;
-import java.io.IOException;
-import java.util.Comparator;
-import java.util.Set;
-import java.util.TreeSet;
 
 /**
  * The Class GenomeSelector shows a tree of the currently available genomes
@@ -84,12 +81,13 @@ public class GenomeSelector extends JDialog implements ActionListener, TreeSelec
         File[] genomes = genomeDirectory.listFiles();
 
         if (genomes == null || genomes.length == 0) {
-            OptionDialogUtils.showWarningDialog(application, "<html>The default Genome directory is " + LocationPreferences.getInstance().getGenomeDirectory() + "." +
-                            "<br>There is nothing in the default genome directory." +
-                            "<br>You can move your genome files into the default genome directory or select <i>Edit->Preferences...</i> to change genome " +
-                            "directory." +
-                            "<br>If you don't have any genome file, you can download one by selecting <i>Import New</i> after you press OK button.",
-                    "Genome Directory Warning");
+            OptionDialogUtils.showWarningDialog(application,
+                "<html>The default Genome directory is " + LocationPreferences.getInstance().getGenomeDirectory() + "."
+                    + "<br>There is nothing in the default genome directory."
+                    + "<br>You can move your genome files into the default genome directory or select <i>Edit->Preferences...</i> to change genome "
+                    + "directory."
+                    + "<br>If you don't have any genome file, you can download one by selecting <i>Import New</i> after you press OK button.",
+                "Genome Directory Warning");
         } else {
             Set<GenomeNode> genomeFile = new TreeSet<GenomeNode>(new GenomeNodeComparator());
             for (File genome : genomes) {
@@ -117,8 +115,7 @@ public class GenomeSelector extends JDialog implements ActionListener, TreeSelec
         DefaultTreeModel treeModel = new DefaultTreeModel(root);
         tree = new JTree(treeModel);
         tree.addTreeSelectionListener(this);
-        tree.getSelectionModel().setSelectionMode(
-                TreeSelectionModel.SINGLE_TREE_SELECTION);
+        tree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
 
         getContentPane().add(new JScrollPane(tree), BorderLayout.CENTER);
 
@@ -166,6 +163,8 @@ public class GenomeSelector extends JDialog implements ActionListener, TreeSelec
             logger.info("Loading genome: " + genomeFie.getName());
             dispose();
         } else if (ae.getActionCommand().equals(MenuUtils.IMPORT_BUTTON)) {
+            setVisible(false);
+            dispose();
             try {
                 new GenomeDownloadSelector(application);
             } catch (IOException e) {
@@ -174,8 +173,6 @@ public class GenomeSelector extends JDialog implements ActionListener, TreeSelec
                 new CrashReporter(e);
                 logger.error(e.getMessage(), e);
             }
-            setVisible(false);
-            dispose();
         } else if (ae.getActionCommand().equals(MenuUtils.DELETE_BUTTON)) {
             Object lastComponent = tree.getSelectionPath().getLastPathComponent();
             if (lastComponent instanceof GenomeNode) {

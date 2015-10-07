@@ -51,4 +51,8 @@ public class Global {
     // public static final String VERSION_PAGE = HOME_PAGE + "/Version.txt";
     public static final String VERSION_PAGE = "https://raw.githubusercontent.com/REDetector/RED/dev/Version.txt";
 
+    public static final String OS_NAME = System.getProperty("os.name");
+
+    public static final String OS_NAME_MAC_OS_X = "Mac OS X";
+
 }

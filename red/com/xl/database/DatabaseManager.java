@@ -18,18 +18,19 @@ package com.xl.database;
  * single thread, which will influence the efficiency, but in order to synchronize, we would like to make it.
  */
 
-import com.xl.main.REDApplication;
-import com.xl.preferences.DatabasePreferences;
-import com.xl.utils.RandomStringGenerator;
-import com.xl.utils.ui.OptionDialogUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Vector;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.xl.main.REDApplication;
+import com.xl.preferences.DatabasePreferences;
+import com.xl.utils.RandomStringGenerator;
+import com.xl.utils.ui.OptionDialogUtils;
 
 public class DatabaseManager {
     public static final int COMMIT_COUNTS_PER_ONCE = 10000;
@@ -48,8 +49,8 @@ public class DatabaseManager {
     public static final String LLR_FILTER_RESULT_TABLE_NAME = "llrfilter";
     public static final String SPLICE_JUNCTION_TABLE_NAME = "splice_junction";
     public static final String KNOWN_RNA_EDITING_TABLE_NAME = "known_rna_editing";
-    public static final String DARNED_DATABASE_TABLE_NAME = "darned_database";
-    public static final String RADAR_DATABASE_TABLE_NAME = "radar_database";
+    public static final String DARNED_DATABASE_TABLE_NAME = "darned";
+    public static final String RADAR_DATABASE_TABLE_NAME = "radar";
     public static final String REPEAT_MASKER_TABLE_NAME = "repeat_masker";
     public static final String DBSNP_DATABASE_TABLE_NAME = "dbsnp_database";
     public static final String REFSEQ_GENE_TABLE_NAME = "reference_gene";
@@ -204,6 +205,20 @@ public class DatabaseManager {
             stmt = con.createStatement();
             ResultSet rs;
             rs = stmt.executeQuery("select count(1) from " + tableName);
+            if (rs != null && rs.next()) {
+                return rs.getInt(1);
+            } else {
+                return 0;
+            }
+        } catch (SQLException e) {
+            logger.error("Unable to get the row count.", e);
+            return 0;
+        }
+    }
+
+    public int calRowCount(String tableName, String selection, String[] selectionArgs) {
+        try {
+            ResultSet rs = query(tableName, new String[] { "count(1)" }, selection, selectionArgs);
             if (rs != null && rs.next()) {
                 return rs.getInt(1);
             } else {
@@ -479,7 +494,7 @@ public class DatabaseManager {
 
     public boolean isTableExistAndValid(String tableName) {
         ResultSet rs =
-            query(tableName, new String[] { "counts" }, " tableName=?", new String[] { INFORMATION_TABLE_NAME });
+            query(INFORMATION_TABLE_NAME, new String[] { "counts" }, " tableName=?", new String[] { tableName });
         try {
             int informationCounts = rs.getInt(1);
             int currentCount = calRowCount(tableName);
@@ -488,6 +503,12 @@ public class DatabaseManager {
             e.printStackTrace();
         }
         return false;
+    }
+
+    public boolean isKnownRnaEditingTableValid(String tableName, String from) {
+        int darnedCounts = calRowCount(tableName, "from=?", new String[] { from });
+        int infoCounts = calRowCount(INFORMATION_TABLE_NAME, "tableName=?", new String[] { tableName });
+        return Math.abs(darnedCounts - infoCounts) < 500;
     }
 
     /**

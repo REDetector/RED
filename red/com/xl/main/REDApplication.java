@@ -207,6 +207,8 @@ public class REDApplication extends JFrame implements ProgressListener, DataStor
             e.printStackTrace();
         }
 
+        logger.info(Global.OS_NAME);
+
         try {
 
             Thread.setDefaultUncaughtExceptionHandler(new ErrorCatcher());
@@ -425,7 +427,7 @@ public class REDApplication extends JFrame implements ProgressListener, DataStor
         logger.info("Loading data...");
         parser.addProgressListener(this);
 
-        JFileChooserExt chooser = new JFileChooserExt(LocationPreferences.getInstance().getProjectDataDirectory(), null);
+        JFileChooser chooser = new JFileChooserExt(LocationPreferences.getInstance().getProjectDataDirectory(), null);
         chooser.setFileFilter(parser.getFileFilter());
         chooser.setMultiSelectionEnabled(false);
 

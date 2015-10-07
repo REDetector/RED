@@ -1,35 +1,33 @@
 /*
- * RED: RNA Editing Detector
- *     Copyright (C) <2014>  <Xing Li>
+ * RED: RNA Editing Detector Copyright (C) <2014> <Xing Li>
  *
- *     RED is free software: you can redistribute it and/or modify
- *     it under the terms of the GNU General Public License as published by
- *     the Free Software Foundation, either version 3 of the License, or
- *     (at your option) any later version.
+ * RED is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as
+ * published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
- *     RED is distributed in the hope that it will be useful,
- *     but WITHOUT ANY WARRANTY; without even the implied warranty of
- *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *     GNU General Public License for more details.
+ * RED is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  *
- *     You should have received a copy of the GNU General Public License
- *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU General Public License along with this program. If not, see
+ * <http://www.gnu.org/licenses/>.
  */
 
 package com.xl.display.dialog;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import javax.swing.*;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
-import javax.swing.filechooser.FileFilter;
 import java.awt.*;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.util.LinkedList;
+
+import javax.swing.*;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
+import javax.swing.filechooser.FileFilter;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.xl.main.Global;
 
 /**
  * Created by Xing Li on 2015/3/16.
@@ -44,6 +42,9 @@ public class JFileChooserExt extends JFileChooser {
 
     public JFileChooserExt(String currentDirectoryPath, String regex) {
         super(currentDirectoryPath);
+        if (Global.OS_NAME.equals(Global.OS_NAME_MAC_OS_X)) {
+            return;
+        }
         this.regex = regex;
         init();
     }
@@ -62,7 +63,7 @@ public class JFileChooserExt extends JFileChooser {
                 }
 
                 public void changedUpdate(DocumentEvent e) {
-                    //                    modifyFilter();
+                    modifyFilter();
                 }
             });
         }
@@ -76,12 +77,13 @@ public class JFileChooserExt extends JFileChooser {
         @Override
         public void propertyChange(PropertyChangeEvent evt) {
             if (JFileChooser.DIRECTORY_CHANGED_PROPERTY.equals(evt.getPropertyName())) {
-                //                JFileChooser chooser = (JFileChooser) evt.getSource();
-                //                File oldDir = (File) evt.getOldValue();
-                //                File newDir = (File) evt.getNewValue();
-                //                File curDir = chooser.getCurrentDirectory();
+                // JFileChooser chooser = (JFileChooser) evt.getSource();
+                // File oldDir = (File) evt.getOldValue();
+                // File newDir = (File) evt.getNewValue();
+                // File curDir = chooser.getCurrentDirectory();
                 //
-                //                logger.info(oldDir.getAbsolutePath() + "\t" + newDir.getAbsolutePath() + "\t" + curDir.getAbsolutePath());
+                // logger.info(oldDir.getAbsolutePath() + "\t" + newDir.getAbsolutePath() + "\t" +
+                // curDir.getAbsolutePath());
                 tf.setText("");
                 tf.requestFocus();
             }
@@ -102,7 +104,6 @@ public class JFileChooserExt extends JFileChooser {
         }
         return null;
     }
-
 
     private void modifyFilter() {
         final String text;

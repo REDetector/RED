@@ -39,16 +39,15 @@ public class RADARParser extends AbstractParser {
         if (!databaseManager.existTable(tableName)) {
             // "(chrom varchar(15),coordinate int,strand varchar(5),inchr varchar(5), inrna varchar(5)
             // ,index(chrom,coordinate))");
-            TableCreator.createReferenceTable(tableName, new String[] { "chrom", "pos", "strand", "ref", "alt" },
-                new String[] { "varchar(30)", "int", "varchar(5)", "varchar(5)", "varchar(5)" },
-                Indexer.CHROM_POSITION);
+            TableCreator.createReferenceTable(tableName, new String[] { "chrom", "pos", "strand", "ref", "alt", "from" },
+                    new String[] { "varchar(30)", "int", "varchar(5)", "varchar(5)", "varchar(5)", "varchar(10)" },
+                    Indexer.CHROM_POSITION);
         }
     }
 
     @Override
     protected void loadData(ProgressListener listener) {
-        String knownRETable = DatabaseManager.KNOWN_RNA_EDITING_TABLE_NAME;
-        if (!databaseManager.isTableExistAndValid(knownRETable)) {
+        if (!databaseManager.isKnownRnaEditingTableValid(tableName, DatabaseManager.RADAR_DATABASE_TABLE_NAME)) {
             createTable();
             try {
                 int count = 0;
@@ -61,10 +60,10 @@ public class RADARParser extends AbstractParser {
                 while ((line = rin.readLine()) != null) {
                     String[] sections = line.trim().split("\\t");
                     StringBuilder stringBuilder = new StringBuilder("insert into ");
-                    stringBuilder.append(knownRETable);
-                    stringBuilder.append("(chrom,pos,strand,ref,alt) values(");
+                    stringBuilder.append(tableName);
+                    stringBuilder.append("(chrom,pos,strand,ref,alt,from) values(");
                     stringBuilder.append(sections[0]).append(",'").append(sections[1]).append("',").append(sections[3])
-                        .append(",A,G");
+                        .append(",A,G,").append(DatabaseManager.RADAR_DATABASE_TABLE_NAME);
                     stringBuilder.append(")");
 
                     databaseManager.executeSQL(stringBuilder.toString());

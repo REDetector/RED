@@ -19,6 +19,7 @@
 package com.xl.display.dialog;
 
 
+import com.xl.datatypes.sequence.Location;
 import com.xl.display.panel.DataIntroductionPanel;
 import com.xl.main.REDApplication;
 import com.xl.preferences.LocationPreferences;
@@ -80,6 +81,9 @@ public class DataImportDialog extends JDialog implements ActionListener {
     private JTextField darnedFileField;
     private JTextField denovoDarnedFileField;
 
+    private JTextField radarFileField;
+    private JTextField denovoRadarFileField;
+
     private JTabbedPane tabs = new JTabbedPane();
 
     /**
@@ -99,6 +103,7 @@ public class DataImportDialog extends JDialog implements ActionListener {
         String refSeqFile = preferences.getRefSeqFile();
         String dbSNPFile = preferences.getDbSNPFile();
         String darnedFile = preferences.getDarnedFile();
+        String radarFile = preferences.getRadarFile();
 
         JPanel nonDenovoPanel = new JPanel();
         nonDenovoPanel.setBorder(BorderFactory.createEmptyBorder(4, 4, 4, 4));
@@ -202,6 +207,21 @@ public class DataImportDialog extends JDialog implements ActionListener {
         darnedButton.setActionCommand(LocationPreferences.DARNED_FILE);
         darnedButton.addActionListener(this);
         addItem(c, nonDenovoPanel, darnedLabel, darnedFileField, darnedButton);
+
+        c.gridy++;
+        JLabel radarLabel = new JLabel(LocationPreferences.RADAR_FILE);
+        radarFileField = new JTextField();
+        if(radarFile!=null){
+            radarFileField.setText(radarFile);
+        }else{
+            radarFileField.setText("");
+        }
+        radarFileField.setEditable(false);
+        JButton radarButton = new JButton(MenuUtils.BROWSE_BUTTON);
+        radarButton.setActionCommand(LocationPreferences.RADAR_FILE);
+        radarButton.addActionListener(this);
+        addItem(c,nonDenovoPanel,radarLabel,radarFileField,radarButton);
+
         tabs.addTab("DNA-RNA Mode", nonDenovoPanel);
 
 
@@ -294,6 +314,20 @@ public class DataImportDialog extends JDialog implements ActionListener {
         denovoDarnedButton.setActionCommand(LocationPreferences.DARNED_FILE);
         denovoDarnedButton.addActionListener(this);
         addItem(c, denovoPanel, denovoDarnedLabel, denovoDarnedFileField, denovoDarnedButton);
+
+        c.gridy++;
+        JLabel denovoRadarLabel = new JLabel(LocationPreferences.RADAR_FILE);
+        denovoRadarFileField = new JTextField();
+        if(radarFile!=null){
+            denovoRadarFileField.setText(radarFile);
+        }else{
+            denovoRadarFileField.setText("");
+        }
+        denovoRadarFileField.setEditable(false);
+        JButton denovoRadarButton = new JButton(MenuUtils.BROWSE_BUTTON);
+        denovoRadarButton.setActionCommand(LocationPreferences.RADAR_FILE);
+        denovoRadarButton.addActionListener(this);
+        addItem(c,denovoPanel,denovoRadarLabel,denovoRadarFileField,denovoRadarButton);
 
         tabs.addTab("Denovo Mode", denovoPanel);
 
@@ -399,6 +433,15 @@ public class DataImportDialog extends JDialog implements ActionListener {
                 preferences.setDarnedFile(denovoDarnedFileField.getText());
             }
 
+        } else if (action.equals(LocationPreferences.RADAR_FILE)) {
+            if (currentIndex == NON_DENOVO_INDEX) {
+                getFile(action, radarFileField);
+                preferences.setRadarFile(radarFileField.getText());
+            } else {
+                getFile(action, denovoRadarFileField);
+                preferences.setRadarFile(denovoRadarFileField.getText());
+            }
+
         } else if (action.equals(LocationPreferences.R_SCRIPT_PATH)) {
             if (currentIndex == NON_DENOVO_INDEX) {
                 getFile(action, rScriptPath);
@@ -417,6 +460,7 @@ public class DataImportDialog extends JDialog implements ActionListener {
             logger.info("RNA VCF path: {}",rnaVcfFileField.getText());
             logger.info("Repeat file path: {}",repeatFileField.getText());
             logger.info("DARNED file path: {}",darnedFileField.getText());
+            logger.info("RADAR file path: {}",radarFileField.getText());
             logger.info("RefSeq file path: {}",refSeqFileField.getText());
             logger.info("dbSNP file path: {}",dbSNPFileField.getText());
             switch (currentIndex) {

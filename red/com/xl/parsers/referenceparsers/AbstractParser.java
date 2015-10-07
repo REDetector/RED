@@ -54,7 +54,7 @@ public abstract class AbstractParser {
             listener.progressComplete(tableName + "_loaded", null);
         }
         int counts = databaseManager.calRowCount(tableName);
-        // INSERT table (auto_id, auto_name) values (1, ¡®yourname') ON DUPLICATE KEY UPDATE auto_name='yourname'
+        // INSERT table (auto_id, auto_name) values (1, yourname') ON DUPLICATE KEY UPDATE auto_name='yourname'
         try {
             databaseManager
                 .insertClause("insert into " + DatabaseManager.INFORMATION_TABLE_NAME + "(tableName,counts) values("

@@ -18,15 +18,15 @@ import org.slf4j.LoggerFactory;
 
 import com.xl.database.DatabaseManager;
 import com.xl.database.DatabaseSelector;
-import com.xl.parsers.referenceparsers.AbstractParser;
-import com.xl.parsers.referenceparsers.DNAVCFParser;
-import com.xl.parsers.referenceparsers.ParserFactory;
-import com.xl.parsers.referenceparsers.RNAVCFParser;
 import com.xl.display.dialog.DataImportDialog;
 import com.xl.display.dialog.ProgressDialog;
 import com.xl.exception.DataLoadException;
 import com.xl.exception.REDException;
 import com.xl.main.REDApplication;
+import com.xl.parsers.referenceparsers.AbstractParser;
+import com.xl.parsers.referenceparsers.DNAVCFParser;
+import com.xl.parsers.referenceparsers.ParserFactory;
+import com.xl.parsers.referenceparsers.RNAVCFParser;
 import com.xl.preferences.DatabasePreferences;
 import com.xl.preferences.LocationPreferences;
 import com.xl.utils.ui.OptionDialogUtils;
@@ -50,24 +50,20 @@ public class ThreadDnaRnaInput implements Runnable {
             manager.createDatabase(DatabaseManager.DNA_RNA_DATABASE_NAME);
             manager.useDatabase(DatabaseManager.DNA_RNA_DATABASE_NAME);
 
-            AbstractParser rnaVcfParser =
-                ParserFactory.createParser(locationPreferences.getRnaVcfFile(),
-                    DatabaseManager.RNA_VCF_RESULT_TABLE_NAME);
-            AbstractParser dnaVcfParser =
-                ParserFactory.createParser(locationPreferences.getDnaVcfFile(),
-                    DatabaseManager.DNA_VCF_RESULT_TABLE_NAME);
-            AbstractParser repeatParser =
-                ParserFactory.createParser(locationPreferences.getRepeatFile(),
-                    DatabaseManager.REPEAT_MASKER_TABLE_NAME);
-            AbstractParser spliceParser =
-                ParserFactory.createParser(locationPreferences.getRefSeqFile(),
-                    DatabaseManager.SPLICE_JUNCTION_TABLE_NAME);
-            AbstractParser dbSNPParser =
-                ParserFactory.createParser(locationPreferences.getDbSNPFile(),
-                    DatabaseManager.DBSNP_DATABASE_TABLE_NAME);
-            AbstractParser darnedParser =
-                ParserFactory.createParser(locationPreferences.getDarnedFile(),
-                    DatabaseManager.DARNED_DATABASE_TABLE_NAME);
+            AbstractParser rnaVcfParser = ParserFactory.createParser(locationPreferences.getRnaVcfFile(),
+                DatabaseManager.RNA_VCF_RESULT_TABLE_NAME);
+            AbstractParser dnaVcfParser = ParserFactory.createParser(locationPreferences.getDnaVcfFile(),
+                DatabaseManager.DNA_VCF_RESULT_TABLE_NAME);
+            AbstractParser repeatParser = ParserFactory.createParser(locationPreferences.getRepeatFile(),
+                DatabaseManager.REPEAT_MASKER_TABLE_NAME);
+            AbstractParser spliceParser = ParserFactory.createParser(locationPreferences.getRefSeqFile(),
+                DatabaseManager.SPLICE_JUNCTION_TABLE_NAME);
+            AbstractParser dbSNPParser = ParserFactory.createParser(locationPreferences.getDbSNPFile(),
+                DatabaseManager.DBSNP_DATABASE_TABLE_NAME);
+            AbstractParser darnedParser = ParserFactory.createParser(locationPreferences.getDarnedFile(),
+                DatabaseManager.KNOWN_RNA_EDITING_TABLE_NAME);
+            AbstractParser radarParser = ParserFactory.createParser(locationPreferences.getRadarFile(),
+                DatabaseManager.KNOWN_RNA_EDITING_TABLE_NAME);
 
             rnaVcfParser.loadDataFromLocal(new ProgressDialog("Import RNA VCF file into database..."));
             String[] rnaVcfSamples = ((RNAVCFParser) rnaVcfParser).getSampleNames();
@@ -82,6 +78,7 @@ public class ThreadDnaRnaInput implements Runnable {
             spliceParser.loadDataFromLocal(new ProgressDialog("Import Ref Seq Gene file into database..."));
             dbSNPParser.loadDataFromLocal(new ProgressDialog("Import dbSNP file into database..."));
             darnedParser.loadDataFromLocal(new ProgressDialog("Import DARNED file into database..."));
+            radarParser.loadDataFromLocal(new ProgressDialog("Import RADAR file into database..."));
         } catch (REDException e) {
             logger.error("", e);
         } catch (DataLoadException e) {

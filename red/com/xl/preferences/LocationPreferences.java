@@ -1,35 +1,32 @@
 /*
- * RED: RNA Editing Detector
- *     Copyright (C) <2014>  <Xing Li>
+ * RED: RNA Editing Detector Copyright (C) <2014> <Xing Li>
  *
- *     RED is free software: you can redistribute it and/or modify
- *     it under the terms of the GNU General Public License as published by
- *     the Free Software Foundation, either version 3 of the License, or
- *     (at your option) any later version.
+ * RED is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as
+ * published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
- *     RED is distributed in the hope that it will be useful,
- *     but WITHOUT ANY WARRANTY; without even the implied warranty of
- *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *     GNU General Public License for more details.
+ * RED is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  *
- *     You should have received a copy of the GNU General Public License
- *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU General Public License along with this program. If not, see
+ * <http://www.gnu.org/licenses/>.
  */
 
 package com.xl.preferences;
-
-import com.xl.utils.FileUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.xl.utils.FileUtils;
+
 /**
  * Created by Xing Li on 2014/6/23.
  * <p/>
- * This class is intended to be a single point at which all of the major location can be stored and from which changes can be passed to any views which care.
+ * This class is intended to be a single point at which all of the major location can be stored and from which changes
+ * can be passed to any views which care.
  */
 public class LocationPreferences {
     /**
@@ -54,6 +51,7 @@ public class LocationPreferences {
     public static final String REF_SEQ_FILE = "RefSeq File";
     public static final String DBSNP_FILE = "dbSNP File";
     public static final String DARNED_FILE = "DARNED File";
+    public static final String RADAR_FILE = "RADAR File";
     public static final String R_SCRIPT_PATH = "R Script Path";
     public static final String CYTOBAND_FILE = "Cytoband File";
     /**
@@ -119,6 +117,7 @@ public class LocationPreferences {
     private String refSeqFile = "";
     private String dbSNPFile = "";
     private String darnedFile = "";
+    private String radarFile = "";
     private String rScriptPath = "";
 
     /**
@@ -181,8 +180,9 @@ public class LocationPreferences {
     }
 
     /**
-     * Gets the default data location. This will initially be the data location saved in the preferences file, but will be updated during use with the last
-     * actual location where data was imported. If you definitely want the location stored in the preferences file then use getProjectSaveLocation()
+     * Gets the default data location. This will initially be the data location saved in the preferences file, but will
+     * be updated during use with the last actual location where data was imported. If you definitely want the location
+     * stored in the preferences file then use getProjectSaveLocation()
      *
      * @return The default location to look for new data
      */
@@ -198,7 +198,6 @@ public class LocationPreferences {
     public void setProjectDataDirectory(String projectDataDirectory) {
         this.projectDataDirectory = projectDataDirectory;
     }
-
 
     public String getFastaDirectory() {
         return fastaDirectory;
@@ -299,7 +298,6 @@ public class LocationPreferences {
         return directories;
     }
 
-
     /**
      * Gets the list of recently opened files.
      *
@@ -310,7 +308,8 @@ public class LocationPreferences {
     }
 
     /**
-     * Adds a path to the recently opened files list. We store up to 5 recently used files on a rotating basis. Adding a new one pushes out the oldest one.
+     * Adds a path to the recently opened files list. We store up to 5 recently used files on a rotating basis. Adding a
+     * new one pushes out the oldest one.
      *
      * @param filePath The new file location to add
      */
@@ -357,6 +356,14 @@ public class LocationPreferences {
 
     public void setDarnedFile(String darnedFile) {
         this.darnedFile = darnedFile;
+    }
+
+    public String getRadarFile() {
+        return radarFile;
+    }
+
+    public void setRadarFile(String radarFile) {
+        this.radarFile = radarFile;
     }
 
     public String getRnaVcfFile() {
