@@ -13,6 +13,13 @@
 
 package com.xl.main;
 
+import java.io.*;
+import java.sql.SQLException;
+import java.util.*;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.xl.database.DatabaseManager;
 import com.xl.exception.DataLoadException;
 import com.xl.filter.Filter;
@@ -25,12 +32,6 @@ import com.xl.parsers.referenceparsers.ParserFactory;
 import com.xl.parsers.referenceparsers.RnaVcfParser;
 import com.xl.utils.FileUtils;
 import com.xl.utils.Timer;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.io.File;
-import java.sql.SQLException;
-import java.util.*;
 
 /**
  * Created by Administrator on 2015/10/11.
@@ -50,7 +51,6 @@ public class RedCommandRunner {
     public static String DARNED = "";
     public static String RADAR = "";
     public static String SPLICE = "";
-    public static String REFSEQ = "";
     public static String REPEAT = "";
     public static String DBSNP = "";
     public static String RSCRIPT = "/usr/bin/RScript";
@@ -60,11 +60,11 @@ public class RedCommandRunner {
     public static void run(String[] args) {
         for (String arg : args) {
             if (arg.equals("-h") || arg.equals("--help")) {
-                System.out.println(getHelp());
+                printDoc();
                 return;
             }
             if (arg.equals("-v") || arg.equals("--version")) {
-                System.out.println(getVersion());
+                printVersion();
                 return;
             }
         }
@@ -165,8 +165,6 @@ public class RedCommandRunner {
                 DBSNP = value;
             } else if (key.equalsIgnoreCase("order")) {
                 ORDER = value;
-            } else if (key.equalsIgnoreCase("refseq")) {
-                REFSEQ = value;
             } else if (key.equalsIgnoreCase("delete")) {
                 DELETE = value;
             } else {
@@ -178,24 +176,37 @@ public class RedCommandRunner {
 
         if (INPUT.length() != 0) {
             String[] sections = INPUT.split(",");
-            if (MODE.equalsIgnoreCase("dnarna") && sections.length >= 6) {
-                RNAVCF = sections[0].trim();
-                DNAVCF = sections[1].trim();
-                DARNED = sections[2].trim();
-                SPLICE = sections[3].trim();
-                REPEAT = sections[4].trim();
-                DBSNP = sections[5].trim();
-            } else if (MODE.equalsIgnoreCase("denovo") && sections.length >= 5) {
-                RNAVCF = sections[0].trim();
-                DARNED = sections[1].trim();
-                SPLICE = sections[2].trim();
-                REPEAT = sections[3].trim();
-                DBSNP = sections[4].trim();
-            } else {
-                logger.error("Unknown the argument '--INPUT " + INPUT + "' or it is incomplete, please have a check.",
-                    new IllegalArgumentException());
-                return;
+            for (String section : sections) {
+                String[] keyValues = section.split(":");
+                if (keyValues.length != 2) {
+                    logger.error(
+                        "Unknown the argument '-i or --input " + INPUT + "' or it is incomplete, please have a check.",
+                        new IllegalArgumentException());
+                    return;
+                }
+                String key = keyValues[0];
+                String value = keyValues[1];
+                if (key.equalsIgnoreCase("rnavcf")) {
+                    RNAVCF = value;
+                } else if (key.equalsIgnoreCase("dnavcf")) {
+                    DNAVCF = value;
+                } else if (key.equalsIgnoreCase("darned")) {
+                    DARNED = value;
+                } else if (key.equalsIgnoreCase("radar")) {
+                    RADAR = value;
+                } else if (key.equalsIgnoreCase("splice")) {
+                    SPLICE = value;
+                } else if (key.equalsIgnoreCase("repeat")) {
+                    REPEAT = value;
+                } else if (key.equalsIgnoreCase("dbsnp")) {
+                    DBSNP = value;
+                } else {
+                    logger.error("Unknown key '" + key + "' or value '" + value + "', please have a check.",
+                        new IllegalArgumentException());
+                    return;
+                }
             }
+
         }
 
         logger.info("Start connecting the database...");
@@ -320,9 +331,6 @@ public class RedCommandRunner {
             }
             if (DARNED.length() != 0) {
                 ParserFactory.createParser(REPEAT, DatabaseManager.DARNED_DATABASE_TABLE_NAME).loadDataFromLocal(null);
-            }
-            if (REFSEQ.length() != 0) {
-                ParserFactory.createParser(REPEAT, DatabaseManager.REFSEQ_GENE_TABLE_NAME).loadDataFromLocal(null);
             }
 
             String endTime = Timer.getCurrentTime();
@@ -450,49 +458,24 @@ public class RedCommandRunner {
         return new ArrayList<Filter>(map.values());
     }
 
-    public static String getVersion() {
-        return "Red Command Line Tool version 0.0.1 (2015-10-10)\n" + "\n" + "Copyright (C) <2014-2015>  <Xing Li>\n"
-            + "\n"
-            + "RCTL is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free "
-            + "Software Foundation, either version 3 of the License, or (at your option) any later version.\n" + "\n"
-            + "RCTL is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details.\n"
-            + "\n"
-            + "You should have received a copy of the GNU General Public License along with this program.  If not, see <http://www.gnu.org/licenses/>.";
+    public static void printVersion() {
+        printResources("CommandLineToolVersion.txt");
     }
 
-    public static String getHelp() {
-        return "Usage: java -jar jarfile [-h|--help] [-v|--version] [-H|--host[=127.0.0.1]] [-p|--port[=3306]] [-u|--user[=root]] [-P|--pwd[=root]] [-m|--mode[=dnarna]] [-i|--input] [-o|--output[=./]] [-e|--export[=all]] [--rnavcf] [--dnavcf] [--darned] [--splice] [--repeat] [--dbsnp]\n"
-            + "\n" + "The most commonly used REFilters commands are:\n"
-            + "\t-h, --help   \t\t\tPrint short help message and exit;\n"
-            + "\t-v, --version \t\t\tPrint version info and exit;\n"
-            + "\t-H, --host=127.0.0.1    The host address of MySQL database;\n"
-            + "\t-p, --port=3306    \t\tThe port used in MySQL;\n" + "\t-u, --user=root    \t\tMySQL user name;\n"
-            + "\t-P, --pwd=root     \t\tMySQL password of user;\n"
-            + "\t-m, --mode=dnarna  \t\tTell the program if it is denovo mode or DNARNA mode;\n"
-            + "\t-i, --input  \t\t\tInput all required files in order (i.e., RNA VCF File, DNA VCF File, DARNED Database, Gene Annotation File, RepeatMasker Database File, dbSNP Database File) instead of single input, each file should be divided with ',' and there should not be blank with each file;\n"
-            + "\t-o, --output=./    \t\tSet export path for the results in database, default path is current directory;\n"
-            + "\t-e, --export=all  \t\tExport the needed columns in database, which must be the column name of a table in database, the column names should be divided by ',';\n"
-            + "\t--rnavcf  \t\t\t\tFile path of RNA VCF file;\n" + "\t--dnavcf  \t\t\t\tFile path of DNA VCF file;\n"
-            + "\t--darned  \t\t\t\tFile path of DARNED database;\n"
-            + "\t--splice  \t\t\t\tFile path of annotation genes like \"gene.gft\";\n"
-            + "\t--repeat  \t\t\t\tFile path of Repeat Masker database;\n"
-            + "\t--dbsnp   \t\t\t\tFile path of dbSNP database;\n" + "\t-r, --rscript \t\t\tFile path of RScript.\n"
-            + "\n" + "Example:\n" + "1) In Windows, use '--' patterns.\n"
-            + "java -jar E:\\Workspace\\REFilters\\out\\artifacts\\REFilters\\REFilters.jar ^\n"
-            + "--host=127.0.0.1 ^\n" + "--port=3306 ^\n" + "--user=root ^\n" + "--pwd=123456 ^\n"
-            + "--mode=denovo --input=D:\\Downloads\\Documents\\BJ22.snvs.hard.filtered.vcf,D:\\Downloads\\Documents\\hg19.txt,D:\\Downloads\\Documents\\genes.gtf,D:\\Downloads\\Documents\\hg19.fa.out,D:\\Downloads\\Documents\\dbsnp_138.hg19.vcf ^\n"
-            + "--output=E:\\Workspace\\REFilters\\Results ^\n" + "--export=all ^\n"
-            + "--rscript=C:\\R\\R-3.1.1\\bin\\Rscript.exe\n" + "\n" + "2) In Windows, use '-' patterns.\n"
-            + "java -jar E:\\Workspace\\REFilters\\out\\artifacts\\REFilters\\REFilters.jar ^\n" + "-H 127.0.0.1 ^\n"
-            + "-p 3306 ^\n" + "-u root ^\n" + "-P 123456 ^\n" + "-m dnarna ^\n"
-            + "-i D:\\Downloads\\Documents\\BJ22.snvs.hard.filtered.vcf,D:\\Downloads\\Documents\\BJ22_sites.hard.filtered.vcf,D:\\Downloads\\Documents\\hg19.txt,D:\\Downloads\\Documents\\genes.gtf,D:\\Downloads\\Documents\\hg19.fa.out,D:\\Downloads\\Documents\\dbsnp_138.hg19.vcf ^\n"
-            + "-o E:\\Workspace\\REFilters\\Results ^\n" + "-e chrom,pos,level ^\n"
-            + "-r C:\\R\\R-3.1.1\\bin\\Rscript.exe\n" + "\n" + "3) In CentOS, use '-' and '--' patterns.\n"
-            + "java -jar /home/seq/softWare/RED/REFilter.jar \n" + "-h 127.0.0.1 \\\n" + "-p 3306 \\\n" + "-u seq \\\n"
-            + "-P 123456 \\\n" + "-m denovo \\\n"
-            + "--rnavcf=/data/rnaEditing/GM12878/GM12878.snvs.hard.filtered.vcf \\\n"
-            + "--repeat=/home/seq/softWare/RED/hg19.fa.out \\\n" + "--splice=/home/seq/softWare/RED/genes.gtf \\\n"
-            + "--dbsnp=/home/seq/softWare/RED/dbsnp_138.hg19.vcf \\\n" + "--darned=/home/seq/softWare/RED/hg19.txt \\\n"
-            + "--rscript=/usr/bin/Rscript";
+    public static void printDoc() {
+        printResources("CommandLineToolDoc.txt");
+    }
+
+    public static void printResources(String resource) {
+        InputStream is = RedCommandRunner.class.getResourceAsStream(resource);
+        BufferedReader br = new BufferedReader(new InputStreamReader(is));
+        String line;
+        try {
+            while ((line = br.readLine()) != null) {
+                System.out.println(line);
+            }
+        } catch (IOException e) {
+            logger.error("Error when getting the document resource: " + resource, e);
+        }
     }
 }

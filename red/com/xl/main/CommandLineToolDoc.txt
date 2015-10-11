@@ -1,0 +1,75 @@
+# Usage:
+java -jar jarfile [-h|--help] [-v|--version] [-H|--host[=127.0.0.1]] [-p|--port[=3306]] [-u|--user[=root]] [-P|--pwd[=root]] [-d|--database[=DNA_RNA_MODE]] [-m|--mode[=dnarna]] [-i|--input] [-o|--output[=./]] [--rnavcf] [--dnavcf] [--darned] [--splice] [--repeat] [--dbsnp] [--radar]
+
+# Commands
+The most commonly used REFilters commands are:
+	-h, --help   				Print short help message and exit;
+	-v, --version 				Print version info and exit;
+	-H, --host=127.0.0.1		The host address of MySQL database (required);
+	-p, --port=3306    			The port used in MySQL (required);
+	-u, --user=root    			MySQL user name (required);
+	-P, --pwd=root     			MySQL password of user (required);
+	-d, --database=DNA_RNA_MODE	Database which to use;
+	-m, --mode=dnarna  			Tell the program if it is denovo mode or DNARNA mode (required);
+	-i, --input  				Input all required files (i.e., RNA VCF File, DNA VCF File, DARNED Database, Gene Annotation File, RepeatMasker Database File, dbSNP Database File and RADAR Database) instead of single input, each file should be divided with ',' and should consist of Key (refer to reference file name, i.e. rnavcf, dnavcf, darned, splice, repeat, dbsnp and radar) and Value (refer to the file path) divided by '-', see the following examples (required);
+	-o, --output=./    			Set export path for the results in database, default path is current directory (optional);
+	-O, --order=12345678		The order to perform filters.
+	--rnavcf  					File path of RNA VCF file (required);
+	--dnavcf  					File path of DNA VCF file (optional);
+	--darned  					File path of DARNED database (optional);
+	--splice  					File path of annotation genes like "gene.gft" (optional);
+	--repeat  					File path of Repeat Masker database (optional);
+	--dbsnp   					File path of dbSNP database (optional);
+	--radar						File path of RADAR database (optional);
+	-r, --rscript 				File path of RScript (optional).
+
+# Explanation for order option
+The default order for DNA-RNA mode is (1)editing type filter -> (2)quality control filter -> (3)DNA-RNA filter -> (4)splice junction filter -> (5)repeat regions filter -> (6)known SNP filter -> (7)likelihood ratio test filter -> (8)fisher's exact test filter.
+
+The default order for denovo mode is (1)editing type filter -> (2)quality control filter -> (3)splice junction filter -> (4)repeat regions filter -> (5)known SNP filter -> (6)fisher's exact test filter.
+
+You can change the order by this option. For DNA-RNA mode, eight filters are available so that you could not enter less than 8 in the order (e.g., '2143657' is illegal, '51432678' is legal). The same for denovo mode, six filters are available (e.g., '5214376' is illegal, '523516' is legal).
+
+It is strongly recommended the FET filter place in the last of the order since it will affect the results by calculating the p-value and false discovery rate.
+
+Besides, if there is any filter that you do not want to perform in the filter list, just replace the index number from the filter name to zero. For example, in DNA-RNA mode, I do not want to perform known SNP filter and likelihood test filter, then the order should be '12345008'. You can change the filter order, too.
+
+# Examples:
+1) In Windows, use '--' patterns with denovo mode.
+java -jar E:\Workspace\RED\RED.jar ^
+--host=127.0.0.1 ^
+--port=3306 ^
+--user=root ^
+--pwd=123456 ^
+--mode=denovo ^
+--input=rnavcf-D:\Downloads\Documents\BJ22.snvs.hard.filtered.vcf,darned-D:\Downloads\Documents\hg19.txt,splice-D:\Downloads\Documents\genes.gtf,repeat-D:\Downloads\Documents\hg19.fa.out,dbsnp-D:\Downloads\Documents\dbsnp_138.hg19.vcf,radar-D:\Downloads\Documents\Human_AG_all_hg19_v2.txt ^
+--output=E:\Workspace\RED\Results ^
+--rscript=C:\R\R-3.1.1\bin\Rscript.exe
+
+2) In Windows, use '-' patterns with DNARNA mode.
+java -jar E:\Workspace\RED\RED.jar ^
+-H 127.0.0.1 ^
+-p 3306 ^
+-u root ^
+-P 123456 ^
+-m dnarna ^
+-i rnavcf-D:\Downloads\Documents\BJ22.snvs.hard.filtered.vcf,dnavcf-D:\Downloads\Documents\BJ22_sites.hard.filtered.vcf,darned-D:\Downloads\Documents\hg19.txt,splice-D:\Downloads\Documents\genes.gtf,repeat-D:\Downloads\Documents\hg19.fa.out,dbsnp-D:\Downloads\Documents\dbsnp_138.hg19.vcf,radar-D:\Downloads\Documents\Human_AG_all_hg19_v2.txt ^
+-o E:\Workspace\RED\Results ^
+-O 21456378 ^
+-r C:\R\R-3.1.1\bin\Rscript.exe
+
+3) In CentOS, use '-' and '--' patterns with denovo mode.
+java -jar /home/seq/softWare/RED/RED.jar
+-h 127.0.0.1 \
+-p 3306 \
+-u seq \
+-P 123456 \
+-m denovo \
+-O 123456 \
+--rnavcf=/data/rnaEditing/GM12878/GM12878.snvs.hard.filtered.vcf \
+--repeat=/home/seq/softWare/RED/hg19.fa.out \
+--splice=/home/seq/softWare/RED/genes.gtf \
+--dbsnp=/home/seq/softWare/RED/dbsnp_138.hg19.vcf \
+--darned=/home/seq/softWare/RED/hg19.txt \
+--radar=/home/seq/softWare/RED/Human_AG_all_hg19_v2.txt \
+--rscript=/usr/bin/Rscript
