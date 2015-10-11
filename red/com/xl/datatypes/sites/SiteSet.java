@@ -73,7 +73,7 @@ public class SiteSet extends SiteList {
      */
     public SiteSet(String sampleName, String description, int expectedSize) {
         /**
-         * This constructor should only be called by the REDParser since it relies on the correct number of sites eventually being added.
+         * This constructor should only be called by the RedParser since it relies on the correct number of sites eventually being added.
          * Ideally we'd go back to sort out this requirement by changing the RED file format, but for now we're stuck with this work round
          */
         super(null, sampleName + "_" + DatabaseManager.RNA_VCF_RESULT_TABLE_NAME, sampleName + "_" + DatabaseManager.RNA_VCF_RESULT_TABLE_NAME,

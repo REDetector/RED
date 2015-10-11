@@ -27,10 +27,10 @@ import java.sql.SQLException;
 /**
  * P_value based on alt and ref
  */
-public class DARNEDParser extends AbstractParser {
+public class DarnedParser extends AbstractParser {
     private DatabaseManager databaseManager = DatabaseManager.getInstance();
 
-    public DARNEDParser(String filePath, String tableName) {
+    public DarnedParser(String filePath, String tableName) {
         super(filePath, DatabaseManager.KNOWN_RNA_EDITING_TABLE_NAME);
     }
 
@@ -91,7 +91,7 @@ public class DARNEDParser extends AbstractParser {
             } catch (IOException e) {
                 logger.error("Error load file from " + dataPath + " to file stream", e);
             } catch (SQLException e) {
-                logger.error("Error execute sql clause in " + DARNEDParser.class.getName() + ":loadDarnedTable()", e);
+                logger.error("Error execute sql clause in " + DarnedParser.class.getName() + ":loadDarnedTable()", e);
             }
         }
     }

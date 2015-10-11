@@ -17,8 +17,8 @@
  */
 package com.xl.display.dialog;
 
-import com.xl.exception.REDException;
-import com.xl.main.REDApplication;
+import com.xl.exception.RedException;
+import com.xl.main.RedApplication;
 import com.xl.parsers.dataparsers.DataParser;
 import com.xl.utils.ui.OptionDialogUtils;
 
@@ -40,7 +40,7 @@ public class DataParserOptionsDialog extends JDialog implements ActionListener {
     private boolean goAheadAndParse = false;
 
     public DataParserOptionsDialog(DataParser parser) {
-        super(REDApplication.getInstance());
+        super(RedApplication.getInstance());
         setModal(true);
         setTitle("Import Options");
 
@@ -71,7 +71,7 @@ public class DataParserOptionsDialog extends JDialog implements ActionListener {
         Dimension d = getPreferredSize();
 
         setSize(Math.max(d.width, 400), Math.max(d.height, 400));
-        setLocationRelativeTo(REDApplication.getInstance());
+        setLocationRelativeTo(RedApplication.getInstance());
 
     }
 
@@ -96,7 +96,7 @@ public class DataParserOptionsDialog extends JDialog implements ActionListener {
                 OptionDialogUtils.showErrorDialog(this, "Some options have not been set");
             }
         } else {
-            new CrashReporter(new REDException("Don't know how to handle action '" + ae.getActionCommand() + "'"));
+            new CrashReporter(new RedException("Don't know how to handle action '" + ae.getActionCommand() + "'"));
         }
     }
 

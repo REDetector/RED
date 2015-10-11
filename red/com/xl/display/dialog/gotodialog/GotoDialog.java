@@ -18,7 +18,7 @@
 
 package com.xl.display.dialog.gotodialog;
 
-import com.xl.main.REDApplication;
+import com.xl.main.RedApplication;
 import com.xl.preferences.DisplayPreferences;
 import com.xl.utils.NumberKeyListener;
 
@@ -63,7 +63,7 @@ public class GoToDialog extends JDialog implements ActionListener, KeyListener, 
      *
      * @param application the application
      */
-    public GoToDialog(REDApplication application) {
+    public GoToDialog(RedApplication application) {
         super(application, "Go To Position...");
         setSize(300, 350);
         setLocationRelativeTo(application);

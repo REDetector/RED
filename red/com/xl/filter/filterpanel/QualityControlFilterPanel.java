@@ -17,7 +17,7 @@ import com.xl.database.Query;
 import com.xl.datatypes.DataStore;
 import com.xl.datatypes.sites.Site;
 import com.xl.datatypes.sites.SiteList;
-import com.xl.exception.REDException;
+import com.xl.exception.RedException;
 import com.xl.filter.Filter;
 import com.xl.filter.denovo.QualityControlFilter;
 import com.xl.utils.ui.OptionDialogUtils;
@@ -66,7 +66,7 @@ public class QualityControlFilterPanel extends AbstractFilterPanel {
      *
      * @param dataStore The data store to filter.
      */
-    public QualityControlFilterPanel(DataStore dataStore) throws REDException {
+    public QualityControlFilterPanel(DataStore dataStore) throws RedException {
         super(dataStore);
     }
 

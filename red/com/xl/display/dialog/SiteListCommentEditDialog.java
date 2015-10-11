@@ -18,7 +18,7 @@
 package com.xl.display.dialog;
 
 import com.xl.datatypes.sites.SiteList;
-import com.xl.main.REDApplication;
+import com.xl.main.RedApplication;
 import com.xl.utils.namemanager.MenuUtils;
 
 import javax.swing.*;
@@ -41,7 +41,7 @@ public class SiteListCommentEditDialog extends JDialog implements ActionListener
 
     public SiteListCommentEditDialog(SiteList list, Component c) {
 
-        super(REDApplication.getInstance(), "Edit comments for " + list.getListName());
+        super(RedApplication.getInstance(), "Edit comments for " + list.getListName());
 
         this.list = list;
 

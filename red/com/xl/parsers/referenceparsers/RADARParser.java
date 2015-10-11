@@ -27,10 +27,10 @@ import java.sql.SQLException;
 /**
  * P_value based on alt and ref
  */
-public class RADARParser extends AbstractParser {
+public class RadarParser extends AbstractParser {
     private DatabaseManager databaseManager = DatabaseManager.getInstance();
 
-    public RADARParser(String filePath, String tableName) {
+    public RadarParser(String filePath, String tableName) {
         super(filePath, DatabaseManager.KNOWN_RNA_EDITING_TABLE_NAME);
     }
 
@@ -82,7 +82,7 @@ public class RADARParser extends AbstractParser {
             } catch (IOException e) {
                 logger.error("Error load file from " + dataPath + " to file stream", e);
             } catch (SQLException e) {
-                logger.error("Error execute sql clause in " + RADARParser.class.getName() + ":loadDarnedTable()", e);
+                logger.error("Error execute sql clause in " + RadarParser.class.getName() + ":loadDarnedTable()", e);
             }
         }
     }

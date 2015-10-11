@@ -26,7 +26,7 @@ import java.io.File;
  * <p/>
  * A EPS file format filter.
  */
-public class EPSFileFilter extends FileFilter {
+public class EpsFileFilter extends FileFilter {
     /**
      * A file filter representing EPS files
      */

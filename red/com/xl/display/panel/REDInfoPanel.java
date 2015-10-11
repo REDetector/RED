@@ -21,10 +21,10 @@ import com.xl.display.dialog.CrashReporter;
 import com.xl.display.dialog.JFileChooserExt;
 import com.xl.exception.NetworkException;
 import com.xl.main.Global;
-import com.xl.main.REDApplication;
+import com.xl.main.RedApplication;
 import com.xl.net.genomes.UpdateChecker;
 import com.xl.preferences.LocationPreferences;
-import com.xl.preferences.REDPreferences;
+import com.xl.preferences.RedPreferences;
 import com.xl.utils.FileUtils;
 import com.xl.utils.namemanager.InfoPanelUtils;
 import com.xl.utils.ui.IconLoader;
@@ -43,8 +43,8 @@ import java.text.DecimalFormat;
 /**
  * This panel is displayed when the program first starts. It shows information about the current RED install
  */
-public class REDInfoPanel extends JPanel implements ActionListener {
-    private final Logger logger = LoggerFactory.getLogger(REDInfoPanel.class);
+public class RedInfoPanel extends JPanel implements ActionListener {
+    private final Logger logger = LoggerFactory.getLogger(RedInfoPanel.class);
     /**
      * The update label.
      */
@@ -57,7 +57,7 @@ public class REDInfoPanel extends JPanel implements ActionListener {
     /**
      * The application
      */
-    private REDApplication application;
+    private RedApplication application;
     /**
      * Check if the cache directory is valid or not.
      */
@@ -71,7 +71,7 @@ public class REDInfoPanel extends JPanel implements ActionListener {
     /**
      * Instantiates a new RED information panel.
      */
-    public REDInfoPanel(REDApplication application) {
+    public RedInfoPanel(RedApplication application) {
         this.application = application;
         populatePanel();
         repaint();
@@ -255,7 +255,7 @@ public class REDInfoPanel extends JPanel implements ActionListener {
         gridBagConstraints.weightx = 0.001;
 
         // We can start the update checker if they've allowed us to
-        if (REDPreferences.getInstance().checkForUpdates()) {
+        if (RedPreferences.getInstance().checkForUpdates()) {
             checkUpdate();
         } else {
             programUpdateLabel.setIcon(IconLoader.ICON_WARNING);
@@ -327,7 +327,7 @@ public class REDInfoPanel extends JPanel implements ActionListener {
                 LocationPreferences.getInstance().setTempDirectory(
                         chooser.getSelectedFile().getAbsolutePath());
                 try {
-                    REDPreferences.getInstance().savePreferences();
+                    RedPreferences.getInstance().savePreferences();
                     populatePanel();
                 } catch (IOException ioe) {
                     new CrashReporter(ioe);
@@ -342,7 +342,7 @@ public class REDInfoPanel extends JPanel implements ActionListener {
                 LocationPreferences.getInstance().setGenomeDirectory(
                         chooser.getSelectedFile().getAbsolutePath());
                 try {
-                    REDPreferences.getInstance().savePreferences();
+                    RedPreferences.getInstance().savePreferences();
                     populatePanel();
                 } catch (IOException ioe) {
                     new CrashReporter(ioe);

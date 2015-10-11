@@ -29,7 +29,7 @@ public abstract class AbstractToolbar extends JToolBar implements ActiveDataChan
     /**
      * The RED menu.
      */
-    private REDMenu menu;
+    private RedMenu menu;
     /**
      * Show this toolbar or not.
      */
@@ -40,7 +40,7 @@ public abstract class AbstractToolbar extends JToolBar implements ActiveDataChan
      *
      * @param menu the menu associated with this toolbar.
      */
-    public AbstractToolbar(REDMenu menu) {
+    public AbstractToolbar(RedMenu menu) {
         this.menu = menu;
         setFocusable(false);
         setShown(showByDefault());
@@ -60,7 +60,7 @@ public abstract class AbstractToolbar extends JToolBar implements ActiveDataChan
 
     public abstract boolean showByDefault();
 
-    protected REDMenu menu() {
+    protected RedMenu menu() {
         return menu;
     }
 

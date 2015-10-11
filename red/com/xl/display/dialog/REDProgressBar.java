@@ -23,21 +23,21 @@ import java.util.List;
  * <p/>
  * A progress manager for progress dialog.
  */
-public class REDProgressBar {
+public class RedProgressBar {
     /**
-     * The instance of REDProgressBar.
+     * The instance of RedProgressBar.
      */
-    private static REDProgressBar progressBar = new REDProgressBar();
+    private static RedProgressBar progressBar = new RedProgressBar();
     /**
      * Listeners.
      */
     protected List<ProgressListener> listeners;
 
-    private REDProgressBar() {
+    private RedProgressBar() {
         listeners = new ArrayList<ProgressListener>();
     }
 
-    public static REDProgressBar getInstance() {
+    public static RedProgressBar getInstance() {
         return progressBar;
     }
 

@@ -20,7 +20,7 @@ package com.xl.display.featureviewer;
 
 import com.sun.java.TableSorter;
 import com.xl.datatypes.feature.Feature;
-import com.xl.main.REDApplication;
+import com.xl.main.RedApplication;
 import com.xl.preferences.DisplayPreferences;
 import com.xl.utils.Strand;
 
@@ -35,7 +35,7 @@ import java.awt.event.MouseListener;
 
 public class FeatureListViewer extends JTable implements MouseListener {
 
-    private REDApplication application;
+    private RedApplication application;
 
     /**
      * Instantiates a new feature list viewer.
@@ -44,7 +44,7 @@ public class FeatureListViewer extends JTable implements MouseListener {
      */
     public FeatureListViewer(Feature[] features) {
 
-        this.application = REDApplication.getInstance();
+        this.application = RedApplication.getInstance();
 
         String[] headers = new String[]{"ID", "Name", "Strand", "Chromosome", "Transcription", "CDS", "EXON"};
         Class[] classes = new Class[]{String.class, String.class, String.class, String.class, String.class, String.class, String.class};

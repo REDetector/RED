@@ -21,7 +21,7 @@ package com.xl.display.report;
 import com.xl.datatypes.DataStore;
 import com.xl.datatypes.sites.Site;
 import com.xl.display.dialog.SiteListViewer;
-import com.xl.main.REDApplication;
+import com.xl.main.RedApplication;
 import com.xl.utils.AxisScale;
 import com.xl.utils.ColourScheme;
 
@@ -312,7 +312,7 @@ public class SitesHistogramPanel extends JPanel implements Runnable {
                     }
                 }
                 new SiteListViewer(siteList.toArray(new Site[0]), "RNA editing sites in " + chr, "RNA editing sites in " + chr,
-                        REDApplication.getInstance());
+                        RedApplication.getInstance());
             }
         }
 

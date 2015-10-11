@@ -21,10 +21,10 @@ import java.io.*;
 import java.util.Properties;
 
 /**
- * A set of REDPreferences, both temporary and permanent which are used throughout RED. Permanent REDPreferences can be loaded from and saved to a
- * REDPreferences file allowing persistence between sessions.
+ * A set of RedPreferences, both temporary and permanent which are used throughout RED. Permanent RedPreferences can be loaded from and saved to a
+ * RedPreferences file allowing persistence between sessions.
  */
-public class REDPreferences {
+public class RedPreferences {
     /**
      * The keys of the preferences.
      */
@@ -33,7 +33,7 @@ public class REDPreferences {
     /**
      * The single instantiated instance of redPreferences
      */
-    private static REDPreferences redPreferences = new REDPreferences();
+    private static RedPreferences redPreferences = new RedPreferences();
     private LocationPreferences locationPreferences = LocationPreferences.getInstance();
     private DatabasePreferences databasePreferences = DatabasePreferences.getInstance();
     /**
@@ -60,7 +60,7 @@ public class REDPreferences {
     /**
      * Instantiates a redPreferences object. Only ever called once from inside this class. External access is via the getInstnace() method.
      */
-    private REDPreferences() {
+    private RedPreferences() {
         try {
             preferencesFile = new File(locationPreferences.getProjectSaveLocation() + File.separator + "red_prefs.txt");
             if (preferencesFile.exists()) {
@@ -76,11 +76,11 @@ public class REDPreferences {
     }
 
     /**
-     * Gets the single instance of REDPreferences.
+     * Gets the single instance of RedPreferences.
      *
-     * @return single instance of REDPreferences
+     * @return single instance of RedPreferences
      */
-    public static REDPreferences getInstance() {
+    public static RedPreferences getInstance() {
         return redPreferences;
     }
 
@@ -102,7 +102,7 @@ public class REDPreferences {
     }
 
     /**
-     * Save REDPreferences.
+     * Save RedPreferences.
      *
      * @throws IOException
      */

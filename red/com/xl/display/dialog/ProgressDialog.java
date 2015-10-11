@@ -19,7 +19,7 @@ package com.xl.display.dialog;
 
 import com.xl.interfaces.Cancellable;
 import com.xl.interfaces.ProgressListener;
-import com.xl.main.REDApplication;
+import com.xl.main.RedApplication;
 import com.xl.utils.namemanager.MenuUtils;
 
 import javax.swing.*;
@@ -73,7 +73,7 @@ public class ProgressDialog extends JDialog implements Runnable, ProgressListene
      * @param title the title
      */
     public ProgressDialog(String title) {
-        this(REDApplication.getInstance(), title, null);
+        this(RedApplication.getInstance(), title, null);
     }
 
     /**
@@ -83,7 +83,7 @@ public class ProgressDialog extends JDialog implements Runnable, ProgressListene
      * @param cancellable a cancellable object to end this process
      */
     public ProgressDialog(String title, Cancellable cancellable) {
-        this(REDApplication.getInstance(), title, cancellable);
+        this(RedApplication.getInstance(), title, cancellable);
     }
 
     /**

@@ -21,7 +21,7 @@ package com.xl.display.report;
 import com.xl.datatypes.DataStore;
 import com.xl.display.dialog.CrashReporter;
 import com.xl.display.dialog.JFileChooserExt;
-import com.xl.main.REDApplication;
+import com.xl.main.RedApplication;
 import com.xl.preferences.LocationPreferences;
 import com.xl.utils.imagemanager.ImageSaver;
 import com.xl.utils.namemanager.MenuUtils;
@@ -54,10 +54,10 @@ public class SitesDistributionHistogram extends JDialog implements ActionListene
      * @param dataStore the data
      */
     public SitesDistributionHistogram(DataStore dataStore) {
-        super(REDApplication.getInstance(), "RNA Editing Sites Distribution [" + dataStore.name() + "]");
+        super(RedApplication.getInstance(), "RNA Editing Sites Distribution [" + dataStore.name() + "]");
         this.dataStore = dataStore;
         setSize(800, 600);
-        setLocationRelativeTo(REDApplication.getInstance());
+        setLocationRelativeTo(RedApplication.getInstance());
         setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
         plotPanel = new SitesHistogramPanel(dataStore);
         getContentPane().setLayout(new BorderLayout());

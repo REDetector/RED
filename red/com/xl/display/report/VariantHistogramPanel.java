@@ -21,7 +21,7 @@ package com.xl.display.report;
 import com.xl.datatypes.DataStore;
 import com.xl.datatypes.sites.Site;
 import com.xl.display.dialog.SiteListViewer;
-import com.xl.main.REDApplication;
+import com.xl.main.RedApplication;
 import com.xl.utils.AxisScale;
 import com.xl.utils.ColourScheme;
 
@@ -295,7 +295,7 @@ public class VariantHistogramPanel extends JPanel implements Runnable {
                         siteList.add(site);
                     }
                 }
-                new SiteListViewer(siteList.toArray(new Site[0]), ref + " to " + alt, "Focus on " + ref + " to " + alt, REDApplication.getInstance());
+                new SiteListViewer(siteList.toArray(new Site[0]), ref + " to " + alt, "Focus on " + ref + " to " + alt, RedApplication.getInstance());
             }
         }
 

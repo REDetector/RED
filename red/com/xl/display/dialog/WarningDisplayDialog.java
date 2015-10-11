@@ -17,7 +17,7 @@
  */
 package com.xl.display.dialog;
 
-import com.xl.main.REDApplication;
+import com.xl.main.RedApplication;
 import com.xl.utils.namemanager.MenuUtils;
 
 import javax.swing.*;
@@ -36,9 +36,9 @@ public class WarningDisplayDialog extends JDialog implements ActionListener {
      * @param exceptions the exceptions
      */
     public WarningDisplayDialog(Exception[] exceptions) {
-        super(REDApplication.getInstance(), "Request Generated Warnings...");
+        super(RedApplication.getInstance(), "Request Generated Warnings...");
         constructDialog(exceptions.length, exceptions);
-        setLocationRelativeTo(REDApplication.getInstance());
+        setLocationRelativeTo(RedApplication.getInstance());
         setVisible(true);
     }
 
@@ -48,9 +48,9 @@ public class WarningDisplayDialog extends JDialog implements ActionListener {
      * @param exceptions the exceptions
      */
     public WarningDisplayDialog(int exceptionCount, Exception[] exceptions) {
-        super(REDApplication.getInstance(), "Request Generated Warnings...");
+        super(RedApplication.getInstance(), "Request Generated Warnings...");
         constructDialog(exceptionCount, exceptions);
-        setLocationRelativeTo(REDApplication.getInstance());
+        setLocationRelativeTo(RedApplication.getInstance());
         setVisible(true);
     }
 

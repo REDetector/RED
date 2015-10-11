@@ -19,7 +19,7 @@ import com.xl.datatypes.sites.Site;
 import com.xl.datatypes.sites.SiteList;
 import com.xl.display.dialog.JFileChooserExt;
 import com.xl.display.panel.DataIntroductionPanel;
-import com.xl.exception.REDException;
+import com.xl.exception.RedException;
 import com.xl.filter.Filter;
 import com.xl.filter.denovo.FisherExactTestFilter;
 import com.xl.preferences.LocationPreferences;
@@ -79,7 +79,7 @@ public class FisherExactTestFilterPanel extends AbstractFilterPanel {
      *
      * @param dataStore The data store to filter.
      */
-    public FisherExactTestFilterPanel(DataStore dataStore) throws REDException {
+    public FisherExactTestFilterPanel(DataStore dataStore) throws RedException {
         super(dataStore);
     }
 

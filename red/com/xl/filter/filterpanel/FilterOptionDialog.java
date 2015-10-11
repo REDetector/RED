@@ -21,10 +21,10 @@ package com.xl.filter.filterpanel;
 import com.xl.datatypes.sites.SiteList;
 import com.xl.display.dialog.CrashReporter;
 import com.xl.display.dialog.ProgressDialog;
-import com.xl.exception.REDException;
+import com.xl.exception.RedException;
 import com.xl.interfaces.OptionsListener;
 import com.xl.interfaces.ProgressListener;
-import com.xl.main.REDApplication;
+import com.xl.main.RedApplication;
 import com.xl.utils.FontManager;
 import com.xl.utils.namemanager.MenuUtils;
 import com.xl.utils.ui.OptionDialogUtils;
@@ -55,7 +55,7 @@ public class FilterOptionDialog extends JDialog implements OptionsListener, Prog
      * @param filter the filter.
      */
     public FilterOptionDialog(AbstractFilterPanel filter) {
-        super(REDApplication.getInstance(), filter.name());
+        super(RedApplication.getInstance(), filter.name());
 
         this.filter = filter;
 
@@ -96,7 +96,7 @@ public class FilterOptionDialog extends JDialog implements OptionsListener, Prog
         buttonPanel.add(filterButton);
 
         getContentPane().add(buttonPanel, BorderLayout.SOUTH);
-        setLocationRelativeTo(REDApplication.getInstance());
+        setLocationRelativeTo(RedApplication.getInstance());
         setVisible(true);
     }
 
@@ -111,7 +111,7 @@ public class FilterOptionDialog extends JDialog implements OptionsListener, Prog
                 filter.addProgressListener(new ProgressDialog(this, "Running Filter...", filter));
                 try {
                     filter.runFilter();
-                } catch (REDException e) {
+                } catch (RedException e) {
                     progressExceptionReceived(e);
                 }
             } else {

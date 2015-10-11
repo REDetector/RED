@@ -22,10 +22,10 @@ import java.sql.SQLException;
 import java.util.Map;
 
 /**
- * The Class KnownSNPFilter is a rule-based filter that will filter out the site which was known SNP in DNA level for
+ * The Class KnownSnpFilter is a rule-based filter that will filter out the site which was known SNP in DNA level for
  * eliminating germline variants.
  */
-public class KnownSNPFilter implements Filter {
+public class KnownSnpFilter implements Filter {
     /**
      * The database manager.
      */
@@ -48,7 +48,7 @@ public class KnownSNPFilter implements Filter {
                 + " where not exists (select chrom from " + dbSnpTable + " where (" + dbSnpTable + ".chrom="
                 + previousTable + ".chrom and " + dbSnpTable + ".pos=" + previousTable + ".pos))");
         } catch (SQLException e) {
-            logger.error("Error execute sql clause in" + KnownSNPFilter.class.getName() + ":performFilter()", e);
+            logger.error("Error execute sql clause in" + KnownSnpFilter.class.getName() + ":performFilter()", e);
         }
         logger.info("End performing Known SNP Filter...\t" + Timer.getCurrentTime());
     }

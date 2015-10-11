@@ -23,10 +23,10 @@ import java.sql.SQLException;
 import java.util.Map;
 
 /**
- * The Class DNARNAFilter is a rule-based filter. RNA-seq variants where its counterparts in genomic DNA is not
+ * The Class DnaRnaFilter is a rule-based filter. RNA-seq variants where its counterparts in genomic DNA is not
  * reference homozygote (e.g., AA) would be excluded if DNA sequencing data is available.
  */
-public class DNARNAFilter implements Filter {
+public class DnaRnaFilter implements Filter {
     public static final String PARAMS_STRING_DNA_VCF_TABLE = "dnavcf";
     public static final String PARAMS_STRING_EDITING_TYPE = "editingtype";
     /**
@@ -74,7 +74,7 @@ public class DNARNAFilter implements Filter {
 
             logger.info("End selecting data from DNA VCF table...\t" + Timer.getCurrentTime());
         } catch (SQLException e) {
-            logger.error("Error execute sql clause in " + DNARNAFilter.class.getName() + ":performFilter()", e);
+            logger.error("Error execute sql clause in " + DnaRnaFilter.class.getName() + ":performFilter()", e);
         }
         logger.info("End performing DNA-RNA Filter...\t" + Timer.getCurrentTime());
     }

@@ -18,7 +18,7 @@
 
 package com.xl.utils;
 
-import com.xl.main.REDApplication;
+import com.xl.main.RedApplication;
 import com.xl.utils.ui.OptionDialogUtils;
 
 import javax.swing.*;
@@ -78,7 +78,7 @@ public class MemoryMonitor extends JPanel implements Runnable, MouseListener, Mo
             while (true) {
 
                 if (!registered) {
-                    if (REDApplication.getInstance() != null) {
+                    if (RedApplication.getInstance() != null) {
                         registered = true;
                     }
                 }

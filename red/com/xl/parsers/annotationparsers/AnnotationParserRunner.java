@@ -21,7 +21,7 @@ package com.xl.parsers.annotationparsers;
 
 import com.xl.display.dialog.JFileChooserExt;
 import com.xl.display.dialog.ProgressDialog;
-import com.xl.main.REDApplication;
+import com.xl.main.RedApplication;
 import com.xl.preferences.LocationPreferences;
 
 import javax.swing.*;
@@ -38,7 +38,7 @@ public class AnnotationParserRunner {
      * @param application the application
      * @param parser      the parser
      */
-    public static void RunAnnotationParser(REDApplication application, AnnotationParser parser) {
+    public static void RunAnnotationParser(RedApplication application, AnnotationParser parser) {
         File file;
         JFileChooser chooser = new JFileChooserExt(LocationPreferences.getInstance().getGenomeDirectory(), null);
         chooser.setMultiSelectionEnabled(false);

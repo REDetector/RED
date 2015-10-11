@@ -24,16 +24,16 @@ import com.xl.datatypes.DataStore;
 import com.xl.datatypes.sites.SiteList;
 import com.xl.display.dialog.DataZoomSelector;
 import com.xl.display.dialog.SearchCommandDialog;
-import com.xl.main.REDApplication;
+import com.xl.main.RedApplication;
 import com.xl.utils.namemanager.MenuUtils;
 
 import javax.swing.*;
 import java.awt.*;
 
 /**
- * The Class REDToolbar is an implementation of the abstract toolbar.
+ * The Class RedToolbar is an implementation of the abstract toolbar.
  */
-public class REDToolbar extends AbstractToolbar implements DatabaseListener {
+public class RedToolbar extends AbstractToolbar implements DatabaseListener {
 
     /**
      * The jump to position button.
@@ -79,7 +79,7 @@ public class REDToolbar extends AbstractToolbar implements DatabaseListener {
      *
      * @param menu the menu
      */
-    public REDToolbar(REDMenu menu) {
+    public RedToolbar(RedMenu menu) {
 
         super(menu);
 
@@ -164,7 +164,7 @@ public class REDToolbar extends AbstractToolbar implements DatabaseListener {
         databaseConnection.setEnabled(true);
         preferencesButton.setEnabled(true);
         if (dataZoomSelector == null) {
-            dataZoomSelector = new DataZoomSelector(REDApplication.getInstance());
+            dataZoomSelector = new DataZoomSelector(RedApplication.getInstance());
             add(dataZoomSelector.getContentPane());
         }
         if (searchCommand == null) {

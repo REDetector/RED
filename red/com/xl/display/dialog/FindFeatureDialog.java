@@ -23,9 +23,9 @@ import com.xl.datatypes.annotation.AnnotationCollection;
 import com.xl.datatypes.annotation.AnnotationSet;
 import com.xl.datatypes.feature.Feature;
 import com.xl.display.featureviewer.FeatureListViewer;
-import com.xl.exception.REDException;
+import com.xl.exception.RedException;
 import com.xl.interfaces.Cancellable;
-import com.xl.main.REDApplication;
+import com.xl.main.RedApplication;
 import com.xl.utils.ui.OptionDialogUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -92,9 +92,9 @@ public class FindFeatureDialog extends JDialog implements ActionListener, Runnab
      * @param dataCollection the data collection
      */
     public FindFeatureDialog(DataCollection dataCollection) {
-        super(REDApplication.getInstance(), "Find Feature...");
+        super(RedApplication.getInstance(), "Find Feature...");
         setSize(700, 350);
-        setLocationRelativeTo(REDApplication.getInstance());
+        setLocationRelativeTo(RedApplication.getInstance());
 
         this.dataCollection = dataCollection;
         this.collection = dataCollection.genome().getAnnotationCollection();
@@ -235,7 +235,7 @@ public class FindFeatureDialog extends JDialog implements ActionListener, Runnab
             }
             try {
                 dataCollection.genome().getAnnotationCollection().addAnnotationSet(searchAnnotations);
-            } catch (REDException e) {
+            } catch (RedException e) {
                 logger.warn("Unable to add annotation set.", e);
             }
 
@@ -260,7 +260,7 @@ public class FindFeatureDialog extends JDialog implements ActionListener, Runnab
             }
             try {
                 dataCollection.genome().getAnnotationCollection().addAnnotationSet(searchAnnotations);
-            } catch (REDException e) {
+            } catch (RedException e) {
                 logger.warn("Unable to add annotation set.", e);
             }
         }

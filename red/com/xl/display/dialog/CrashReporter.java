@@ -19,7 +19,7 @@
 package com.xl.display.dialog;
 
 import com.xl.main.Global;
-import com.xl.main.REDApplication;
+import com.xl.main.RedApplication;
 import com.xl.utils.FontManager;
 import com.xl.utils.namemanager.MenuUtils;
 import com.xl.utils.ui.OptionDialogUtils;
@@ -44,13 +44,13 @@ public class CrashReporter extends JDialog implements ActionListener {
      * @param e the e
      */
     public CrashReporter(Throwable e) {
-        super(REDApplication.getInstance(), "Oops - Crash Reporter");
+        super(RedApplication.getInstance(), "Oops - Crash Reporter");
 
         e.printStackTrace();
 
         if (e instanceof OutOfMemoryError) {
             // Don't issue a normal crash report but tell them that they ran out of memory.
-            OptionDialogUtils.showErrorDialog(REDApplication.getInstance(), "<html>You ran out of memory!<br><br>Please look at Help &gt; Help Contents &gt; " +
+            OptionDialogUtils.showErrorDialog(RedApplication.getInstance(), "<html>You ran out of memory!<br><br>Please look at Help &gt; Help Contents &gt; " +
                     "Configuration to see how to fix this");
             return;
         }
@@ -58,7 +58,7 @@ public class CrashReporter extends JDialog implements ActionListener {
         setModal(true);
         setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
         setSize(600, 200);
-        setLocationRelativeTo(REDApplication.getInstance());
+        setLocationRelativeTo(RedApplication.getInstance());
 
         getContentPane().setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();

@@ -21,10 +21,10 @@ package com.xl.display.report;
 import com.sun.java.TableSorter;
 import com.xl.datatypes.genome.Chromosome;
 import com.xl.display.dialog.CrashReporter;
-import com.xl.main.REDApplication;
+import com.xl.main.RedApplication;
 import com.xl.preferences.DisplayPreferences;
 import com.xl.preferences.LocationPreferences;
-import com.xl.utils.filefilters.GFFFileFilter;
+import com.xl.utils.filefilters.GffFileFilter;
 import com.xl.utils.filefilters.TxtFileFilter;
 import com.xl.utils.namemanager.MenuUtils;
 import com.xl.utils.ui.OptionDialogUtils;
@@ -52,7 +52,7 @@ public class ReportTableDialog extends JDialog implements MouseListener, ActionL
     /**
      * The application.
      */
-    private REDApplication application;
+    private RedApplication application;
     /**
      * The model.
      */
@@ -69,7 +69,7 @@ public class ReportTableDialog extends JDialog implements MouseListener, ActionL
      * @param report        the report
      * @param originalModel the original model
      */
-    public ReportTableDialog(REDApplication application, Report report, TableModel originalModel) {
+    public ReportTableDialog(RedApplication application, Report report, TableModel originalModel) {
         super(application, report.name());
 
         this.report = report;
@@ -169,7 +169,7 @@ public class ReportTableDialog extends JDialog implements MouseListener, ActionL
             chooser.setMultiSelectionEnabled(false);
 
             if (report.canExportGFF()) {
-                chooser.addChoosableFileFilter(new GFFFileFilter());
+                chooser.addChoosableFileFilter(new GffFileFilter());
             }
 
             TxtFileFilter txtff = new TxtFileFilter();

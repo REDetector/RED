@@ -22,7 +22,7 @@ import com.xl.datatypes.genome.Chromosome;
 import com.xl.display.dialog.gotodialog.GoToDialog;
 import com.xl.gradients.*;
 import com.xl.interfaces.DisplayPreferencesListener;
-import com.xl.main.REDApplication;
+import com.xl.main.RedApplication;
 import com.xl.utils.ParsingUtils;
 
 import java.io.PrintStream;
@@ -188,7 +188,7 @@ public class DisplayPreferences {
     }
 
     public void setLocation(String chr, int start, int end) {
-        currentChromosome = REDApplication.getInstance().dataCollection().genome().getChromosome(chr);
+        currentChromosome = RedApplication.getInstance().dataCollection().genome().getChromosome(chr);
         setLocation(start, end);
     }
 
@@ -203,7 +203,7 @@ public class DisplayPreferences {
     }
 
     public void setChromosome(String c) {
-        currentChromosome = REDApplication.getInstance().dataCollection().genome().getChromosome(c);
+        currentChromosome = RedApplication.getInstance().dataCollection().genome().getChromosome(c);
         // Set the location to be a 1Mbp chunk in the middle if we can
         if (currentChromosome != null && (currentStartLocation == 0 || currentEndLocation == 0)) {
             setLocation(currentChromosome.getLength() / 16 * 7, currentChromosome.getLength() / 16 * 9);

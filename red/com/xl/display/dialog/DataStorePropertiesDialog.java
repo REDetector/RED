@@ -21,7 +21,7 @@ package com.xl.display.dialog;
 import com.xl.datatypes.DataGroup;
 import com.xl.datatypes.DataSet;
 import com.xl.datatypes.DataStore;
-import com.xl.main.REDApplication;
+import com.xl.main.RedApplication;
 import com.xl.utils.Strand;
 
 import javax.swing.*;
@@ -40,7 +40,7 @@ public class DataStorePropertiesDialog extends JDialog implements ActionListener
      */
     public DataStorePropertiesDialog(DataStore dataStore) {
 
-        super(REDApplication.getInstance(), "DataStore Properties");
+        super(RedApplication.getInstance(), "DataStore Properties");
         getContentPane().setLayout(new BorderLayout());
 
         JPanel infoPanel = new JPanel();
@@ -117,7 +117,7 @@ public class DataStorePropertiesDialog extends JDialog implements ActionListener
         getContentPane().add(buttonPanel, BorderLayout.SOUTH);
 
         setSize(500, 250);
-        setLocationRelativeTo(REDApplication.getInstance());
+        setLocationRelativeTo(RedApplication.getInstance());
         setVisible(true);
     }
 

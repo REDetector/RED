@@ -18,7 +18,7 @@ package com.xl.database;
  * single thread, which will influence the efficiency, but in order to synchronize, we would like to make it.
  */
 
-import com.xl.main.REDApplication;
+import com.xl.main.RedApplication;
 import com.xl.preferences.DatabasePreferences;
 import com.xl.utils.RandomStringGenerator;
 import com.xl.utils.ui.OptionDialogUtils;
@@ -264,7 +264,7 @@ public class DatabaseManager {
         try {
             databaseMetaData = con.getMetaData();
         } catch (SQLException e) {
-            OptionDialogUtils.showErrorDialog(REDApplication.getInstance(),
+            OptionDialogUtils.showErrorDialog(RedApplication.getInstance(),
                 "Statement has not been created. Could not get meta data from database.");
             logger.error("Statement has not been created. Could not get meta data from database.", e);
             return new ArrayList<String>();
@@ -278,7 +278,7 @@ public class DatabaseManager {
             }
             return tableLists;
         } catch (SQLException e) {
-            OptionDialogUtils.showErrorDialog(REDApplication.getInstance(),
+            OptionDialogUtils.showErrorDialog(RedApplication.getInstance(),
                 "Database " + database + " does not exist. Please have a check in your database.");
             logger.error("Database " + database + " does not exist. Please have a check in your database.", e);
             return new ArrayList<String>();

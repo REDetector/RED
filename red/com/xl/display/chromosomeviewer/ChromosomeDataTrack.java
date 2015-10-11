@@ -25,7 +25,7 @@ import com.xl.datatypes.sequence.SequenceRead;
 import com.xl.datatypes.sites.Site;
 import com.xl.datatypes.sites.SiteList;
 import com.xl.interfaces.ActiveDataChangedListener;
-import com.xl.parsers.dataparsers.BAMFileParser;
+import com.xl.parsers.dataparsers.BamFileParser;
 import com.xl.preferences.DisplayPreferences;
 import com.xl.utils.AsciiUtils;
 import com.xl.utils.ColourScheme;
@@ -294,7 +294,7 @@ public class ChromosomeDataTrack extends AbstractTrack implements ActiveDataChan
             depths = null;
             System.gc();
         }
-        depths = ((BAMFileParser) data.getDataParser()).getDepth(currentChromosome, currentViewerStart, currentViewerEnd);
+        depths = ((BamFileParser) data.getDataParser()).getDepth(currentChromosome, currentViewerStart, currentViewerEnd);
         for (Site site : depths) {
             if (maxDepth < site.getDepth()) {
                 maxDepth = site.getDepth();

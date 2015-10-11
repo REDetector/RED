@@ -24,7 +24,7 @@ import com.xl.datatypes.genome.Genome;
 import com.xl.datatypes.sites.SiteList;
 import com.xl.interfaces.ActiveDataChangedListener;
 import com.xl.interfaces.DisplayPreferencesListener;
-import com.xl.main.REDApplication;
+import com.xl.main.RedApplication;
 import com.xl.preferences.DisplayPreferences;
 
 import javax.swing.*;
@@ -45,7 +45,7 @@ public class GenomeViewer extends JPanel implements ActiveDataChangedListener, D
     /**
      * The application.
      */
-    private REDApplication application;
+    private RedApplication application;
     /**
      * Since that we want to export the genome view without any highlighted place, so we temporarily cancel painting the highlight when exporting image and
      * restore it after export has been finished.
@@ -58,7 +58,7 @@ public class GenomeViewer extends JPanel implements ActiveDataChangedListener, D
      * @param genome      the genome
      * @param application the application
      */
-    public GenomeViewer(Genome genome, REDApplication application) {
+    public GenomeViewer(Genome genome, RedApplication application) {
 
         Chromosome[] chromosomes = genome.getAllChromosomes();
         chromosomeDisplays = new ChromosomeDisplay[chromosomes.length];
@@ -127,7 +127,7 @@ public class GenomeViewer extends JPanel implements ActiveDataChangedListener, D
      *
      * @return the RED application
      */
-    public REDApplication application() {
+    public RedApplication application() {
         return application;
     }
 

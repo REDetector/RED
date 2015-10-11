@@ -24,10 +24,10 @@ import java.sql.SQLException;
  * Comprehensive phase we focus on base in exon we discard base in the rear or front of the sequence
  */
 
-public class GTFParser extends AbstractParser {
+public class GtfParser extends AbstractParser {
     private DatabaseManager databaseManager = DatabaseManager.getInstance();
 
-    public GTFParser(String dataPath, String tableName) {
+    public GtfParser(String dataPath, String tableName) {
         super(dataPath, tableName);
     }
 
@@ -57,7 +57,7 @@ public class GTFParser extends AbstractParser {
                         "Start loading Gene Annotation data from " + dataPath + " to " + tableName + " table", 0, 0);
                 }
             } catch (SQLException e) {
-                logger.error("Error execute sql clause in " + GTFParser.class.getName() + ":loadSpliceJunctionTable().",
+                logger.error("Error execute sql clause in " + GtfParser.class.getName() + ":loadSpliceJunctionTable().",
                     e);
             }
         }

@@ -13,6 +13,7 @@
 
 package com.xl.thread;
 
+import com.xl.main.RedApplication;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -21,7 +22,6 @@ import com.xl.database.DatabaseSelector;
 import com.xl.display.dialog.DataImportDialog;
 import com.xl.display.dialog.ProgressDialog;
 import com.xl.exception.DataLoadException;
-import com.xl.main.REDApplication;
 import com.xl.parsers.referenceparsers.AbstractParser;
 import com.xl.parsers.referenceparsers.ParserFactory;
 import com.xl.preferences.DatabasePreferences;
@@ -67,14 +67,14 @@ public class ThreadDenovoInput implements Runnable {
             radarParser.loadDataFromLocal(new ProgressDialog("Import RADAR file into database..."));
 
         } catch (DataLoadException e) {
-            OptionDialogUtils.showErrorDialog(REDApplication.getInstance(),
+            OptionDialogUtils.showErrorDialog(RedApplication.getInstance(),
                 "Sorry, fail to import the data to database. You may select one of wrong "
                     + "path for the relative data.");
             logger.error("", e);
-            new DataImportDialog(REDApplication.getInstance());
+            new DataImportDialog(RedApplication.getInstance());
             return;
         }
-        new DatabaseSelector(REDApplication.getInstance());
+        new DatabaseSelector(RedApplication.getInstance());
     }
 
 }

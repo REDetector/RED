@@ -23,7 +23,7 @@ import com.xl.datatypes.annotation.CoreAnnotationSet;
 import com.xl.datatypes.feature.Feature;
 import com.xl.datatypes.genome.Genome;
 import com.xl.datatypes.sequence.Location;
-import com.xl.exception.REDException;
+import com.xl.exception.RedException;
 import com.xl.utils.GeneType;
 import com.xl.utils.NameRetriever;
 import com.xl.utils.ParsingUtils;
@@ -36,9 +36,9 @@ import java.util.List;
 import java.util.zip.GZIPInputStream;
 
 /**
- * The Class UCSCRefGeneParser is a parser to parse RefSeq gene annotation file from UCSC.
+ * The Class UcscRefGeneParser is a parser to parse RefSeq gene annotation file from UCSC.
  */
-public class UCSCRefGeneParser extends AnnotationParser {
+public class UcscRefGeneParser extends AnnotationParser {
 
     private int nameColumn = 0;
     private int chromColumn = 0;
@@ -52,7 +52,7 @@ public class UCSCRefGeneParser extends AnnotationParser {
     private int exonEndsBufferColumn = 0;
     private int aliasNameColumn = 0;
 
-    public UCSCRefGeneParser(Genome genome) {
+    public UcscRefGeneParser(Genome genome) {
         super(genome);
     }
 
@@ -107,7 +107,7 @@ public class UCSCRefGeneParser extends AnnotationParser {
 
                 }
             } catch (NumberFormatException e) {
-                progressWarningReceived(new REDException("Location " + sections[txStartColumn] + "-" + sections[txEndColumn] + " was not an integer"));
+                progressWarningReceived(new RedException("Location " + sections[txStartColumn] + "-" + sections[txEndColumn] + " was not an integer"));
                 e.printStackTrace();
             }
         }

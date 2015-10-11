@@ -21,7 +21,7 @@ package com.xl.display.dialog;
 import com.sun.java.TableSorter;
 import com.xl.datatypes.sites.Site;
 import com.xl.datatypes.sites.SiteList;
-import com.xl.main.REDApplication;
+import com.xl.main.RedApplication;
 import com.xl.preferences.DisplayPreferences;
 import com.xl.preferences.LocationPreferences;
 import com.xl.utils.FontManager;
@@ -54,7 +54,7 @@ public class SiteListViewer extends JDialog implements MouseListener, ActionList
      * @param list        the list
      * @param application the application
      */
-    public SiteListViewer(SiteList list, REDApplication application) {
+    public SiteListViewer(SiteList list, RedApplication application) {
         super(application, list.getListName() + " (" + list.getAllSites().length + " sites)");
 
         Site[] sites = list.getAllSites();
@@ -108,7 +108,7 @@ public class SiteListViewer extends JDialog implements MouseListener, ActionList
 
     }
 
-    public SiteListViewer(Site[] sites, String siteName, String descriptions, REDApplication application) {
+    public SiteListViewer(Site[] sites, String siteName, String descriptions, RedApplication application) {
         super(application, siteName + " (" + sites.length + " sites)");
 
         getContentPane().setLayout(new BorderLayout());

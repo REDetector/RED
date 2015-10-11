@@ -20,7 +20,7 @@ package com.xl.display.dialog;
 import com.xl.datatypes.DataGroup;
 import com.xl.datatypes.DataSet;
 import com.xl.datatypes.DataStore;
-import com.xl.main.REDApplication;
+import com.xl.main.RedApplication;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
@@ -37,7 +37,7 @@ public class DataTrackSelector extends JDialog implements ActionListener, ListSe
     /**
      * The application.
      */
-    private REDApplication application;
+    private RedApplication application;
     /**
      * The available group model.
      */
@@ -85,7 +85,7 @@ public class DataTrackSelector extends JDialog implements ActionListener, ListSe
      *
      * @param application the application
      */
-    public DataTrackSelector(REDApplication application) {
+    public DataTrackSelector(RedApplication application) {
         super(application, "Select Data Tracks");
         setSize(600, 400);
         setLocationRelativeTo(application);

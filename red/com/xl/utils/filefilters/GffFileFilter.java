@@ -23,7 +23,7 @@ import java.io.File;
 /**
  * A File filter representing GFF Files
  */
-public class GFFFileFilter extends FileFilter {
+public class GffFileFilter extends FileFilter {
 
     @Override
     public boolean accept(File f) {

@@ -19,7 +19,7 @@ package com.xl.parsers.dataparsers;
 
 import com.xl.datatypes.DataSet;
 import com.xl.datatypes.sequence.Location;
-import com.xl.exception.REDException;
+import com.xl.exception.RedException;
 import com.xl.interfaces.Cancellable;
 import com.xl.interfaces.ProgressListener;
 
@@ -151,12 +151,12 @@ public abstract class DataParser implements Runnable, Cancellable {
     /**
      * Parses the data.
      *
-     * @throws REDException
+     * @throws RedException
      */
-    public void parseData() throws REDException {
+    public void parseData() throws RedException {
 
         if (!readyToParse()) {
-            throw new REDException("Data Parser is not ready to parse (some options may not have been set)");
+            throw new RedException("Data Parser is not ready to parse (some options may not have been set)");
         }
 
         Thread t = new Thread(this);

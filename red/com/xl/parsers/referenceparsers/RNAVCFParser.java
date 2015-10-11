@@ -28,11 +28,11 @@ import java.util.Arrays;
 /**
  * Created by Administrator on 2014/9/29.
  * <p/>
- * The Class RNAVCFParser can parser RNA VCF file with single or multiple samples in a file, then insert all data into
+ * The Class RnaVcfParser can parser RNA VCF file with single or multiple samples in a file, then insert all data into
  * database. Pay attention that the class will delete old sample tables and create new ones for all samples in this RNA
  * VCF file..
  */
-public class RNAVCFParser extends AbstractParser {
+public class RnaVcfParser extends AbstractParser {
     // public static final String VCF_ID = "ID";
     // public static final String VCF_REF = "REF";
     // public static final String VCF_ALT = "ALT";
@@ -55,7 +55,7 @@ public class RNAVCFParser extends AbstractParser {
     private String[] tableNames = null;
     private DatabaseManager databaseManager = DatabaseManager.getInstance();
 
-    public RNAVCFParser(String dataPath) {
+    public RnaVcfParser(String dataPath) {
         super(dataPath, DatabaseManager.RNA_VCF_RESULT_TABLE_NAME);
     }
 

@@ -22,7 +22,7 @@ import com.xl.datatypes.sites.Site;
 import com.xl.datatypes.sites.SiteBean;
 import com.xl.datatypes.sites.SiteList;
 import com.xl.datatypes.sites.SiteSet;
-import com.xl.exception.REDException;
+import com.xl.exception.RedException;
 import com.xl.utils.NameRetriever;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -136,9 +136,9 @@ public class Query {
      *
      * @param sampleName The sample name.
      * @return A Site set which can be regarded as a tree model.
-     * @throws REDException If table name has been renamed or deleted in database, and the method can not find them, then throw this exception.
+     * @throws RedException If table name has been renamed or deleted in database, and the method can not find them, then throw this exception.
      */
-    public synchronized static SiteSet getSiteSetFromDatabase(String sampleName) throws REDException, SQLException {
+    public synchronized static SiteSet getSiteSetFromDatabase(String sampleName) throws RedException, SQLException {
         List<String> tableNames = DatabaseManager.getInstance().queryTablesForSample(sampleName);
         //First, we get site set from a RNA VCF file.
         String rnaVcf = null;
@@ -184,7 +184,7 @@ public class Query {
                 }
             }
             if (previousFilter == null || currentFilter == null) {
-                throw new REDException("Unknown filter table:" + tableName + ", please don't rename the filter name in the database.");
+                throw new RedException("Unknown filter table:" + tableName + ", please don't rename the filter name in the database.");
             }
             String listName = NameRetriever.retrieveParams(currentFilter, sections);
 

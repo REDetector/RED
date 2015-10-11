@@ -26,9 +26,9 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 
 /**
- * The Class EPSGenerator is used to generate a EPS graph for a given component.
+ * The Class EpsGenerator is used to generate a EPS graph for a given component.
  */
-public class EPSGenerator {
+public class EpsGenerator {
 
     /**
      * Instantiates a new generator.

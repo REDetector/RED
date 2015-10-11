@@ -17,9 +17,9 @@ import com.xl.database.Query;
 import com.xl.datatypes.DataStore;
 import com.xl.datatypes.sites.Site;
 import com.xl.datatypes.sites.SiteList;
-import com.xl.exception.REDException;
+import com.xl.exception.RedException;
 import com.xl.filter.Filter;
-import com.xl.filter.dnarna.DNARNAFilter;
+import com.xl.filter.dnarna.DnaRnaFilter;
 import com.xl.preferences.DatabasePreferences;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,11 +32,11 @@ import java.util.Map;
 import java.util.Vector;
 
 /**
- * The Class DNARNAFilterPanel is a rule-based filter panel to provide some parameters to be set as user's preference if
+ * The Class DnaRnaFilterPanel is a rule-based filter panel to provide some parameters to be set as user's preference if
  * there is any choice.
  */
-public class DNARNAFilterPanel extends AbstractFilterPanel {
-    private final Logger logger = LoggerFactory.getLogger(DNARNAFilterPanel.class);
+public class DnaRnaFilterPanel extends AbstractFilterPanel {
+    private final Logger logger = LoggerFactory.getLogger(DnaRnaFilterPanel.class);
     /**
      * The DNA-RNA filter option panel.
      */
@@ -47,7 +47,7 @@ public class DNARNAFilterPanel extends AbstractFilterPanel {
      *
      * @param dataStore The data store to filter
      */
-    public DNARNAFilterPanel(DataStore dataStore) throws REDException {
+    public DnaRnaFilterPanel(DataStore dataStore) throws RedException {
         super(dataStore);
     }
 
@@ -62,12 +62,12 @@ public class DNARNAFilterPanel extends AbstractFilterPanel {
         logger.info("Filtering RNA editing sites by DNA-RNA filter.");
         String linearTableName =
             currentSample + "_" + parentList.getFilterName() + "_" + DatabaseManager.DNA_RNA_FILTER_RESULT_TABLE_NAME;
-        Filter filter = new DNARNAFilter();
+        Filter filter = new DnaRnaFilter();
         String sampleName = DatabasePreferences.getInstance().getCurrentSample();
         Map<String, String> params = new HashMap<String, String>();
-        params.put(DNARNAFilter.PARAMS_STRING_DNA_VCF_TABLE, sampleName + "_"
+        params.put(DnaRnaFilter.PARAMS_STRING_DNA_VCF_TABLE, sampleName + "_"
             + DatabaseManager.DNA_VCF_RESULT_TABLE_NAME);
-        params.put(DNARNAFilter.PARAMS_STRING_EDITING_TYPE, "AG");
+        params.put(DnaRnaFilter.PARAMS_STRING_EDITING_TYPE, "AG");
         filter.performFilter(parentList.getTableName(), linearTableName, params);
         DatabaseManager.getInstance().distinctTable(linearTableName);
         Vector<Site> sites = Query.queryAllEditingSites(linearTableName);

@@ -21,7 +21,7 @@ package com.xl.datatypes;
 import com.xl.datatypes.sequence.Location;
 import com.xl.datatypes.sequence.SequenceRead;
 import com.xl.datatypes.sites.Site;
-import com.xl.parsers.dataparsers.BAMFileParser;
+import com.xl.parsers.dataparsers.BamFileParser;
 import com.xl.utils.Strand;
 
 import java.util.ArrayList;
@@ -94,10 +94,10 @@ public class DataSet extends DataStore {
         if (siteMap.containsKey(p)) {
             return siteMap.get(p);
         } else {
-            if (!(dataParser instanceof BAMFileParser)) {
+            if (!(dataParser instanceof BamFileParser)) {
                 return new ArrayList<SequenceRead>();
             }
-            List<SequenceRead> allReads = ((BAMFileParser) dataParser).getReadsForSite(p);
+            List<SequenceRead> allReads = ((BamFileParser) dataParser).getReadsForSite(p);
             siteMap.put(p, allReads);
             return allReads;
         }
@@ -108,7 +108,7 @@ public class DataSet extends DataStore {
         if (readData.containsKey(c)) {
             return readData.get(c);
         } else {
-            List<? extends Location> sequenceReads = ((BAMFileParser) dataParser).query(c, 0, 0);
+            List<? extends Location> sequenceReads = ((BamFileParser) dataParser).query(c, 0, 0);
             readData.put(c, sequenceReads);
             return sequenceReads;
         }

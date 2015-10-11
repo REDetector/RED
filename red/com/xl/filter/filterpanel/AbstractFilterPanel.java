@@ -21,7 +21,7 @@ package com.xl.filter.filterpanel;
 import com.xl.database.DatabaseManager;
 import com.xl.datatypes.DataStore;
 import com.xl.datatypes.sites.SiteList;
-import com.xl.exception.REDException;
+import com.xl.exception.RedException;
 import com.xl.interfaces.Cancellable;
 import com.xl.interfaces.OptionsListener;
 import com.xl.interfaces.ProgressListener;
@@ -87,11 +87,11 @@ abstract class AbstractFilterPanel implements Runnable, Cancellable {
      * Starts the filter running.  This will start a new thread implemented by the filter and return immediately.  Further progress will only be reported via
      * the listeners.
      *
-     * @throws REDException if the filter is not ready to run.
+     * @throws RedException if the filter is not ready to run.
      */
-    public void runFilter() throws REDException {
+    public void runFilter() throws RedException {
         if (!isReady()) {
-            throw new REDException("Filter is not ready to run");
+            throw new RedException("Filter is not ready to run");
         }
 
         Thread t = new Thread(this);

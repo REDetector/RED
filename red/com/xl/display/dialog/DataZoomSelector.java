@@ -19,7 +19,7 @@
 package com.xl.display.dialog;
 
 import com.xl.datatypes.genome.Chromosome;
-import com.xl.main.REDApplication;
+import com.xl.main.RedApplication;
 import com.xl.preferences.DisplayPreferences;
 
 import javax.swing.*;
@@ -35,7 +35,7 @@ public class DataZoomSelector extends JDialog implements ChangeListener {
     /**
      * The application.
      */
-    private REDApplication application;
+    private RedApplication application;
     /**
      * Current chromosome
      */
@@ -58,7 +58,7 @@ public class DataZoomSelector extends JDialog implements ChangeListener {
      *
      * @param application the application
      */
-    public DataZoomSelector(REDApplication application) {
+    public DataZoomSelector(RedApplication application) {
         super(application, "Set Data Zoom");
         this.application = application;
         setJSlider();

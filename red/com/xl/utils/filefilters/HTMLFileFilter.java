@@ -23,7 +23,7 @@ import java.io.File;
 /**
  * A File filter representing HTML Files
  */
-public class HTMLFileFilter extends FileFilter {
+public class HtmlFileFilter extends FileFilter {
 
     @Override
     public boolean accept(File f) {

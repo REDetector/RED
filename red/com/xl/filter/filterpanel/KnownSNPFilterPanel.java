@@ -17,9 +17,9 @@ import com.xl.database.Query;
 import com.xl.datatypes.DataStore;
 import com.xl.datatypes.sites.Site;
 import com.xl.datatypes.sites.SiteList;
-import com.xl.exception.REDException;
+import com.xl.exception.RedException;
 import com.xl.filter.Filter;
-import com.xl.filter.denovo.KnownSNPFilter;
+import com.xl.filter.denovo.KnownSnpFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -31,11 +31,11 @@ import java.sql.SQLException;
 import java.util.Vector;
 
 /**
- * The Class KnownSNPFilterPanel is a rule-based filter panel to provide some parameters to be set as user's preference
+ * The Class KnownSnpFilterPanel is a rule-based filter panel to provide some parameters to be set as user's preference
  * if there is any choice.
  */
-public class KnownSNPFilterPanel extends AbstractFilterPanel {
-    private final Logger logger = LoggerFactory.getLogger(KnownSNPFilterPanel.class);
+public class KnownSnpFilterPanel extends AbstractFilterPanel {
+    private final Logger logger = LoggerFactory.getLogger(KnownSnpFilterPanel.class);
     /**
      * The known SNP filter option panel.
      */
@@ -46,7 +46,7 @@ public class KnownSNPFilterPanel extends AbstractFilterPanel {
      *
      * @param dataStore The data store to filter.
      */
-    public KnownSNPFilterPanel(DataStore dataStore) throws REDException {
+    public KnownSnpFilterPanel(DataStore dataStore) throws RedException {
         super(dataStore);
     }
 
@@ -61,7 +61,7 @@ public class KnownSNPFilterPanel extends AbstractFilterPanel {
         logger.info("Filtering RNA editing sites by dbSNP filter");
         String linearTableName =
             currentSample + "_" + parentList.getFilterName() + "_" + DatabaseManager.DBSNP_FILTER_RESULT_TABLE_NAME;
-        Filter filter = new KnownSNPFilter();
+        Filter filter = new KnownSnpFilter();
         filter.performFilter(parentList.getTableName(), linearTableName, null);
         DatabaseManager.getInstance().distinctTable(linearTableName);
         Vector<Site> sites = Query.queryAllEditingSites(linearTableName);

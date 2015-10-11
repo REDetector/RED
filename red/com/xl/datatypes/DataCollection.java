@@ -20,10 +20,10 @@ package com.xl.datatypes;
 
 import com.xl.datatypes.genome.Genome;
 import com.xl.datatypes.sites.SiteList;
-import com.xl.exception.REDException;
+import com.xl.exception.RedException;
 import com.xl.interfaces.ActiveDataChangedListener;
 import com.xl.interfaces.DataStoreChangedListener;
-import com.xl.main.REDApplication;
+import com.xl.main.RedApplication;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -209,8 +209,8 @@ public class DataCollection {
             return activeDataStore;
         } else if (getAllDataStores().length == 1) {
             return getAllDataStores()[0];
-        } else if (REDApplication.getInstance().drawnDataStores().length == 1) {
-            return REDApplication.getInstance().drawnDataStores()[0];
+        } else if (RedApplication.getInstance().drawnDataStores().length == 1) {
+            return RedApplication.getInstance().drawnDataStores()[0];
         } else {
             return null;
         }
@@ -237,9 +237,9 @@ public class DataCollection {
      *
      * @param dataStore The active data store
      * @param siteList  The active site list.
-     * @throws REDException If there is wrong data store or site list, then throw this exception.
+     * @throws RedException If there is wrong data store or site list, then throw this exception.
      */
-    public void setActiveData(DataStore dataStore, SiteList siteList) throws REDException {
+    public void setActiveData(DataStore dataStore, SiteList siteList) throws RedException {
         if (dataStore == null) {
             activeDataStore = null;
             activeSiteList = null;
@@ -255,7 +255,7 @@ public class DataCollection {
                     activeSiteList = siteList;
                     dataStore.siteSet().setActiveList(siteList);
                 } else {
-                    throw new REDException("Data store '" + dataStore.name() + "' does not have this site list " + siteList.getListName());
+                    throw new RedException("Data store '" + dataStore.name() + "' does not have this site list " + siteList.getListName());
                 }
             }
 
@@ -264,7 +264,7 @@ public class DataCollection {
                 e.nextElement().activeDataChanged(dataStore, siteList);
             }
         } else {
-            throw new REDException("Data store " + dataStore.name() + " could not be found in the data collection");
+            throw new RedException("Data store " + dataStore.name() + " could not be found in the data collection");
         }
 
     }

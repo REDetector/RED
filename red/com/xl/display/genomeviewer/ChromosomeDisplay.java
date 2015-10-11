@@ -23,7 +23,7 @@ import com.xl.datatypes.genome.Chromosome;
 import com.xl.datatypes.genome.Genome;
 import com.xl.datatypes.sites.Site;
 import com.xl.datatypes.sites.SiteList;
-import com.xl.exception.REDException;
+import com.xl.exception.RedException;
 import com.xl.interfaces.ActiveDataChangedListener;
 import com.xl.display.dialog.CrashReporter;
 import com.xl.preferences.DisplayPreferences;
@@ -212,12 +212,12 @@ public class ChromosomeDisplay extends JPanel implements ActiveDataChangedListen
         return (int) (width * (measure / max));
     }
 
-    private int getBasePosition(int pixelPosition) throws REDException {
+    private int getBasePosition(int pixelPosition) throws RedException {
         if (pixelPosition < xOffset) {
-            throw new REDException("Before the start of the chromosome");
+            throw new RedException("Before the start of the chromosome");
         }
         if (pixelPosition > (xOffset + chrWidth)) {
-            throw new REDException("After the end of the chromosome");
+            throw new RedException("After the end of the chromosome");
         }
         return (int) (chromosome.getLength() * (((double) (pixelPosition - xOffset)) / chrWidth));
     }
@@ -270,7 +270,7 @@ public class ChromosomeDisplay extends JPanel implements ActiveDataChangedListen
         try {
             getBasePosition(me.getX());
             isSelecting = true;
-        } catch (REDException e) {
+        } catch (RedException e) {
             // They pressed outside of the chromosome so ignore it.
         }
     }
@@ -295,7 +295,7 @@ public class ChromosomeDisplay extends JPanel implements ActiveDataChangedListen
             int end = getBasePosition(Math.max(selectionEnd, selectionStart));
 
             DisplayPreferences.getInstance().setLocation(chromosome, start, end);
-        } catch (REDException e) {
+        } catch (RedException e) {
             // This should have been caught before now.
             new CrashReporter(e);
         }
@@ -318,7 +318,7 @@ public class ChromosomeDisplay extends JPanel implements ActiveDataChangedListen
             getBasePosition(me.getX());
             selectionEnd = me.getX();
             repaint();
-        } catch (REDException e) {
+        } catch (RedException e) {
             // This was outside the chromosome so ignore it
         }
 

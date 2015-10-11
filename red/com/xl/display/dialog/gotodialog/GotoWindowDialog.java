@@ -18,7 +18,7 @@
 package com.xl.display.dialog.gotodialog;
 
 import com.xl.datatypes.genome.Chromosome;
-import com.xl.main.REDApplication;
+import com.xl.main.RedApplication;
 import com.xl.preferences.DisplayPreferences;
 import com.xl.utils.NumberKeyListener;
 
@@ -59,7 +59,7 @@ public class GoToWindowDialog extends JDialog implements ActionListener, KeyList
      *
      * @param application the application
      */
-    public GoToWindowDialog(REDApplication application) {
+    public GoToWindowDialog(RedApplication application) {
         super(application, "Jump to window...");
         setSize(300, 200);
         setLocationRelativeTo(application);

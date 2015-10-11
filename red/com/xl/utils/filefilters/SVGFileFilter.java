@@ -23,7 +23,7 @@ import java.io.File;
 /**
  * A File filter representing SVG Files
  */
-public class SVGFileFilter extends FileFilter {
+public class SvgFileFilter extends FileFilter {
 
     @Override
     public boolean accept(File f) {

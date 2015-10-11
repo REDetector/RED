@@ -27,10 +27,10 @@ import java.sql.SQLException;
 /**
  * we will filter out base which already be recognized
  */
-public class DBSNPParser extends AbstractParser {
+public class DbsnpParser extends AbstractParser {
     private DatabaseManager databaseManager = DatabaseManager.getInstance();
 
-    public DBSNPParser(String dataPath, String tableName) {
+    public DbsnpParser(String dataPath, String tableName) {
         super(dataPath, tableName);
     }
 
@@ -70,7 +70,7 @@ public class DBSNPParser extends AbstractParser {
         } catch (IOException e) {
             logger.error("Error load file from " + dataPath + " to file stream", e);
         } catch (SQLException e) {
-            logger.error("Error execute sql clause in " + DBSNPParser.class.getName() + ":loadDbSNPTable()", e);
+            logger.error("Error execute sql clause in " + DbsnpParser.class.getName() + ":loadDbSNPTable()", e);
         }
     }
 

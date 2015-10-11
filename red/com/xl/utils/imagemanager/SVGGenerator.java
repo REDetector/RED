@@ -30,7 +30,7 @@ import java.io.PrintWriter;
 /**
  * Created by Xing Li on 2014/10/11.
  */
-public class SVGGenerator {
+public class SvgGenerator {
 
     public static void exportSVGImage(PrintWriter pr, Component c) throws IOException {
 

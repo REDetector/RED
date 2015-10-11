@@ -20,7 +20,7 @@ package com.xl.display.dialog;
 
 import com.xl.datatypes.annotation.AnnotationSet;
 import com.xl.datatypes.feature.Feature;
-import com.xl.main.REDApplication;
+import com.xl.main.RedApplication;
 import com.xl.utils.ChromosomeNameComparator;
 import com.xl.utils.namemanager.MenuUtils;
 
@@ -59,7 +59,7 @@ public class AnnotationSetPropertiesDialog extends JDialog implements Runnable {
      * @param set The AnnotationSet to use
      */
     public AnnotationSetPropertiesDialog(AnnotationSet set) {
-        super(REDApplication.getInstance(), set.name());
+        super(RedApplication.getInstance(), set.name());
         this.set = set;
         TreeSet<String> treeSet = new TreeSet<String>(ChromosomeNameComparator.getInstance());
         treeSet.addAll(set.getChromosomeNames());
@@ -83,7 +83,7 @@ public class AnnotationSetPropertiesDialog extends JDialog implements Runnable {
         getContentPane().add(buttonPanel, BorderLayout.SOUTH);
 
         setSize(300, 300);
-        setLocationRelativeTo(REDApplication.getInstance());
+        setLocationRelativeTo(RedApplication.getInstance());
         setVisible(true);
 
         Thread t = new Thread(this);

@@ -29,13 +29,13 @@ import java.util.zip.GZIPInputStream;
 /**
  * A preview panel before opening a RED project file, which will show the samples in the RED project file.
  */
-public class REDPreviewPanel extends JPanel implements PropertyChangeListener {
+public class RedPreviewPanel extends JPanel implements PropertyChangeListener {
     /**
      * The label.
      */
     private JLabel label;
 
-    public REDPreviewPanel() {
+    public RedPreviewPanel() {
 
         setPreferredSize(new Dimension(300, 300));
 

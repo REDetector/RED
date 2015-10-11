@@ -17,7 +17,7 @@ import com.xl.database.Query;
 import com.xl.datatypes.DataStore;
 import com.xl.datatypes.sites.Site;
 import com.xl.datatypes.sites.SiteList;
-import com.xl.exception.REDException;
+import com.xl.exception.RedException;
 import com.xl.filter.Filter;
 import com.xl.filter.denovo.SpliceJunctionFilter;
 import org.slf4j.Logger;
@@ -57,7 +57,7 @@ public class SpliceJunctionFilterPanel extends AbstractFilterPanel {
      *
      * @param dataStore The data store to filter.
      */
-    public SpliceJunctionFilterPanel(DataStore dataStore) throws REDException {
+    public SpliceJunctionFilterPanel(DataStore dataStore) throws RedException {
         super(dataStore);
     }
 

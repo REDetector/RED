@@ -31,29 +31,29 @@ import com.xl.datatypes.annotation.AnnotationSet;
 import com.xl.datatypes.genome.Genome;
 import com.xl.datatypes.sites.SiteList;
 import com.xl.datatypes.sites.SiteListChangeListener;
-import com.xl.datawriters.REDDataWriter;
+import com.xl.datawriters.RedDataWriter;
 import com.xl.display.chromosomeviewer.ChromosomePositionScrollBar;
 import com.xl.display.chromosomeviewer.ChromosomeViewer;
 import com.xl.display.dataviewer.DataViewer;
 import com.xl.display.dialog.*;
 import com.xl.display.dialog.gotodialog.GoToDialog;
 import com.xl.display.genomeviewer.GenomeViewer;
-import com.xl.display.panel.REDPreviewPanel;
+import com.xl.display.panel.RedPreviewPanel;
 import com.xl.display.panel.StatusPanel;
 import com.xl.display.panel.WelcomePanel;
 import com.xl.exception.ErrorCatcher;
-import com.xl.exception.REDException;
+import com.xl.exception.RedException;
 import com.xl.interfaces.AnnotationCollectionListener;
 import com.xl.interfaces.DataStoreChangedListener;
 import com.xl.interfaces.ProgressListener;
-import com.xl.menu.REDMenu;
+import com.xl.menu.RedMenu;
 import com.xl.net.genomes.GenomeDownloader;
-import com.xl.parsers.annotationparsers.IGVGenomeParser;
+import com.xl.parsers.annotationparsers.IgvGenomeParser;
 import com.xl.parsers.dataparsers.DataParser;
-import com.xl.parsers.dataparsers.REDParser;
+import com.xl.parsers.dataparsers.RedParser;
 import com.xl.preferences.DisplayPreferences;
 import com.xl.preferences.LocationPreferences;
-import com.xl.preferences.REDPreferences;
+import com.xl.preferences.RedPreferences;
 import com.xl.utils.ui.OptionDialogUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -66,19 +66,19 @@ import java.util.Arrays;
 import java.util.Vector;
 
 /**
- * The Class REDApplication is the first appeared panel when program starts. It contains and manages all components for the common functions.
+ * The Class RedApplication is the first appeared panel when program starts. It contains and manages all components for the common functions.
  */
-public class REDApplication extends JFrame implements ProgressListener, DataStoreChangedListener, SiteListChangeListener, AnnotationCollectionListener, DatabaseListener {
-    private static final Logger logger = LoggerFactory.getLogger(REDApplication.class);
+public class RedApplication extends JFrame implements ProgressListener, DataStoreChangedListener, SiteListChangeListener, AnnotationCollectionListener, DatabaseListener {
+    private static final Logger logger = LoggerFactory.getLogger(RedApplication.class);
     /**
      * The static instance of RED.
      */
-    private static REDApplication application;
+    private static RedApplication application;
 
     /**
      * The root menu of RED
      */
-    private REDMenu menu;
+    private RedMenu menu;
 
     /**
      * The DataViewer is the set of folders shown on the top left.
@@ -157,7 +157,7 @@ public class REDApplication extends JFrame implements ProgressListener, DataStor
         }
     }
 
-    private REDApplication() {
+    private RedApplication() {
         setTitle("RED");
         setSize(Toolkit.getDefaultToolkit().getScreenSize().width / 3 * 2,
                 Toolkit.getDefaultToolkit().getScreenSize().height / 3 * 2);
@@ -165,8 +165,8 @@ public class REDApplication extends JFrame implements ProgressListener, DataStor
         setExtendedState(getExtendedState() | MAXIMIZED_BOTH);
 
         //We need to initiate the preferences first.
-        REDPreferences.getInstance();
-        menu = new REDMenu(this);
+        RedPreferences.getInstance();
+        menu = new RedMenu(this);
         setJMenuBar(menu);
 
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -195,7 +195,7 @@ public class REDApplication extends JFrame implements ProgressListener, DataStor
      *
      * @return the instance.
      */
-    public static REDApplication getInstance() {
+    public static RedApplication getInstance() {
         return application;
     }
 
@@ -212,7 +212,7 @@ public class REDApplication extends JFrame implements ProgressListener, DataStor
         try {
 
             Thread.setDefaultUncaughtExceptionHandler(new ErrorCatcher());
-            application = new REDApplication();
+            application = new RedApplication();
             application.setVisible(true);
 
             if (args.length > 0) {
@@ -457,7 +457,7 @@ public class REDApplication extends JFrame implements ProgressListener, DataStor
 
         try {
             parser.parseData();
-        } catch (REDException ex) {
+        } catch (RedException ex) {
             new CrashReporter(ex);
             logger.error("", ex);
         }
@@ -470,7 +470,7 @@ public class REDApplication extends JFrame implements ProgressListener, DataStor
      */
     public void loadGenome(File baseLocation) {
         GoToDialog.clearRecentLocations();
-        IGVGenomeParser parser = new IGVGenomeParser();
+        IgvGenomeParser parser = new IgvGenomeParser();
         ProgressDialog progressDialog = new ProgressDialog(this, "Loading genome...");
         parser.addProgressListener(progressDialog);
         parser.addProgressListener(this);
@@ -485,7 +485,7 @@ public class REDApplication extends JFrame implements ProgressListener, DataStor
     public void loadProject() {
         JFileChooser chooser = new JFileChooserExt(LocationPreferences.getInstance().getProjectSaveLocation(), "red");
         chooser.setMultiSelectionEnabled(false);
-        REDPreviewPanel previewPanel = new REDPreviewPanel();
+        RedPreviewPanel previewPanel = new RedPreviewPanel();
         chooser.setAccessory(previewPanel);
         chooser.addPropertyChangeListener(previewPanel);
 
@@ -532,7 +532,7 @@ public class REDApplication extends JFrame implements ProgressListener, DataStor
 
         currentFile = file;
 
-        REDParser parser = new REDParser(this);
+        RedParser parser = new RedParser(this);
         parser.addProgressListener(this);
         ProgressDialog progressDialog = new ProgressDialog(this, "Loading data...");
         parser.addProgressListener(progressDialog);
@@ -596,7 +596,7 @@ public class REDApplication extends JFrame implements ProgressListener, DataStor
      * @param file The file into which the project will be saved
      */
     public void saveProject(File file) {
-        REDDataWriter writer = new REDDataWriter();
+        RedDataWriter writer = new RedDataWriter();
 
         writer.addProgressListener(new ProgressDialog(this, "Saving Project...", writer));
         writer.addProgressListener(this);

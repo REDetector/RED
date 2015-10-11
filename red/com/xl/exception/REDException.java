@@ -20,14 +20,14 @@ package com.xl.exception;
 /**
  * A generic exception class representing logic exceptions generated within RED
  */
-public class REDException extends Exception {
+public class RedException extends Exception {
 
     /**
      * Instantiates a new RED exception.
      *
      * @param error Error text
      */
-    public REDException(String error) {
+    public RedException(String error) {
         super(error);
     }
 

@@ -19,7 +19,7 @@
 package com.xl.utils;
 
 import com.xl.datatypes.DataStore;
-import com.xl.main.REDApplication;
+import com.xl.main.RedApplication;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,8 +34,8 @@ public class ListDefaultSelector {
     private static final Logger logger = LoggerFactory.getLogger(ListDefaultSelector.class);
 
     public static DataStore selectDefaultStore(JList list) {
-        DataStore[] stores = REDApplication.getInstance().drawnDataStores();
-        DataStore activeDataStore = REDApplication.getInstance().dataCollection().getActiveDataStore();
+        DataStore[] stores = RedApplication.getInstance().drawnDataStores();
+        DataStore activeDataStore = RedApplication.getInstance().dataCollection().getActiveDataStore();
         for (int i = 0, len = stores.length; i < len; i++) {
             if (stores[i] == activeDataStore) {
                 list.setSelectedIndex(i);

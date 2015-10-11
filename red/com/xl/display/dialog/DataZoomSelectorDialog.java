@@ -18,7 +18,7 @@
 
 package com.xl.display.dialog;
 
-import com.xl.main.REDApplication;
+import com.xl.main.RedApplication;
 
 import javax.swing.*;
 import java.awt.*;
@@ -35,7 +35,7 @@ public class DataZoomSelectorDialog extends DataZoomSelector implements ActionLi
      *
      * @param application the application
      */
-    public DataZoomSelectorDialog(REDApplication application) {
+    public DataZoomSelectorDialog(RedApplication application) {
         super(application);
         JButton closeButton = new JButton("Close");
         getRootPane().setDefaultButton(closeButton);

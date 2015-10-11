@@ -21,7 +21,7 @@ package com.xl.datatypes.annotation;
 import com.xl.datatypes.feature.Feature;
 import com.xl.datatypes.genome.Chromosome;
 import com.xl.datatypes.genome.Genome;
-import com.xl.exception.REDException;
+import com.xl.exception.RedException;
 import com.xl.interfaces.AnnotationCollectionListener;
 import com.xl.preferences.LocationPreferences;
 import com.xl.utils.namemanager.SuffixUtils;
@@ -102,9 +102,9 @@ public class AnnotationCollection {
      *
      * @param newSet The annotation set to be added
      */
-    public void addAnnotationSet(AnnotationSet newSet) throws REDException {
+    public void addAnnotationSet(AnnotationSet newSet) throws RedException {
         if (newSet.getGenome() != genome) {
-            throw new REDException("Annotation set genome doesn't match annotation collection");
+            throw new RedException("Annotation set genome doesn't match annotation collection");
         }
         annotationSets.add(newSet);
         newSet.setCollection(this);

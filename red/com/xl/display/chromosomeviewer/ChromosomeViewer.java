@@ -25,7 +25,7 @@ import com.xl.datatypes.genome.GenomeDescriptor;
 import com.xl.datatypes.sites.SiteList;
 import com.xl.interfaces.ActiveDataChangedListener;
 import com.xl.interfaces.DisplayPreferencesListener;
-import com.xl.main.REDApplication;
+import com.xl.main.RedApplication;
 import com.xl.preferences.DisplayPreferences;
 import com.xl.utils.PositionFormat;
 
@@ -50,7 +50,7 @@ public class ChromosomeViewer extends JPanel implements ActiveDataChangedListene
     /**
      * The application.
      */
-    private REDApplication application;
+    private RedApplication application;
     /**
      * Current using chromosome.
      */
@@ -94,7 +94,7 @@ public class ChromosomeViewer extends JPanel implements ActiveDataChangedListene
      * @param application the application
      * @param chromosome  the chromosome
      */
-    public ChromosomeViewer(REDApplication application, Chromosome chromosome) {
+    public ChromosomeViewer(RedApplication application, Chromosome chromosome) {
         this.application = application;
         this.chromosome = chromosome;
 
@@ -366,7 +366,7 @@ public class ChromosomeViewer extends JPanel implements ActiveDataChangedListene
      *
      * @return The RED application
      */
-    public REDApplication application() {
+    public RedApplication application() {
         return application;
     }
 

@@ -326,7 +326,7 @@ public class LocationPreferences {
             recentlyOpenedFiles.remove(5);
         }
         try {
-            REDPreferences.getInstance().savePreferences();
+            RedPreferences.getInstance().savePreferences();
         } catch (IOException e) {
             logger.error("I/O exception.", e);
         }
@@ -335,7 +335,7 @@ public class LocationPreferences {
     public void clearRecentlyOpenedFiles() {
         recentlyOpenedFiles.clear();
         try {
-            REDPreferences.getInstance().savePreferences();
+            RedPreferences.getInstance().savePreferences();
         } catch (IOException e) {
             logger.error("I/O exception.", e);
         }

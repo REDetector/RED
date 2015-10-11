@@ -29,8 +29,8 @@ import com.xl.datatypes.sites.SiteSet;
 import com.xl.display.dialog.*;
 import com.xl.display.report.SitesDistributionHistogram;
 import com.xl.display.report.VariantDistributionHistogram;
-import com.xl.exception.REDException;
-import com.xl.main.REDApplication;
+import com.xl.exception.RedException;
+import com.xl.main.RedApplication;
 
 import javax.swing.*;
 import javax.swing.event.TreeSelectionEvent;
@@ -47,7 +47,7 @@ import java.awt.event.*;
 public class DataViewer extends JPanel implements MouseListener, TreeSelectionListener {
 
     private DataCollection collection;
-    private REDApplication application;
+    private RedApplication application;
     private JTree dataTree;
     private JTree siteSetTree;
     private SiteSetTreeModel siteModel;
@@ -57,7 +57,7 @@ public class DataViewer extends JPanel implements MouseListener, TreeSelectionLi
      *
      * @param application the application
      */
-    public DataViewer(REDApplication application) {
+    public DataViewer(RedApplication application) {
         this.application = application;
         this.collection = application.dataCollection();
         setLayout(new GridBagLayout());
@@ -201,7 +201,7 @@ public class DataViewer extends JPanel implements MouseListener, TreeSelectionLi
                     }
                 }
             }
-        } catch (REDException e) {
+        } catch (RedException e) {
             new CrashReporter(e);
         }
 

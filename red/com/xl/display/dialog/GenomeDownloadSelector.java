@@ -22,11 +22,11 @@ import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.TreeSelectionModel;
 
+import com.xl.main.RedApplication;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.xl.exception.NetworkException;
-import com.xl.main.REDApplication;
 import com.xl.net.genomes.DownloadableGenomeSet;
 import com.xl.net.genomes.DownloadableGenomeTreeModel;
 import com.xl.net.genomes.GenomeList;
@@ -39,7 +39,7 @@ public class GenomeDownloadSelector extends JDialog implements ActionListener, T
     /**
      * The application.
      */
-    private REDApplication application;
+    private RedApplication application;
     /**
      * The tree.
      */
@@ -59,7 +59,7 @@ public class GenomeDownloadSelector extends JDialog implements ActionListener, T
      * @param application the application
      * @throws IOException if there was a problem getting or parsing the list of genomes
      */
-    public GenomeDownloadSelector(REDApplication application) throws IOException, NetworkException {
+    public GenomeDownloadSelector(RedApplication application) throws IOException, NetworkException {
         super(application, "Select Genome to Download...");
         this.application = application;
         setSize(380, 340);

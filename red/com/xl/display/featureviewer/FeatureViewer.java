@@ -18,7 +18,7 @@
 package com.xl.display.featureviewer;
 
 import com.xl.datatypes.feature.Feature;
-import com.xl.main.REDApplication;
+import com.xl.main.RedApplication;
 import com.xl.preferences.DisplayPreferences;
 
 import javax.swing.*;
@@ -50,7 +50,7 @@ public class FeatureViewer extends JDialog implements MouseListener, KeyListener
      * @param feature the feature
      */
     public FeatureViewer(Feature feature) {
-        super(REDApplication.getInstance(), "Feature: " + feature.getAliasName());
+        super(RedApplication.getInstance(), "Feature: " + feature.getAliasName());
 
         this.feature = feature;
         model = new FeatureAttributeTable(feature);
@@ -65,7 +65,7 @@ public class FeatureViewer extends JDialog implements MouseListener, KeyListener
         setContentPane(new JScrollPane(table));
 
         setSize(550, 300);
-        setLocationRelativeTo(REDApplication.getInstance());
+        setLocationRelativeTo(RedApplication.getInstance());
         setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
         setVisible(true);
 

@@ -19,11 +19,11 @@
 package com.xl.utils.imagemanager;
 
 import com.xl.display.dialog.CrashReporter;
-import com.xl.main.REDApplication;
+import com.xl.main.RedApplication;
 import com.xl.preferences.LocationPreferences;
-import com.xl.utils.filefilters.EPSFileFilter;
-import com.xl.utils.filefilters.PNGFileFilter;
-import com.xl.utils.filefilters.SVGFileFilter;
+import com.xl.utils.filefilters.EpsFileFilter;
+import com.xl.utils.filefilters.PngFileFilter;
+import com.xl.utils.filefilters.SvgFileFilter;
 import com.xl.utils.ui.OptionDialogUtils;
 
 import javax.imageio.ImageIO;
@@ -51,9 +51,9 @@ public class ImageSaver {
         JFileChooser chooser = new JFileChooser(LocationPreferences.getInstance().getProjectSaveLocation());
 
         chooser.setMultiSelectionEnabled(false);
-        chooser.addChoosableFileFilter(new EPSFileFilter());
-        chooser.addChoosableFileFilter(new PNGFileFilter());
-        chooser.setFileFilter(new SVGFileFilter());
+        chooser.addChoosableFileFilter(new EpsFileFilter());
+        chooser.addChoosableFileFilter(new PngFileFilter());
+        chooser.setFileFilter(new SvgFileFilter());
         File defaultFile = new File(LocationPreferences.getInstance().getProjectSaveLocation() + "/" + defaultName);
         chooser.setSelectedFile(defaultFile);
 
@@ -67,15 +67,15 @@ public class ImageSaver {
 
         FileFilter filter = chooser.getFileFilter();
 
-        if (filter instanceof PNGFileFilter) {
+        if (filter instanceof PngFileFilter) {
             if (!file.getPath().toLowerCase().endsWith(".png")) {
                 file = new File(file.getPath() + ".png");
             }
-        } else if (filter instanceof SVGFileFilter) {
+        } else if (filter instanceof SvgFileFilter) {
             if (!file.getPath().toLowerCase().endsWith(".svg")) {
                 file = new File(file.getPath() + ".svg");
             }
-        } else if (filter instanceof EPSFileFilter) {
+        } else if (filter instanceof EpsFileFilter) {
             if (!file.getPath().toLowerCase().endsWith(".eps")) {
                 file = new File(file.getPath() + ".eps");
             }
@@ -85,24 +85,24 @@ public class ImageSaver {
         }
 
         if (file.exists()) {
-            int answer = OptionDialogUtils.showFileExistDialog(REDApplication.getInstance(), file.getName());
+            int answer = OptionDialogUtils.showFileExistDialog(RedApplication.getInstance(), file.getName());
             if (answer > 0) {
                 return;
             }
         }
 
         try {
-            if (filter instanceof PNGFileFilter) {
+            if (filter instanceof PngFileFilter) {
                 BufferedImage b = new BufferedImage(c.getWidth(), c.getHeight(), BufferedImage.TYPE_INT_RGB);
                 Graphics g = b.getGraphics();
                 c.paint(g);
                 ImageIO.write(b, "PNG", file);
-            } else if (filter instanceof SVGFileFilter) {
+            } else if (filter instanceof SvgFileFilter) {
                 PrintWriter pr = new PrintWriter(new FileWriter(file));
-                SVGGenerator.exportSVGImage(pr, c);
+                SvgGenerator.exportSVGImage(pr, c);
                 pr.close();
-            } else if (filter instanceof EPSFileFilter) {
-                EPSGenerator.exportEPSImage(file, c);
+            } else if (filter instanceof EpsFileFilter) {
+                EpsGenerator.exportEPSImage(file, c);
             } else {
                 System.err.println("Unknown file filter type " + filter + " when saving image");
             }

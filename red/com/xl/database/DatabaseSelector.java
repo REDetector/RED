@@ -23,8 +23,8 @@ import com.xl.datatypes.sites.SiteSet;
 import com.xl.display.dialog.CrashReporter;
 import com.xl.display.dialog.DataImportDialog;
 import com.xl.display.dialog.TypeColourRenderer;
-import com.xl.exception.REDException;
-import com.xl.main.REDApplication;
+import com.xl.exception.RedException;
+import com.xl.main.RedApplication;
 import com.xl.utils.FontManager;
 import com.xl.utils.ListDefaultSelector;
 import com.xl.utils.namemanager.MenuUtils;
@@ -54,7 +54,7 @@ public class DatabaseSelector extends JDialog implements ListSelectionListener, 
     /**
      * The application.
      */
-    private REDApplication application;
+    private RedApplication application;
 
     /**
      * The database tree.
@@ -81,7 +81,7 @@ public class DatabaseSelector extends JDialog implements ListSelectionListener, 
      *
      * @param application the application
      */
-    public DatabaseSelector(REDApplication application) {
+    public DatabaseSelector(RedApplication application) {
         super(application, "Select Sample From Database...");
         this.application = application;
         setSize(600, 300);
@@ -175,7 +175,7 @@ public class DatabaseSelector extends JDialog implements ListSelectionListener, 
                 siteSet.setDataStore(selectedDataSet);
                 selectedDataSet.setSiteSet(siteSet);
                 dispose();
-            } catch (REDException e) {
+            } catch (RedException e) {
                 new CrashReporter(e);
                 logger.error("", e);
             } catch (SQLException e) {

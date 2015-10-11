@@ -21,7 +21,7 @@ package com.xl.display.dialog;
 import com.xl.datatypes.feature.Feature;
 import com.xl.datatypes.genome.Chromosome;
 import com.xl.datatypes.genome.Genome;
-import com.xl.main.REDApplication;
+import com.xl.main.RedApplication;
 import com.xl.preferences.DisplayPreferences;
 import com.xl.utils.ui.OptionDialogUtils;
 
@@ -72,7 +72,7 @@ public class SearchCommand {
 
 
     public SearchCommand(String searchString) {
-        this(searchString, REDApplication.getInstance().dataCollection().genome());
+        this(searchString, RedApplication.getInstance().dataCollection().genome());
     }
 
     SearchCommand(String searchString, Genome genome) {
@@ -178,7 +178,7 @@ public class SearchCommand {
         }
 
         if (showMessage) {
-            OptionDialogUtils.showMessageDialog(REDApplication.getInstance(), message);
+            OptionDialogUtils.showMessageDialog(RedApplication.getInstance(), message);
         }
     }
 
@@ -299,7 +299,7 @@ public class SearchCommand {
 
         if (types.contains(ResultType.FEATURE)) {
             //Check if we have an exact name for the feature name
-            Feature[] features = REDApplication.getInstance().dataCollection().genome().getAnnotationCollection().getFeaturesForName(token.toLowerCase().trim());
+            Feature[] features = RedApplication.getInstance().dataCollection().genome().getAnnotationCollection().getFeaturesForName(token.toLowerCase().trim());
             if (features != null) {
                 for (Feature feature : features)
                     results.add(new SearchResult(feature));

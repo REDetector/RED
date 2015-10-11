@@ -18,9 +18,9 @@
 
 package com.xl.display.dialog;
 
-import com.xl.main.REDApplication;
+import com.xl.main.RedApplication;
 import com.xl.preferences.LocationPreferences;
-import com.xl.preferences.REDPreferences;
+import com.xl.preferences.RedPreferences;
 import com.xl.utils.ui.OptionDialogUtils;
 
 import javax.swing.*;
@@ -40,7 +40,7 @@ public class EditPreferencesDialog extends JDialog implements ActionListener {
     /**
      * RED preference.
      */
-    REDPreferences preferences = REDPreferences.getInstance();
+    RedPreferences preferences = RedPreferences.getInstance();
     /**
      * Location preference.
      */
@@ -94,9 +94,9 @@ public class EditPreferencesDialog extends JDialog implements ActionListener {
      * Instantiates a new preferences dialog.
      */
     public EditPreferencesDialog() {
-        super(REDApplication.getInstance(), "Edit Preferences...");
+        super(RedApplication.getInstance(), "Edit Preferences...");
         setSize(600, 300);
-        setLocationRelativeTo(REDApplication.getInstance());
+        setLocationRelativeTo(RedApplication.getInstance());
         setModal(true);
 
         JTabbedPane tabs = new JTabbedPane();

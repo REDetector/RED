@@ -21,12 +21,12 @@ import com.xl.database.DatabaseSelector;
 import com.xl.display.dialog.DataImportDialog;
 import com.xl.display.dialog.ProgressDialog;
 import com.xl.exception.DataLoadException;
-import com.xl.exception.REDException;
-import com.xl.main.REDApplication;
+import com.xl.exception.RedException;
+import com.xl.main.RedApplication;
 import com.xl.parsers.referenceparsers.AbstractParser;
-import com.xl.parsers.referenceparsers.DNAVCFParser;
+import com.xl.parsers.referenceparsers.DnaVcfParser;
 import com.xl.parsers.referenceparsers.ParserFactory;
-import com.xl.parsers.referenceparsers.RNAVCFParser;
+import com.xl.parsers.referenceparsers.RnaVcfParser;
 import com.xl.preferences.DatabasePreferences;
 import com.xl.preferences.LocationPreferences;
 import com.xl.utils.ui.OptionDialogUtils;
@@ -66,12 +66,12 @@ public class ThreadDnaRnaInput implements Runnable {
                 DatabaseManager.RADAR_DATABASE_TABLE_NAME);
 
             rnaVcfParser.loadDataFromLocal(new ProgressDialog("Import RNA VCF file into database..."));
-            String[] rnaVcfSamples = ((RNAVCFParser) rnaVcfParser).getSampleNames();
+            String[] rnaVcfSamples = ((RnaVcfParser) rnaVcfParser).getSampleNames();
             dnaVcfParser.loadDataFromLocal(new ProgressDialog("Import DNA VCF file into database..."));
-            String[] dnaVcfSamples = ((DNAVCFParser) dnaVcfParser).getSampleNames();
+            String[] dnaVcfSamples = ((DnaVcfParser) dnaVcfParser).getSampleNames();
 
             if (!sampleMatches(rnaVcfSamples, dnaVcfSamples)) {
-                throw new REDException(
+                throw new RedException(
                     "Samples in DNA VCF file does not match the RNA VCF, please check the sample name.");
             }
             repeatParser.loadDataFromLocal(new ProgressDialog("Import Repeat Masker file into database..."));
@@ -79,17 +79,17 @@ public class ThreadDnaRnaInput implements Runnable {
             dbSNPParser.loadDataFromLocal(new ProgressDialog("Import dbSNP file into database..."));
             darnedParser.loadDataFromLocal(new ProgressDialog("Import DARNED file into database..."));
             radarParser.loadDataFromLocal(new ProgressDialog("Import RADAR file into database..."));
-        } catch (REDException e) {
+        } catch (RedException e) {
             logger.error("", e);
         } catch (DataLoadException e) {
-            OptionDialogUtils.showErrorDialog(REDApplication.getInstance(),
+            OptionDialogUtils.showErrorDialog(RedApplication.getInstance(),
                 "Sorry, fail to import the data to database. You may select one of wrong "
                     + "path for the relative data.");
             logger.error("", e);
-            new DataImportDialog(REDApplication.getInstance());
+            new DataImportDialog(RedApplication.getInstance());
             return;
         }
-        new DatabaseSelector(REDApplication.getInstance());
+        new DatabaseSelector(RedApplication.getInstance());
     }
 
     private boolean sampleMatches(String[] rnaVcfSamples, String[] dnaVcfSamples) {

@@ -22,7 +22,7 @@ package com.xl.display.report;
 import com.xl.display.dialog.ProgressDialog;
 import com.xl.interfaces.OptionsListener;
 import com.xl.interfaces.ProgressListener;
-import com.xl.main.REDApplication;
+import com.xl.main.RedApplication;
 import com.xl.display.dialog.CrashReporter;
 import com.xl.utils.FontManager;
 import com.xl.utils.namemanager.MenuUtils;
@@ -46,7 +46,7 @@ public class ReportOptions extends JDialog implements ActionListener, ProgressLi
     /**
      * The application.
      */
-    private REDApplication application;
+    private RedApplication application;
     /**
      * The report.
      */
@@ -58,7 +58,7 @@ public class ReportOptions extends JDialog implements ActionListener, ProgressLi
      * @param parent the parent
      * @param report the report
      */
-    public ReportOptions(REDApplication parent, Report report) {
+    public ReportOptions(RedApplication parent, Report report) {
         super(parent, report.name() + " Options");
 
         setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);

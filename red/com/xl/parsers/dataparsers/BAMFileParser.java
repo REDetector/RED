@@ -35,19 +35,19 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * The Class BAMFileParser parses data in the program-independent BAM file format.
+ * The Class BamFileParser parses data in the program-independent BAM file format.
  */
-public class BAMFileParser extends DataParser {
+public class BamFileParser extends DataParser {
     /**
      * The SAM file reader. Although its name is SAM file reader, but it really parses the BAM file since that the SAM file needs
      */
     private SAMFileReader reader = null;
     private String bamPath = null;
 
-    public BAMFileParser() {
+    public BamFileParser() {
     }
 
-    public BAMFileParser(File bamFile) {
+    public BamFileParser(File bamFile) {
         this.bamPath = bamFile.getPath();
         init(bamFile);
     }

@@ -19,9 +19,8 @@
 package com.xl.display.dialog;
 
 
-import com.xl.datatypes.sequence.Location;
 import com.xl.display.panel.DataIntroductionPanel;
-import com.xl.main.REDApplication;
+import com.xl.main.RedApplication;
 import com.xl.preferences.LocationPreferences;
 import com.xl.thread.ThreadDenovoInput;
 import com.xl.thread.ThreadDnaRnaInput;
@@ -89,10 +88,10 @@ public class DataImportDialog extends JDialog implements ActionListener {
     /**
      * Instantiates a new data import dialog.
      */
-    public DataImportDialog(REDApplication application) {
+    public DataImportDialog(RedApplication application) {
         super(application, "Import Data into Database...");
         setSize(600, 300);
-        setLocationRelativeTo(REDApplication.getInstance());
+        setLocationRelativeTo(RedApplication.getInstance());
         setModal(true);
         getRootPane().setLayout(new BorderLayout());
 

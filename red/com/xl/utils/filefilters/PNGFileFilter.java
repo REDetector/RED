@@ -23,7 +23,7 @@ import java.io.File;
 /**
  * A file filter representing PNG files
  */
-public class PNGFileFilter extends FileFilter {
+public class PngFileFilter extends FileFilter {
 
     @Override
     public boolean accept(File f) {

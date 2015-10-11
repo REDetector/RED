@@ -31,7 +31,7 @@ import com.xl.datatypes.sites.SiteList;
 import com.xl.datatypes.sites.SiteSet;
 import com.xl.interfaces.Cancellable;
 import com.xl.interfaces.ProgressListener;
-import com.xl.main.REDApplication;
+import com.xl.main.RedApplication;
 import com.xl.preferences.DisplayPreferences;
 import com.xl.utils.ParsingUtils;
 import com.xl.utils.Strand;
@@ -45,14 +45,14 @@ import java.util.List;
 import java.util.Vector;
 
 /**
- * The Class REDDataWriter serialises a RED project to a single file. It contains only configurations but not the real data.
+ * The Class RedDataWriter serialises a RED project to a single file. It contains only configurations but not the real data.
  */
-public class REDDataWriter implements Runnable, Cancellable {
+public class RedDataWriter implements Runnable, Cancellable {
     /**
      * The constant data version for RED project.
      */
     public static final int DATA_VERSION = 1;
-    private static final Logger logger = LoggerFactory.getLogger(REDDataWriter.class);
+    private static final Logger logger = LoggerFactory.getLogger(RedDataWriter.class);
     /**
      * The listeners.
      */
@@ -86,7 +86,7 @@ public class REDDataWriter implements Runnable, Cancellable {
     /**
      * Instantiates a new RED data writer.
      */
-    public REDDataWriter() {
+    public RedDataWriter() {
     }
 
     /**
@@ -115,7 +115,7 @@ public class REDDataWriter implements Runnable, Cancellable {
      * @param application the application
      * @param file        the file
      */
-    public void writeData(REDApplication application, File file) {
+    public void writeData(RedApplication application, File file) {
         data = application.dataCollection();
         this.file = file;
         visibleStores = application.drawnDataStores();

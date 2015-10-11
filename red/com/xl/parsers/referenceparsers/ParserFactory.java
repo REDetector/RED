@@ -22,21 +22,21 @@ public class ParserFactory {
 
     public static AbstractParser createParser(String dataPath, String parserName) {
         if (parserName.equals(DatabaseManager.RNA_VCF_RESULT_TABLE_NAME)) {
-            return new RNAVCFParser(dataPath);
+            return new RnaVcfParser(dataPath);
         } else if (parserName.equals(DatabaseManager.DNA_VCF_RESULT_TABLE_NAME)) {
-            return new DNAVCFParser(dataPath);
+            return new DnaVcfParser(dataPath);
         } else if (parserName.equals(DatabaseManager.SPLICE_JUNCTION_TABLE_NAME)) {
-            return new GTFParser(dataPath, parserName);
+            return new GtfParser(dataPath, parserName);
         } else if (parserName.equals(DatabaseManager.DARNED_DATABASE_TABLE_NAME)) {
-            return new DARNEDParser(dataPath, parserName);
+            return new DarnedParser(dataPath, parserName);
         } else if (parserName.equals(DatabaseManager.RADAR_DATABASE_TABLE_NAME)) {
-            return new RADARParser(dataPath, parserName);
+            return new RadarParser(dataPath, parserName);
         } else if (parserName.equals(DatabaseManager.REPEAT_MASKER_TABLE_NAME)) {
             return new RepeatMaskerParser(dataPath, parserName);
         } else if (parserName.equals(DatabaseManager.DBSNP_DATABASE_TABLE_NAME)) {
-            return new DBSNPParser(dataPath, parserName);
+            return new DbsnpParser(dataPath, parserName);
         } else {
-            return new RNAVCFParser(dataPath);
+            return new RnaVcfParser(dataPath);
         }
     }
 }

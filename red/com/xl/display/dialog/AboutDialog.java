@@ -18,8 +18,8 @@
 
 package com.xl.display.dialog;
 
-import com.xl.display.panel.REDTitlePanel;
-import com.xl.main.REDApplication;
+import com.xl.display.panel.RedTitlePanel;
+import com.xl.main.RedApplication;
 import com.xl.utils.namemanager.MenuUtils;
 
 import javax.swing.*;
@@ -36,12 +36,12 @@ public class AboutDialog extends JDialog {
      * Instantiates a new about dialog.
      */
     public AboutDialog() {
-        super(REDApplication.getInstance());
+        super(RedApplication.getInstance());
         setTitle("About RED...");
         Container cont = getContentPane();
         cont.setLayout(new BorderLayout());
 
-        add(new REDTitlePanel(), BorderLayout.CENTER);
+        add(new RedTitlePanel(), BorderLayout.CENTER);
 
         JPanel buttonPanel = new JPanel();
 
@@ -58,7 +58,7 @@ public class AboutDialog extends JDialog {
         cont.add(buttonPanel, BorderLayout.SOUTH);
 
         setSize(1000, 300);
-        setLocationRelativeTo(REDApplication.getInstance());
+        setLocationRelativeTo(RedApplication.getInstance());
         setResizable(false);
         setVisible(true);
     }

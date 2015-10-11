@@ -37,15 +37,15 @@ import com.xl.display.report.ReportOptions;
 import com.xl.display.report.SitesDistributionHistogram;
 import com.xl.display.report.VariantDistributionHistogram;
 import com.xl.exception.NetworkException;
-import com.xl.exception.REDException;
+import com.xl.exception.RedException;
 import com.xl.filter.filterpanel.*;
 import com.xl.help.HelpDialog;
 import com.xl.main.Global;
-import com.xl.main.REDApplication;
+import com.xl.main.RedApplication;
 import com.xl.net.genomes.UpdateChecker;
 import com.xl.parsers.annotationparsers.AnnotationParserRunner;
-import com.xl.parsers.annotationparsers.UCSCRefGeneParser;
-import com.xl.parsers.dataparsers.BAMFileParser;
+import com.xl.parsers.annotationparsers.UcscRefGeneParser;
+import com.xl.parsers.dataparsers.BamFileParser;
 import com.xl.parsers.dataparsers.FastaFileParser;
 import com.xl.preferences.DisplayPreferences;
 import com.xl.preferences.LocationPreferences;
@@ -69,14 +69,14 @@ import java.util.List;
 import java.util.Vector;
 
 /**
- * The Class REDMenu is the main menu in RED.
+ * The Class RedMenu is the main menu in RED.
  */
-public class REDMenu extends JMenuBar implements ActionListener, DatabaseListener {
-    private final Logger logger = LoggerFactory.getLogger(REDMenu.class);
+public class RedMenu extends JMenuBar implements ActionListener, DatabaseListener {
+    private final Logger logger = LoggerFactory.getLogger(RedMenu.class);
     /**
      * The application.
      */
-    private REDApplication application;
+    private RedApplication application;
     /**
      * The toolbar panel;
      */
@@ -170,7 +170,7 @@ public class REDMenu extends JMenuBar implements ActionListener, DatabaseListene
      *
      * @param application the application.
      */
-    public REDMenu(REDApplication application) {
+    public RedMenu(RedApplication application) {
         this.application = application;
         DatabaseManager.getInstance().addDatabaseListener(this);
         initComponents();
@@ -181,7 +181,7 @@ public class REDMenu extends JMenuBar implements ActionListener, DatabaseListene
      */
     private void initComponents() {
         toolbarPanel = new ToolbarPanel();
-        redToolbar = new REDToolbar(this);
+        redToolbar = new RedToolbar(this);
 
         JMenu fileMenu = new JMenu();
         newProject = new JMenuItem();
@@ -446,11 +446,11 @@ public class REDMenu extends JMenuBar implements ActionListener, DatabaseListene
         } else if (action.equals(MenuUtils.FASTA)) {
             application.importData(new FastaFileParser(application.dataCollection()));
         } else if (action.equals(MenuUtils.RNA)) {
-            application.importData(new BAMFileParser());
+            application.importData(new BamFileParser());
         } else if (action.equals(MenuUtils.DNA)) {
-            application.importData(new BAMFileParser());
+            application.importData(new BamFileParser());
         } else if (action.equals(MenuUtils.ANNOTATION)) {
-            AnnotationParserRunner.RunAnnotationParser(application, new UCSCRefGeneParser(application.dataCollection().genome()));
+            AnnotationParserRunner.RunAnnotationParser(application, new UcscRefGeneParser(application.dataCollection().genome()));
             //            throw new UnsupportedOperationException("We only support .genome file from IGV server now...");
         } else if (action.equals(MenuUtils.CHROMOSOME_VIEW)) {
             ChromosomeViewer viewer = application.chromosomeViewer();
@@ -524,15 +524,15 @@ public class REDMenu extends JMenuBar implements ActionListener, DatabaseListene
                 } else if (action.equals(MenuUtils.SPECIFIC_FILTER)) {
                     new FilterOptionDialog(new EditingTypeFilterPanel(activeDataStore));
                 } else if (action.equals(MenuUtils.KNOWN_SNVS_FILTER)) {
-                    new FilterOptionDialog(new KnownSNPFilterPanel(activeDataStore));
+                    new FilterOptionDialog(new KnownSnpFilterPanel(activeDataStore));
                 } else if (action.equals(MenuUtils.REPEATED_FILTER)) {
                     new FilterOptionDialog(new RepeatRegionsFilterPanel(activeDataStore));
                 } else if (action.equals(MenuUtils.DNA_RNA_FILTER)) {
-                    new FilterOptionDialog(new DNARNAFilterPanel(activeDataStore));
+                    new FilterOptionDialog(new DnaRnaFilterPanel(activeDataStore));
                 } else if (action.equals(MenuUtils.SPLICE_JUNCTION_FILTER)) {
                     new FilterOptionDialog(new SpliceJunctionFilterPanel(activeDataStore));
                 }
-            } catch (REDException e) {
+            } catch (RedException e) {
                 e.printStackTrace();
             }
         } else if (action.contains("test")) {
@@ -543,7 +543,7 @@ public class REDMenu extends JMenuBar implements ActionListener, DatabaseListene
                 } else if (action.equals(MenuUtils.LLR_FILTER)) {
                     new FilterOptionDialog(new LikelihoodRatioFilterPanel(activeDataStore));
                 }
-            } catch (REDException e) {
+            } catch (RedException e) {
                 e.printStackTrace();
             }
         }
@@ -575,7 +575,7 @@ public class REDMenu extends JMenuBar implements ActionListener, DatabaseListene
         else if (action.equals(MenuUtils.HELP_CONTENTS)) {
             try {
                 new HelpDialog(new File(ClassLoader.getSystemResource("Help").getFile().replaceAll("%20", " ")));
-            } catch (REDException e) {
+            } catch (RedException e) {
                 OptionDialogUtils.showMessageDialog(application, "<html>The embedded help content did not work, please use online help at <a href=\"" + Global
                         .HELP_ONLINE + "\">" + Global.HELP_ONLINE + "</a> instead");
                 try {
@@ -730,7 +730,7 @@ public class REDMenu extends JMenuBar implements ActionListener, DatabaseListene
         /**
          * The application.
          */
-        private final REDApplication application;
+        private final RedApplication application;
 
         /**
          * The file.
@@ -743,7 +743,7 @@ public class REDMenu extends JMenuBar implements ActionListener, DatabaseListene
          * @param application the application
          * @param file        the file
          */
-        public FileOpener(REDApplication application, File file) {
+        public FileOpener(RedApplication application, File file) {
             this.application = application;
             this.file = file;
         }

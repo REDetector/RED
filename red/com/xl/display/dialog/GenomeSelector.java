@@ -29,11 +29,11 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeSelectionModel;
 
+import com.xl.main.RedApplication;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.xl.exception.NetworkException;
-import com.xl.main.REDApplication;
 import com.xl.preferences.LocationPreferences;
 import com.xl.utils.ChromosomeNameComparator;
 import com.xl.utils.FileUtils;
@@ -49,7 +49,7 @@ public class GenomeSelector extends JDialog implements ActionListener, TreeSelec
     /**
      * The application.
      */
-    private REDApplication application;
+    private RedApplication application;
     /**
      * The tree.
      */
@@ -64,7 +64,7 @@ public class GenomeSelector extends JDialog implements ActionListener, TreeSelec
      *
      * @param application the application
      */
-    public GenomeSelector(REDApplication application) {
+    public GenomeSelector(RedApplication application) {
         super(application, "Select Genome...");
         this.application = application;
         setSize(400, 350);

@@ -18,7 +18,7 @@
 
 package com.xl.help;
 
-import com.xl.exception.REDException;
+import com.xl.exception.RedException;
 
 import javax.swing.tree.DefaultMutableTreeNode;
 import java.io.File;
@@ -38,11 +38,11 @@ public class HelpIndexRoot extends DefaultMutableTreeNode {
      *
      * @param startingLocation the starting location
      */
-    public HelpIndexRoot(File startingLocation) throws REDException {
+    public HelpIndexRoot(File startingLocation) throws RedException {
         super("Help Contents");
 
         if (!startingLocation.exists() || !startingLocation.isDirectory()) {
-            throw new REDException("Couldn't find help file directory at '" + startingLocation.getAbsolutePath() + "'");
+            throw new RedException("Couldn't find help file directory at '" + startingLocation.getAbsolutePath() + "'");
         }
 
         addSubFiles(startingLocation, this);

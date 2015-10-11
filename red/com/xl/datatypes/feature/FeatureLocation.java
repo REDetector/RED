@@ -23,7 +23,7 @@ import com.xl.datatypes.sequence.Location;
 /**
  * Created by Xing Li on 2014/10/26.
  * <p/>
- * The FeatureLocation class is a wrap class for feature to parse location by a given string. It is only used in REDParser.
+ * The FeatureLocation class is a wrap class for feature to parse location by a given string. It is only used in RedParser.
  */
 public class FeatureLocation extends Location {
 

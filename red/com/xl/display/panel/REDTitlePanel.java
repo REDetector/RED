@@ -35,11 +35,11 @@ import java.net.URI;
 import java.net.URISyntaxException;
 
 /**
- * The Class REDTitlePanel provides a small panel which gives details of the RED version and copyright. Used in both the welcome panel and the about dialog.
+ * The Class RedTitlePanel provides a small panel which gives details of the RED version and copyright. Used in both the welcome panel and the about dialog.
  */
-public class REDTitlePanel extends JPanel {
+public class RedTitlePanel extends JPanel {
 
-    public REDTitlePanel() {
+    public RedTitlePanel() {
         setLayout(new BorderLayout(5, 1));
 
         add(new JLabel("", IconLoader.LOGO_1, JLabel.CENTER), BorderLayout.WEST);

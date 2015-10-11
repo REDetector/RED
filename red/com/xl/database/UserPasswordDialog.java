@@ -18,7 +18,7 @@
 
 package com.xl.database;
 
-import com.xl.main.REDApplication;
+import com.xl.main.RedApplication;
 import com.xl.preferences.DatabasePreferences;
 import com.xl.utils.FontManager;
 import com.xl.utils.namemanager.MenuUtils;
@@ -58,13 +58,13 @@ public class UserPasswordDialog extends JDialog implements ActionListener {
     /**
      * The application.
      */
-    private REDApplication application;
+    private RedApplication application;
     /**
      * A reference of DatabasePreferences.
      */
     private DatabasePreferences preferences = DatabasePreferences.getInstance();
 
-    public UserPasswordDialog(REDApplication application) {
+    public UserPasswordDialog(RedApplication application) {
         super(application, "MySQL Database Login Dialog...");
         this.application = application;
         setSize(500, 400);

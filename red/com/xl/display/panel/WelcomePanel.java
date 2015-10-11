@@ -17,7 +17,7 @@
  */
 package com.xl.display.panel;
 
-import com.xl.main.REDApplication;
+import com.xl.main.RedApplication;
 
 import javax.swing.*;
 import java.awt.*;
@@ -31,9 +31,9 @@ public class WelcomePanel extends JPanel {
     /**
      * The information panel.
      */
-    private REDInfoPanel infoPanel;
+    private RedInfoPanel infoPanel;
 
-    public WelcomePanel(REDApplication application) {
+    public WelcomePanel(RedApplication application) {
         setLayout(new GridBagLayout());
         GridBagConstraints gridBagConstraints = new GridBagConstraints();
         gridBagConstraints.gridx = 0;
@@ -46,9 +46,9 @@ public class WelcomePanel extends JPanel {
         gridBagConstraints.weighty = 0.2;
         gridBagConstraints.gridy++;
 
-        add(new REDTitlePanel(), gridBagConstraints);
+        add(new RedTitlePanel(), gridBagConstraints);
         gridBagConstraints.gridy++;
-        infoPanel = new REDInfoPanel(application);
+        infoPanel = new RedInfoPanel(application);
         add(infoPanel, gridBagConstraints);
 
         gridBagConstraints.weighty = 0.8;
