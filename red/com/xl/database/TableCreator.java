@@ -110,4 +110,17 @@ public class TableCreator {
             logger.error("There is a syntax error for SQL clause: " + stringBuilder.toString(), e);
         }
     }
+
+    public static void createInfoTable() {
+        String infoTable = DatabaseManager.INFORMATION_TABLE_NAME;
+        if (!databaseManager.existTable(infoTable)) {
+            String sql = "create table if not exists " + infoTable
+                + "(tableName varchar(30) ,counts int, PRIMARY KEY (tableName))";
+            try {
+                databaseManager.executeSQL(sql);
+            } catch (SQLException e) {
+                logger.error("There is a syntax error for SQL clause: " + sql, e);
+            }
+        }
+    }
 }

@@ -31,7 +31,7 @@ public class RADARParser extends AbstractParser {
     private DatabaseManager databaseManager = DatabaseManager.getInstance();
 
     public RADARParser(String filePath, String tableName) {
-        super(filePath, tableName);
+        super(filePath, DatabaseManager.KNOWN_RNA_EDITING_TABLE_NAME);
     }
 
     @Override
@@ -39,17 +39,20 @@ public class RADARParser extends AbstractParser {
         if (!databaseManager.existTable(tableName)) {
             // "(chrom varchar(15),coordinate int,strand varchar(5),inchr varchar(5), inrna varchar(5)
             // ,index(chrom,coordinate))");
-            TableCreator.createReferenceTable(tableName, new String[] { "chrom", "pos", "strand", "ref", "alt", "from" },
-                    new String[] { "varchar(30)", "int", "varchar(5)", "varchar(5)", "varchar(5)", "varchar(10)" },
-                    Indexer.CHROM_POSITION);
+            TableCreator.createReferenceTable(tableName,
+                new String[] { "chrom", "pos", "strand", "ref", "alt", "origin" },
+                new String[] { "varchar(30)", "int", "varchar(5)", "varchar(5)", "varchar(5)", "varchar(10)" },
+                Indexer.CHROM_POSITION);
         }
     }
 
     @Override
     protected void loadData(ProgressListener listener) {
-        if (!databaseManager.isKnownRnaEditingTableValid(tableName, DatabaseManager.RADAR_DATABASE_TABLE_NAME)) {
+        String radar = DatabaseManager.RADAR_DATABASE_TABLE_NAME;
+        if (!databaseManager.isKnownRnaEditingTableValid(tableName, radar)) {
             createTable();
             try {
+                databaseManager.executeSQL("delete from " + tableName + " where origin='" + radar + "'");
                 int count = 0;
                 databaseManager.setAutoCommit(false);
                 FileInputStream inputStream = new FileInputStream(dataPath);
@@ -61,10 +64,10 @@ public class RADARParser extends AbstractParser {
                     String[] sections = line.trim().split("\\t");
                     StringBuilder stringBuilder = new StringBuilder("insert into ");
                     stringBuilder.append(tableName);
-                    stringBuilder.append("(chrom,pos,strand,ref,alt,from) values(");
-                    stringBuilder.append(sections[0]).append(",'").append(sections[1]).append("',").append(sections[3])
-                        .append(",A,G,").append(DatabaseManager.RADAR_DATABASE_TABLE_NAME);
-                    stringBuilder.append(")");
+                    stringBuilder.append("(chrom,pos,strand,ref,alt,origin) values(");
+                    stringBuilder.append("'").append(sections[0]).append("','").append(sections[1]).append("','")
+                        .append(sections[3]).append("','A','G','").append(radar);
+                    stringBuilder.append("')");
 
                     databaseManager.executeSQL(stringBuilder.toString());
                     if (++count % DatabaseManager.COMMIT_COUNTS_PER_ONCE == 0)
@@ -82,5 +85,10 @@ public class RADARParser extends AbstractParser {
                 logger.error("Error execute sql clause in " + RADARParser.class.getName() + ":loadDarnedTable()", e);
             }
         }
+    }
+
+    @Override
+    protected void recordInformation() {
+        databaseManager.insertOrUpdateKnownREInfo(DatabaseManager.RADAR_DATABASE_TABLE_NAME);
     }
 }

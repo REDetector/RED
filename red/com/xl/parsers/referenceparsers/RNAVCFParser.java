@@ -15,6 +15,7 @@ package com.xl.parsers.referenceparsers;
 
 import com.xl.database.DatabaseManager;
 import com.xl.interfaces.ProgressListener;
+import com.xl.utils.EmptyChecker;
 import com.xl.utils.Indexer;
 
 import java.io.BufferedReader;
@@ -51,11 +52,11 @@ public class RNAVCFParser extends AbstractParser {
 
     private String[] sampleNames = null;
     private int columnLength = 0;
-    private String[] tableName = null;
+    private String[] tableNames = null;
     private DatabaseManager databaseManager = DatabaseManager.getInstance();
 
     public RNAVCFParser(String dataPath) {
-        super(dataPath);
+        super(dataPath, DatabaseManager.RNA_VCF_RESULT_TABLE_NAME);
     }
 
     @Override
@@ -71,7 +72,6 @@ public class RNAVCFParser extends AbstractParser {
             String line;
             String[] columnStrings = new String[0];
             StringBuilder tableBuilders = new StringBuilder();
-            databaseManager.setAutoCommit(false);
             int lineCount = 0;
             boolean hasEstablishTable = false;
             while ((line = bufferedReader.readLine()) != null) {
@@ -83,10 +83,9 @@ public class RNAVCFParser extends AbstractParser {
                     sampleNames = Arrays.copyOfRange(columnStrings, formatColumnIndex + 1, columnLength);
                     tableBuilders.append(columnStrings[0]).append(" varchar(30),").append(columnStrings[1])
                         .append(" int,").append(columnStrings[2]).append(" varchar(30),").append(columnStrings[3])
-                        .append(" varchar(5),").append(columnStrings[4]).append(" varchar(5),")
-                        .append(columnStrings[5]).append(" float(10,2),").append(columnStrings[6]).append(" text,")
-                        .append(columnStrings[7]).append(" text,");
-                    // return;
+                        .append(" varchar(5),").append(columnStrings[4]).append(" varchar(5),").append(columnStrings[5])
+                        .append(" float(10,2),").append(columnStrings[6]).append(" text,").append(columnStrings[7])
+                        .append(" text,");
                     continue;
                 }
                 if (sampleNames == null) {
@@ -118,14 +117,20 @@ public class RNAVCFParser extends AbstractParser {
                         tableBuilders.append("alu varchar(1) default 'F'");
                         tableBuilders.append(",");
                         tableBuilders.append(Indexer.CHROM_POSITION);
-                        tableName = new String[sampleNames.length];
+                        tableNames = new String[sampleNames.length];
                         for (int j = 0, len = sampleNames.length; j < len; j++) {
-                            tableName[j] = sampleNames[j] + "_" + DatabaseManager.RNA_VCF_RESULT_TABLE_NAME;
-                            databaseManager.deleteTable(tableName[j]);
-                            databaseManager.executeSQL("create table " + tableName[j] + "(" + tableBuilders + ")");
+                            tableNames[j] = sampleNames[j] + "_" + DatabaseManager.RNA_VCF_RESULT_TABLE_NAME;
                         }
-                        databaseManager.commit();
-                        hasEstablishTable = true;
+                        if (isDataValid(tableNames)) {
+                            return;
+                        } else {
+                            for (int j = 0, len = sampleNames.length; j < len; j++) {
+                                databaseManager.deleteTable(tableNames[j]);
+                                databaseManager.executeSQL("create table " + tableNames[j] + "(" + tableBuilders + ")");
+                            }
+                            databaseManager.setAutoCommit(false);
+                            hasEstablishTable = true;
+                        }
                     }
 
                     // INSERT INTO table_name (col1, col2,...) VALUES (value1, value2,....)
@@ -133,7 +138,7 @@ public class RNAVCFParser extends AbstractParser {
                     // insert into
                     sqlClause = new StringBuilder("insert into ");
                     // insert into table_name (
-                    sqlClause.append(tableName[i - formatColumnIndex - 1]).append("(");
+                    sqlClause.append(tableNames[i - formatColumnIndex - 1]).append("(");
                     // insert into table_name (col1,col2,...,coli,
                     for (int j = 0; j < formatColumnIndex; j++) {
                         sqlClause.append(columnStrings[j]).append(",");
@@ -196,6 +201,23 @@ public class RNAVCFParser extends AbstractParser {
                 }
             }
         }
+    }
+
+    @Override
+    protected void recordInformation() {
+        if (!EmptyChecker.isEmptyArray(tableNames)) {
+            for (String tableName : tableNames) {
+                databaseManager.insertOrUpdateInfo(tableName);
+            }
+        }
+    }
+
+    private boolean isDataValid(String[] tableNames) {
+        boolean valid = true;
+        for (String tableName : tableNames) {
+            valid &= databaseManager.isTableExistAndValid(tableName);
+        }
+        return valid;
     }
 
     public String[] getSampleNames() {

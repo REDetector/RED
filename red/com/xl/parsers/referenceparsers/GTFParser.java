@@ -62,4 +62,9 @@ public class GTFParser extends AbstractParser {
             }
         }
     }
+
+    @Override
+    protected void recordInformation() {
+        databaseManager.insertOrUpdateInfo(tableName);
+    }
 }

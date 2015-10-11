@@ -13,14 +13,13 @@
 
 package com.xl.parsers.referenceparsers;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.xl.database.DatabaseManager;
 import com.xl.exception.DataLoadException;
 import com.xl.interfaces.ProgressListener;
 import com.xl.utils.Timer;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.sql.SQLException;
 
 /**
  * Created by Administrator on 2015/10/5.
@@ -31,10 +30,6 @@ public abstract class AbstractParser {
     protected final String tableName;
     protected final DatabaseManager databaseManager = DatabaseManager.getInstance();
 
-    public AbstractParser(String dataPath) {
-        this(dataPath, "");
-    }
-
     public AbstractParser(String dataPath, String tableName) {
         this.dataPath = dataPath;
         this.tableName = tableName;
@@ -44,29 +39,23 @@ public abstract class AbstractParser {
         if (dataPath == null || dataPath.length() == 0) {
             throw new DataLoadException("Error load file.");
         }
-        logger.info("Start loading " + tableName + "... at {}", Timer.getCurrentTime());
+        logger.info("Start loading data from " + dataPath + "... at {}", Timer.getCurrentTime());
         if (listener != null) {
-            listener.progressUpdated("Start loading data from " + dataPath + " to " + tableName + " table", 0, 0);
+            listener.progressUpdated("Start loading data from '" + dataPath + "' to '" + tableName + "' table", 0, 0);
         }
         createTable();
         loadData(listener);
         if (listener != null) {
             listener.progressComplete(tableName + "_loaded", null);
         }
-        int counts = databaseManager.calRowCount(tableName);
-        // INSERT table (auto_id, auto_name) values (1, yourname') ON DUPLICATE KEY UPDATE auto_name='yourname'
-        try {
-            databaseManager
-                .insertClause("insert into " + DatabaseManager.INFORMATION_TABLE_NAME + "(tableName,counts) values("
-                    + tableName + ",'" + counts + "') ON DUPLICATE KEY UPDATE counts='" + counts + "'");
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        logger.info("End loading " + tableName + "... at {}", Timer.getCurrentTime());
+        recordInformation();
+        logger.info("End loading data from " + dataPath + "... at {}", Timer.getCurrentTime());
     }
 
     protected abstract void createTable();
 
     protected abstract void loadData(ProgressListener listener);
+
+    protected abstract void recordInformation();
 
 }

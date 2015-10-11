@@ -13,16 +13,16 @@
 
 package com.xl.parsers.referenceparsers;
 
+import com.xl.database.DatabaseManager;
+import com.xl.database.TableCreator;
+import com.xl.interfaces.ProgressListener;
+import com.xl.utils.Indexer;
+
 import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.sql.SQLException;
-
-import com.xl.database.DatabaseManager;
-import com.xl.database.TableCreator;
-import com.xl.interfaces.ProgressListener;
-import com.xl.utils.Indexer;
 
 /**
  * P_value based on alt and ref
@@ -31,7 +31,7 @@ public class DARNEDParser extends AbstractParser {
     private DatabaseManager databaseManager = DatabaseManager.getInstance();
 
     public DARNEDParser(String filePath, String tableName) {
-        super(filePath, tableName);
+        super(filePath, DatabaseManager.KNOWN_RNA_EDITING_TABLE_NAME);
     }
 
     @Override
@@ -40,7 +40,7 @@ public class DARNEDParser extends AbstractParser {
             // "(chrom varchar(15),coordinate int,strand varchar(5),inchr varchar(5), inrna varchar(5)
             // ,index(chrom,coordinate))");
             TableCreator.createReferenceTable(tableName,
-                new String[] { "chrom", "pos", "strand", "ref", "alt", "from" },
+                new String[] { "chrom", "pos", "strand", "ref", "alt", "origin" },
                 new String[] { "varchar(30)", "int", "varchar(5)", "varchar(5)", "varchar(5)", "varchar(10)" },
                 Indexer.CHROM_POSITION);
         }
@@ -48,9 +48,11 @@ public class DARNEDParser extends AbstractParser {
 
     @Override
     protected void loadData(ProgressListener listener) {
-        if (!databaseManager.isKnownRnaEditingTableValid(tableName, DatabaseManager.DARNED_DATABASE_TABLE_NAME)) {
+        String darned = DatabaseManager.DARNED_DATABASE_TABLE_NAME;
+        if (!databaseManager.isKnownRnaEditingTableValid(tableName, darned)) {
             createTable();
             try {
+                databaseManager.executeSQL("delete from " + tableName + " where origin='" + darned + "'");
                 int count = 0;
                 databaseManager.setAutoCommit(false);
                 FileInputStream inputStream = new FileInputStream(dataPath);
@@ -62,7 +64,7 @@ public class DARNEDParser extends AbstractParser {
                     String[] sections = line.trim().split("\\t");
                     StringBuilder stringBuilder = new StringBuilder("insert into ");
                     stringBuilder.append(tableName);
-                    stringBuilder.append("(chrom,pos,strand,ref,alt,from) values(");
+                    stringBuilder.append("(chrom,pos,strand,ref,alt,origin) values(");
                     for (int i = 0; i < 5; i++) {
                         if (i == 0) {
                             stringBuilder.append("'chr").append(sections[i]).append("',");
@@ -74,7 +76,7 @@ public class DARNEDParser extends AbstractParser {
                             stringBuilder.append("'").append(sections[i]).append("',");
                         }
                     }
-                    stringBuilder.append(DatabaseManager.DARNED_DATABASE_TABLE_NAME).append(")");
+                    stringBuilder.append(",'").append(darned).append("')");
 
                     databaseManager.executeSQL(stringBuilder.toString());
                     if (++count % DatabaseManager.COMMIT_COUNTS_PER_ONCE == 0)
@@ -92,5 +94,10 @@ public class DARNEDParser extends AbstractParser {
                 logger.error("Error execute sql clause in " + DARNEDParser.class.getName() + ":loadDarnedTable()", e);
             }
         }
+    }
+
+    @Override
+    protected void recordInformation() {
+        databaseManager.insertOrUpdateKnownREInfo(DatabaseManager.DARNED_DATABASE_TABLE_NAME);
     }
 }

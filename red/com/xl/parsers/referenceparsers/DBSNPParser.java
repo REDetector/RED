@@ -73,4 +73,9 @@ public class DBSNPParser extends AbstractParser {
             logger.error("Error execute sql clause in " + DBSNPParser.class.getName() + ":loadDbSNPTable()", e);
         }
     }
+
+    @Override
+    protected void recordInformation() {
+        databaseManager.insertOrUpdateInfo(tableName);
+    }
 }

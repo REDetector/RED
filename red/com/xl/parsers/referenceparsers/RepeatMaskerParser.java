@@ -82,4 +82,9 @@ public class RepeatMaskerParser extends AbstractParser {
             }
         }
     }
+
+    @Override
+    protected void recordInformation() {
+        databaseManager.insertOrUpdateInfo(tableName);
+    }
 }

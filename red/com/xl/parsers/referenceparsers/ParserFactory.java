@@ -30,7 +30,7 @@ public class ParserFactory {
         } else if (parserName.equals(DatabaseManager.DARNED_DATABASE_TABLE_NAME)) {
             return new DARNEDParser(dataPath, parserName);
         } else if (parserName.equals(DatabaseManager.RADAR_DATABASE_TABLE_NAME)) {
-            return new DARNEDParser(dataPath, parserName);
+            return new RADARParser(dataPath, parserName);
         } else if (parserName.equals(DatabaseManager.REPEAT_MASKER_TABLE_NAME)) {
             return new RepeatMaskerParser(dataPath, parserName);
         } else if (parserName.equals(DatabaseManager.DBSNP_DATABASE_TABLE_NAME)) {

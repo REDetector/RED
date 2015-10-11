@@ -62,4 +62,9 @@ public class RefGeneParser extends AbstractParser {
             }
         }
     }
+
+    @Override
+    protected void recordInformation() {
+        databaseManager.insertOrUpdateInfo(tableName);
+    }
 }

@@ -61,9 +61,9 @@ public class ThreadDnaRnaInput implements Runnable {
             AbstractParser dbSNPParser = ParserFactory.createParser(locationPreferences.getDbSNPFile(),
                 DatabaseManager.DBSNP_DATABASE_TABLE_NAME);
             AbstractParser darnedParser = ParserFactory.createParser(locationPreferences.getDarnedFile(),
-                DatabaseManager.KNOWN_RNA_EDITING_TABLE_NAME);
+                DatabaseManager.DARNED_DATABASE_TABLE_NAME);
             AbstractParser radarParser = ParserFactory.createParser(locationPreferences.getRadarFile(),
-                DatabaseManager.KNOWN_RNA_EDITING_TABLE_NAME);
+                DatabaseManager.RADAR_DATABASE_TABLE_NAME);
 
             rnaVcfParser.loadDataFromLocal(new ProgressDialog("Import RNA VCF file into database..."));
             String[] rnaVcfSamples = ((RNAVCFParser) rnaVcfParser).getSampleNames();

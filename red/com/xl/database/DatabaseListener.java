@@ -33,12 +33,12 @@ public interface DatabaseListener {
      * @param databaseName Database name which is being used or changed to.
      * @param sampleName   Sample name which is being used or changed to.
      */
-    public void databaseChanged(String databaseName, String sampleName);
+    void databaseChanged(String databaseName, String sampleName);
 
     /**
      * When database is connected, we need to tell RED to handle this event, such as enabling buttons in toolbar, enabling data importing, synchronizing data
      * between database and data store, etc.
      */
-    public void databaseConnected();
+    void databaseConnected();
 
 }

@@ -18,22 +18,22 @@ package com.xl.database;
  * single thread, which will influence the efficiency, but in order to synchronize, we would like to make it.
  */
 
+import com.xl.main.REDApplication;
+import com.xl.preferences.DatabasePreferences;
+import com.xl.utils.RandomStringGenerator;
+import com.xl.utils.ui.OptionDialogUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Vector;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.xl.main.REDApplication;
-import com.xl.preferences.DatabasePreferences;
-import com.xl.utils.RandomStringGenerator;
-import com.xl.utils.ui.OptionDialogUtils;
-
 public class DatabaseManager {
     public static final int COMMIT_COUNTS_PER_ONCE = 10000;
+    public static final int MAX_ERROR_COUNT = 500;
     public static final String FILTER = "filter";
     public static final String DNA_RNA_DATABASE_NAME = "DNA_RNA_MODE";
     public static final String DENOVO_DATABASE_NAME = "DENOVO_MODE";
@@ -52,9 +52,9 @@ public class DatabaseManager {
     public static final String DARNED_DATABASE_TABLE_NAME = "darned";
     public static final String RADAR_DATABASE_TABLE_NAME = "radar";
     public static final String REPEAT_MASKER_TABLE_NAME = "repeat_masker";
-    public static final String DBSNP_DATABASE_TABLE_NAME = "dbsnp_database";
-    public static final String REFSEQ_GENE_TABLE_NAME = "reference_gene";
-    public static final String INFORMATION_TABLE_NAME = "information";
+    public static final String DBSNP_DATABASE_TABLE_NAME = "dbsnp";
+    public static final String REFSEQ_GENE_TABLE_NAME = "ref_gene";
+    public static final String INFORMATION_TABLE_NAME = "info_table";
     private static final Logger logger = LoggerFactory.getLogger(DatabaseManager.class);
     /**
      * The single instance of DatabaseManager.
@@ -115,12 +115,6 @@ public class DatabaseManager {
      * Tell all classes which have inherit <code>DatabaseListener</code> that database has been connected.
      */
     public void databaseConnected() {
-        String infoTable = INFORMATION_TABLE_NAME;
-        if (!existTable(infoTable)) {
-            TableCreator.createReferenceTable(infoTable, new String[] { "tableName", "counts" },
-                new String[] { "varchar(30)", "int" }, null);
-        }
-
         Enumeration<DatabaseListener> e = listeners.elements();
         while (e.hasMoreElements()) {
             e.nextElement().databaseConnected();
@@ -396,6 +390,7 @@ public class DatabaseManager {
         try {
             Statement stmt = con.createStatement();
             stmt.executeUpdate("use " + databaseName);
+            DatabasePreferences.getInstance().setCurrentDatabase(databaseName);
             stmt.close();
         } catch (SQLException e) {
             logger.error("Unable to use database " + databaseName, e);
@@ -492,23 +487,67 @@ public class DatabaseManager {
         return rs;
     }
 
-    public boolean isTableExistAndValid(String tableName) {
-        ResultSet rs =
-            query(INFORMATION_TABLE_NAME, new String[] { "counts" }, " tableName=?", new String[] { tableName });
+    public void insertOrUpdateInfo(String tableName) {
+        if (!existTable(INFORMATION_TABLE_NAME)) {
+            TableCreator.createInfoTable();
+        }
+        int counts = calRowCount(tableName);
+        // INSERT table (auto_id, auto_name) values (1, yourname') ON DUPLICATE KEY UPDATE auto_name='yourname'
         try {
-            int informationCounts = rs.getInt(1);
-            int currentCount = calRowCount(tableName);
-            return Math.abs(informationCounts - currentCount) < 500;
+            insertClause("insert into " + INFORMATION_TABLE_NAME + "(tableName,counts) values('" + tableName + "','"
+                + counts + "') ON DUPLICATE KEY UPDATE counts='" + counts + "'");
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return false;
     }
 
-    public boolean isKnownRnaEditingTableValid(String tableName, String from) {
-        int darnedCounts = calRowCount(tableName, "from=?", new String[] { from });
-        int infoCounts = calRowCount(INFORMATION_TABLE_NAME, "tableName=?", new String[] { tableName });
-        return Math.abs(darnedCounts - infoCounts) < 500;
+    public boolean isTableExistAndValid(String tableName) {
+        if (!existTable(INFORMATION_TABLE_NAME)) {
+            TableCreator.createInfoTable();
+        }
+        try {
+            ResultSet rs =
+                query(INFORMATION_TABLE_NAME, new String[] { "counts" }, " tableName=?", new String[] { tableName });
+            int infoCounts = rs != null && rs.next() ? rs.getInt(1) : 0;
+            int currentCount = calRowCount(tableName);
+            logger.debug(tableName + "\tcurrentCounts: " + currentCount + "\tinfoCounts: " + infoCounts);
+            return Math.abs(infoCounts - currentCount) < MAX_ERROR_COUNT && infoCounts > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public void insertOrUpdateKnownREInfo(String origin) {
+        if (!existTable(INFORMATION_TABLE_NAME)) {
+            TableCreator.createInfoTable();
+        }
+        // INSERT table (auto_id, auto_name) values (1, yourname') ON DUPLICATE KEY UPDATE auto_name='yourname'
+        int counts = calRowCount(KNOWN_RNA_EDITING_TABLE_NAME, "origin=?", new String[] { origin });
+        try {
+            insertClause("insert into " + DatabaseManager.INFORMATION_TABLE_NAME + "(tableName,counts) values('"
+                + origin + "','" + counts + "') ON DUPLICATE KEY UPDATE counts='" + counts + "'");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public boolean isKnownRnaEditingTableValid(String tableName, String origin) {
+        if (!existTable(INFORMATION_TABLE_NAME)) {
+            TableCreator.createInfoTable();
+        }
+        try {
+            ResultSet rs =
+                query(INFORMATION_TABLE_NAME, new String[] { "counts" }, "tableName=?", new String[] { origin });
+            int infoCounts = rs != null && rs.next() ? rs.getInt(1) : 0;
+            int currentCounts = calRowCount(tableName, "origin=?", new String[] { origin });
+            logger.debug(tableName + "\t" + origin + ": " + currentCounts + " \tinfoCounts: " + infoCounts);
+            return Math.abs(currentCounts - infoCounts) < MAX_ERROR_COUNT && infoCounts > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+
     }
 
     /**
