@@ -1,26 +1,15 @@
 /*
- * RED: RNA Editing Detector
- *     Copyright (C) <2014>  <Xing Li>
+ * RED: RNA Editing Detector Copyright (C) <2014> <Xing Li>
  *
- *     RED is free software: you can redistribute it and/or modify
- *     it under the terms of the GNU General Public License as published by
- *     the Free Software Foundation, either version 3 of the License, or
- *     (at your option) any later version.
+ * RED is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as
+ * published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
- *     RED is distributed in the hope that it will be useful,
- *     but WITHOUT ANY WARRANTY; without even the implied warranty of
- *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *     GNU General Public License for more details.
+ * RED is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  *
- *     You should have received a copy of the GNU General Public License
- *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU General Public License along with this program. If not, see
+ * <http://www.gnu.org/licenses/>.
  */
-
-/**
- * ���ܣ�
- * 	1���ļ���ȡ��ɾ��
- */
-
 package com.xl.utils;
 
 import org.slf4j.Logger;
@@ -34,7 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * The Class FileUtils provides some I/O operations
+ * The Class FileUtils provides some I/O operations.
  */
 public class FileUtils {
 
@@ -81,7 +70,7 @@ public class FileUtils {
     /**
      * Delete the file by a given file path with specific suffix.
      *
-     * @param path   the file to be deleted
+     * @param path the file to be deleted
      * @param suffix the suffix
      * @return true if delete successfully.
      */
@@ -132,7 +121,7 @@ public class FileUtils {
     /**
      * Delete the files by a given file path with specific suffix.
      *
-     * @param path   the files to be deleted
+     * @param path the files to be deleted
      * @param suffix the suffix
      * @return true if delete successfully.
      */
@@ -161,7 +150,7 @@ public class FileUtils {
     /**
      * Search the files which meets the file name in the given directory.
      *
-     * @param fileName  the name of the searching file
+     * @param fileName the name of the searching file
      * @param directory the directory to be searched
      * @return a list that contains the required files.
      */
@@ -186,7 +175,7 @@ public class FileUtils {
     /**
      * Copy the whole content of a folder from one place to another.
      *
-     * @param inputPath  The ordinary folder to be copied.
+     * @param inputPath The ordinary folder to be copied.
      * @param outputPath The destination folder to copy to.
      */
     public static void copyFolder(String inputPath, String outputPath) throws IOException {
@@ -223,17 +212,5 @@ public class FileUtils {
             }
         }
 
-    }
-
-    public static void main(String[] args) throws IOException {
-        //        BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream("E:\\Master\\ChongQing\\Data\\BJ22N_DNA_RNA\\BJ22_sites.hard" +
-        //                ".filtered.vcf")));
-        //        String line;
-        //        int count = 0;
-        //        while ((line = br.readLine()) != null) {
-        //            if (line.startsWith("##")) continue;
-        //            if (count++ < 1000) continue;
-        //            if (count++ < 2000) System.out.println(line);
-        //        }
     }
 }

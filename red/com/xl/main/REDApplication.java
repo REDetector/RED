@@ -18,9 +18,6 @@
 
 package com.xl.main;
 
-import ch.qos.logback.classic.LoggerContext;
-import ch.qos.logback.classic.joran.JoranConfigurator;
-import ch.qos.logback.core.joran.spi.JoranException;
 import com.xl.database.DatabaseListener;
 import com.xl.database.DatabaseManager;
 import com.xl.datatypes.DataCollection;
@@ -145,18 +142,6 @@ public class RedApplication extends JFrame implements ProgressListener, DataStor
      */
     private File fileToLoad = null;
 
-    static {
-        LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
-        JoranConfigurator configurator = new JoranConfigurator();
-        configurator.setContext(lc);
-        lc.reset();
-        try {
-            configurator.doConfigure(ClassLoader.getSystemResource("com/xl/preferences/logbackConfig.xml"));
-        } catch (JoranException e) {
-            e.printStackTrace();
-        }
-    }
-
     private RedApplication() {
         setTitle("RED");
         setSize(Toolkit.getDefaultToolkit().getScreenSize().width / 3 * 2,
@@ -199,7 +184,7 @@ public class RedApplication extends JFrame implements ProgressListener, DataStor
         return application;
     }
 
-    public static void main(String[] args) {
+    public static void run(String[] args) {
         logger.info("Start running the RED");
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
@@ -808,7 +793,7 @@ public class RedApplication extends JFrame implements ProgressListener, DataStor
     @Override
     public void databaseChanged(String databaseName, String sampleName) {
         String mode;
-        if (databaseName.equals(DatabaseManager.DENOVO_DATABASE_NAME)) {
+        if (databaseName.equals(DatabaseManager.DENOVO_MODE_DATABASE_NAME)) {
             mode = "denovo mode";
         } else {
             mode = "DNA-RNA mode";

@@ -40,11 +40,11 @@ public class ThreadDenovoInput implements Runnable {
     public void run() {
         DatabaseManager manager = DatabaseManager.getInstance();
         LocationPreferences locationPreferences = LocationPreferences.getInstance();
-        DatabasePreferences.getInstance().setCurrentDatabase(DatabaseManager.DENOVO_DATABASE_NAME);
+        DatabasePreferences.getInstance().setCurrentDatabase(DatabaseManager.DENOVO_MODE_DATABASE_NAME);
         manager.setAutoCommit(true);
         try {
-            manager.createDatabase(DatabaseManager.DENOVO_DATABASE_NAME);
-            manager.useDatabase(DatabaseManager.DENOVO_DATABASE_NAME);
+            manager.createDatabase(DatabaseManager.DENOVO_MODE_DATABASE_NAME);
+            manager.useDatabase(DatabaseManager.DENOVO_MODE_DATABASE_NAME);
 
             AbstractParser rnaVcfParser = ParserFactory.createParser(locationPreferences.getRnaVcfFile(),
                 DatabaseManager.RNA_VCF_RESULT_TABLE_NAME);

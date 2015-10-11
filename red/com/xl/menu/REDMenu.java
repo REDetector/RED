@@ -656,7 +656,7 @@ public class RedMenu extends JMenuBar implements ActionListener, DatabaseListene
     public void databaseChanged(String databaseName, String sampleName) {
         filterMenu.setEnabled(true);
         filterReports.setEnabled(true);
-        if (databaseName.equals(DatabaseManager.DENOVO_DATABASE_NAME)) {
+        if (databaseName.equals(DatabaseManager.DENOVO_MODE_DATABASE_NAME)) {
             llrFilter.setEnabled(false);
             dnaRnaFilter.setEnabled(false);
         } else {

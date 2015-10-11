@@ -44,11 +44,11 @@ public class ThreadDnaRnaInput implements Runnable {
         logger.info("DNA-RNA mode Input Start.");
         DatabaseManager manager = DatabaseManager.getInstance();
         LocationPreferences locationPreferences = LocationPreferences.getInstance();
-        DatabasePreferences.getInstance().setCurrentDatabase(DatabaseManager.DNA_RNA_DATABASE_NAME);
+        DatabasePreferences.getInstance().setCurrentDatabase(DatabaseManager.DNA_RNA_MODE_DATABASE_NAME);
         manager.setAutoCommit(true);
         try {
-            manager.createDatabase(DatabaseManager.DNA_RNA_DATABASE_NAME);
-            manager.useDatabase(DatabaseManager.DNA_RNA_DATABASE_NAME);
+            manager.createDatabase(DatabaseManager.DNA_RNA_MODE_DATABASE_NAME);
+            manager.useDatabase(DatabaseManager.DNA_RNA_MODE_DATABASE_NAME);
 
             AbstractParser rnaVcfParser = ParserFactory.createParser(locationPreferences.getRnaVcfFile(),
                 DatabaseManager.RNA_VCF_RESULT_TABLE_NAME);

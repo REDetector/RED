@@ -53,10 +53,10 @@ public class DatabaseTreeModel implements TreeModel {
     private List<TableNode> dnarnaTableNodes = null;
 
     public DatabaseTreeModel() {
-        modes = new String[]{DatabaseManager.DENOVO_DATABASE_NAME, DatabaseManager.DNA_RNA_DATABASE_NAME};
+        modes = new String[]{DatabaseManager.DENOVO_MODE_DATABASE_NAME, DatabaseManager.DNA_RNA_MODE_DATABASE_NAME};
         denovoTableNodes = new ArrayList<TableNode>();
         List<String> denovoTables;
-        denovoTables = DatabaseManager.getInstance().getCurrentTables(DatabaseManager.DENOVO_DATABASE_NAME);
+        denovoTables = DatabaseManager.getInstance().getCurrentTables(DatabaseManager.DENOVO_MODE_DATABASE_NAME);
         for (String denovoTable : denovoTables) {
             // We only detect RNA VCF file and exclude all filters relative to this sample.
             if (denovoTable.contains(DatabaseManager.RNA_VCF_RESULT_TABLE_NAME) && !denovoTable.contains(DatabaseManager.FILTER)) {
@@ -65,7 +65,7 @@ public class DatabaseTreeModel implements TreeModel {
         }
 
         dnarnaTableNodes = new ArrayList<TableNode>();
-        List<String> dnarnaTables = DatabaseManager.getInstance().getCurrentTables(DatabaseManager.DNA_RNA_DATABASE_NAME);
+        List<String> dnarnaTables = DatabaseManager.getInstance().getCurrentTables(DatabaseManager.DNA_RNA_MODE_DATABASE_NAME);
         for (String dnarnaTable : dnarnaTables) {
             // We only detect RNA VCF file and exclude all filters relative to this sample.
             if (dnarnaTable.contains(DatabaseManager.RNA_VCF_RESULT_TABLE_NAME) && !dnarnaTable.contains(DatabaseManager.FILTER)) {

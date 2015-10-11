@@ -200,10 +200,7 @@ public class UserPasswordDialog extends JDialog implements ActionListener {
                     DatabaseManager.getInstance().databaseConnected();
                     logger.info("Database has been connected.");
                 }
-            } catch (ClassNotFoundException e1) {
-                logger.warn("The driver has been integrated into the software and should not be found. If the ClassNotFoundException happens again, " +
-                        "please try to download the latest version of RED to solve the problem.", e1);
-            } catch (SQLException e1) {
+            }catch (SQLException e1) {
                 OptionDialogUtils.showErrorDialog(this,"Sorry, fail to connect to database. You may input one of wrong " +
                         "database host, port, user name or password.");
                 logger.error("Fail to connect to database.", e1);

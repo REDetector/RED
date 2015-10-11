@@ -75,10 +75,6 @@ public class AxisScale {
 
     }
 
-    public static void main(String[] args) {
-        AxisScale as = new AxisScale(-4.75, 5.52);
-        System.out.println("Scale is " + as.getMin() + "-" + as.getMax() + " starts at " + as.getStartingValue() + " with interval " + as.getInterval());
-    }
 
     public String format(double number) {
         if (df == null) {

@@ -35,8 +35,8 @@ public class DatabaseManager {
     public static final int COMMIT_COUNTS_PER_ONCE = 10000;
     public static final int MAX_ERROR_COUNT = 500;
     public static final String FILTER = "filter";
-    public static final String DNA_RNA_DATABASE_NAME = "DNA_RNA_MODE";
-    public static final String DENOVO_DATABASE_NAME = "DENOVO_MODE";
+    public static final String DNA_RNA_MODE_DATABASE_NAME = "DNA_RNA_MODE";
+    public static final String DENOVO_MODE_DATABASE_NAME = "DENOVO_MODE";
     public static final String RNA_VCF_RESULT_TABLE_NAME = "rnavcf";
     public static final String DNA_VCF_RESULT_TABLE_NAME = "dnavcf";
     public static final String QC_FILTER_RESULT_TABLE_NAME = "qcfilter";
@@ -145,20 +145,20 @@ public class DatabaseManager {
      * @param password The password.
      * @return Whether database has been connected, true if it is successful.
      */
-    public boolean connectDatabase(String host, String port, String user, String password)
-        throws SQLException, ClassNotFoundException {
+    public boolean connectDatabase(String host, String port, String user, String password) throws SQLException {
         try {
             Class.forName("com.mysql.jdbc.Driver");
         } catch (ClassNotFoundException e) {
-            logger.error("The JDBC driver has not been found.", e);
+            logger.warn(
+                "The driver has been integrated into the software and should not be found. If the ClassNotFoundException happens again, "
+                    + "please try to download the latest version of RED to solve the problem.",
+                e);
         }
 
         String connectionURL = "jdbc:mysql://" + host + ":" + port;
-        try {
-            con = DriverManager.getConnection(connectionURL, user, password);
-        } catch (SQLException e) {
-            logger.error("Database connection error.", e);
-        }
+
+        con = DriverManager.getConnection(connectionURL, user, password);
+
         return con != null;
     }
 
