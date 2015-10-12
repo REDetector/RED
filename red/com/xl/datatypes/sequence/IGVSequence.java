@@ -36,7 +36,7 @@ import java.util.*;
  * @Date 8/8/11
  */
 
-public class IGVSequence implements Sequence {
+public class IgvSequence implements Sequence {
 
     private static Map<String, String> illegalChar = new HashMap<String, String>();
 
@@ -63,7 +63,7 @@ public class IGVSequence implements Sequence {
     private HashMap<String, Integer> chromosomeLengths;
     private List<String> chromosomeNames;
 
-    public IGVSequence(String dirPath) {
+    public IgvSequence(String dirPath) {
         if (!dirPath.endsWith("/")) {
             dirPath = dirPath + "/";
         }

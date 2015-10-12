@@ -21,7 +21,7 @@ import com.xl.datatypes.fasta.FastaIndexedSequence;
 import com.xl.datatypes.genome.Chromosome;
 import com.xl.datatypes.genome.Genome;
 import com.xl.datatypes.genome.GenomeDescriptor;
-import com.xl.datatypes.sequence.IGVSequence;
+import com.xl.datatypes.sequence.IgvSequence;
 import com.xl.datatypes.sequence.Sequence;
 import com.xl.datatypes.sequence.SequenceWrapper;
 import com.xl.display.dialog.ProgressDialog;
@@ -206,7 +206,7 @@ public class IgvGenomeParser implements Runnable {
             if (sequenceLocation == null) {
                 sequence = null;
             } else if (!isFasta) {
-                IGVSequence igvSequence = new IGVSequence(sequenceLocation);
+                IgvSequence igvSequence = new IgvSequence(sequenceLocation);
                 if (cytobandMap != null) {
                     chromosOrdered = genomeDescriptor.isChromosomesAreOrdered();
                     igvSequence.generateChromosomes(cytobandMap, chromosOrdered);
@@ -292,7 +292,7 @@ public class IgvGenomeParser implements Runnable {
         if (sequenceLocation == null) {
             sequence = null;
         } else if (!isFasta) {
-            IGVSequence igvSequence = new IGVSequence(sequenceLocation);
+            IgvSequence igvSequence = new IgvSequence(sequenceLocation);
             if (cytobandMap != null) {
                 chromosomeOrdered = genomeDescriptor.isChromosomesAreOrdered();
                 igvSequence.generateChromosomes(cytobandMap, chromosomeOrdered);

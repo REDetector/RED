@@ -14,7 +14,6 @@
 package com.xl.filter.denovo;
 
 import com.xl.database.DatabaseManager;
-import com.xl.database.TableCreator;
 import com.xl.filter.Filter;
 import com.xl.utils.Timer;
 
