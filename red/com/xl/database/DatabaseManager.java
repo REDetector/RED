@@ -285,6 +285,20 @@ public class DatabaseManager {
         }
     }
 
+    public List<String> getColumnNames(String database, String tableName) throws SQLException {
+        List<String> columnNames = new ArrayList<String>();
+        useDatabase(database);
+        Statement stmt = con.createStatement();
+        ResultSet rs = stmt
+                .executeQuery("select COLUMN_NAME from information_schema.columns where table_name='" + tableName + "'");
+        while (rs.next()) {
+            if (!columnNames.contains(rs.getString(1))) {
+                columnNames.add(rs.getString(1));
+            }
+        }
+        return columnNames;
+    }
+
     /**
      * Delete a table if it exists.
      *

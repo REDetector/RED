@@ -460,6 +460,9 @@ public class RedCmdLineTool {
                 endTime = Timer.getCurrentTime();
                 logger.info("End performing filters :\t" + endTime);
                 logger.info("Filter performance lasts for :\t" + Timer.calculateInterval(startTime, endTime));
+
+                DataExporter exporter = new DataExporter();
+                exporter.exportData(resultPath, DATABASE, MODE, new String[] { "all" }, null, null);
             }
         } catch (DataLoadException e) {
             logger.error("Data can't be loaded correctly, please have a check and try again.", e);

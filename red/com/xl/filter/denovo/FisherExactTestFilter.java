@@ -14,7 +14,6 @@
 package com.xl.filter.denovo;
 
 import com.xl.database.DatabaseManager;
-import com.xl.database.TableCreator;
 import com.xl.datatypes.sites.SiteBean;
 import com.xl.filter.Filter;
 import com.xl.utils.NegativeType;
@@ -53,7 +52,7 @@ public class FisherExactTestFilter implements Filter {
      */
     private List<PValueInfo> getExpectedInfo(String refTable, String editingType) {
         List<PValueInfo> valueInfos = new ArrayList<PValueInfo>();
-        String darnedTable = DatabaseManager.KNOWN_RNA_EDITING_TABLE_NAME;
+        String knownRnaEditingTable = DatabaseManager.KNOWN_RNA_EDITING_TABLE_NAME;
         try {
             ResultSet rs = databaseManager.query(refTable, null, null, null);
             while (rs.next()) {
@@ -78,14 +77,14 @@ public class FisherExactTestFilter implements Filter {
             stringBuilder.append(".* from ");
             stringBuilder.append(refTable);
             stringBuilder.append(" INNER JOIN ");
-            stringBuilder.append(darnedTable);
+            stringBuilder.append(knownRnaEditingTable);
             stringBuilder.append(" ON ");
-            stringBuilder.append(refTable).append(".chrom=").append(darnedTable).append(".chrom AND ");
-            stringBuilder.append(refTable).append(".pos=").append(darnedTable).append(".coordinate AND ");
-            stringBuilder.append("(").append(darnedTable).append(".inchr='").append(editingTypes[0]).append("' AND ")
-                .append(darnedTable).append(".inrna='").append(editingTypes[1]).append("' OR ");
-            stringBuilder.append(darnedTable).append(".inchr='").append(negativeTypes[0]).append("' AND ")
-                .append(darnedTable).append(".inrna='").append(negativeTypes[1]).append("')");
+            stringBuilder.append(refTable).append(".chrom=").append(knownRnaEditingTable).append(".chrom AND ");
+            stringBuilder.append(refTable).append(".pos=").append(knownRnaEditingTable).append(".pos AND ");
+            stringBuilder.append("(").append(knownRnaEditingTable).append(".ref='").append(editingTypes[0]).append("' AND ")
+                .append(knownRnaEditingTable).append(".alt='").append(editingTypes[1]).append("' OR ");
+            stringBuilder.append(knownRnaEditingTable).append(".ref='").append(negativeTypes[0]).append("' AND ")
+                .append(knownRnaEditingTable).append(".alt='").append(negativeTypes[1]).append("')");
             // select refTable.* from refTable INNER JOIN pvalueTable ON refTable.chrom=pvalueTable.chrom and
             // refTable.pos=pvalueTable.coordinate
             rs = databaseManager.query(stringBuilder.toString());
