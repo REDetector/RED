@@ -14,12 +14,14 @@ package com.xl.filter.filterpanel;
 
 import com.xl.database.DatabaseManager;
 import com.xl.database.Query;
+import com.xl.database.TableCreator;
 import com.xl.datatypes.DataStore;
 import com.xl.datatypes.sites.Site;
 import com.xl.datatypes.sites.SiteList;
 import com.xl.exception.RedException;
 import com.xl.filter.Filter;
 import com.xl.filter.denovo.QualityControlFilter;
+import com.xl.main.RedApplication;
 import com.xl.utils.ui.OptionDialogUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -90,6 +92,19 @@ public class QualityControlFilterPanel extends AbstractFilterPanel {
         String linearTableName =
             currentSample + "_" + parentList.getFilterName() + "_" + DatabaseManager.QC_FILTER_RESULT_TABLE_NAME + "_"
                 + qualityThreshold + "_" + depthThreshold;
+
+        if (databaseManager.existTable(linearTableName)) {
+            logger.info("Table has been existed!");
+            int answer = OptionDialogUtils.showTableExistDialog(RedApplication.getInstance(), linearTableName);
+            if (answer <= 0) {
+                databaseManager.deleteTable(linearTableName);
+            } else {
+                return;
+            }
+
+        }
+        TableCreator.createFilterTable(parentList.getTableName(), linearTableName);
+
         Filter filter = new QualityControlFilter();
         Map<String, String> params = new HashMap<String, String>();
         // The first parameter means quality and the second means depth

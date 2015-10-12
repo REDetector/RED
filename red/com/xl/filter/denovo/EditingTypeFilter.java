@@ -14,7 +14,6 @@
 package com.xl.filter.denovo;
 
 import com.xl.database.DatabaseManager;
-import com.xl.database.TableCreator;
 import com.xl.filter.Filter;
 import com.xl.utils.NegativeType;
 import com.xl.utils.Timer;
@@ -53,7 +52,6 @@ public class EditingTypeFilter implements Filter {
             return;
         }
 
-        TableCreator.createFilterTable(previousTable, currentTable);
         logger.info("Start executing Editing Type Filter..." + Timer.getCurrentTime());
         String refAlt = params.get(PARAMS_REF);
         String refAlt2 = NegativeType.getNegativeStrandEditingType(refAlt);

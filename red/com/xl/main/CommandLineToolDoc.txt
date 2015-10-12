@@ -40,7 +40,8 @@ java -jar E:\Workspace\RED\RED.jar ^
 --host=127.0.0.1 ^
 --port=3306 ^
 --user=root ^
---pwd=123456 ^
+--pwd=root ^
+--database=denovo_mode ^
 --mode=denovo ^
 --input=rnavcf-D:\Downloads\Documents\BJ22.snvs.hard.filtered.vcf,darned-D:\Downloads\Documents\hg19.txt,splice-D:\Downloads\Documents\genes.gtf,repeat-D:\Downloads\Documents\hg19.fa.out,dbsnp-D:\Downloads\Documents\dbsnp_138.hg19.vcf,radar-D:\Downloads\Documents\Human_AG_all_hg19_v2.txt ^
 --output=E:\Workspace\RED\Results ^
@@ -64,6 +65,7 @@ java -jar /home/seq/softWare/RED/RED.jar
 -p 3306 \
 -u seq \
 -P 123456 \
+-i denovo_mode \
 -m denovo \
 -O 123456 \
 --rnavcf=/data/rnaEditing/GM12878/GM12878.snvs.hard.filtered.vcf \

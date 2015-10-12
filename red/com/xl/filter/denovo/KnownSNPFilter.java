@@ -41,7 +41,6 @@ public class KnownSnpFilter implements Filter {
     @Override
     public void performFilter(String previousTable, String currentTable, Map<String, String> params) {
         logger.info("Start performing Known SNP Filter...\t" + Timer.getCurrentTime());
-        TableCreator.createFilterTable(previousTable, currentTable);
         String dbSnpTable = DatabaseManager.DBSNP_DATABASE_TABLE_NAME;
         try {
             databaseManager.executeSQL("insert into " + currentTable + " select * from " + previousTable

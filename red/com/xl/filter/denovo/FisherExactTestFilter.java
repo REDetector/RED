@@ -173,7 +173,6 @@ public class FisherExactTestFilter implements Filter {
         String pvalueThreshold = params.get(PARAMS_STRING_P_VALUE_THRESHOLD);
         String fdrThreshold = params.get(PARAMS_STRING_FDR_THRESHOLD);
         String editingType = params.get(PARAMS_STRING_EDITING_TYPE);
-        TableCreator.createFisherExactTestTable(previousTable, currentTable);
         logger.info("Start performing False Discovery Rate Filter...\t" + Timer.getCurrentTime());
         RCaller caller = new RCaller();
         if (rScript.trim().toLowerCase().contains("script")) {

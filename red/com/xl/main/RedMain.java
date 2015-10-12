@@ -41,7 +41,7 @@ public class RedMain {
         if (EmptyChecker.isEmptyArray(args)) {
             RedApplication.run(args);
         } else {
-            RedCommandRunner.run(args);
+            RedCmdLineTool.run(args);
         }
     }
 }

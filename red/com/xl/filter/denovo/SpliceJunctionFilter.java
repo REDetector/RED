@@ -49,7 +49,6 @@ public class SpliceJunctionFilter implements Filter {
             throw new IllegalArgumentException("Args " + params.toString()
                 + " for Splice Junction Filter are incomplete, please have a check");
         }
-        TableCreator.createFilterTable(previousTable, currentTable);
         logger.info("Start performing Splice Junction Filter...\t" + Timer.getCurrentTime());
         String spliceJunctionTable = DatabaseManager.SPLICE_JUNCTION_TABLE_NAME;
         int edge = Integer.parseInt(params.get(PARAMS_INT_EDGE));

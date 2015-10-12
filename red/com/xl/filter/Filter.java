@@ -22,7 +22,7 @@ import java.util.Map;
  * Created by Administrator on 2014/12/23.
  */
 public interface Filter {
-    static final Logger logger = LoggerFactory.getLogger(Filter.class);
+    Logger logger = LoggerFactory.getLogger(Filter.class);
 
     void performFilter(String previousTable, String currentTable, Map<String, String> params);
 

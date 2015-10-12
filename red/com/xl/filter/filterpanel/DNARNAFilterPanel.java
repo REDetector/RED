@@ -14,13 +14,16 @@ package com.xl.filter.filterpanel;
 
 import com.xl.database.DatabaseManager;
 import com.xl.database.Query;
+import com.xl.database.TableCreator;
 import com.xl.datatypes.DataStore;
 import com.xl.datatypes.sites.Site;
 import com.xl.datatypes.sites.SiteList;
 import com.xl.exception.RedException;
 import com.xl.filter.Filter;
 import com.xl.filter.dnarna.DnaRnaFilter;
+import com.xl.main.RedApplication;
 import com.xl.preferences.DatabasePreferences;
+import com.xl.utils.ui.OptionDialogUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -62,18 +65,30 @@ public class DnaRnaFilterPanel extends AbstractFilterPanel {
         logger.info("Filtering RNA editing sites by DNA-RNA filter.");
         String linearTableName =
             currentSample + "_" + parentList.getFilterName() + "_" + DatabaseManager.DNA_RNA_FILTER_RESULT_TABLE_NAME;
-        Filter filter = new DnaRnaFilter();
         String sampleName = DatabasePreferences.getInstance().getCurrentSample();
+
+        if (databaseManager.existTable(linearTableName)) {
+            logger.info("Table has been existed!");
+            int answer = OptionDialogUtils.showTableExistDialog(RedApplication.getInstance(), linearTableName);
+            if (answer <= 0) {
+                databaseManager.deleteTable(linearTableName);
+            } else {
+                return;
+            }
+
+        }
+        TableCreator.createFilterTable(parentList.getTableName(), linearTableName);
+
+        Filter filter = new DnaRnaFilter();
         Map<String, String> params = new HashMap<String, String>();
-        params.put(DnaRnaFilter.PARAMS_STRING_DNA_VCF_TABLE, sampleName + "_"
-            + DatabaseManager.DNA_VCF_RESULT_TABLE_NAME);
+        params.put(DnaRnaFilter.PARAMS_STRING_DNA_VCF_TABLE,
+            sampleName + "_" + DatabaseManager.DNA_VCF_RESULT_TABLE_NAME);
         params.put(DnaRnaFilter.PARAMS_STRING_EDITING_TYPE, "AG");
         filter.performFilter(parentList.getTableName(), linearTableName, params);
         DatabaseManager.getInstance().distinctTable(linearTableName);
         Vector<Site> sites = Query.queryAllEditingSites(linearTableName);
-        SiteList newList =
-            new SiteList(parentList, listName(), DatabaseManager.DNA_RNA_FILTER_RESULT_TABLE_NAME, linearTableName,
-                description());
+        SiteList newList = new SiteList(parentList, listName(), DatabaseManager.DNA_RNA_FILTER_RESULT_TABLE_NAME,
+            linearTableName, description());
         int index = 0;
         int sitesLength = sites.size();
         for (Site site : sites) {

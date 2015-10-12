@@ -14,6 +14,7 @@ package com.xl.filter.filterpanel;
 
 import com.xl.database.DatabaseManager;
 import com.xl.database.Query;
+import com.xl.database.TableCreator;
 import com.xl.datatypes.DataStore;
 import com.xl.datatypes.sites.Site;
 import com.xl.datatypes.sites.SiteList;
@@ -22,7 +23,9 @@ import com.xl.display.panel.DataIntroductionPanel;
 import com.xl.exception.RedException;
 import com.xl.filter.Filter;
 import com.xl.filter.denovo.FisherExactTestFilter;
+import com.xl.main.RedApplication;
 import com.xl.preferences.LocationPreferences;
+import com.xl.utils.ui.OptionDialogUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -97,6 +100,19 @@ public class FisherExactTestFilterPanel extends AbstractFilterPanel {
         String linearTableName =
             currentSample + "_" + parentList.getFilterName() + "_" + DatabaseManager.FET_FILTER_RESULT_TABLE_NAME + "_"
                 + pvalue + "_" + fdr;
+
+        if (databaseManager.existTable(linearTableName)) {
+            logger.info("Table has been existed!");
+            int answer = OptionDialogUtils.showTableExistDialog(RedApplication.getInstance(), linearTableName);
+            if (answer <= 0) {
+                databaseManager.deleteTable(linearTableName);
+            } else {
+                return;
+            }
+
+        }
+        TableCreator.createFisherExactTestTable(parentList.getTableName(), linearTableName);
+
         Filter filter = new FisherExactTestFilter();
         Map<String, String> params = new HashMap<String, String>();
         params.put(FisherExactTestFilter.PARAMS_STRING_EDITING_TYPE, "AG");

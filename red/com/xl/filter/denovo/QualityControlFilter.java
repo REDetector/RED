@@ -56,7 +56,6 @@ public class QualityControlFilter implements Filter {
         }
         String quality = params.get(PARAMS_STRING_QUALITY);
         int depth = Integer.parseInt(params.get(PARAMS_INT_DEPTH));
-        TableCreator.createFilterTable(previousTable, currentTable);
         logger.info("Start performing Quality Control Filter...\t" + Timer.getCurrentTime());
         try {
             int count = 0;

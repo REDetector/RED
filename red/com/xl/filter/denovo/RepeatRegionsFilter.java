@@ -43,7 +43,6 @@ public class RepeatRegionsFilter implements Filter {
      */
     @Override
     public void performFilter(String previousTable, String currentTable, Map<String, String> params) {
-        TableCreator.createFilterTable(previousTable, currentTable);
         logger.info("Start performing Repeat Regions Filter...\t" + Timer.getCurrentTime());
         String repeatTable = DatabaseManager.REPEAT_MASKER_TABLE_NAME;
         try {

@@ -14,7 +14,6 @@
 package com.xl.filter.dnarna;
 
 import com.xl.database.DatabaseManager;
-import com.xl.database.TableCreator;
 import com.xl.filter.Filter;
 import com.xl.utils.NegativeType;
 import com.xl.utils.Timer;
@@ -49,7 +48,6 @@ public class DnaRnaFilter implements Filter {
             throw new IllegalArgumentException("Args " + params.toString()
                 + " for DNA-RNA Filter are incomplete, please have a check");
         }
-        TableCreator.createFilterTable(previousTable, currentTable);
         logger.info("Start performing DNA-RNA Filter...\t" + Timer.getCurrentTime());
         String dnaVcfTable = params.get(PARAMS_STRING_DNA_VCF_TABLE);
         String editingType = params.get(PARAMS_STRING_EDITING_TYPE);

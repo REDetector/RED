@@ -13,14 +13,8 @@
 
 package com.xl.main;
 
-import java.io.*;
-import java.sql.SQLException;
-import java.util.*;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.xl.database.DatabaseManager;
+import com.xl.database.TableCreator;
 import com.xl.exception.DataLoadException;
 import com.xl.filter.Filter;
 import com.xl.filter.denovo.*;
@@ -32,12 +26,18 @@ import com.xl.parsers.referenceparsers.ParserFactory;
 import com.xl.parsers.referenceparsers.RnaVcfParser;
 import com.xl.utils.FileUtils;
 import com.xl.utils.Timer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.*;
+import java.sql.SQLException;
+import java.util.*;
 
 /**
  * Created by Administrator on 2015/10/11.
  */
-public class RedCommandRunner {
-    private static Logger logger = LoggerFactory.getLogger(RedCommandRunner.class);
+public class RedCmdLineTool {
+    private static Logger logger = LoggerFactory.getLogger(RedCmdLineTool.class);
     public static String HOST = "127.0.0.1";
     public static String PORT = "3306";
     public static String USER = "root";
@@ -177,15 +177,15 @@ public class RedCommandRunner {
         if (INPUT.length() != 0) {
             String[] sections = INPUT.split(",");
             for (String section : sections) {
-                String[] keyValues = section.split(":");
+                String[] keyValues = section.split("-");
                 if (keyValues.length != 2) {
                     logger.error(
                         "Unknown the argument '-i or --input " + INPUT + "' or it is incomplete, please have a check.",
                         new IllegalArgumentException());
                     return;
                 }
-                String key = keyValues[0];
-                String value = keyValues[1];
+                String key = keyValues[0].trim();
+                String value = keyValues[1].trim();
                 if (key.equalsIgnoreCase("rnavcf")) {
                     RNAVCF = value;
                 } else if (key.equalsIgnoreCase("dnavcf")) {
@@ -324,19 +324,25 @@ public class RedCommandRunner {
                 ParserFactory.createParser(REPEAT, DatabaseManager.REPEAT_MASKER_TABLE_NAME).loadDataFromLocal(null);
             }
             if (SPLICE.length() != 0) {
-                ParserFactory.createParser(REPEAT, DatabaseManager.SPLICE_JUNCTION_TABLE_NAME).loadDataFromLocal(null);
+                ParserFactory.createParser(SPLICE, DatabaseManager.SPLICE_JUNCTION_TABLE_NAME).loadDataFromLocal(null);
             }
             if (DBSNP.length() != 0) {
-                ParserFactory.createParser(REPEAT, DatabaseManager.DBSNP_DATABASE_TABLE_NAME).loadDataFromLocal(null);
+                ParserFactory.createParser(DBSNP, DatabaseManager.DBSNP_DATABASE_TABLE_NAME).loadDataFromLocal(null);
             }
             if (DARNED.length() != 0) {
-                ParserFactory.createParser(REPEAT, DatabaseManager.DARNED_DATABASE_TABLE_NAME).loadDataFromLocal(null);
+                ParserFactory.createParser(DARNED, DatabaseManager.DARNED_DATABASE_TABLE_NAME).loadDataFromLocal(null);
+            }
+            if (RADAR.length() != 0) {
+                ParserFactory.createParser(RADAR, DatabaseManager.RADAR_DATABASE_TABLE_NAME).loadDataFromLocal(null);
             }
 
             String endTime = Timer.getCurrentTime();
             logger.info("End importing data :\t" + endTime);
             logger.info("Data import lasts for :\t" + Timer.calculateInterval(startTime, endTime));
 
+            if (denovo && ORDER.equals("12345678")) {
+                ORDER = "123456";
+            }
             char[] charOrders = ORDER.toCharArray();
             int[] intOrders = new int[charOrders.length];
             for (int i = 0, len = charOrders.length; i < len; i++) {
@@ -425,8 +431,31 @@ public class RedCommandRunner {
                         throw new IllegalArgumentException();
                     }
                     logger.info("Current Running Filter: " + filters.get(i).getName());
-                    filters.get(i).performFilter(previousTable, currentTable, params);
-                    DatabaseManager.getInstance().distinctTable(currentTable);
+                    if (manager.existTable(currentTable)) {
+                        logger.info("Table has been existed!");
+                        printDupeInfo(currentTable);
+                        Scanner scanner = new Scanner(System.in);
+                        String answer = "yes";
+                        if (scanner.hasNext()) {
+                            answer = scanner.nextLine();
+                        }
+                        if (answer.equalsIgnoreCase("yes") || answer.equalsIgnoreCase("y")) {
+                            manager.deleteTable(currentTable);
+                            createFilter(currentFilterName, previousTable, currentTable);
+                            filters.get(i).performFilter(previousTable, currentTable, params);
+                            DatabaseManager.getInstance().distinctTable(currentTable);
+                        } else if (answer.equalsIgnoreCase("no") || answer.equalsIgnoreCase("n")) {
+                            logger.info("Use old data for next filter.");
+                        } else {
+                            logger.info("Cancel the filtering process.");
+                            return;
+                        }
+                    } else {
+                        createFilter(currentFilterName, previousTable, currentTable);
+                        filters.get(i).performFilter(previousTable, currentTable, params);
+                        DatabaseManager.getInstance().distinctTable(currentTable);
+                    }
+
                 }
                 endTime = Timer.getCurrentTime();
                 logger.info("End performing filters :\t" + endTime);
@@ -441,7 +470,7 @@ public class RedCommandRunner {
         if (filters.size() != orders.length) {
             logger.error("The number of the filters did not fit for the number of the order",
                 new IllegalArgumentException());
-            return null;
+            return new ArrayList<Filter>();
         }
         logger.info("Sort the filter by the order list.");
         Map<Integer, Filter> map = new TreeMap<Integer, Filter>(new Comparator<Integer>() {
@@ -458,6 +487,14 @@ public class RedCommandRunner {
         return new ArrayList<Filter>(map.values());
     }
 
+    public static void createFilter(String currentFilterName, String previousTable, String currentTable) {
+        if (currentFilterName.equals(DatabaseManager.FET_FILTER_RESULT_TABLE_NAME)) {
+            TableCreator.createFisherExactTestTable(previousTable, currentTable);
+        } else {
+            TableCreator.createFilterTable(previousTable, currentTable);
+        }
+    }
+
     public static void printVersion() {
         printResources("CommandLineToolVersion.txt");
     }
@@ -466,8 +503,13 @@ public class RedCommandRunner {
         printResources("CommandLineToolDoc.txt");
     }
 
+    public static void printDupeInfo(String tableName) {
+        System.out.println(
+            "Table '" + tableName + "' has been existed in the database. Would you like to override it? (yes/No)");
+    }
+
     public static void printResources(String resource) {
-        InputStream is = RedCommandRunner.class.getResourceAsStream(resource);
+        InputStream is = RedCmdLineTool.class.getResourceAsStream(resource);
         BufferedReader br = new BufferedReader(new InputStreamReader(is));
         String line;
         try {

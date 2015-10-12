@@ -13,17 +13,17 @@
 
 package com.xl.parsers.referenceparsers;
 
-import com.xl.database.DatabaseManager;
-import com.xl.interfaces.ProgressListener;
-import com.xl.utils.EmptyChecker;
-import com.xl.utils.Indexer;
-
 import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.sql.SQLException;
 import java.util.Arrays;
+
+import com.xl.database.DatabaseManager;
+import com.xl.interfaces.ProgressListener;
+import com.xl.utils.EmptyChecker;
+import com.xl.utils.Indexer;
 
 /**
  * Created by Administrator on 2014/9/29.
@@ -122,6 +122,7 @@ public class RnaVcfParser extends AbstractParser {
                             tableNames[j] = sampleNames[j] + "_" + DatabaseManager.RNA_VCF_RESULT_TABLE_NAME;
                         }
                         if (isDataValid(tableNames)) {
+                            logger.info("All tables are valid, return");
                             return;
                         } else {
                             for (int j = 0, len = sampleNames.length; j < len; j++) {

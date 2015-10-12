@@ -14,7 +14,6 @@
 package com.xl.filter.dnarna;
 
 import com.xl.database.DatabaseManager;
-import com.xl.database.TableCreator;
 import com.xl.datatypes.sites.SiteBean;
 import com.xl.filter.Filter;
 import com.xl.utils.Timer;
@@ -52,19 +51,17 @@ public class LikelihoodRatioFilter implements Filter {
         if (params == null || params.size() == 0) {
             return;
         } else if (params.size() != 2) {
-            throw new IllegalArgumentException("Args " + params.toString()
-                + " for Likelihood Rate Test Filter are incomplete, please have a check");
+            throw new IllegalArgumentException(
+                "Args " + params.toString() + " for Likelihood Rate Test Filter are incomplete, please have a check");
         }
         String dnaVcfTable = params.get(PARAMS_STRING_DNA_VCF_TABLE);
         double threshold = Double.parseDouble(params.get(PARAMS_DOUBLE_LLR_THRESHOLD));
-        TableCreator.createFilterTable(previousTable, currentTable);
         logger.info("Start performing Likelihood Rate Test Filter...\t" + Timer.getCurrentTime());
         try {
-            ResultSet rs =
-                databaseManager.query("select " + previousTable + ".chrom," + previousTable + ".pos," + previousTable
-                    + ".AD," + "" + dnaVcfTable + ".qual from " + previousTable + "," + dnaVcfTable + " WHERE "
-                    + previousTable + ".chrom=" + dnaVcfTable + ".chrom AND " + previousTable + ".pos=" + dnaVcfTable
-                    + ".pos");
+            ResultSet rs = databaseManager
+                .query("select " + previousTable + ".chrom," + previousTable + ".pos," + previousTable + ".AD," + ""
+                    + dnaVcfTable + ".qual from " + previousTable + "," + dnaVcfTable + " WHERE " + previousTable
+                    + ".chrom=" + dnaVcfTable + ".chrom AND " + previousTable + ".pos=" + dnaVcfTable + ".pos");
             List<SiteBean> siteBeans = new ArrayList<SiteBean>();
             while (rs.next()) {
                 String chr = rs.getString(1);
@@ -100,8 +97,8 @@ public class LikelihoodRatioFilter implements Filter {
             databaseManager.setAutoCommit(true);
 
         } catch (SQLException e) {
-            logger
-                .error("Error execute sql clause in " + LikelihoodRatioFilter.class.getName() + ":performFilter()", e);
+            logger.error("Error execute sql clause in " + LikelihoodRatioFilter.class.getName() + ":performFilter()",
+                e);
         }
         logger.info("End performing Likelihood Rate Test Filter...\t" + Timer.getCurrentTime());
     }

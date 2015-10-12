@@ -13,8 +13,6 @@
 
 package com.xl.database;
 
-import com.xl.main.RedApplication;
-import com.xl.utils.ui.OptionDialogUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -39,15 +37,6 @@ public class TableCreator {
      */
     public static boolean createFilterTable(String refTable, String tableName) {
         String sqlClause = null;
-        if (databaseManager.existTable(tableName)) {
-            logger.info("Table has been existed!");
-            int answer = OptionDialogUtils.showTableExistDialog(RedApplication.getInstance(), tableName);
-            if (answer <= 0) {
-                databaseManager.deleteTable(tableName);
-            } else {
-                return false;
-            }
-        }
         try {
             sqlClause = "create table " + tableName + " like " + refTable;
             databaseManager.executeSQL(sqlClause);
