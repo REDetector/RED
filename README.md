@@ -48,9 +48,9 @@ Before letting RED work properly, the following software or program are **requir
 
 Two quick start options for our software are available:
 
-- [Download the latest release](https://github.com/REDetector/RED/archive/master.zip).
+- [Download the latest release](https://github.com/REDetector/RED/archive/master.zip).           
+- [Download jar package](https://github.com/REDetector/redetector.github.io/raw/master/RED.jar).
 - Clone the repo: `git clone https://github.com/REDetector/RED.git`.
-- [Download Jar Package](https://github.com/REDetector/redetector.github.io/raw/master/RED.jar).
 
 ### What's included
 
@@ -85,9 +85,9 @@ File->New->Project from Existing Sources...
 
 File->New->Java Project
 
--Enter Project Name: RED
--Untick the `Use default location` and set location to this project, Next
--Finish.
+- Enter Project Name: RED
+- Untick the `Use default location` and set location to this project, Next
+- Finish.
 
 
 ## Documentation
@@ -147,5 +147,6 @@ Foundation; either version 3 of the License, or (at your option) any later versi
 
 SeqMonk & Integrative Genome Viewer (IGV)
 
-We thank SeqMonk(http://www.bioinformatics.babraham.ac.uk/projects/seqmonk/) and IGV(http://www.broadinstitute.org/igv/). The framework of the GUI in RED is based on SeqMonk, whose GUI is very brief and operating efficiency is fairly high. Meantime, the genome annotation data (mainly referred to gene.txt/gene.gtf) in Feature Track is obtained from genome server of IGV when there is no genome file in the local host.
+We thank [SeqMonk](http://www.bioinformatics.babraham.ac.uk/projects/seqmonk/) and [IGV](http://www.broadinstitute.org/igv/). The framework of the GUI in RED is
+ based on SeqMonk, whose GUI is very brief and operating efficiency is fairly high. Meantime, the genome annotation data (mainly referred to gene.txt/gene.gtf) in Feature Track is obtained from genome server of IGV when there is no genome file in the local host.
 
