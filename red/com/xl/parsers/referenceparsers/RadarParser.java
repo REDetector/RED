@@ -82,7 +82,7 @@ public class RadarParser extends AbstractParser {
             } catch (IOException e) {
                 logger.error("Error load file from " + dataPath + " to file stream", e);
             } catch (SQLException e) {
-                logger.error("Error execute sql clause in " + RadarParser.class.getName() + ":loadDarnedTable()", e);
+                logger.error("Error execute sql clause in " + RadarParser.class.getName() + ":loadRadarTable()", e);
             }
         }
     }

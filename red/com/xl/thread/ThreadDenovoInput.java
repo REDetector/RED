@@ -13,7 +13,6 @@
 
 package com.xl.thread;
 
-import com.xl.main.RedApplication;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -22,6 +21,7 @@ import com.xl.database.DatabaseSelector;
 import com.xl.display.dialog.DataImportDialog;
 import com.xl.display.dialog.ProgressDialog;
 import com.xl.exception.DataLoadException;
+import com.xl.main.RedApplication;
 import com.xl.parsers.referenceparsers.AbstractParser;
 import com.xl.parsers.referenceparsers.ParserFactory;
 import com.xl.preferences.DatabasePreferences;
@@ -55,9 +55,9 @@ public class ThreadDenovoInput implements Runnable {
             AbstractParser dbSNPParser = ParserFactory.createParser(locationPreferences.getDbSNPFile(),
                 DatabaseManager.DBSNP_DATABASE_TABLE_NAME);
             AbstractParser darnedParser = ParserFactory.createParser(locationPreferences.getDarnedFile(),
-                DatabaseManager.KNOWN_RNA_EDITING_TABLE_NAME);
+                DatabaseManager.DARNED_DATABASE_TABLE_NAME);
             AbstractParser radarParser = ParserFactory.createParser(locationPreferences.getRadarFile(),
-                DatabaseManager.KNOWN_RNA_EDITING_TABLE_NAME);
+                DatabaseManager.RADAR_DATABASE_TABLE_NAME);
 
             rnaVcfParser.loadDataFromLocal(new ProgressDialog("Import RNA VCF file into database..."));
             repeatParser.loadDataFromLocal(new ProgressDialog("Import Repeat Masker file into database..."));

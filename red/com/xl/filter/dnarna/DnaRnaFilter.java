@@ -52,7 +52,7 @@ public class DnaRnaFilter implements Filter {
         String dnaVcfTable = params.get(PARAMS_STRING_DNA_VCF_TABLE);
         String editingType = params.get(PARAMS_STRING_EDITING_TYPE);
         String negativeType = NegativeType.getNegativeStrandEditingType(editingType);
-        String darnedTable = DatabaseManager.KNOWN_RNA_EDITING_TABLE_NAME;
+        String knownRnaEditingTable = DatabaseManager.KNOWN_RNA_EDITING_TABLE_NAME;
         /**
          * chrom | coordinate | strand | inchr | inrna
          */
@@ -65,9 +65,9 @@ public class DnaRnaFilter implements Filter {
                 + "')))");
 
             databaseManager.executeSQL("insert into " + currentTable + " select * from " + previousTable
-                + " where exists (select chrom from " + darnedTable + " where (" + darnedTable + ".chrom="
-                + previousTable + ".chrom and " + darnedTable + ".coordinate=" + previousTable + ".pos and ("
-                + darnedTable + ".inchr='" + editingType.charAt(0) + "' or  " + darnedTable + ".inchr='"
+                + " where exists (select chrom from " + knownRnaEditingTable + " where (" + knownRnaEditingTable + ".chrom="
+                + previousTable + ".chrom and " + knownRnaEditingTable + ".pos=" + previousTable + ".pos and ("
+                + knownRnaEditingTable + ".ref='" + editingType.charAt(0) + "' or  " + knownRnaEditingTable + ".ref='"
                 + negativeType.charAt(0) + "')))");
 
             logger.info("End selecting data from DNA VCF table...\t" + Timer.getCurrentTime());
