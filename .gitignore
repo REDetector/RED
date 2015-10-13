@@ -25,3 +25,6 @@ Help/
 
 #Filter the log file.
 logs/
+
+#Filter RED Command Line Tool running results.
+Results/
