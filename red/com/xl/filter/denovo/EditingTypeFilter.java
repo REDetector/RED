@@ -13,15 +13,16 @@
 
 package com.xl.filter.denovo;
 
+import java.sql.SQLException;
+import java.util.Map;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.xl.database.DatabaseManager;
 import com.xl.filter.Filter;
 import com.xl.utils.NegativeType;
 import com.xl.utils.Timer;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.sql.SQLException;
-import java.util.Map;
 
 /**
  * Created by Xing Li on 2014/9/29.
@@ -56,6 +57,8 @@ public class EditingTypeFilter implements Filter {
         String refAlt = params.get(PARAMS_REF);
         String refAlt2 = NegativeType.getNegativeStrandEditingType(refAlt);
 
+        // insert into SRR1213569_rnavcf_etfilter select * from SRR1213569_rnavcf WHERE REF='C' AND ALT='T' AND
+        // GT!='0/0'
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append("insert into ");
         stringBuilder.append(currentTable);
@@ -65,7 +68,8 @@ public class EditingTypeFilter implements Filter {
         stringBuilder.append(refAlt.substring(0, 1));
         stringBuilder.append("' AND ALT='");
         stringBuilder.append(refAlt.substring(1));
-        stringBuilder.append("' AND GT!='0/0'");
+        stringBuilder.append("'");
+        // stringBuilder.append("' AND GT!='0/0'");
         try {
             databaseManager.insertClause(stringBuilder.toString());
         } catch (SQLException e) {
@@ -81,7 +85,8 @@ public class EditingTypeFilter implements Filter {
         stringBuilder.append(refAlt2.substring(0, 1));
         stringBuilder.append("' AND ALT='");
         stringBuilder.append(refAlt2.substring(1));
-        stringBuilder.append("' AND GT!='0/0'");
+        stringBuilder.append("'");
+        // stringBuilder.append("' AND GT!='0/0'");
         try {
             databaseManager.insertClause(stringBuilder.toString());
         } catch (SQLException e) {

@@ -17,7 +17,6 @@ import java.sql.SQLException;
 import java.util.Map;
 
 import com.xl.database.DatabaseManager;
-import com.xl.database.TableCreator;
 import com.xl.filter.Filter;
 import com.xl.utils.Timer;
 
@@ -36,18 +35,17 @@ public class SpliceJunctionFilter implements Filter {
      * Perform splice junction filter as user's preference. Variants that were within +/-k bp (e.g., k = 2) of the
      * splice junction, which were supposed to be unreliable, were excluded based on the gene annotation file.
      *
-     * @param spliceJunctionTable The gene annotation file table name, it is constant.
-     * @param spliceJunctionResultTable The result table
      * @param previousTable The previous table
-     * @param splicejunction The threshold of splice junction
+     * @param currentTable The result table
+     * @param params The threshold of splice junction
      */
     @Override
     public void performFilter(String previousTable, String currentTable, Map<String, String> params) {
         if (params == null || params.size() == 0) {
             return;
         } else if (params.size() != 1) {
-            throw new IllegalArgumentException("Args " + params.toString()
-                + " for Splice Junction Filter are incomplete, please have a check");
+            throw new IllegalArgumentException(
+                "Args " + params.toString() + " for Splice Junction Filter are incomplete, please have a check");
         }
         logger.info("Start performing Splice Junction Filter...\t" + Timer.getCurrentTime());
         String spliceJunctionTable = DatabaseManager.SPLICE_JUNCTION_TABLE_NAME;

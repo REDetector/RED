@@ -20,7 +20,6 @@ import java.util.List;
 import java.util.Map;
 
 import com.xl.database.DatabaseManager;
-import com.xl.database.TableCreator;
 import com.xl.datatypes.sites.SiteBean;
 import com.xl.filter.Filter;
 import com.xl.utils.Timer;
@@ -42,17 +41,16 @@ public class QualityControlFilter implements Filter {
      * (e.g., Q< 20) or with a low depth of coverage.
      *
      * @param previousTable The previous filter table
-     * @param qcResultTable The result table
-     * @param quality The threshold of quality
-     * @param depth The threshold of coverage of depth
+     * @param currentTable The result table
+     * @param params The threshold of quality and the threshold of coverage of depth
      */
     @Override
     public void performFilter(String previousTable, String currentTable, Map<String, String> params) {
         if (params == null || params.size() == 0) {
             return;
         } else if (params.size() != 2) {
-            throw new IllegalArgumentException("Args " + params.toString()
-                + " for Quality Control Filter are incomplete, please have a check");
+            throw new IllegalArgumentException(
+                "Args " + params.toString() + " for Quality Control Filter are incomplete, please have a check");
         }
         String quality = params.get(PARAMS_STRING_QUALITY);
         int depth = Integer.parseInt(params.get(PARAMS_INT_DEPTH));
@@ -74,9 +72,12 @@ public class QualityControlFilter implements Filter {
                 int ref_n = Integer.parseInt(sections[0]);
                 int alt_n = Integer.parseInt(sections[1]);
                 if (ref_n + alt_n >= depth) {
-                    databaseManager.executeSQL("insert into " + currentTable + " (select * from " + previousTable
-                        + " where filter='PASS' and pos=" + siteBean.getPos() + " and qual >=" + quality
-                        + " and chrom='" + siteBean.getChr() + "')");
+                    // databaseManager.executeSQL("insert into " + currentTable + " (select * from " + previousTable
+                    // + " where filter='PASS' and pos=" + siteBean.getPos() + " and qual >=" + quality
+                    // + " and chrom='" + siteBean.getChr() + "')");
+                    databaseManager
+                        .executeSQL("insert into " + currentTable + " (select * from " + previousTable + " where pos="
+                            + siteBean.getPos() + " and qual >=" + quality + " and chrom='" + siteBean.getChr() + "')");
                     if (++count % DatabaseManager.COMMIT_COUNTS_PER_ONCE == 0)
                         databaseManager.commit();
                 }

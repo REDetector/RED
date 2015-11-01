@@ -13,14 +13,13 @@
 
 package com.xl.filter.denovo;
 
+import java.sql.SQLException;
+import java.util.Map;
+
 import com.xl.database.DatabaseManager;
-import com.xl.database.TableCreator;
 import com.xl.filter.Filter;
 import com.xl.utils.RandomStringGenerator;
 import com.xl.utils.Timer;
-
-import java.sql.SQLException;
-import java.util.Map;
 
 /**
  * The Class RepeatRegionsFilter is a rule-based filter. Variants that were within repeat regions were excluded.
@@ -46,15 +45,15 @@ public class RepeatRegionsFilter implements Filter {
         logger.info("Start performing Repeat Regions Filter...\t" + Timer.getCurrentTime());
         String repeatTable = DatabaseManager.REPEAT_MASKER_TABLE_NAME;
         try {
-            databaseManager.executeSQL("insert into " + currentTable + " select * from " + previousTable
-                + " where not exists (select * from " + repeatTable + " where (" + repeatTable + ".chrom= "
-                + previousTable + ".chrom and  " + repeatTable + ".begin<=" + previousTable + ".pos and " + repeatTable
-                + ".end>=" + previousTable + ".pos)) ");
+            databaseManager.executeSQL(
+                "insert into " + currentTable + " select * from " + previousTable + " where not exists (select * from "
+                    + repeatTable + " where (" + repeatTable + ".chrom=" + previousTable + ".chrom and " + repeatTable
+                    + ".begin<=" + previousTable + ".pos and " + repeatTable + ".end>=" + previousTable + ".pos)) ");
 
             logger.info("Start finding sites in Alu Regions...\t" + Timer.getCurrentTime());
             String tempTable = RandomStringGenerator.createRandomString(10);
             databaseManager.executeSQL("create temporary table " + tempTable + " like " + currentTable);
-            databaseManager.executeSQL("insert into " + tempTable + " SELECT * from " + previousTable
+            databaseManager.executeSQL("insert into " + tempTable + " select * from " + previousTable
                 + " where exists (select chrom from " + repeatTable + " where " + repeatTable + ".chrom = "
                 + previousTable + ".chrom and " + repeatTable + ".begin<=" + previousTable + ".pos and " + repeatTable
                 + ".end>=" + previousTable + ".pos and " + repeatTable + ".type='SINE/Alu')");
