@@ -18,22 +18,22 @@ package com.xl.database;
  * single thread, which will influence the efficiency, but in order to synchronize, we would like to make it.
  */
 
-import com.xl.main.RedApplication;
-import com.xl.preferences.DatabasePreferences;
-import com.xl.utils.RandomStringGenerator;
-import com.xl.utils.ui.OptionDialogUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Vector;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.xl.main.RedApplication;
+import com.xl.preferences.DatabasePreferences;
+import com.xl.utils.RandomStringGenerator;
+import com.xl.utils.ui.OptionDialogUtils;
+
 public class DatabaseManager {
     public static final int COMMIT_COUNTS_PER_ONCE = 10000;
-    public static final int MAX_ERROR_COUNT = 500;
     public static final String FILTER = "filter";
     public static final String DNA_RNA_MODE_DATABASE_NAME = "DNA_RNA_MODE";
     public static final String DENOVO_MODE_DATABASE_NAME = "DENOVO_MODE";
@@ -205,7 +205,6 @@ public class DatabaseManager {
                 return 0;
             }
         } catch (SQLException e) {
-            logger.error("Unable to get the row count.", e);
             return 0;
         }
     }
@@ -219,7 +218,6 @@ public class DatabaseManager {
                 return 0;
             }
         } catch (SQLException e) {
-            logger.error("Unable to get the row count.", e);
             return 0;
         }
     }
@@ -290,7 +288,7 @@ public class DatabaseManager {
         useDatabase(database);
         Statement stmt = con.createStatement();
         ResultSet rs = stmt
-                .executeQuery("select COLUMN_NAME from information_schema.columns where table_name='" + tableName + "'");
+            .executeQuery("select COLUMN_NAME from information_schema.columns where table_name='" + tableName + "'");
         while (rs.next()) {
             if (!columnNames.contains(rs.getString(1))) {
                 columnNames.add(rs.getString(1));
@@ -525,7 +523,7 @@ public class DatabaseManager {
             int infoCounts = rs != null && rs.next() ? rs.getInt(1) : 0;
             int currentCount = calRowCount(tableName);
             logger.info(tableName + "\tcurrentCounts: " + currentCount + "\tinfoCounts: " + infoCounts);
-            return Math.abs(infoCounts - currentCount) < MAX_ERROR_COUNT && infoCounts > 0;
+            return infoCounts == currentCount && infoCounts > 0;
         } catch (SQLException e) {
             e.printStackTrace();
             return false;
@@ -556,7 +554,7 @@ public class DatabaseManager {
             int infoCounts = rs != null && rs.next() ? rs.getInt(1) : 0;
             int currentCounts = calRowCount(tableName, "origin=?", new String[] { origin });
             logger.info(tableName + "\t" + origin + ": " + currentCounts + " \tinfoCounts: " + infoCounts);
-            return Math.abs(currentCounts - infoCounts) < MAX_ERROR_COUNT && infoCounts > 0;
+            return infoCounts == currentCounts && infoCounts > 0;
         } catch (SQLException e) {
             e.printStackTrace();
             return false;
