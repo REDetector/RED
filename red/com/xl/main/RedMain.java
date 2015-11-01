@@ -44,4 +44,39 @@ public class RedMain {
             RedCmdLineTool.run(args);
         }
     }
+
+    public static void runRefilter() {
+        // java -jar /home/seq/softWare/refilter/RED.jar \
+        // -H localhost \
+        // -p 3306 \
+        // -u seq \
+        // -P sequencing \
+        // -d DENOVO_REVISION \
+        // -m denovo \
+        // -e CT \
+        // -o /data/RED/revision/red_out/ex \
+        // -r /usr/bin/Rscript \
+        // -O 123546 \
+        // --rnavcf=/data/RED/revision/VariantDiscovery_results/all_samples_results/allsamples.snvs.hard.filtered.vcf \
+        // --repeat=/data/RED/hg19.fa.out \
+        // --splice=/data/RED/genes.gtf \
+        // --dbsnp=/data/RED/dbsnp_138.hg19.vcf \
+        // --darned=/data/RED/hg19.txt \
+        // --radar=/data/RED/Human_AG_all_hg19_v2.txt
+        for (int i = 0; i < 6; i++) {
+            char[] chars = new char[6];
+            for (int j = 0; j < 6; j++) {
+                chars[j] = j == i ? '1' : '0';
+            }
+            String order = new String(chars);
+
+        }
+        String[] args = { "-H", "localhost", "-p", "3306", "-u", "seq", "-P", "sequencing", "-d", "DENOVO_SHARMA", "-m",
+            "denovo", "-e", "CT", "-o", "/data/RED/revision/red_out/single_filter", "-r", "/usr/bin/Rscript", "-O",
+            "000001",
+            "--rnavcf=/data/RED/revision/VariantDiscovery_results/all_samples_results/sharma.allsamples.snvs.vcf",
+            "--repeat=/data/RED/hg19.fa.out", "--splice=/data/RED/genes.gtf", "--dbsnp=/data/RED/dbsnp_138.hg19.vcf",
+            "--darned=/data/RED/hg19.txt", "--radar=/data/RED/Human_AG_all_hg19_v2.txt" };
+        RedCmdLineTool.run(args);
+    }
 }

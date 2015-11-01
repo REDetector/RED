@@ -17,10 +17,6 @@ package com.xl.main;
  * Created by Administrator on 2015/10/12.
  */
 
-import com.xl.database.DatabaseManager;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -28,6 +24,11 @@ import java.io.PrintWriter;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.xl.database.DatabaseManager;
 
 /**
  * Created by Administrator on 2015/1/12.
@@ -105,13 +106,13 @@ public class DataExporter {
                         logger.error("Error open the print writer at: " + f.getAbsolutePath(), e);
                         return;
                     }
-                    pw.println("chr\tstart\tend\tref_allele\talt_allele");
-                    rs = databaseManager.query(currentTable, new String[] { "chrom", "pos", "ref", "alt" }, selection,
-                        selectionArgs);
+                    pw.println("chr\tstart\tend\tref_allele\talt_allele\tpvalue");
+                    rs = databaseManager.query(currentTable, new String[] { "chrom", "pos", "ref", "alt", "pvalue" },
+                        selection, selectionArgs);
                     try {
                         while (rs.next()) {
                             pw.println(rs.getString(1).substring(3) + "\t" + rs.getInt(2) + "\t" + rs.getInt(2) + "\t"
-                                + rs.getString(3) + "\t" + rs.getString(4));
+                                + rs.getString(3) + "\t" + rs.getString(4) + "\t" + rs.getString(5));
                         }
                     } catch (SQLException e) {
                         logger.warn("No results", e);

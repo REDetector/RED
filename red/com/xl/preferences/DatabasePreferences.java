@@ -43,10 +43,6 @@ public class DatabasePreferences implements DatabaseListener {
      */
     public static final String DATABASE_USER = "User";
     /**
-     * A silly design... I'll fix this structure soon.
-     */
-    public static final String DATABASE_TABLE_BUILDER = "TableBuilder";
-    /**
      * Singleton pattern.
      */
     private static DatabasePreferences databasePreferences = new DatabasePreferences();
@@ -74,10 +70,6 @@ public class DatabasePreferences implements DatabaseListener {
      * Current using sample.
      */
     private String currentSample = "";
-    /**
-     * A silly design... I'll fix this structure soon.
-     */
-    private String databaseTableBuilder = "";
 
     private DatabasePreferences() {
         DatabaseManager.getInstance().addDatabaseListener(this);
@@ -144,7 +136,6 @@ public class DatabasePreferences implements DatabaseListener {
         properties.setProperty(DATABASE_HOST, databaseHost);
         properties.setProperty(DATABASE_PORT, databasePort);
         properties.setProperty(DATABASE_USER, databaseUser);
-        properties.setProperty(DATABASE_TABLE_BUILDER, databaseTableBuilder);
     }
 
     /**
