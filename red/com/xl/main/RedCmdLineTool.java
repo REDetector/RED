@@ -13,6 +13,13 @@
 
 package com.xl.main;
 
+import java.io.*;
+import java.sql.SQLException;
+import java.util.*;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.xl.database.DatabaseManager;
 import com.xl.database.TableCreator;
 import com.xl.exception.DataLoadException;
@@ -26,12 +33,6 @@ import com.xl.parsers.referenceparsers.ParserFactory;
 import com.xl.parsers.referenceparsers.RnaVcfParser;
 import com.xl.utils.FileUtils;
 import com.xl.utils.Timer;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.io.*;
-import java.sql.SQLException;
-import java.util.*;
 
 /**
  * Created by Administrator on 2015/10/11.
@@ -54,7 +55,9 @@ public class RedCmdLineTool {
     public static String REPEAT = "";
     public static String DBSNP = "";
     public static String RSCRIPT = "/usr/bin/RScript";
+    public static String EDITING = "AG";
     public static String ORDER = "12345678";
+    public static String EXPORT = "";
     public static String DELETE = "";
 
     public static void run(String[] args) {
@@ -121,6 +124,12 @@ public class RedCmdLineTool {
                 case 'D':
                     DELETE = value;
                     break;
+                case 'e':
+                    EDITING = value;
+                    break;
+                case 'E':
+                    EXPORT = value;
+                    break;
                 default:
                     logger.error("Unknown the argument '-" + key + "', please have a check.",
                         new IllegalArgumentException());
@@ -167,6 +176,10 @@ public class RedCmdLineTool {
                 ORDER = value;
             } else if (key.equalsIgnoreCase("delete")) {
                 DELETE = value;
+            } else if (key.equalsIgnoreCase("editing")) {
+                EDITING = value;
+            } else if (key.equalsIgnoreCase("export")) {
+                EXPORT = value;
             } else {
                 logger.error("Unknown the argument '--" + key + "', please have a check.",
                     new IllegalArgumentException());
@@ -407,13 +420,13 @@ public class RedCmdLineTool {
                     }
                     Map<String, String> params = new HashMap<String, String>();
                     if (currentFilterName.equals(DatabaseManager.EDITING_TYPE_FILTER_RESULT_TABLE_NAME)) {
-                        params.put(EditingTypeFilter.PARAMS_REF, "AG");
+                        params.put(EditingTypeFilter.PARAMS_REF, EDITING);
                     } else if (currentFilterName.equals(DatabaseManager.QC_FILTER_RESULT_TABLE_NAME)) {
                         params.put(QualityControlFilter.PARAMS_STRING_QUALITY, 20 + "");
                         params.put(QualityControlFilter.PARAMS_INT_DEPTH, 6 + "");
                     } else if (currentFilterName.equals(DatabaseManager.DNA_RNA_FILTER_RESULT_TABLE_NAME)) {
                         params.put(DnaRnaFilter.PARAMS_STRING_DNA_VCF_TABLE, dnavcfTableName);
-                        params.put(DnaRnaFilter.PARAMS_STRING_EDITING_TYPE, "AG");
+                        params.put(DnaRnaFilter.PARAMS_STRING_EDITING_TYPE, EDITING);
                     } else if (currentFilterName.equals(DatabaseManager.SPLICE_JUNCTION_FILTER_RESULT_TABLE_NAME)) {
                         params.put(SpliceJunctionFilter.PARAMS_INT_EDGE, 2 + "");
                     } else if (currentFilterName.equals(DatabaseManager.REPEAT_FILTER_RESULT_TABLE_NAME)) {
@@ -422,7 +435,7 @@ public class RedCmdLineTool {
                         params.put(LikelihoodRatioFilter.PARAMS_STRING_DNA_VCF_TABLE, dnavcfTableName);
                         params.put(LikelihoodRatioFilter.PARAMS_DOUBLE_LLR_THRESHOLD, 4 + "");
                     } else if (currentFilterName.equals(DatabaseManager.FET_FILTER_RESULT_TABLE_NAME)) {
-                        params.put(FisherExactTestFilter.PARAMS_STRING_EDITING_TYPE, "AG");
+                        params.put(FisherExactTestFilter.PARAMS_STRING_EDITING_TYPE, EDITING);
                         params.put(FisherExactTestFilter.PARAMS_STRING_R_SCRIPT_PATH, RSCRIPT);
                         params.put(FisherExactTestFilter.PARAMS_STRING_P_VALUE_THRESHOLD, 0.05 + "");
                         params.put(FisherExactTestFilter.PARAMS_STRING_FDR_THRESHOLD, 0.05 + "");
@@ -451,6 +464,7 @@ public class RedCmdLineTool {
                             return;
                         }
                     } else {
+                        manager.deleteTable(currentTable);
                         createFilter(currentFilterName, previousTable, currentTable);
                         filters.get(i).performFilter(previousTable, currentTable, params);
                         DatabaseManager.getInstance().distinctTable(currentTable);
@@ -461,12 +475,15 @@ public class RedCmdLineTool {
                 logger.info("End performing filters :\t" + endTime);
                 logger.info("Filter performance lasts for :\t" + Timer.calculateInterval(startTime, endTime));
 
-                DataExporter exporter = new DataExporter();
-                exporter.exportData(resultPath, DATABASE, MODE, new String[] { "all" }, null, null);
+                if (EXPORT != null && EXPORT.length() != 0) {
+                    DataExporter exporter = new DataExporter();
+                    exporter.exportData(resultPath, DATABASE, MODE, EXPORT.split(","), null, null);
+                }
             }
         } catch (DataLoadException e) {
             logger.error("Data can't be loaded correctly, please have a check and try again.", e);
         }
+
     }
 
     public static ArrayList<Filter> sortFilters(List<Filter> filters, int[] orders) {
