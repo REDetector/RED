@@ -38,7 +38,7 @@ public class DnaRnaFilter implements Filter {
      * AA) would be excluded if DNA sequencing data is available.
      *
      * @param previousTable The previous table
-     * @param currentTable The result table
+     * @param currentTable  The result table
      */
     @Override
     public void performFilter(String previousTable, String currentTable, Map<String, String> params) {
@@ -46,30 +46,41 @@ public class DnaRnaFilter implements Filter {
             return;
         } else if (params.size() != 2) {
             throw new IllegalArgumentException("Args " + params.toString()
-                + " for DNA-RNA Filter are incomplete, please have a check");
+                    + " for DNA-RNA Filter are incomplete, please have a check");
         }
         logger.info("Start performing DNA-RNA Filter...\t" + Timer.getCurrentTime());
         String dnaVcfTable = params.get(PARAMS_STRING_DNA_VCF_TABLE);
         String editingType = params.get(PARAMS_STRING_EDITING_TYPE);
-        String negativeType = NegativeType.getNegativeStrandEditingType(editingType);
         String knownRnaEditingTable = DatabaseManager.KNOWN_RNA_EDITING_TABLE_NAME;
+
         /**
          * chrom | coordinate | strand | inchr | inrna
          */
         try {
             logger.info("Start selecting data from DNA VCF table...\t" + Timer.getCurrentTime());
-            databaseManager.executeSQL("insert into " + currentTable + " select * from " + previousTable
-                + " where exists (select chrom from " + dnaVcfTable + " where (" + dnaVcfTable + ".chrom="
-                + previousTable + ".chrom and " + dnaVcfTable + ".pos=" + previousTable + ".pos and (" + dnaVcfTable
-                + ".ref='" + editingType.charAt(0) + "' or  " + dnaVcfTable + ".ref='" + negativeType.charAt(0)
-                + "')))");
+            if (editingType.equalsIgnoreCase("all")) {
+                databaseManager.executeSQL("insert into " + currentTable + " select * from " + previousTable
+                        + " where exists (select chrom from " + dnaVcfTable + " where (" + dnaVcfTable + ".chrom="
+                        + previousTable + ".chrom and " + dnaVcfTable + ".pos=" + previousTable + ".pos))");
 
-            databaseManager.executeSQL("insert into " + currentTable + " select * from " + previousTable
-                + " where exists (select chrom from " + knownRnaEditingTable + " where (" + knownRnaEditingTable + ".chrom="
-                + previousTable + ".chrom and " + knownRnaEditingTable + ".pos=" + previousTable + ".pos and ("
-                + knownRnaEditingTable + ".ref='" + editingType.charAt(0) + "' or  " + knownRnaEditingTable + ".ref='"
-                + negativeType.charAt(0) + "')))");
+                databaseManager.executeSQL("insert into " + currentTable + " select * from " + previousTable
+                        + " where exists (select chrom from " + knownRnaEditingTable + " where (" + knownRnaEditingTable + ".chrom="
+                        + previousTable + ".chrom and " + knownRnaEditingTable + ".pos=" + previousTable + ".pos))");
+            } else {
+                String negativeType = NegativeType.getNegativeStrandEditingType(editingType);
 
+                databaseManager.executeSQL("insert into " + currentTable + " select * from " + previousTable
+                        + " where exists (select chrom from " + dnaVcfTable + " where (" + dnaVcfTable + ".chrom="
+                        + previousTable + ".chrom and " + dnaVcfTable + ".pos=" + previousTable + ".pos and (" + dnaVcfTable
+                        + ".ref='" + editingType.charAt(0) + "' or  " + dnaVcfTable + ".ref='" + negativeType.charAt(0)
+                        + "')))");
+
+                databaseManager.executeSQL("insert into " + currentTable + " select * from " + previousTable
+                        + " where exists (select chrom from " + knownRnaEditingTable + " where (" + knownRnaEditingTable + ".chrom="
+                        + previousTable + ".chrom and " + knownRnaEditingTable + ".pos=" + previousTable + ".pos and ("
+                        + knownRnaEditingTable + ".ref='" + editingType.charAt(0) + "' or  " + knownRnaEditingTable + ".ref='"
+                        + negativeType.charAt(0) + "')))");
+            }
             logger.info("End selecting data from DNA VCF table...\t" + Timer.getCurrentTime());
         } catch (SQLException e) {
             logger.error("Error execute sql clause in " + DnaRnaFilter.class.getName() + ":performFilter()", e);

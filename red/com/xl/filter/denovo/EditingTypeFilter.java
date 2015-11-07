@@ -26,7 +26,7 @@ import com.xl.utils.Timer;
 
 /**
  * Created by Xing Li on 2014/9/29.
- * <p/>
+ * <p>
  * The Class EditingTypeFilter is a rule-based filter that user enables to select the type of RNA editing as his
  * preference.
  */
@@ -44,8 +44,8 @@ public class EditingTypeFilter implements Filter {
      * homozygous at the same time.
      *
      * @param previousTable The table name of previous filter stored in the database.
-     * @param currentTable The table name of this filter stored in the database.
-     * @param params The reference base
+     * @param currentTable  The table name of this filter stored in the database.
+     * @param params        The reference base
      */
     @Override
     public void performFilter(String previousTable, String currentTable, Map<String, String> params) {
@@ -54,43 +54,45 @@ public class EditingTypeFilter implements Filter {
         }
 
         logger.info("Start executing Editing Type Filter..." + Timer.getCurrentTime());
-        String refAlt = params.get(PARAMS_REF);
-        String refAlt2 = NegativeType.getNegativeStrandEditingType(refAlt);
-
-        // insert into SRR1213569_rnavcf_etfilter select * from SRR1213569_rnavcf WHERE REF='C' AND ALT='T' AND
-        // GT!='0/0'
-        StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append("insert into ");
-        stringBuilder.append(currentTable);
-        stringBuilder.append(" select * from ");
-        stringBuilder.append(previousTable);
-        stringBuilder.append(" WHERE REF='");
-        stringBuilder.append(refAlt.substring(0, 1));
-        stringBuilder.append("' AND ALT='");
-        stringBuilder.append(refAlt.substring(1));
-        stringBuilder.append("'");
-        // stringBuilder.append("' AND GT!='0/0'");
         try {
-            databaseManager.insertClause(stringBuilder.toString());
-        } catch (SQLException e) {
-            logger.error("There is a syntax error for SQL clause: " + stringBuilder.toString(), e);
-        }
+            String refAlt = params.get(PARAMS_REF);
+            if (refAlt.equalsIgnoreCase("all")) {
+                StringBuilder stringBuilder = new StringBuilder();
+                stringBuilder.append("insert into ");
+                stringBuilder.append(currentTable);
+                stringBuilder.append(" select * from ");
+                stringBuilder.append(previousTable);
+                databaseManager.insertClause(stringBuilder.toString());
+            } else {
+                StringBuilder stringBuilder = new StringBuilder();
+                stringBuilder.append("insert into ");
+                stringBuilder.append(currentTable);
+                stringBuilder.append(" select * from ");
+                stringBuilder.append(previousTable);
+                stringBuilder.append(" WHERE REF='");
+                stringBuilder.append(refAlt.substring(0, 1));
+                stringBuilder.append("' AND ALT='");
+                stringBuilder.append(refAlt.substring(1));
+                stringBuilder.append("'");
+                // stringBuilder.append("' AND GT!='0/0'");
+                databaseManager.insertClause(stringBuilder.toString());
 
-        stringBuilder = new StringBuilder();
-        stringBuilder.append("insert into ");
-        stringBuilder.append(currentTable);
-        stringBuilder.append(" select * from ");
-        stringBuilder.append(previousTable);
-        stringBuilder.append(" WHERE REF='");
-        stringBuilder.append(refAlt2.substring(0, 1));
-        stringBuilder.append("' AND ALT='");
-        stringBuilder.append(refAlt2.substring(1));
-        stringBuilder.append("'");
-        // stringBuilder.append("' AND GT!='0/0'");
-        try {
-            databaseManager.insertClause(stringBuilder.toString());
+                String refAlt2 = NegativeType.getNegativeStrandEditingType(refAlt);
+                stringBuilder = new StringBuilder();
+                stringBuilder.append("insert into ");
+                stringBuilder.append(currentTable);
+                stringBuilder.append(" select * from ");
+                stringBuilder.append(previousTable);
+                stringBuilder.append(" WHERE REF='");
+                stringBuilder.append(refAlt2.substring(0, 1));
+                stringBuilder.append("' AND ALT='");
+                stringBuilder.append(refAlt2.substring(1));
+                stringBuilder.append("'");
+                // stringBuilder.append("' AND GT!='0/0'");
+                databaseManager.insertClause(stringBuilder.toString());
+            }
         } catch (SQLException e) {
-            logger.error("There is a syntax error for SQL clause: " + stringBuilder.toString(), e);
+            logger.error("There is a syntax error for SQL clause", e);
         }
         logger.info("End executing Editing Type Filter..." + Timer.getCurrentTime());
     }

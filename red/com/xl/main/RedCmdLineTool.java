@@ -55,7 +55,7 @@ public class RedCmdLineTool {
     public static String REPEAT = "";
     public static String DBSNP = "";
     public static String RSCRIPT = "/usr/bin/RScript";
-    public static String EDITING = "AG";
+    public static String TYPE = "AG";
     public static String ORDER = "12345678";
     public static String EXPORT = "";
     public static String DELETE = "";
@@ -124,8 +124,8 @@ public class RedCmdLineTool {
                 case 'D':
                     DELETE = value;
                     break;
-                case 'e':
-                    EDITING = value;
+                case 't':
+                    TYPE = value;
                     break;
                 case 'E':
                     EXPORT = value;
@@ -176,8 +176,8 @@ public class RedCmdLineTool {
                 ORDER = value;
             } else if (key.equalsIgnoreCase("delete")) {
                 DELETE = value;
-            } else if (key.equalsIgnoreCase("editing")) {
-                EDITING = value;
+            } else if (key.equalsIgnoreCase("type")) {
+                TYPE = value;
             } else if (key.equalsIgnoreCase("export")) {
                 EXPORT = value;
             } else {
@@ -420,13 +420,13 @@ public class RedCmdLineTool {
                     }
                     Map<String, String> params = new HashMap<String, String>();
                     if (currentFilterName.equals(DatabaseManager.EDITING_TYPE_FILTER_RESULT_TABLE_NAME)) {
-                        params.put(EditingTypeFilter.PARAMS_REF, EDITING);
+                        params.put(EditingTypeFilter.PARAMS_REF, TYPE);
                     } else if (currentFilterName.equals(DatabaseManager.QC_FILTER_RESULT_TABLE_NAME)) {
                         params.put(QualityControlFilter.PARAMS_STRING_QUALITY, 20 + "");
                         params.put(QualityControlFilter.PARAMS_INT_DEPTH, 6 + "");
                     } else if (currentFilterName.equals(DatabaseManager.DNA_RNA_FILTER_RESULT_TABLE_NAME)) {
                         params.put(DnaRnaFilter.PARAMS_STRING_DNA_VCF_TABLE, dnavcfTableName);
-                        params.put(DnaRnaFilter.PARAMS_STRING_EDITING_TYPE, EDITING);
+                        params.put(DnaRnaFilter.PARAMS_STRING_EDITING_TYPE, TYPE);
                     } else if (currentFilterName.equals(DatabaseManager.SPLICE_JUNCTION_FILTER_RESULT_TABLE_NAME)) {
                         params.put(SpliceJunctionFilter.PARAMS_INT_EDGE, 2 + "");
                     } else if (currentFilterName.equals(DatabaseManager.REPEAT_FILTER_RESULT_TABLE_NAME)) {
@@ -435,7 +435,7 @@ public class RedCmdLineTool {
                         params.put(LikelihoodRatioFilter.PARAMS_STRING_DNA_VCF_TABLE, dnavcfTableName);
                         params.put(LikelihoodRatioFilter.PARAMS_DOUBLE_LLR_THRESHOLD, 4 + "");
                     } else if (currentFilterName.equals(DatabaseManager.FET_FILTER_RESULT_TABLE_NAME)) {
-                        params.put(FisherExactTestFilter.PARAMS_STRING_EDITING_TYPE, EDITING);
+                        params.put(FisherExactTestFilter.PARAMS_STRING_EDITING_TYPE, TYPE);
                         params.put(FisherExactTestFilter.PARAMS_STRING_R_SCRIPT_PATH, RSCRIPT);
                         params.put(FisherExactTestFilter.PARAMS_STRING_P_VALUE_THRESHOLD, 0.05 + "");
                         params.put(FisherExactTestFilter.PARAMS_STRING_FDR_THRESHOLD, 0.05 + "");
