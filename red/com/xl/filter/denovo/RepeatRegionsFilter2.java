@@ -15,7 +15,6 @@ package com.xl.filter.denovo;
 
 import com.xl.database.DatabaseManager;
 import com.xl.database.Query;
-import com.xl.datatypes.sites.Site;
 import com.xl.datatypes.sites.SiteBean;
 import com.xl.filter.Filter;
 import com.xl.utils.RandomStringGenerator;
@@ -48,9 +47,9 @@ public class RepeatRegionsFilter2 implements Filter {
     public void performFilter(String previousTable, String currentTable, Map<String, String> params) {
         logger.info("Start performing Repeat Regions Filter...\t" + Timer.getCurrentTime());
         String repeatTable = DatabaseManager.REPEAT_MASKER_TABLE_NAME;
-        List<SiteBean> repeatRegionSites = new ArrayList<>();
-        List<SiteBean> nonRepeatRegionSites = new ArrayList<>();
-        List<SiteBean> aluRegionSites = new ArrayList<>();
+        List<SiteBean> repeatRegionSites = new ArrayList<SiteBean>();
+        List<SiteBean> nonRepeatRegionSites = new ArrayList<SiteBean>();
+        List<SiteBean> aluRegionSites = new ArrayList<SiteBean>();
         try {
             int count = 0;
             Vector<SiteBean> sites = Query.queryAllEditingInfo(previousTable);
@@ -64,7 +63,8 @@ public class RepeatRegionsFilter2 implements Filter {
 
             String tempTable = RandomStringGenerator.createRandomString(10);
             databaseManager.executeSQL("create temporary table " + tempTable + " like " + repeatTable);
-            databaseManager.executeSQL("insert into " + tempTable + " select * from " + repeatTable + " where type='SINE/Alu'");
+            databaseManager
+                .executeSQL("insert into " + tempTable + " select * from " + repeatTable + " where type='SINE/Alu'");
             for (SiteBean site : repeatRegionSites) {
                 if (inRepeatRegion(site, tempTable)) {
                     site.setIsAlu("T");
@@ -74,16 +74,16 @@ public class RepeatRegionsFilter2 implements Filter {
 
             databaseManager.setAutoCommit(false);
             for (SiteBean site : nonRepeatRegionSites) {
-                databaseManager.executeSQL("insert into " + currentTable
-                        + "(chrom,pos,id,ref,alt,qual,filter,info,gt,ad,dp,gq,pl,alu) " + "values( "
-                        + site.toString() + ")");
+                databaseManager.executeSQL(
+                    "insert into " + currentTable + "(chrom,pos,id,ref,alt,qual,filter,info,gt,ad,dp,gq,pl,alu) "
+                        + "values( " + site.toString() + ")");
                 if (++count % DatabaseManager.COMMIT_COUNTS_PER_ONCE == 0)
                     databaseManager.commit();
             }
             for (SiteBean site : aluRegionSites) {
-                databaseManager.executeSQL("insert into " + currentTable
-                        + "(chrom,pos,id,ref,alt,qual,filter,info,gt,ad,dp,gq,pl,alu) " + "values( "
-                        + site.toString() + ")");
+                databaseManager.executeSQL(
+                    "insert into " + currentTable + "(chrom,pos,id,ref,alt,qual,filter,info,gt,ad,dp,gq,pl,alu) "
+                        + "values( " + site.toString() + ")");
                 if (++count % DatabaseManager.COMMIT_COUNTS_PER_ONCE == 0)
                     databaseManager.commit();
             }
@@ -95,15 +95,16 @@ public class RepeatRegionsFilter2 implements Filter {
         logger.info("End performing Repeat Regions Filter...\t" + Timer.getCurrentTime());
     }
 
-    private boolean inRepeatRegion(SiteBean site, String repeatTable) throws SQLException {
-        //select begin from repeatTable limit 1 where site.chrom=repeatTable.chrom and site.pos<=repeatTable.end;
-        ResultSet rs = databaseManager.query("select begin from " + repeatTable + " limit 1 where chrom=" + site.getChr() + " and end >=" + site.getPos());
-        int begin = rs != null && rs.next() ? rs.getInt(1) : Integer.MAX_VALUE;
-        return site.getPos() >= begin;
-    }
-
     @Override
     public String getName() {
         return DatabaseManager.REPEAT_FILTER_RESULT_TABLE_NAME;
+    }
+
+    private boolean inRepeatRegion(SiteBean site, String repeatTable) throws SQLException {
+        // select begin from repeatTable limit 1 where site.chrom=repeatTable.chrom and site.pos<=repeatTable.end;
+        ResultSet rs = databaseManager.query("select begin from " + repeatTable + " where chrom='" + site.getChr()
+            + "' and end>=" + site.getPos() + " limit 1");
+        int begin = rs != null && rs.next() ? rs.getInt(1) : Integer.MAX_VALUE;
+        return site.getPos() >= begin;
     }
 }

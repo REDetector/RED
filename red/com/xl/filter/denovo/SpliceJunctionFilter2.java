@@ -17,7 +17,6 @@ import com.xl.database.DatabaseManager;
 import com.xl.database.Query;
 import com.xl.datatypes.sites.SiteBean;
 import com.xl.filter.Filter;
-import com.xl.utils.RandomStringGenerator;
 import com.xl.utils.Timer;
 
 import java.sql.ResultSet;
@@ -43,8 +42,8 @@ public class SpliceJunctionFilter2 implements Filter {
      * splice junction, which were supposed to be unreliable, were excluded based on the gene annotation file.
      *
      * @param previousTable The previous table
-     * @param currentTable  The result table
-     * @param params        The threshold of splice junction
+     * @param currentTable The result table
+     * @param params The threshold of splice junction
      */
     @Override
     public void performFilter(String previousTable, String currentTable, Map<String, String> params) {
@@ -52,16 +51,18 @@ public class SpliceJunctionFilter2 implements Filter {
             return;
         } else if (params.size() != 1) {
             throw new IllegalArgumentException(
-                    "Args " + params.toString() + " for Splice Junction Filter are incomplete, please have a check");
+                "Args " + params.toString() + " for Splice Junction Filter are incomplete, please have a check");
         }
         logger.info("Start performing Splice Junction Filter...\t" + Timer.getCurrentTime());
         String spliceJunctionTable = DatabaseManager.SPLICE_JUNCTION_TABLE_NAME;
         int edge = Integer.parseInt(params.get(PARAMS_INT_EDGE));
-        List<SiteBean> spliceJunctionSites = new ArrayList<>();
+        List<SiteBean> spliceJunctionSites = new ArrayList<SiteBean>();
         try {
-            //insert into currentTable select * from previousTable where not exist (select chrom from splice_junction where ( splice_junction.type='CDS' and
-            //splice_junction.chrom=previousTable.chrom and ((splice_junction.begin-edge<previousTable.pos and splice_junction.begin+edge>previousTable.pos)
-            //or (splice_junction.end<previousTable.pos+edge and splice_junction.end>previousTable.pos-edge))))
+            // insert into currentTable select * from previousTable where not exist (select chrom from splice_junction
+            // where ( splice_junction.type='CDS' and
+            // splice_junction.chrom=previousTable.chrom and ((splice_junction.begin-edge<previousTable.pos and
+            // splice_junction.begin+edge>previousTable.pos)
+            // or (splice_junction.end<previousTable.pos+edge and splice_junction.end>previousTable.pos-edge))))
             int count = 0;
             Vector<SiteBean> sites = Query.queryAllEditingInfo(previousTable);
             for (SiteBean site : sites) {
@@ -71,9 +72,9 @@ public class SpliceJunctionFilter2 implements Filter {
             }
             databaseManager.setAutoCommit(false);
             for (SiteBean site : spliceJunctionSites) {
-                databaseManager.executeSQL("insert into " + currentTable
-                        + "(chrom,pos,id,ref,alt,qual,filter,info,gt,ad,dp,gq,pl,alu) " + "values( "
-                        + site.toString() + ")");
+                databaseManager.executeSQL(
+                    "insert into " + currentTable + "(chrom,pos,id,ref,alt,qual,filter,info,gt,ad,dp,gq,pl,alu) "
+                        + "values( " + site.toString() + ")");
                 if (++count % DatabaseManager.COMMIT_COUNTS_PER_ONCE == 0)
                     databaseManager.commit();
             }
@@ -86,18 +87,20 @@ public class SpliceJunctionFilter2 implements Filter {
     }
 
     private boolean inSpliceJunction(SiteBean site, String spliceJunctionTable, int edge) throws SQLException {
-        //select begin from spliceJunctionTable limit 1 where site.chrom=spliceJunctionTable.chrom and site.pos<=spliceJunctionTable.end;
-        ResultSet rs = databaseManager.query("select begin,end,type from " + spliceJunctionTable + " limit 1 where chrom=" + site.getChr() + " and end >=" + site.getPos());
+        // select begin from spliceJunctionTable limit 1 where site.chrom=spliceJunctionTable.chrom and
+        // site.pos<=spliceJunctionTable.end;
+        ResultSet rs = databaseManager.query("select begin,end,type from " + spliceJunctionTable + " where chrom='"
+            + site.getChr() + "' and end>=" + site.getPos() + " limit 1");
         int pos = site.getPos();
         if (rs != null && rs.next()) {
             int begin = rs.getInt(1);
             int end = rs.getInt(2);
             String type = rs.getString(3);
-            return type.equals("SINE/Alu") && ((pos > begin - edge && pos < begin + edge) || (pos > end - edge && pos < end + edge));
+            return type.equals("SINE/Alu")
+                && ((pos > begin - edge && pos < begin + edge) || (pos > end - edge && pos < end + edge));
         }
         return false;
     }
-
 
     @Override
     public String getName() {
