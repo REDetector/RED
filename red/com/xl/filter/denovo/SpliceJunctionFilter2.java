@@ -13,18 +13,25 @@
 
 package com.xl.filter.denovo;
 
-import java.sql.SQLException;
-import java.util.Map;
-
 import com.xl.database.DatabaseManager;
+import com.xl.database.Query;
+import com.xl.datatypes.sites.SiteBean;
 import com.xl.filter.Filter;
+import com.xl.utils.RandomStringGenerator;
 import com.xl.utils.Timer;
+
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Vector;
 
 /**
  * The Class SpliceJunctionFilter is a rule-based filter. Variants that were within+/-k bp (e.g., k = 2) of the splice
  * junction, which were supposed to be unreliable, were excluded based on the gene annotation file.
  */
-public class SpliceJunctionFilter implements Filter {
+public class SpliceJunctionFilter2 implements Filter {
     public static final String PARAMS_INT_EDGE = "edge";
     /**
      * The database manager.
@@ -50,22 +57,47 @@ public class SpliceJunctionFilter implements Filter {
         logger.info("Start performing Splice Junction Filter...\t" + Timer.getCurrentTime());
         String spliceJunctionTable = DatabaseManager.SPLICE_JUNCTION_TABLE_NAME;
         int edge = Integer.parseInt(params.get(PARAMS_INT_EDGE));
+        List<SiteBean> spliceJunctionSites = new ArrayList<>();
         try {
             //insert into currentTable select * from previousTable where not exist (select chrom from splice_junction where ( splice_junction.type='CDS' and
             //splice_junction.chrom=previousTable.chrom and ((splice_junction.begin-edge<previousTable.pos and splice_junction.begin+edge>previousTable.pos)
             //or (splice_junction.end<previousTable.pos+edge and splice_junction.end>previousTable.pos-edge))))
-            databaseManager.executeSQL("insert into " + currentTable + " select * from " + previousTable
-                    + " where not exists (select chrom from " + spliceJunctionTable + " where (" + spliceJunctionTable
-                    + ".type='CDS' and " + spliceJunctionTable + ".chrom=" + previousTable + ".chrom" + " and (("
-                    + spliceJunctionTable + ".begin<" + previousTable + ".pos+" + edge + " and " + spliceJunctionTable
-                    + ".begin>" + previousTable + "" + ".pos-" + edge + ") or (" + spliceJunctionTable + ".end<"
-                    + previousTable + ".pos+" + edge + " and " + spliceJunctionTable + ".end>" + previousTable + ".pos-"
-                    + edge + "))))");
+            int count = 0;
+            Vector<SiteBean> sites = Query.queryAllEditingInfo(previousTable);
+            for (SiteBean site : sites) {
+                if (!inSpliceJunction(site, spliceJunctionTable, edge)) {
+                    spliceJunctionSites.add(site);
+                }
+            }
+            databaseManager.setAutoCommit(false);
+            for (SiteBean site : spliceJunctionSites) {
+                databaseManager.executeSQL("insert into " + currentTable
+                        + "(chrom,pos,id,ref,alt,qual,filter,info,gt,ad,dp,gq,pl,alu) " + "values( "
+                        + site.toString() + ")");
+                if (++count % DatabaseManager.COMMIT_COUNTS_PER_ONCE == 0)
+                    databaseManager.commit();
+            }
+            databaseManager.commit();
+            databaseManager.setAutoCommit(true);
         } catch (SQLException e) {
-            logger.error("Error execute sql clause in" + SpliceJunctionFilter.class.getName() + ":performFilter()", e);
+            logger.error("Error execute sql clause in" + SpliceJunctionFilter2.class.getName() + ":performFilter()", e);
         }
         logger.info("End performing Splice Junction Filter...\t" + Timer.getCurrentTime());
     }
+
+    private boolean inSpliceJunction(SiteBean site, String spliceJunctionTable, int edge) throws SQLException {
+        //select begin from spliceJunctionTable limit 1 where site.chrom=spliceJunctionTable.chrom and site.pos<=spliceJunctionTable.end;
+        ResultSet rs = databaseManager.query("select begin,end,type from " + spliceJunctionTable + " limit 1 where chrom=" + site.getChr() + " and end >=" + site.getPos());
+        int pos = site.getPos();
+        if (rs != null && rs.next()) {
+            int begin = rs.getInt(1);
+            int end = rs.getInt(2);
+            String type = rs.getString(3);
+            return type.equals("SINE/Alu") && ((pos > begin - edge && pos < begin + edge) || (pos > end - edge && pos < end + edge));
+        }
+        return false;
+    }
+
 
     @Override
     public String getName() {

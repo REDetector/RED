@@ -367,8 +367,8 @@ public class RedCmdLineTool {
             if (!denovo) {
                 filters.add(new DnaRnaFilter());
             }
-            filters.add(new SpliceJunctionFilter());
-            filters.add(new RepeatRegionsFilter());
+            filters.add(new SpliceJunctionFilter2());
+            filters.add(new RepeatRegionsFilter2());
             filters.add(new KnownSnpFilter());
             if (!denovo) {
                 filters.add(new LikelihoodRatioFilter());

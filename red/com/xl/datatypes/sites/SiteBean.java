@@ -20,7 +20,7 @@ package com.xl.datatypes.sites;
 
 /**
  * Created by Xing Li on 2014/10/1.
- * <p/>
+ * <p>
  * SiteBean is a class to parse a strip of all information from a VCF file. It also uses in querying data from database.
  */
 public class SiteBean {
@@ -205,4 +205,10 @@ public class SiteBean {
         this.level = level;
     }
 
+    @Override
+    public String toString() {
+        return "'" + getChr() + "'," + getPos() + ",'" + getId() + "','" + getRef() + "','" + getAlt() + "',"
+                + getQual() + ",'" + getFilter() + "'," + "'" + getInfo() + "','" + getGt() + "','" + getAd() + "','"
+                + getDp() + "','" + getGq() + "','" + getPl() + "','" + getIsAlu() + "'";
+    }
 }
