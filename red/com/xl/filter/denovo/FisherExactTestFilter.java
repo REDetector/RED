@@ -16,7 +16,7 @@ package com.xl.filter.denovo;
 import com.xl.database.DatabaseManager;
 import com.xl.datatypes.sites.SiteBean;
 import com.xl.filter.Filter;
-import com.xl.utils.NegativeType;
+import com.xl.utils.EmptyChecker;
 import com.xl.utils.Timer;
 import net.sf.snver.pileup.util.math.FisherExact;
 import rcaller.RCaller;
@@ -54,7 +54,8 @@ public class FisherExactTestFilter implements Filter {
         List<PValueInfo> valueInfos = new ArrayList<PValueInfo>();
         String knownRnaEditingTable = DatabaseManager.KNOWN_RNA_EDITING_TABLE_NAME;
         try {
-            ResultSet rs = databaseManager.query(refTable, null, null, null);
+            char[] editingTypes = editingType.toCharArray();
+            ResultSet rs = databaseManager.query(refTable, null, "ref=? and alt=?", new String[]{editingTypes[0] + "", editingTypes[1] + ""});
             while (rs.next()) {
                 // 1.CHROM varchar(15),2.POS int,3.ID varchar(30),4.REF varchar(3),5.ALT varchar(5),6.QUAL
                 // float(8,2),7.FILTER text,8.INFO text,9.GT text, 10.AD text,11.DP text,12.GQ text,13.PL text,14.alu
@@ -68,8 +69,10 @@ public class FisherExactTestFilter implements Filter {
                 info.altCount = Integer.parseInt(sections[1]);
                 valueInfos.add(info);
             }
+            if (EmptyChecker.isEmptyList(valueInfos)) {
+                return valueInfos;
+            }
 
-            char[] editingTypes = editingType.toCharArray();
             StringBuilder stringBuilder = new StringBuilder("select ");
             stringBuilder.append(refTable);
             stringBuilder.append(".* from ");
@@ -110,6 +113,9 @@ public class FisherExactTestFilter implements Filter {
     private List<PValueInfo> executeFETFilter(String previousTable, String fetResultTable, String refAlt) {
         logger.info("Start performing Fisher's Exact Test Filter...\t" + Timer.getCurrentTime());
         List<PValueInfo> valueInfos = getExpectedInfo(previousTable, refAlt);
+        if (EmptyChecker.isEmptyList(valueInfos)) {
+            return valueInfos;
+        }
         int knownAlt = 0;
         int knownRef = 0;
         for (PValueInfo info : valueInfos) {
@@ -181,7 +187,8 @@ public class FisherExactTestFilter implements Filter {
             String[] editingTypes = new String[]{"AG", "AC", "AT", "CG", "CT", "CA", "GA", "GC", "GT", "TC", "TG", "TA"};
             pValueList = new ArrayList<PValueInfo>();
             for (String editingType : editingTypes) {
-                pValueList.addAll(executeFETFilter(previousTable, currentTable, editingType));
+                List<PValueInfo> valueInfo = executeFETFilter(previousTable, currentTable, editingType);
+                pValueList.addAll(valueInfo);
             }
         } else {
             pValueList = executeFETFilter(previousTable, currentTable, type);
