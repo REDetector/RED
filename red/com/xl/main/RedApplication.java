@@ -1,19 +1,14 @@
 /*
- * RED: RNA Editing Detector
- *     Copyright (C) <2014>  <Xing Li>
+ * RED: RNA Editing Detector Copyright (C) <2014> <Xing Li>
  *
- *     RED is free software: you can redistribute it and/or modify
- *     it under the terms of the GNU General Public License as published by
- *     the Free Software Foundation, either version 3 of the License, or
- *     (at your option) any later version.
+ * RED is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as
+ * published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
- *     RED is distributed in the hope that it will be useful,
- *     but WITHOUT ANY WARRANTY; without even the implied warranty of
- *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *     GNU General Public License for more details.
+ * RED is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  *
- *     You should have received a copy of the GNU General Public License
- *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU General Public License along with this program. If not, see
+ * <http://www.gnu.org/licenses/>.
  */
 
 package com.xl.main;
@@ -63,9 +58,11 @@ import java.util.Arrays;
 import java.util.Vector;
 
 /**
- * The Class RedApplication is the first appeared panel when program starts. It contains and manages all components for the common functions.
+ * The Class RedApplication is the first appeared panel when program starts. It contains and manages all components for
+ * the common functions.
  */
-public class RedApplication extends JFrame implements ProgressListener, DataStoreChangedListener, SiteListChangeListener, AnnotationCollectionListener, DatabaseListener {
+public class RedApplication extends JFrame implements ProgressListener, DataStoreChangedListener,
+    SiteListChangeListener, AnnotationCollectionListener, DatabaseListener {
     private static final Logger logger = LoggerFactory.getLogger(RedApplication.class);
     /**
      * The static instance of RED.
@@ -145,11 +142,11 @@ public class RedApplication extends JFrame implements ProgressListener, DataStor
     private RedApplication() {
         setTitle("RED");
         setSize(Toolkit.getDefaultToolkit().getScreenSize().width / 3 * 2,
-                Toolkit.getDefaultToolkit().getScreenSize().height / 3 * 2);
+            Toolkit.getDefaultToolkit().getScreenSize().height / 3 * 2);
         setLocationRelativeTo(null);
         setExtendedState(getExtendedState() | MAXIMIZED_BOTH);
 
-        //We need to initiate the preferences first.
+        // We need to initiate the preferences first.
         RedPreferences.getInstance();
         menu = new RedMenu(this);
         setJMenuBar(menu);
@@ -212,8 +209,8 @@ public class RedApplication extends JFrame implements ProgressListener, DataStor
     }
 
     /**
-     * Adds a set of dataStores to the set of currently visible data stores in the chromosome view. If any data store is already visible it won't be added
-     * again.
+     * Adds a set of dataStores to the set of currently visible data stores in the chromosome view. If any data store is
+     * already visible it won't be added again.
      *
      * @param dataStores An array of dataStores to add
      */
@@ -233,7 +230,8 @@ public class RedApplication extends JFrame implements ProgressListener, DataStor
      * @param genome The Genome which has just been loaded.
      */
     private void addNewLoadedGenome(Genome genome) {
-        // We've had a trace where the imported genome contained no chromosomes. No idea how that happened but we can check that here.
+        // We've had a trace where the imported genome contained no chromosomes. No idea how that happened but we can
+        // check that here.
         if (genome.getAllChromosomes() == null || genome.getAllChromosomes().length == 0) {
             OptionDialogUtils.showErrorDialog(this, "No data was present in the imported genome");
             return;
@@ -350,7 +348,8 @@ public class RedApplication extends JFrame implements ProgressListener, DataStor
 
     @Override
     public void dispose() {
-        // We're overriding this so we can catch the application being closed by the X in the corner. We need to offer the opportunity
+        // We're overriding this so we can catch the application being closed by the X in the corner. We need to offer
+        // the opportunity
         // to save if they've changed anything.
 
         // We'll already have been made invisible by this stage, so make us visible again in case we're hanging around.
@@ -377,10 +376,11 @@ public class RedApplication extends JFrame implements ProgressListener, DataStor
     }
 
     /**
-     * This method is usually called from data gathered by the genome selector which will provide the required values for the assembly name. This does not
-     * actually load the specified genome, but just downloads it from the online genome repository.
+     * This method is usually called from data gathered by the genome selector which will provide the required values
+     * for the assembly name. This does not actually load the specified genome, but just downloads it from the online
+     * genome repository.
      *
-     * @param id          Species name
+     * @param id Species name
      * @param displayName Assembly name
      */
     public void downloadGenome(String id, String displayName) {
@@ -449,7 +449,8 @@ public class RedApplication extends JFrame implements ProgressListener, DataStor
     }
 
     /**
-     * Loads a genome assembly. This will fail if the genome isn't currently in the local cache and downloadGenome should be set first in this case.
+     * Loads a genome assembly. This will fail if the genome isn't currently in the local cache and downloadGenome
+     * should be set first in this case.
      *
      * @param baseLocation The folder containing the requested genome.
      */
@@ -485,7 +486,8 @@ public class RedApplication extends JFrame implements ProgressListener, DataStor
     }
 
     /**
-     * Loads an existing project from a file. This method will wipe all existing data and prompt to save if the currently loaded project has changed.
+     * Loads an existing project from a file. This method will wipe all existing data and prompt to save if the
+     * currently loaded project has changed.
      *
      * @param file The file to load
      */
@@ -493,9 +495,9 @@ public class RedApplication extends JFrame implements ProgressListener, DataStor
         if (file == null)
             return;
 
-		/*
+        /*
          * Before we wipe all of the data we need to check to see if we need to save the existing project.
-		 */
+         */
 
         if (changesWereMade) {
             int answer = OptionDialogUtils.showSaveBeforeExitDialog(this);
@@ -535,7 +537,7 @@ public class RedApplication extends JFrame implements ProgressListener, DataStor
      * @param d The dataStore to remove
      */
     public void removeFromDrawnDataStores(DataStore d) {
-        removeFromDrawnDataStores(new DataStore[]{d});
+        removeFromDrawnDataStores(new DataStore[] { d });
     }
 
     /**
@@ -565,7 +567,8 @@ public class RedApplication extends JFrame implements ProgressListener, DataStor
     }
 
     /**
-     * Saves the current project under the same name as it was loaded. If no file is associated with the project will call saveProjectAs
+     * Saves the current project under the same name as it was loaded. If no file is associated with the project will
+     * call saveProjectAs
      */
     public void saveProject() {
         if (currentFile == null) {
@@ -739,14 +742,16 @@ public class RedApplication extends JFrame implements ProgressListener, DataStor
             resetChangesWereMade();
         } else if (command.equals("fasta_loaded")) {
             DisplayPreferences.getInstance().setFastaEnable(true);
-            OptionDialogUtils.showMessageDialog(this, "The fasta file has been loaded. Please zoom out to make it visible" +
-                    "...", "Load fasta file completed");
+            OptionDialogUtils.showMessageDialog(this,
+                "The fasta file has been loaded. Please zoom out to make it visible" + "...",
+                "Load fasta file completed");
             changesWereMade();
         } else if (command.equals("data_written")) {
             // Since we've just saved we can reset the changes flag
             resetChangesWereMade();
 
-            // We might have been called by a previous shutdown operation, in which case we need to send them back to shut down.
+            // We might have been called by a previous shutdown operation, in which case we need to send them back to
+            // shut down.
             if (shuttingDown) {
                 shuttingDown = false;
                 dispose();
@@ -792,13 +797,8 @@ public class RedApplication extends JFrame implements ProgressListener, DataStor
 
     @Override
     public void databaseChanged(String databaseName, String sampleName) {
-        String mode;
-        if (databaseName.equals(DatabaseManager.DENOVO_MODE_DATABASE_NAME)) {
-            mode = "denovo mode";
-        } else {
-            mode = "DNA-RNA mode";
-        }
-        OptionDialogUtils.showMessageDialog(this, "Database has been changed to " + mode + ", " + sampleName, mode);
+        OptionDialogUtils.showMessageDialog(this, "Database has been changed to " + databaseName + ", sample name: " + sampleName,
+            databaseName);
         DisplayPreferences.getInstance().setDisplayMode(DisplayPreferences.DISPLAY_MODE_READS_AND_PROBES);
         changesWereMade();
     }

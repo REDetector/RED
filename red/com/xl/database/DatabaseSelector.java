@@ -1,35 +1,23 @@
 /*
- * RED: RNA Editing Detector
- *     Copyright (C) <2014>  <Xing Li>
+ * RED: RNA Editing Detector Copyright (C) <2014> <Xing Li>
  *
- *     RED is free software: you can redistribute it and/or modify
- *     it under the terms of the GNU General Public License as published by
- *     the Free Software Foundation, either version 3 of the License, or
- *     (at your option) any later version.
+ * RED is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as
+ * published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
- *     RED is distributed in the hope that it will be useful,
- *     but WITHOUT ANY WARRANTY; without even the implied warranty of
- *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *     GNU General Public License for more details.
+ * RED is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  *
- *     You should have received a copy of the GNU General Public License
- *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU General Public License along with this program. If not, see
+ * <http://www.gnu.org/licenses/>.
  */
 
 package com.xl.database;
 
-import com.xl.datatypes.DataSet;
-import com.xl.datatypes.sites.SiteSet;
-import com.xl.display.dialog.CrashReporter;
-import com.xl.display.dialog.DataImportDialog;
-import com.xl.display.dialog.TypeColourRenderer;
-import com.xl.exception.RedException;
-import com.xl.main.RedApplication;
-import com.xl.utils.FontManager;
-import com.xl.utils.ListDefaultSelector;
-import com.xl.utils.namemanager.MenuUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.sql.SQLException;
+import java.util.Set;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
@@ -37,16 +25,26 @@ import javax.swing.event.ListSelectionListener;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.TreeSelectionModel;
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.sql.SQLException;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.xl.datatypes.DataSet;
+import com.xl.datatypes.sites.SiteSet;
+import com.xl.display.dialog.DataImportDialog;
+import com.xl.display.dialog.TypeColourRenderer;
+import com.xl.exception.RedException;
+import com.xl.main.RedApplication;
+import com.xl.utils.FontManager;
+import com.xl.utils.ListDefaultSelector;
+import com.xl.utils.namemanager.MenuUtils;
+import com.xl.utils.ui.OptionDialogUtils;
 
 /**
  * Created by Xing Li on 2014/11/15.
  * <p/>
- * A dialog to select the database and sample relative to a data set. It is worth to say that data sets must be imported first to RED and user should know what
- * they should select with a given data set.
+ * A dialog to select the database and sample relative to a data set. It is worth to say that data sets must be imported
+ * first to RED and user should know what they should select with a given data set.
  */
 public class DatabaseSelector extends JDialog implements ListSelectionListener, TreeSelectionListener, ActionListener {
     private static final Logger logger = LoggerFactory.getLogger(DatabaseSelector.class);
@@ -76,6 +74,8 @@ public class DatabaseSelector extends JDialog implements ListSelectionListener, 
      */
     private JButton okButton;
 
+    private final Set<String> allSamples;
+
     /**
      * Instantiates a new database selector.
      *
@@ -96,7 +96,8 @@ public class DatabaseSelector extends JDialog implements ListSelectionListener, 
         topPanel.add(new JLabel("WARNINGS", JLabel.CENTER), BorderLayout.NORTH);
 
         JTextArea textField = new JTextArea();
-        textField.setText("The data set selected in the left panel and the sample selected in the right panel must be consistent!");
+        textField.setText(
+            "The data set selected in the left panel and the sample selected in the right panel must be consistent!");
         textField.setFont(FontManager.DIALOG_FONT);
         textField.setEditable(false);
         textField.setLineWrap(true);
@@ -125,8 +126,11 @@ public class DatabaseSelector extends JDialog implements ListSelectionListener, 
 
         JPanel rightPanel = new JPanel(new BorderLayout());
         rightPanel.setBorder(BorderFactory.createEmptyBorder(4, 4, 4, 4));
+
+        // DatabaseTreeModel treeModel = new DatabaseTreeModel();
         DatabaseTreeModel treeModel = new DatabaseTreeModel();
-        databaseTree = new JTree(treeModel);
+        allSamples = treeModel.getAllSamples();
+        databaseTree = new JTree(treeModel.getRootTreeNode());
         databaseTree.addTreeSelectionListener(this);
         databaseTree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
         rightPanel.add(new JScrollPane(databaseTree));
@@ -166,30 +170,33 @@ public class DatabaseSelector extends JDialog implements ListSelectionListener, 
     public void actionPerformed(ActionEvent ae) {
         if (ae.getActionCommand().equals(MenuUtils.OK_BUTTON)) {
             setVisible(false);
-            TableNode node = (TableNode) databaseTree.getSelectionPath().getLastPathComponent();
+            String sampleName = databaseTree.getSelectionPath().getLastPathComponent().toString();
             try {
                 String parentNode = databaseTree.getSelectionPath().getParentPath().getLastPathComponent().toString();
-                DatabaseManager.getInstance().databaseChanged(parentNode, node.getSampleName());
-                SiteSet siteSet = Query.getSiteSetFromDatabase(node.getSampleName());
+                DatabaseManager.getInstance().databaseChanged(parentNode, sampleName);
+                SiteSet siteSet = Query.getSiteSetFromDatabase(sampleName);
                 selectedDataSet = (DataSet) dataSetList.getSelectedValue();
                 siteSet.setDataStore(selectedDataSet);
                 selectedDataSet.setSiteSet(siteSet);
                 dispose();
             } catch (RedException e) {
-                new CrashReporter(e);
+                dispose();
+                OptionDialogUtils.showErrorDialog(application,
+                    "Something wrong when you select sample '" + sampleName + "' to analyse, please try again.");
+                new DatabaseSelector(application);
                 logger.error("", e);
             } catch (SQLException e) {
-                logger.error("Database could not be changed to '" + node.getSampleName() + "'", e);
+                logger.error("Database could not be changed to '" + sampleName + "'", e);
             }
         } else if (ae.getActionCommand().equals(MenuUtils.IMPORT_BUTTON)) {
             setVisible(false);
             new DataImportDialog(application);
             dispose();
         } else if (ae.getActionCommand().equals(MenuUtils.DELETE_BUTTON)) {
-            TableNode lastComponent = (TableNode) databaseTree.getSelectionPath().getLastPathComponent();
+            String sampleName = databaseTree.getSelectionPath().getLastPathComponent().toString();
             String parentNode = databaseTree.getSelectionPath().getParentPath().getLastPathComponent().toString();
-            logger.info("Deleting the table '{}' and relative filters...", lastComponent.getTableName());
-            DatabaseManager.getInstance().deleteTableAndFilters(parentNode, lastComponent.getSampleName());
+            logger.info("Deleting the table '{}' and relative filters...", sampleName);
+            DatabaseManager.getInstance().deleteTableAndFilters(parentNode, sampleName);
             dispose();
             new DatabaseSelector(application);
         } else if (ae.getActionCommand().equals(MenuUtils.CANCEL_BUTTON)) {
@@ -200,8 +207,9 @@ public class DatabaseSelector extends JDialog implements ListSelectionListener, 
 
     @Override
     public void valueChanged(ListSelectionEvent e) {
-        if (databaseTree.getSelectionPath() != null && databaseTree.getSelectionPath().getLastPathComponent() instanceof TableNode && dataSetList != null &&
-                dataSetList.getSelectedValue() instanceof DataSet) {
+        if (databaseTree.getSelectionPath() != null && dataSetList != null
+            && allSamples.contains(databaseTree.getSelectionPath().getLastPathComponent().toString())
+            && dataSetList.getSelectedValue() instanceof DataSet) {
             okButton.setEnabled(true);
         } else {
             okButton.setEnabled(false);
@@ -210,13 +218,13 @@ public class DatabaseSelector extends JDialog implements ListSelectionListener, 
 
     @Override
     public void valueChanged(TreeSelectionEvent e) {
-        if (databaseTree.getSelectionPath() != null && databaseTree.getSelectionPath().getLastPathComponent() instanceof TableNode && dataSetList != null &&
-                dataSetList.getSelectedValue() instanceof DataSet) {
+        if (databaseTree.getSelectionPath() != null && dataSetList != null
+            && allSamples.contains(databaseTree.getSelectionPath().getLastPathComponent().toString())
+            && dataSetList.getSelectedValue() instanceof DataSet) {
             okButton.setEnabled(true);
         } else {
             okButton.setEnabled(false);
         }
     }
-
 
 }

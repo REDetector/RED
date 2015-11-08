@@ -314,7 +314,7 @@ public class DatabaseManager {
 
     /**
      * We provide this method to delete a sample and its relative filtration result from database.
-     * <p/>
+     * <p>
      * Here is an example: If the sample name is 'BJ22', then we will check all table from this database and find out
      * the table names which starts with 'BJ22_', we add an '_' to prevent from deleting the replicate sample like
      * 'BJ22N', 'BJ22T', 'BJ22P', etc.
@@ -372,9 +372,36 @@ public class DatabaseManager {
         }
     }
 
+    public List<String> getAllDatabase() {
+        List<String> tableLists = new ArrayList<String>();
+        DatabaseMetaData databaseMetaData;
+        try {
+            databaseMetaData = con.getMetaData();
+        } catch (SQLException e) {
+            OptionDialogUtils.showErrorDialog(RedApplication.getInstance(),
+                "Statement has not been created. Could not get meta data from database.");
+            logger.error("Statement has not been created. Could not get meta data from database.", e);
+            return new ArrayList<String>();
+        }
+        ResultSet rs;
+        try {
+            rs = databaseMetaData.getCatalogs();
+            while (rs.next()) {
+                // get table name
+                tableLists.add(rs.getString("TABLE_CAT"));
+            }
+            return tableLists;
+        } catch (SQLException e) {
+            OptionDialogUtils.showErrorDialog(RedApplication.getInstance(),
+                "Database does not exist. Please have a check in your database.");
+            logger.error("Database does not exist. Please have a check in your database.", e);
+            return new ArrayList<String>();
+        }
+    }
+
     /**
      * Query all relative tables to the sample from database.
-     * <p/>
+     * <p>
      * Here is an example: If the sample name is 'BJ22', then we will check all table from this database and find out
      * the table names which starts with 'BJ22_', we add an '_' to prevent from querying the replicate sample like
      * 'BJ22N', 'BJ22T', 'BJ22P', etc.
