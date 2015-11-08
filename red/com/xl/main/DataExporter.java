@@ -13,10 +13,6 @@
 
 package com.xl.main;
 
-/**
- * Created by Administrator on 2015/10/12.
- */
-
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -31,14 +27,14 @@ import org.slf4j.LoggerFactory;
 import com.xl.database.DatabaseManager;
 
 /**
- * Created by Administrator on 2015/1/12.
+ * Created by Administrator on 2015/10/12.
  */
 public class DataExporter {
     private static final Logger logger = LoggerFactory.getLogger(DataExporter.class);
     private DatabaseManager databaseManager = DatabaseManager.getInstance();
 
     public void exportData(String resultPath, String databaseName, String mode, String[] columns, String selection,
-        String[] selectionArgs) {
+                           String[] selectionArgs) {
         if (columns == null || columns.length == 0) {
             logger.warn("Incomplete parameters for columns");
             return;
@@ -63,7 +59,7 @@ public class DataExporter {
             PrintWriter pw = null;
             if (columns.length == 1 && columns[0].equalsIgnoreCase("all")) {
                 if (currentTable.contains(DatabaseManager.RNA_VCF_RESULT_TABLE_NAME)
-                    && !currentTable.contains(DatabaseManager.FILTER)) {
+                        && !currentTable.contains(DatabaseManager.FILTER)) {
                     logger.info("Export data for : " + builder.toString());
                     File f = new File(resultPath + File.separator + builder.toString());
                     try {
@@ -106,13 +102,13 @@ public class DataExporter {
                         logger.error("Error open the print writer at: " + f.getAbsolutePath(), e);
                         return;
                     }
-                    pw.println("chr\tstart\tend\tref_allele\talt_allele\tpvalue");
-                    rs = databaseManager.query(currentTable, new String[] { "chrom", "pos", "ref", "alt", "pvalue" },
-                        selection, selectionArgs);
+                    pw.println("chr\tstart\tend\tref_allele\talt_allele\tpvalue\talu");
+                    rs = databaseManager.query(currentTable, new String[]{"chrom", "pos", "ref", "alt", "pvalue", "alu"},
+                            selection, selectionArgs);
                     try {
                         while (rs.next()) {
                             pw.println(rs.getString(1).substring(3) + "\t" + rs.getInt(2) + "\t" + rs.getInt(2) + "\t"
-                                + rs.getString(3) + "\t" + rs.getString(4) + "\t" + rs.getString(5));
+                                    + rs.getString(3) + "\t" + rs.getString(4) + "\t" + rs.getString(5) + "\t" + rs.getString(6));
                         }
                     } catch (SQLException e) {
                         logger.warn("No results", e);
