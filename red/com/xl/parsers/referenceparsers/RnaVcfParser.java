@@ -43,7 +43,7 @@ public class RnaVcfParser extends AbstractParser {
     // private int chromColumn = 0;
     // private int posColumn = 1;
     // private int idColumn = 2;
-    // private int refColumn = 3;
+    private int refColumn = 3;
     private int altColumn = 4;
     // private int qualColumn = 5;
     // private int filterColumn = 6;
@@ -95,9 +95,14 @@ public class RnaVcfParser extends AbstractParser {
 
                 String[] sections = line.split("\\t");
 
+                if (sections[altColumn].equals(".") || sections[refColumn].length() != 1
+                    || sections[altColumn].length() != 1) {
+                    continue;
+                }
+
                 for (int i = formatColumnIndex + 1; i < columnLength; i++) {
 
-                    if (sections[altColumn].equals(".") || sections[i].contains(".")) {
+                    if (sections[i].contains(".")) {
                         continue;
                     }
 
