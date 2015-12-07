@@ -67,23 +67,19 @@ public class RepeatRegionsFilter2 implements Filter {
                 .executeSQL("insert into " + tempTable + " select * from " + repeatTable + " where type='SINE/Alu'");
             for (SiteBean site : repeatRegionSites) {
                 if (inRepeatRegion(site, tempTable)) {
-                    site.setIsAlu("T");
+                    site.setAlu('T');
                     aluRegionSites.add(site);
                 }
             }
 
             databaseManager.setAutoCommit(false);
             for (SiteBean site : nonRepeatRegionSites) {
-                databaseManager.executeSQL(
-                    "insert into " + currentTable + "(chrom,pos,id,ref,alt,qual,filter,info,gt,ad,dp,gq,pl,alu) "
-                        + "values( " + site.toString() + ")");
+                databaseManager.insertSiteBean(currentTable, site);
                 if (++count % DatabaseManager.COMMIT_COUNTS_PER_ONCE == 0)
                     databaseManager.commit();
             }
             for (SiteBean site : aluRegionSites) {
-                databaseManager.executeSQL(
-                    "insert into " + currentTable + "(chrom,pos,id,ref,alt,qual,filter,info,gt,ad,dp,gq,pl,alu) "
-                        + "values( " + site.toString() + ")");
+                databaseManager.insertSiteBean(currentTable, site);
                 if (++count % DatabaseManager.COMMIT_COUNTS_PER_ONCE == 0)
                     databaseManager.commit();
             }

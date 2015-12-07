@@ -13,9 +13,15 @@
 
 package com.xl.filter.denovo;
 
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
+import java.util.Vector;
 
+import com.xl.database.Query;
+import com.xl.datatypes.sites.SiteBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -44,8 +50,8 @@ public class EditingTypeFilter implements Filter {
      * homozygous at the same time.
      *
      * @param previousTable The table name of previous filter stored in the database.
-     * @param currentTable  The table name of this filter stored in the database.
-     * @param params        The reference base
+     * @param currentTable The table name of this filter stored in the database.
+     * @param params The reference base
      */
     @Override
     public void performFilter(String previousTable, String currentTable, Map<String, String> params) {
@@ -54,47 +60,74 @@ public class EditingTypeFilter implements Filter {
         }
 
         logger.info("Start executing Editing Type Filter..." + Timer.getCurrentTime());
+        String refSeqTable = DatabaseManager.SPLICE_JUNCTION_TABLE_NAME;
         try {
+            List<SiteBean> editingTypeSites = new ArrayList<SiteBean>();
             String refAlt = params.get(PARAMS_REF);
+            int count = 0;
             if (refAlt.equalsIgnoreCase("all")) {
-                StringBuilder stringBuilder = new StringBuilder();
-                stringBuilder.append("insert into ");
-                stringBuilder.append(currentTable);
-                stringBuilder.append(" select * from ");
-                stringBuilder.append(previousTable);
-                databaseManager.insertClause(stringBuilder.toString());
+                Vector<SiteBean> sites = Query.queryAllEditingInfo(previousTable);
+                for (SiteBean site : sites) {
+                    if (!inPositiveStrand(site, refSeqTable)) {
+                        site.setStrand('-');
+                    }
+                    editingTypeSites.add(site);
+                }
+                databaseManager.setAutoCommit(false);
+                for (SiteBean site : editingTypeSites) {
+                    databaseManager.insertSiteBean(currentTable, site);
+                    if (++count % DatabaseManager.COMMIT_COUNTS_PER_ONCE == 0)
+                        databaseManager.commit();
+                }
+                databaseManager.commit();
+                databaseManager.setAutoCommit(true);
             } else {
-                StringBuilder stringBuilder = new StringBuilder();
-                stringBuilder.append("insert into ");
-                stringBuilder.append(currentTable);
-                stringBuilder.append(" select * from ");
-                stringBuilder.append(previousTable);
-                stringBuilder.append(" WHERE REF='");
-                stringBuilder.append(refAlt.substring(0, 1));
-                stringBuilder.append("' AND ALT='");
-                stringBuilder.append(refAlt.substring(1));
-                stringBuilder.append("'");
-                // stringBuilder.append("' AND GT!='0/0'");
-                databaseManager.insertClause(stringBuilder.toString());
-
-                String refAlt2 = NegativeType.getNegativeStrandEditingType(refAlt);
-                stringBuilder = new StringBuilder();
-                stringBuilder.append("insert into ");
-                stringBuilder.append(currentTable);
-                stringBuilder.append(" select * from ");
-                stringBuilder.append(previousTable);
-                stringBuilder.append(" WHERE REF='");
-                stringBuilder.append(refAlt2.substring(0, 1));
-                stringBuilder.append("' AND ALT='");
-                stringBuilder.append(refAlt2.substring(1));
-                stringBuilder.append("'");
-                // stringBuilder.append("' AND GT!='0/0'");
-                databaseManager.insertClause(stringBuilder.toString());
+                char[] refAlts = refAlt.toCharArray();
+                char[] refAlts2 = NegativeType.getNegativeStrandEditingType(refAlt).toCharArray();
+                Vector<SiteBean> sites =
+                    Query.queryAllEditingInfo(previousTable, null, "(REF=? and ALT=?) or (REF=? and ALT=?)",
+                        new String[] { refAlts[0] + "", refAlts[1] + "", refAlts2[0] + "", refAlts2[1] + "" });
+                for (SiteBean site : sites) {
+                    if (inPositiveStrand(site, refSeqTable)) {
+                        if (site.getRef() == refAlts[0] && site.getAlt() == refAlts[1]) {
+                            editingTypeSites.add(site);
+                        }
+                    } else {
+                        if (site.getRef() == refAlts2[0] && site.getAlt() == refAlts2[1]) {
+                            site.setStrand('-');
+                            editingTypeSites.add(site);
+                        }
+                    }
+                }
+                databaseManager.setAutoCommit(false);
+                for (SiteBean site : editingTypeSites) {
+                    databaseManager.insertSiteBean(currentTable, site);
+                    if (++count % DatabaseManager.COMMIT_COUNTS_PER_ONCE == 0)
+                        databaseManager.commit();
+                }
+                databaseManager.commit();
+                databaseManager.setAutoCommit(true);
             }
         } catch (SQLException e) {
             logger.error("There is a syntax error for SQL clause", e);
         }
         logger.info("End executing Editing Type Filter..." + Timer.getCurrentTime());
+    }
+
+    private boolean inPositiveStrand(SiteBean site, String refSeqTable) {
+        ResultSet rs = databaseManager.query("select strand from " + refSeqTable + " where chrom='" + site.getChr()
+            + "' and begin<=" + site.getPos() + " and end>=" + site.getPos());
+        try {
+            if (rs != null && rs.next()) {
+                String strand = rs.getString(1);
+                if (strand.equals("-")) {
+                    return false;
+                }
+            }
+        } catch (SQLException e) {
+            return true;
+        }
+        return true;
     }
 
     @Override

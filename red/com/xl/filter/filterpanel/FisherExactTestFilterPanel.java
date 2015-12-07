@@ -111,7 +111,7 @@ public class FisherExactTestFilterPanel extends AbstractFilterPanel {
             }
 
         }
-        TableCreator.createFisherExactTestTable(parentList.getTableName(), linearTableName);
+        TableCreator.createFilterTable(parentList.getTableName(), linearTableName);
 
         Filter filter = new FisherExactTestFilter();
         Map<String, String> params = new HashMap<String, String>();

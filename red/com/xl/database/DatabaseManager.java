@@ -24,6 +24,7 @@ import java.util.Enumeration;
 import java.util.List;
 import java.util.Vector;
 
+import com.xl.datatypes.sites.SiteBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -587,6 +588,12 @@ public class DatabaseManager {
             return false;
         }
 
+    }
+
+    public void insertSiteBean(String table, SiteBean siteBean) throws SQLException {
+        executeSQL("insert into " + table
+            + "(chrom,pos,id,ref,alt,qual,filter,info,gt,ref_count,alt_count,alu,strand,p_value,fdr,level) "
+            + "values( " + siteBean.toString() + ")");
     }
 
     /**

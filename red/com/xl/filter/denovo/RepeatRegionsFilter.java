@@ -35,9 +35,6 @@ public class RepeatRegionsFilter implements Filter {
     /**
      * Perform repeat regions filter. Variants that were within repeat regions were excluded.
      *
-     * @param repeatTable The repeat file table name, it is constant.
-     * @param repeatResultTable The repeat result table
-     * @param aluResultTable The Alu result table
      * @param previousTable The previous table
      */
     @Override

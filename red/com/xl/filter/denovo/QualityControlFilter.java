@@ -57,20 +57,19 @@ public class QualityControlFilter implements Filter {
         logger.info("Start performing Quality Control Filter...\t" + Timer.getCurrentTime());
         try {
             int count = 0;
-            ResultSet rs = databaseManager.query(previousTable, new String[] { "chrom", "pos", "AD" }, null, null);
+            ResultSet rs = databaseManager.query(previousTable,
+                new String[] { "chrom", "pos", "REF_COUNT", "ALT_COUNT" }, null, null);
             List<SiteBean> siteBeans = new ArrayList<SiteBean>();
             while (rs.next()) {
-                if (rs.getString(3) != null) {
-                    SiteBean siteBean = new SiteBean(rs.getString(1), rs.getInt(2));
-                    siteBean.setAd(rs.getString(3));
-                    siteBeans.add(siteBean);
-                }
+                SiteBean siteBean = new SiteBean(rs.getString(1), rs.getInt(2));
+                siteBean.setRefCount(rs.getInt(3));
+                siteBean.setAltCount(rs.getInt(4));
+                siteBeans.add(siteBean);
             }
             databaseManager.setAutoCommit(false);
             for (SiteBean siteBean : siteBeans) {
-                String[] sections = siteBean.getAd().split("/");
-                int ref_n = Integer.parseInt(sections[0]);
-                int alt_n = Integer.parseInt(sections[1]);
+                int ref_n = siteBean.getRefCount();
+                int alt_n = siteBean.getAltCount();
                 if (ref_n + alt_n >= depth) {
                     // databaseManager.executeSQL("insert into " + currentTable + " (select * from " + previousTable
                     // + " where filter='PASS' and pos=" + siteBean.getPos() + " and qual >=" + quality

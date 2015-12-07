@@ -14,9 +14,13 @@
 package com.xl.filter.denovo;
 
 import com.xl.database.DatabaseManager;
+import com.xl.database.Query;
+import com.xl.database.TableCreator;
+import com.xl.datatypes.sites.Site;
 import com.xl.datatypes.sites.SiteBean;
 import com.xl.filter.Filter;
 import com.xl.utils.EmptyChecker;
+import com.xl.utils.NegativeType;
 import com.xl.utils.Timer;
 import net.sf.snver.pileup.util.math.FisherExact;
 import rcaller.RCaller;
@@ -25,9 +29,7 @@ import rcaller.RCode;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * The Class FisherExactTestFilter is a statistical filter to reduce the errors in detecting RNA editing sites caused by
@@ -39,6 +41,7 @@ public class FisherExactTestFilter implements Filter {
     public static final String PARAMS_STRING_P_VALUE_THRESHOLD = "pvalue";
     public static final String PARAMS_STRING_FDR_THRESHOLD = "fdr";
     public static final String PARAMS_STRING_EDITING_TYPE = "editingtype";
+    private boolean[] darnedInfos;
     /**
      * The database manager.
      */
@@ -50,27 +53,20 @@ public class FisherExactTestFilter implements Filter {
      * @param refTable Previous table name
      * @return a list that contains all information from a given table.
      */
-    private List<PValueInfo> getExpectedInfo(String refTable, String editingType) {
-        List<PValueInfo> valueInfos = new ArrayList<PValueInfo>();
+    private List<SiteBean> getExpectedInfo(String refTable, String editingType) {
         String knownRnaEditingTable = DatabaseManager.KNOWN_RNA_EDITING_TABLE_NAME;
         try {
             char[] editingTypes = editingType.toCharArray();
-            ResultSet rs = databaseManager.query(refTable, null, "ref=? and alt=?", new String[]{editingTypes[0] + "", editingTypes[1] + ""});
-            while (rs.next()) {
-                // 1.CHROM varchar(15),2.POS int,3.ID varchar(30),4.REF varchar(3),5.ALT varchar(5),6.QUAL
-                // float(8,2),7.FILTER text,8.INFO text,9.GT text, 10.AD text,11.DP text,12.GQ text,13.PL text,14.alu
-                // varchar(1)
-                PValueInfo info =
-                        new PValueInfo(rs.getString(1), rs.getInt(2), rs.getString(3), rs.getString(4).charAt(0), rs
-                                .getString(5).charAt(0), rs.getFloat(6), rs.getString(7), rs.getString(8), rs.getString(9),
-                                rs.getString(10), rs.getString(11), rs.getString(12), rs.getString(13), rs.getString(14));
-                String[] sections = info.getAd().split("/");
-                info.refCount = Integer.parseInt(sections[0]);
-                info.altCount = Integer.parseInt(sections[1]);
-                valueInfos.add(info);
-            }
-            if (EmptyChecker.isEmptyList(valueInfos)) {
-                return valueInfos;
+            char[] negativeEditingTypes = NegativeType.getNegativeStrandEditingType(editingType).toCharArray();
+
+            Vector<SiteBean> siteBeans = Query.queryAllEditingInfo(refTable, null,
+                "(ref=? and alt=? and strand=?) or (ref=? and alt=? and strand=?)", new String[] { editingTypes[0] + "",
+                    editingTypes[1] + "", "+", negativeEditingTypes[0] + "", negativeEditingTypes[1] + "", "-" });
+            darnedInfos = new boolean[siteBeans.size()];
+            Arrays.fill(darnedInfos, false);
+
+            if (EmptyChecker.isEmptyList(siteBeans)) {
+                return siteBeans;
             }
 
             StringBuilder stringBuilder = new StringBuilder("select ");
@@ -82,73 +78,67 @@ public class FisherExactTestFilter implements Filter {
             stringBuilder.append(" ON ");
             stringBuilder.append(refTable).append(".chrom=").append(knownRnaEditingTable).append(".chrom AND ");
             stringBuilder.append(refTable).append(".pos=").append(knownRnaEditingTable).append(".pos AND ");
-            stringBuilder.append("(").append(knownRnaEditingTable).append(".ref='").append(editingTypes[0]).append("' AND ")
-                    .append(knownRnaEditingTable).append(".alt='").append(editingTypes[1]).append("')");
+            stringBuilder.append("(").append(knownRnaEditingTable).append(".ref='").append(editingTypes[0])
+                .append("' AND ").append(knownRnaEditingTable).append(".alt='").append(editingTypes[1]).append("')");
             // select refTable.* from refTable INNER JOIN pvalueTable ON refTable.chrom=pvalueTable.chrom and
             // refTable.pos=pvalueTable.coordinate
-            rs = databaseManager.query(stringBuilder.toString());
+            ResultSet rs = databaseManager.query(stringBuilder.toString());
             while (rs.next()) {
-                for (PValueInfo info : valueInfos) {
+                for (int i = 0, len = siteBeans.size(); i < len; i++) {
+                    SiteBean info = siteBeans.get(i);
                     if (info.getChr().equals(rs.getString(1)) && info.getPos() == rs.getInt(2)) {
-                        info.setInDarnedDB(true);
+                        darnedInfos[i] = true;
                         break;
                     }
                 }
+
             }
-            return valueInfos;
+            return siteBeans;
 
         } catch (SQLException e) {
             e.printStackTrace();
-            return new ArrayList<PValueInfo>();
+            return new ArrayList<SiteBean>();
         }
     }
 
     /**
      * Calculate p-values for all sites from previous filter.
      *
-     * @param fetResultTable The fisher exact test table
-     * @param previousTable  Previous table name
+     * @param previousTable Previous table name
      * @return the list which have added level and p-value information from the last list (expected list).
      */
-    private List<PValueInfo> executeFETFilter(String previousTable, String fetResultTable, String refAlt) {
+    private List<SiteBean> executeFETFilter(String previousTable, String refAlt) {
         logger.info("Start performing Fisher's Exact Test Filter...\t" + Timer.getCurrentTime());
-        List<PValueInfo> valueInfos = getExpectedInfo(previousTable, refAlt);
-        if (EmptyChecker.isEmptyList(valueInfos)) {
-            return valueInfos;
+        List<SiteBean> siteBeans = getExpectedInfo(previousTable, refAlt);
+        if (EmptyChecker.isEmptyList(siteBeans)) {
+            logger.warn("Empty list of site beans");
+            return siteBeans;
         }
         int knownAlt = 0;
         int knownRef = 0;
-        for (PValueInfo info : valueInfos) {
-            if (info.isInDarnedDB) {
-                knownAlt += info.altCount;
-                knownRef += info.refCount;
+        for (int i = 0, len = siteBeans.size(); i < len; i++) {
+            if (darnedInfos[i]) {
+                knownAlt += siteBeans.get(i).getAltCount();
+                knownRef += siteBeans.get(i).getRefCount();
             } else {
-                knownRef += info.altCount + info.refCount;
+                knownRef += siteBeans.get(i).getAltCount() + siteBeans.get(i).getRefCount();
             }
         }
-        knownAlt = Math.round(knownAlt / valueInfos.size());
-        knownRef = Math.round(knownRef / valueInfos.size());
+
+        knownAlt = Math.round(knownAlt / siteBeans.size());
+        knownRef = Math.round(knownRef / siteBeans.size());
         FisherExact fisherExact = new FisherExact(1000);
         DecimalFormat dF = new DecimalFormat("#.###");
-        for (PValueInfo pValueInfo : valueInfos) {
-            int altCount = pValueInfo.altCount;
-            int refCount = pValueInfo.refCount;
+        for (SiteBean siteBean : siteBeans) {
+            int altCount = siteBean.getAltCount();
+            int refCount = siteBean.getRefCount();
             double pValue = fisherExact.getTwoTailedP(refCount, altCount, knownRef, knownAlt);
             double level = (double) altCount / (altCount + refCount);
-            pValueInfo.setPValue(pValue);
-            pValueInfo.setLevel(level);
-            try {
-                databaseManager.executeSQL("insert into " + fetResultTable
-                        + "(chrom,pos,id,ref,alt,qual,filter,info,gt,ad,dp,gq,pl,alu,level,pvalue) " + "values( "
-                        + pValueInfo.toString() + "," + dF.format(level) + "," + pValue + ")");
-            } catch (SQLException e) {
-                logger.error("Error execute sql clause in " + FisherExactTestFilter.class.getName()
-                        + ":executeFETFilter()", e);
-                return new ArrayList<PValueInfo>();
-            }
+            siteBean.setPValue(pValue);
+            siteBean.setLevel(Double.parseDouble(dF.format(level)));
         }
         logger.info("End performing Fisher's Exact Test Filter...\t" + Timer.getCurrentTime());
-        return valueInfos;
+        return siteBeans;
     }
 
     /**
@@ -156,19 +146,19 @@ public class FisherExactTestFilter implements Filter {
      * the threshold.
      *
      * @param previousTable Previous table name
-     * @param currentTable  The fisher exact test table
-     * @param params        The R script path, which is used to calculate FDR;The threshold of p-value;The threshold of FDR;The
-     *                      Editing type of RNA editing.
+     * @param currentTable The fisher exact test table
+     * @param params The R script path, which is used to calculate FDR;The threshold of p-value;The threshold of FDR;The
+     *            Editing type of RNA editing.
      */
     @Override
     public void performFilter(String previousTable, String currentTable, Map<String, String> params) {
         if (params == null || params.size() == 0) {
             return;
         } else if (params.size() != 4) {
-            logger.error("Args " + params.toString()
-                    + " for Fisher's Exact Test Filter are incomplete, please have a check");
-            throw new IllegalArgumentException("Args " + params.toString()
-                    + " for Fisher's Exact Test Filter are incomplete, please have a check");
+            logger.error(
+                "Args " + params.toString() + " for Fisher's Exact Test Filter are incomplete, please have a check");
+            throw new IllegalArgumentException(
+                "Args " + params.toString() + " for Fisher's Exact Test Filter are incomplete, please have a check");
         }
         String rScript = params.get(PARAMS_STRING_R_SCRIPT_PATH);
         String pvalueThreshold = params.get(PARAMS_STRING_P_VALUE_THRESHOLD);
@@ -182,20 +172,21 @@ public class FisherExactTestFilter implements Filter {
             caller.setRExecutable(rScript);
         }
         RCode code = new RCode();
-        List<PValueInfo> pValueList;
+        List<SiteBean> siteBeans;
         if (type.equalsIgnoreCase("all")) {
-            String[] editingTypes = new String[]{"AG", "AC", "AT", "CG", "CT", "CA", "GA", "GC", "GT", "TC", "TG", "TA"};
-            pValueList = new ArrayList<PValueInfo>();
+            String[] editingTypes =
+                new String[] { "AG", "AC", "AT", "CG", "CT", "CA", "GA", "GC", "GT", "TC", "TG", "TA" };
+            siteBeans = new ArrayList<SiteBean>();
             for (String editingType : editingTypes) {
-                List<PValueInfo> valueInfo = executeFETFilter(previousTable, currentTable, editingType);
-                pValueList.addAll(valueInfo);
+                List<SiteBean> valueInfo = executeFETFilter(previousTable, editingType);
+                siteBeans.addAll(valueInfo);
             }
         } else {
-            pValueList = executeFETFilter(previousTable, currentTable, type);
+            siteBeans = executeFETFilter(previousTable, type);
         }
-        double[] pValueArray = new double[pValueList.size()];
-        for (int i = 0, len = pValueList.size(); i < len; i++) {
-            pValueArray[i] = pValueList.get(i).getPvalue();
+        double[] pValueArray = new double[siteBeans.size()];
+        for (int i = 0, len = siteBeans.size(); i < len; i++) {
+            pValueArray[i] = siteBeans.get(i).getPvalue();
         }
         code.addDoubleArray("parray", pValueArray);
         code.addRCode("result<-p.adjust(parray,method='fdr',length(parray))");
@@ -206,17 +197,29 @@ public class FisherExactTestFilter implements Filter {
             caller.runAndReturnResultOnline("result");
         }
         double[] results = caller.getParser().getAsDoubleArray("result");
+        for (int i = 0; i < results.length; i++) {
+            siteBeans.get(i).setFdr(results[i]);
+        }
         caller.deleteTempFiles();
         databaseManager.setAutoCommit(false);
+        DatabaseManager.getInstance().deleteTable(currentTable + "_raw");
+        TableCreator.createFilterTable(previousTable, currentTable + "_raw");
         try {
-            for (int i = 0, len = results.length; i < len; i++) {
-                databaseManager.executeSQL("update " + currentTable + " set fdr=" + results[i] + " where chrom='"
-                        + pValueList.get(i).getChr() + "' " + "and pos=" + pValueList.get(i).getPos());
+            int count = 0;
+            for (SiteBean site : siteBeans) {
+                if (site.getPvalue() >= 0 && site.getPvalue() <= 1 && site.getFdr() >= 0 && site.getFdr() <= 1) {
+                    databaseManager.insertSiteBean(currentTable + "_raw", site);
+                    if (++count % DatabaseManager.COMMIT_COUNTS_PER_ONCE == 0) {
+                        databaseManager.commit();
+                    }
+                } else {
+                    logger.info(site.getPvalue() + " " + site.getFdr());
+                }
             }
             databaseManager.commit();
             databaseManager.setAutoCommit(true);
-            databaseManager.executeSQL("delete from " + currentTable + " where (pvalue > " + pvalueThreshold
-                    + ") || (fdr > " + fdrThreshold + ")");
+            databaseManager.executeSQL("insert into " + currentTable + " select * from " + currentTable
+                + "_raw where (p_value <= " + pvalueThreshold + ") and (fdr <= " + fdrThreshold + ")");
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -226,31 +229,5 @@ public class FisherExactTestFilter implements Filter {
     @Override
     public String getName() {
         return DatabaseManager.FET_FILTER_RESULT_TABLE_NAME;
-    }
-
-    /**
-     * A bean only for calculating p-value.
-     */
-    private class PValueInfo extends SiteBean {
-        public boolean isInDarnedDB = false;
-        public int refCount = 0;
-        public int altCount = 0;
-
-        public PValueInfo(String chr, int pos, String id, char ref, char alt, float qual, String filter, String info,
-                          String gt, String ad, String dp, String gq, String pl, String alu) {
-            super(chr, pos, id, ref, alt, qual, filter, info, gt, ad, dp, gq, pl, alu);
-        }
-
-        public void setInDarnedDB(boolean isInDarnedDB) {
-            this.isInDarnedDB = isInDarnedDB;
-        }
-
-        @Override
-        public String toString() {
-
-            return "'" + getChr() + "'," + getPos() + ",'" + getId() + "','" + getRef() + "','" + getAlt() + "',"
-                    + getQual() + ",'" + getFilter() + "'," + "'" + getInfo() + "','" + getGt() + "','" + getAd() + "','"
-                    + getDp() + "','" + getGq() + "','" + getPl() + "','" + getIsAlu() + "'";
-        }
     }
 }

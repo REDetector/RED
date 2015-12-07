@@ -72,9 +72,7 @@ public class SpliceJunctionFilter2 implements Filter {
             }
             databaseManager.setAutoCommit(false);
             for (SiteBean site : spliceJunctionSites) {
-                databaseManager.executeSQL(
-                    "insert into " + currentTable + "(chrom,pos,id,ref,alt,qual,filter,info,gt,ad,dp,gq,pl,alu) "
-                        + "values( " + site.toString() + ")");
+                databaseManager.insertSiteBean(currentTable, site);
                 if (++count % DatabaseManager.COMMIT_COUNTS_PER_ONCE == 0)
                     databaseManager.commit();
             }
@@ -96,7 +94,7 @@ public class SpliceJunctionFilter2 implements Filter {
             int begin = rs.getInt(1);
             int end = rs.getInt(2);
             String type = rs.getString(3);
-            return type.equals("SINE/Alu")
+            return type.equals("CDS")
                 && ((pos > begin - edge && pos < begin + edge) || (pos > end - edge && pos < end + edge));
         }
         return false;

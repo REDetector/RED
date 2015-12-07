@@ -34,7 +34,7 @@ public class DataExporter {
     private DatabaseManager databaseManager = DatabaseManager.getInstance();
 
     public void exportData(String resultPath, String databaseName, String mode, String[] columns, String selection,
-                           String[] selectionArgs) {
+        String[] selectionArgs) {
         if (columns == null || columns.length == 0) {
             logger.warn("Incomplete parameters for columns");
             return;
@@ -59,7 +59,7 @@ public class DataExporter {
             PrintWriter pw = null;
             if (columns.length == 1 && columns[0].equalsIgnoreCase("all")) {
                 if (currentTable.contains(DatabaseManager.RNA_VCF_RESULT_TABLE_NAME)
-                        && !currentTable.contains(DatabaseManager.FILTER)) {
+                    && !currentTable.contains(DatabaseManager.FILTER)) {
                     logger.info("Export data for : " + builder.toString());
                     File f = new File(resultPath + File.separator + builder.toString());
                     try {
@@ -102,20 +102,22 @@ public class DataExporter {
                         logger.error("Error open the print writer at: " + f.getAbsolutePath(), e);
                         return;
                     }
-                    pw.println("chr\tstart\tend\tref_allele\talt_allele\tpvalue\talu");
-                    rs = databaseManager.query(currentTable, new String[]{"chrom", "pos", "ref", "alt", "pvalue", "alu"},
-                            selection, selectionArgs);
+                    pw.println("chr\tpos\tstrand\tref\talt\tpvalue\tfdr\talu");
+                    rs = databaseManager.query(currentTable,
+                        new String[] { "chrom", "pos", "strand", "ref", "alt", "pvalue", "fdr", "alu" }, selection,
+                        selectionArgs);
                     try {
                         while (rs.next()) {
-                            pw.println(rs.getString(1).substring(3) + "\t" + rs.getInt(2) + "\t" + rs.getInt(2) + "\t"
-                                    + rs.getString(3) + "\t" + rs.getString(4) + "\t" + rs.getString(5) + "\t" + rs.getString(6));
+                            pw.println(rs.getString(1) + "\t" + rs.getInt(2) + "\t" + rs.getString(3) + "\t"
+                                + rs.getString(4) + "\t" + rs.getString(5) + "\t" + rs.getString(6) + "\t"
+                                + rs.getString(7) + "\t" + rs.getString(8));
                         }
                     } catch (SQLException e) {
                         logger.warn("No results", e);
                     }
                 }
             } else {
-                if (currentTable.contains(DatabaseManager.FET_FILTER_RESULT_TABLE_NAME)) {
+                if (currentTable.endsWith(DatabaseManager.EDITING_TYPE_FILTER_RESULT_TABLE_NAME)) {
                     File f = new File(resultPath + File.separator + builder.toString());
                     try {
                         pw = new PrintWriter(new FileWriter(f));

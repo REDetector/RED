@@ -46,25 +46,18 @@ public class TableCreator {
         return true;
     }
 
-    /**
-     * Create a specific table for Fisher Exact Test Filter which have added information (i.e., level, p-value and fdr)
-     * to the standard filter table.
-     *
-     * @param tableName Table name of FETFilter.
-     */
-    public static boolean createFisherExactTestTable(String refTable, String tableName) {
-        if (createFilterTable(refTable, tableName)) {
-            try {
-                databaseManager
-                    .executeSQL("alter table " + tableName + " add level float,add pvalue float,add fdr float;");
-                return true;
-            } catch (SQLException e) {
-                logger.error("Can not create Fisher Exact Test Table.", e);
-                return false;
-            }
-        } else {
-            return false;
+    public static boolean createRnaVcfTable(String tableName) {
+        String sqlClause = null;
+        try {
+            sqlClause = "create table if not exists " + tableName
+                + "(CHROM varchar(30), POS int, ID varchar(30),REF varchar(5),ALT varchar(5),QUAL float(10,2),FILTER text,"
+                + "INFO text,GT varchar(10),REF_COUNT int,ALT_COUNT int,ALU varchar(1) default 'F',"
+                + "STRAND varchar(1) default '+',P_VALUE float(10,8) default -1,FDR float(10,8) default -1,LEVEL float(10,8) default -1,index(chrom,pos))";
+            databaseManager.executeSQL(sqlClause);
+        } catch (SQLException e) {
+            logger.error("There is a syntax error for SQL clause: " + sqlClause, e);
         }
+        return true;
     }
 
     /**

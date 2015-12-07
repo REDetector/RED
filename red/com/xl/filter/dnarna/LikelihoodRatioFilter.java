@@ -58,27 +58,28 @@ public class LikelihoodRatioFilter implements Filter {
         double threshold = Double.parseDouble(params.get(PARAMS_DOUBLE_LLR_THRESHOLD));
         logger.info("Start performing Likelihood Rate Test Filter...\t" + Timer.getCurrentTime());
         try {
-            ResultSet rs = databaseManager
-                .query("select " + previousTable + ".chrom," + previousTable + ".pos," + previousTable + ".AD," + ""
-                    + dnaVcfTable + ".qual from " + previousTable + "," + dnaVcfTable + " WHERE " + previousTable
-                    + ".chrom=" + dnaVcfTable + ".chrom AND " + previousTable + ".pos=" + dnaVcfTable + ".pos");
+            ResultSet rs = databaseManager.query("select " + previousTable + ".chrom," + previousTable + ".pos,"
+                + previousTable + ".ref_count," + previousTable + ".alt_count," + dnaVcfTable + ".qual from "
+                + previousTable + "," + dnaVcfTable + " WHERE " + previousTable + ".chrom=" + dnaVcfTable
+                + ".chrom AND " + previousTable + ".pos=" + dnaVcfTable + ".pos");
             List<SiteBean> siteBeans = new ArrayList<SiteBean>();
             while (rs.next()) {
                 String chr = rs.getString(1);
                 int pos = rs.getInt(2);
-                String ad = rs.getString(3);
-                float qual = rs.getFloat(4);
+                int refCount = rs.getInt(3);
+                int altCount = rs.getInt(4);
+                float qual = rs.getFloat(5);
                 SiteBean pb = new SiteBean(chr, pos);
-                pb.setAd(ad);
+                pb.setRefCount(refCount);
+                pb.setAltCount(altCount);
                 pb.setQual(qual);
                 siteBeans.add(pb);
             }
             databaseManager.setAutoCommit(false);
             int count = 0;
             for (SiteBean siteBean : siteBeans) {
-                String[] section = siteBean.getAd().split("/");
-                int ref = Integer.parseInt(section[0]);
-                int alt = Integer.parseInt(section[1]);
+                int ref = siteBean.getRefCount();
+                int alt = siteBean.getAltCount();
                 if (ref + alt > 0) {
                     double f_ml = 1.0 * ref / (ref + alt);
                     double y = Math.pow(f_ml, ref) * Math.pow(1 - f_ml, alt);

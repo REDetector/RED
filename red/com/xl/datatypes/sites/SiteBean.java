@@ -1,19 +1,14 @@
 /*
- * RED: RNA Editing Detector
- *     Copyright (C) <2014>  <Xing Li>
+ * RED: RNA Editing Detector Copyright (C) <2014> <Xing Li>
  *
- *     RED is free software: you can redistribute it and/or modify
- *     it under the terms of the GNU General Public License as published by
- *     the Free Software Foundation, either version 3 of the License, or
- *     (at your option) any later version.
+ * RED is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as
+ * published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
- *     RED is distributed in the hope that it will be useful,
- *     but WITHOUT ANY WARRANTY; without even the implied warranty of
- *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *     GNU General Public License for more details.
+ * RED is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  *
- *     You should have received a copy of the GNU General Public License
- *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU General Public License along with this program. If not, see
+ * <http://www.gnu.org/licenses/>.
  */
 
 package com.xl.datatypes.sites;
@@ -33,10 +28,9 @@ public class SiteBean {
     private String filter;
     private String info;
     private String gt;
-    private String ad;
-    private String dp;
-    private String gq;
-    private String pl;
+    private int refCount;
+    private int altCount;
+
     /**
      * The RNA editing level, level = ALT / ( REF + ALT ).
      */
@@ -52,10 +46,32 @@ public class SiteBean {
     /**
      * Since we need to divide the coding region and Alu region, we set a flag for this.
      */
-    private String isAlu;
+    private char alu = 'F';
 
-    public SiteBean(String chr, int pos, String id, char ref, char alt, float qual, String filter, String info, String gt, String ad, String dp, String gq,
-                    String pl, String isAlu) {
+    private char strand = '+';
+
+    /**
+     * "create table if not exists " + tableName +
+     * "(CHROM varchar(30), POS int, ID varchar(30),REF varchar(5),ALT varchar(5),QUAL float(10,2),FILTER text," +
+     * "INFO text,GT varchar(10),REF_COUNT int,ALT_COUNT int,ALU varchar(1) default 'F'," +
+     * "STRAND varchar(1) default '+',P_VALUE float(10,8),FDR float(10,8),LEVEL float(10,8),index(chrom,pos))";
+     * 
+     * @param chr
+     * @param pos
+     * @param id
+     * @param ref
+     * @param alt
+     * @param qual
+     * @param filter
+     * @param info
+     * @param gt
+     * @param refCount
+     * @param altCount
+     * @param alu
+     * @param strand
+     */
+    public SiteBean(String chr, int pos, String id, char ref, char alt, float qual, String filter, String info,
+        String gt, int refCount, int altCount, char alu, char strand, float pValue, float fdr, float level) {
         this.chr = chr;
         this.pos = pos;
         this.id = id;
@@ -65,11 +81,13 @@ public class SiteBean {
         this.filter = filter;
         this.info = info;
         this.gt = gt;
-        this.ad = ad;
-        this.dp = dp;
-        this.gq = gq;
-        this.pl = pl;
-        this.isAlu = isAlu;
+        this.refCount = refCount;
+        this.altCount = altCount;
+        this.alu = alu;
+        this.strand = strand;
+        this.pvalue = pValue;
+        this.fdr = fdr;
+        this.level = level;
     }
 
     public SiteBean(String chr, int pos) {
@@ -79,14 +97,6 @@ public class SiteBean {
 
     public String getChr() {
         return chr;
-    }
-
-    public String getIsAlu() {
-        return isAlu;
-    }
-
-    public void setIsAlu(String isAlu) {
-        this.isAlu = isAlu;
     }
 
     public int getPos() {
@@ -149,38 +159,6 @@ public class SiteBean {
         this.gt = gt;
     }
 
-    public String getAd() {
-        return ad;
-    }
-
-    public void setAd(String ad) {
-        this.ad = ad;
-    }
-
-    public String getDp() {
-        return dp;
-    }
-
-    public void setDp(String dp) {
-        this.dp = dp;
-    }
-
-    public String getGq() {
-        return gq;
-    }
-
-    public void setGq(String gq) {
-        this.gq = gq;
-    }
-
-    public String getPl() {
-        return pl;
-    }
-
-    public void setPl(String pl) {
-        this.pl = pl;
-    }
-
     public double getPvalue() {
         return pvalue;
     }
@@ -205,10 +183,42 @@ public class SiteBean {
         this.level = level;
     }
 
+    public int getRefCount() {
+        return refCount;
+    }
+
+    public void setRefCount(int refCount) {
+        this.refCount = refCount;
+    }
+
+    public int getAltCount() {
+        return altCount;
+    }
+
+    public void setAltCount(int altCount) {
+        this.altCount = altCount;
+    }
+
+    public char getAlu() {
+        return alu;
+    }
+
+    public void setAlu(char alu) {
+        this.alu = alu;
+    }
+
+    public char getStrand() {
+        return strand;
+    }
+
+    public void setStrand(char strand) {
+        this.strand = strand;
+    }
+
     @Override
     public String toString() {
-        return "'" + getChr() + "'," + getPos() + ",'" + getId() + "','" + getRef() + "','" + getAlt() + "',"
-                + getQual() + ",'" + getFilter() + "'," + "'" + getInfo() + "','" + getGt() + "','" + getAd() + "','"
-                + getDp() + "','" + getGq() + "','" + getPl() + "','" + getIsAlu() + "'";
+        return "'" + chr + "'," + pos + ",'" + id + "','" + ref + "','" + alt + "'," + qual + ",'" + filter + "'," + "'"
+            + info + "','" + gt + "'," + refCount + "," + altCount + ",'" + alu + "','" + strand + "'," + pvalue + ","
+            + fdr + "," + level;
     }
 }

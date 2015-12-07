@@ -508,11 +508,7 @@ public class RedCmdLineTool {
     }
 
     public static void createFilter(String currentFilterName, String previousTable, String currentTable) {
-        if (currentFilterName.equals(DatabaseManager.FET_FILTER_RESULT_TABLE_NAME)) {
-            TableCreator.createFisherExactTestTable(previousTable, currentTable);
-        } else {
-            TableCreator.createFilterTable(previousTable, currentTable);
-        }
+        TableCreator.createFilterTable(previousTable, currentTable);
     }
 
     public static void printVersion() {
