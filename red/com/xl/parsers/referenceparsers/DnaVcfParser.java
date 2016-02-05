@@ -96,8 +96,7 @@ public class DnaVcfParser extends AbstractParser {
 
                 for (int i = formatColumnIndex + 1; i < columnLength; i++) {
 
-                    if (!sections[altColumn].equals(".") || sections[i].contains(".")
-                        || !sections[filterColumn].toUpperCase().equals("PASS")) {
+                    if (!sections[altColumn].equals(".") || sections[i].contains(".")) {
                         continue;
                     }
 

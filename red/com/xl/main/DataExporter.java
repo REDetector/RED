@@ -104,7 +104,7 @@ public class DataExporter {
                     }
                     pw.println("chr\tpos\tstrand\tref\talt\tpvalue\tfdr\talu");
                     rs = databaseManager.query(currentTable,
-                        new String[] { "chrom", "pos", "strand", "ref", "alt", "pvalue", "fdr", "alu" }, selection,
+                        new String[] { "chrom", "pos", "strand", "ref", "alt", "p_value", "fdr", "alu" }, selection,
                         selectionArgs);
                     try {
                         while (rs.next()) {
