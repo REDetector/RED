@@ -119,6 +119,8 @@ public class UpdateChecker {
             URL updateURL = new URL(Global.VERSION_PAGE);
 
             URLConnection connection = updateURL.openConnection();
+            connection.setConnectTimeout(10000);
+            connection.setReadTimeout(10000);
             connection.setUseCaches(false);
 
             DataInputStream d = new DataInputStream(new BufferedInputStream(connection.getInputStream()));
