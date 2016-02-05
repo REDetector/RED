@@ -1,19 +1,14 @@
 /*
- * RED: RNA Editing Detector
- *     Copyright (C) <2014>  <Xing Li>
+ * RED: RNA Editing Detector Copyright (C) <2014> <Xing Li>
  *
- *     RED is free software: you can redistribute it and/or modify
- *     it under the terms of the GNU General Public License as published by
- *     the Free Software Foundation, either version 3 of the License, or
- *     (at your option) any later version.
+ * RED is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as
+ * published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
- *     RED is distributed in the hope that it will be useful,
- *     but WITHOUT ANY WARRANTY; without even the implied warranty of
- *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *     GNU General Public License for more details.
+ * RED is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  *
- *     You should have received a copy of the GNU General Public License
- *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU General Public License along with this program. If not, see
+ * <http://www.gnu.org/licenses/>.
  */
 package com.xl.preferences;
 
@@ -21,8 +16,8 @@ import java.io.*;
 import java.util.Properties;
 
 /**
- * A set of RedPreferences, both temporary and permanent which are used throughout RED. Permanent RedPreferences can be loaded from and saved to a
- * RedPreferences file allowing persistence between sessions.
+ * A set of RedPreferences, both temporary and permanent which are used throughout RED. Permanent RedPreferences can be
+ * loaded from and saved to a RedPreferences file allowing persistence between sessions.
  */
 public class RedPreferences {
     /**
@@ -58,9 +53,13 @@ public class RedPreferences {
     private boolean checkForUpdates = true;
 
     /**
-     * Instantiates a redPreferences object. Only ever called once from inside this class. External access is via the getInstnace() method.
+     * Instantiates a redPreferences object. Only ever called once from inside this class. External access is via the
+     * getInstnace() method.
      */
     private RedPreferences() {
+    }
+
+    public void init() {
         try {
             preferencesFile = new File(locationPreferences.getProjectSaveLocation() + File.separator + "red_prefs.txt");
             if (preferencesFile.exists()) {
@@ -176,8 +175,9 @@ public class RedPreferences {
     }
 
     /**
-     * Applies the stored proxy information to the environment of the current session so it is picked up automatically by any network calls made within the
-     * program. No further configuration is required within classes requiring network access.
+     * Applies the stored proxy information to the environment of the current session so it is picked up automatically
+     * by any network calls made within the program. No further configuration is required within classes requiring
+     * network access.
      */
     private void updateProxyInfo() {
         if (useProxy) {
@@ -188,6 +188,5 @@ public class RedPreferences {
             System.getProperties().put("proxySet", "false");
         }
     }
-
 
 }

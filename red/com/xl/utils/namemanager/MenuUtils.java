@@ -62,6 +62,7 @@ public class MenuUtils {
     public static final String SET_ZOOM_LEVEL = "Set Zoom Level...";
     public static final String MOVE_LEFT = "Move Left";
     public static final String MOVE_RIGHT = "Move Right";
+    public static final String FULL_SCREEN = "Full Screen";
     public static final String GOTO = "Goto";
     public static final String GOTO_POSITION = "Goto Position...";
     public static final String GOTO_WINDOW = "Goto Window...";

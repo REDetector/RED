@@ -27,4 +27,7 @@ public class EmptyChecker {
         return arrays == null || arrays.length == 0;
     }
 
+    public static boolean isEmptyText(String text) {
+        return null == text || 0 == text.length();
+    }
 }

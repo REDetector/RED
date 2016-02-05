@@ -13,6 +13,17 @@
 
 package com.xl.main;
 
+import java.awt.*;
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Vector;
+
+import javax.swing.*;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.xl.database.DatabaseListener;
 import com.xl.database.DatabaseManager;
 import com.xl.datatypes.DataCollection;
@@ -38,6 +49,7 @@ import com.xl.exception.RedException;
 import com.xl.interfaces.AnnotationCollectionListener;
 import com.xl.interfaces.DataStoreChangedListener;
 import com.xl.interfaces.ProgressListener;
+import com.xl.macoxs.MacManager;
 import com.xl.menu.RedMenu;
 import com.xl.net.genomes.GenomeDownloader;
 import com.xl.parsers.annotationparsers.IgvGenomeParser;
@@ -47,15 +59,6 @@ import com.xl.preferences.DisplayPreferences;
 import com.xl.preferences.LocationPreferences;
 import com.xl.preferences.RedPreferences;
 import com.xl.utils.ui.OptionDialogUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import javax.swing.*;
-import java.awt.*;
-import java.io.File;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Vector;
 
 /**
  * The Class RedApplication is the first appeared panel when program starts. It contains and manages all components for
@@ -139,19 +142,36 @@ public class RedApplication extends JFrame implements ProgressListener, DataStor
      */
     private File fileToLoad = null;
 
+    private final MacManager macManager = MacManager.getInstance();
+
     private RedApplication() {
+        try {
+            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+        } catch (ClassNotFoundException e) {
+            logger.info("ClassNotFoundException: " + e.getMessage());
+        } catch (InstantiationException e) {
+            logger.info("InstantiationException: " + e.getMessage());
+        } catch (IllegalAccessException e) {
+            logger.info("IllegalAccessException: " + e.getMessage());
+        } catch (UnsupportedLookAndFeelException e) {
+            logger.info("UnsupportedLookAndFeelException: " + e.getMessage());
+        }
+        System.setProperty("apple.laf.useScreenMenuBar", "true");
+        // We need to initiate the preferences first.
+        RedPreferences.getInstance().init();
         setTitle("RED");
         setSize(Toolkit.getDefaultToolkit().getScreenSize().width / 3 * 2,
             Toolkit.getDefaultToolkit().getScreenSize().height / 3 * 2);
         setLocationRelativeTo(null);
+        getContentPane().setLayout(new BorderLayout());
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setExtendedState(getExtendedState() | MAXIMIZED_BOTH);
 
-        // We need to initiate the preferences first.
-        RedPreferences.getInstance();
         menu = new RedMenu(this);
-        setJMenuBar(menu);
+        setMenu(menu);
 
-        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        getContentPane().add(menu.toolbarPanel(), BorderLayout.NORTH);
+
         setIconImage(new ImageIcon(ClassLoader.getSystemResource("resources/logo.png")).getImage());
 
         mainPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
@@ -160,16 +180,30 @@ public class RedApplication extends JFrame implements ProgressListener, DataStor
 
         mainPane.setTopComponent(topPane);
 
-        getContentPane().setLayout(new BorderLayout());
-
-        getContentPane().add(menu.toolbarPanel(), BorderLayout.NORTH);
-
         welcomePanel = new WelcomePanel(this);
         getContentPane().add(welcomePanel, BorderLayout.CENTER);
 
         statusPanel = new StatusPanel();
         getContentPane().add(statusPanel, BorderLayout.SOUTH);
 
+        pack();
+    }
+
+    public void toggleFullScreen() {
+        macManager.toggleFullScreen(this);
+    }
+
+    private void setMenu(final JMenuBar jMenuBar) {
+        if (Global.OS_NAME_MAC_OS_X.equals(Global.OS_NAME)) {
+            SwingUtilities.invokeLater(new Runnable() {
+                public void run() {
+                    macManager.setMacMenu(jMenuBar);
+                    macManager.setFullScreenEnable(RedApplication.this, true);
+                }
+            });
+        } else {
+            setJMenuBar(jMenuBar);
+        }
     }
 
     /**
@@ -181,26 +215,13 @@ public class RedApplication extends JFrame implements ProgressListener, DataStor
         return application;
     }
 
-    public static void run(String[] args) {
+    public static void run() {
         logger.info("Start running the RED");
-        try {
-            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        logger.info(Global.OS_NAME);
 
         try {
-
             Thread.setDefaultUncaughtExceptionHandler(new ErrorCatcher());
             application = new RedApplication();
             application.setVisible(true);
-
-            if (args.length > 0) {
-                File f = new File(args[0]);
-                application.loadProject(f);
-            }
         } catch (Exception e) {
             new CrashReporter(e);
             e.printStackTrace();
@@ -797,8 +818,8 @@ public class RedApplication extends JFrame implements ProgressListener, DataStor
 
     @Override
     public void databaseChanged(String databaseName, String sampleName) {
-        OptionDialogUtils.showMessageDialog(this, "Database has been changed to " + databaseName + ", sample name: " + sampleName,
-            databaseName);
+        OptionDialogUtils.showMessageDialog(this,
+            "Database has been changed to " + databaseName + ", sample name: " + sampleName, databaseName);
         DisplayPreferences.getInstance().setDisplayMode(DisplayPreferences.DISPLAY_MODE_READS_AND_PROBES);
         changesWereMade();
     }
