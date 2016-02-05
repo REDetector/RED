@@ -34,7 +34,7 @@ public class NetworkDetector {
     private static final Logger logger = LoggerFactory.getLogger(NetworkDetector.class);
 
     public static void isNetworkAvailable(INetwork listener) {
-        accessNetWork("http://www.github.com", listener);
+        accessNetWork("http://www.microsoft.com", listener);
     }
 
     public static void accessNetWork(final String path, final INetwork listener) {

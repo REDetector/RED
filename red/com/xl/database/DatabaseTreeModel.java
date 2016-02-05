@@ -42,7 +42,7 @@ public class DatabaseTreeModel {
     public DatabaseTreeModel() {
         List<String> databaseNames = DatabaseManager.getInstance().getAllDatabase();
         root = new DefaultMutableTreeNode("Samples in MySQL Database");
-        allSamples = new HashSet<>();
+        allSamples = new HashSet<String>();
         DefaultTreeModel treeModel = new DefaultTreeModel(root);
         for (String databaseName : databaseNames) {
             DefaultMutableTreeNode parentNode = new DefaultMutableTreeNode(databaseName);

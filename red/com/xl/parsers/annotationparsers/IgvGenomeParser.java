@@ -268,7 +268,6 @@ public class IgvGenomeParser implements Runnable {
                 "RED has detected there is no fasta file in your system.\n"
                     + "The fasta file would be downloaded on the background after hitting 'ok' button. Would you like to download it?",
                 "Download fasta file", JOptionPane.OK_CANCEL_OPTION);
-            logger.info("Answer: " + ans);
             if (ans == 0) {
                 FastaFileParser parser = new FastaFileParser(genome);
                 parser.parseNewFasta(fastaFile, fastaCacheFile);
