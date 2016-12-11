@@ -13,21 +13,22 @@
 
 package com.xl.filter.denovo;
 
-import com.xl.database.DatabaseManager;
-import com.xl.datatypes.sites.SiteBean;
-import com.xl.filter.Filter;
-import com.xl.utils.EmptyChecker;
-import com.xl.utils.Timer;
-import net.sf.snver.pileup.util.math.FisherExact;
-import rcaller.RCaller;
-import rcaller.RCode;
-
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+
+import net.sf.snver.pileup.util.math.FisherExact;
+import rcaller.RCaller;
+import rcaller.RCode;
+
+import com.xl.database.DatabaseManager;
+import com.xl.datatypes.sites.SiteBean;
+import com.xl.filter.Filter;
+import com.xl.utils.EmptyChecker;
+import com.xl.utils.Timer;
 
 /**
  * The Class FisherExactTestFilter is a statistical filter to reduce the errors in detecting RNA editing sites caused by
@@ -111,9 +112,11 @@ public class FisherExactTestFilter implements Filter {
      * @return the list which have added level and p-value information from the last list (expected list).
      */
     private List<PValueInfo> executeFETFilter(String previousTable, String fetResultTable, String refAlt) {
-        logger.info("Start performing Fisher's Exact Test Filter...\t" + Timer.getCurrentTime());
+        logger.info("Start performing Fisher's Exact Test Filter for " + refAlt + "...\t" + Timer.getCurrentTime());
         List<PValueInfo> valueInfos = getExpectedInfo(previousTable, refAlt);
         if (EmptyChecker.isEmptyList(valueInfos)) {
+            logger.info("The fisher exact test result of REF/ALT('" + refAlt + "') is empty.");
+            logger.info("End performing Fisher's Exact Test Filter for " + refAlt + "...\t" + Timer.getCurrentTime());
             return valueInfos;
         }
         int knownAlt = 0;
@@ -147,7 +150,7 @@ public class FisherExactTestFilter implements Filter {
                 return new ArrayList<PValueInfo>();
             }
         }
-        logger.info("End performing Fisher's Exact Test Filter...\t" + Timer.getCurrentTime());
+        logger.info("End performing Fisher's Exact Test Filter for " + refAlt + "...\t" + Timer.getCurrentTime());
         return valueInfos;
     }
 
@@ -193,6 +196,12 @@ public class FisherExactTestFilter implements Filter {
         } else {
             pValueList = executeFETFilter(previousTable, currentTable, type);
         }
+
+        if (EmptyChecker.isEmptyList(pValueList)) {
+            logger.info("The fisher exact test has no results, please have a check.");
+            logger.info("End performing False Discovery Rate Filter...\t" + Timer.getCurrentTime());
+            return;
+        }
         double[] pValueArray = new double[pValueList.size()];
         for (int i = 0, len = pValueList.size(); i < len; i++) {
             pValueArray[i] = pValueList.get(i).getPvalue();
@@ -220,7 +229,7 @@ public class FisherExactTestFilter implements Filter {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        logger.info("Start performing False Discovery Rate Filter...\t" + Timer.getCurrentTime());
+        logger.info("End performing False Discovery Rate Filter...\t" + Timer.getCurrentTime());
     }
 
     @Override

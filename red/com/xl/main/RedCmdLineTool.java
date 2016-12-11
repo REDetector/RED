@@ -484,6 +484,7 @@ public class RedCmdLineTool {
             logger.error("Data can't be loaded correctly, please have a check and try again.", e);
         }
 
+        System.exit(0);
     }
 
     public static ArrayList<Filter> sortFilters(List<Filter> filters, int[] orders) {
