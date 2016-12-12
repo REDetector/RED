@@ -197,25 +197,29 @@ public class FisherExactTestFilter implements Filter {
             pValueList = executeFETFilter(previousTable, currentTable, type);
         }
 
+        double[] results;
         if (EmptyChecker.isEmptyList(pValueList)) {
             logger.info("The fisher exact test has no results, please have a check.");
             logger.info("End performing False Discovery Rate Filter...\t" + Timer.getCurrentTime());
             return;
-        }
-        double[] pValueArray = new double[pValueList.size()];
-        for (int i = 0, len = pValueList.size(); i < len; i++) {
-            pValueArray[i] = pValueList.get(i).getPvalue();
-        }
-        code.addDoubleArray("parray", pValueArray);
-        code.addRCode("result<-p.adjust(parray,method='fdr',length(parray))");
-        caller.setRCode(code);
-        if (rScript.trim().toLowerCase().contains("script")) {
-            caller.runAndReturnResult("result");
+        } else if (pValueList.size() == 1) {
+            results = new double[] { 0 };
         } else {
-            caller.runAndReturnResultOnline("result");
+            double[] pValueArray = new double[pValueList.size()];
+            for (int i = 0, len = pValueList.size(); i < len; i++) {
+                pValueArray[i] = pValueList.get(i).getPvalue();
+            }
+            code.addDoubleArray("parray", pValueArray);
+            code.addRCode("result<-p.adjust(parray,method='fdr',length(parray))");
+            caller.setRCode(code);
+            if (rScript.trim().toLowerCase().contains("script")) {
+                caller.runAndReturnResult("result");
+            } else {
+                caller.runAndReturnResultOnline("result");
+            }
+            results = caller.getParser().getAsDoubleArray("result");
+            caller.deleteTempFiles();
         }
-        double[] results = caller.getParser().getAsDoubleArray("result");
-        caller.deleteTempFiles();
         databaseManager.setAutoCommit(false);
         try {
             for (int i = 0, len = results.length; i < len; i++) {
