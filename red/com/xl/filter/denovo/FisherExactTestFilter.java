@@ -142,8 +142,8 @@ public class FisherExactTestFilter implements Filter {
             pValueInfo.setLevel(level);
             try {
                 databaseManager.executeSQL("insert into " + fetResultTable
-                    + "(chrom,pos,id,ref,alt,qual,filter,info,gt,ad,dp,gq,pl,alu,level,pvalue) values ("
-                    + pValueInfo.toString() + "," + dF.format(level) + "," + pValue + ")");
+                    + "(chrom,pos,id,ref,alt,qual,filter,info,gt,ad,dp,gq,pl,alu,level,pvalue,fdr) values ("
+                    + pValueInfo.toString() + "," + dF.format(level) + "," + pValue + ",0.0)");
             } catch (SQLException e) {
                 logger.error("Error execute sql clause in " + FisherExactTestFilter.class.getName()
                         + ":executeFETFilter()", e);
